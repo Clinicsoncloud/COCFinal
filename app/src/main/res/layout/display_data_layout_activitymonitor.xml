@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.abhaybmi.app.view.ActivityMonitorDisplayDataLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+	android:descendantFocusability="blocksDescendants"
+    android:background="@drawable/under_line_border_layout"
+    android:orientation="vertical"
+    android:layout_marginLeft="0dp"
+    android:layout_marginRight="0dp"
+    android:visibility="invisible"
+    android:weightSum="10"
+    >
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="7.0"
+        android:gravity="right"
+        android:weightSum="10"
+        android:orientation="horizontal"
+		>
+        
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="10"
+            android:orientation="vertical"
+            android:weightSum="10" >
+            
+            <FrameLayout
+		         android:layout_width="match_parent"
+		         android:layout_height="0dp"
+		         android:layout_weight="3.0"
+		         android:orientation="horizontal"
+            >
+            <include layout="@layout/display_data_layout_date"
+                android:id="@+id/layout_date_ws" />
+        	</FrameLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+                android:layout_weight="3.0"
+                android:gravity="left|center_vertical"
+                android:text="Hemoglobin"
+                android:textColor="@color/display_data_activitymoniter_title_color"
+                android:textSize="@dimen/dispdata_text_size_l" />
+
+             
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="4.0"
+                android:orientation="horizontal"
+                >
+                
+                <TextView
+                    android:id="@+id/txt_totalsteps"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.0"
+                    android:textStyle="bold"
+                    android:gravity="left|center_vertical"
+                    android:text="0"
+                    android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/dispdata_text_size_l2" />
+                
+                <TextView
+                    android:id="@+id/txt_total_step_unit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:gravity="left|center_vertical"
+                    android:textColor="@color/gray"
+                    android:text="@string/activitymonitor_title_steps"
+                    android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+                    android:textSize="@dimen/dispdata_text_size_s"
+                    android:visibility="gone" />
+    
+                <Button
+                    android:id="@+id/txt_total_step_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:background="@drawable/border"
+                    android:text="@string/activitymonitor_title_steps"
+                    android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+                    android:textSize="@dimen/dispdata_text_size_m"/>
+            
+            
+            </LinearLayout>
+            
+        </LinearLayout>
+            
+      
+        <LinearLayout 
+	        android:layout_width="120dp"
+	        android:layout_height="match_parent"
+            android:paddingTop="5dp"
+	        android:orientation="horizontal"
+             >
+            
+            <ImageView
+                android:id="@+id/dashboard_icon_display"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+		        android:layout_weight="7.5"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_margin="@dimen/dispdata_image_margin"
+                android:src="@drawable/dashboard_walk_icon" />
+            
+            <Space
+                 android:layout_width="0dp"
+			     android:layout_height="wrap_content"
+		         android:layout_weight="2.5"
+			     />
+      	</LinearLayout>
+        
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+      	android:layout_height="0dp"
+      	android:layout_weight="3.0"
+      	android:layout_marginBottom="5dp"
+      	android:orientation="horizontal" >
+      	
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            >
+	            <include layout="@layout/display_data_activitymonitor_value_layout"
+	            android:id="@+id/value_layout_calory" />
+        </FrameLayout>
+        
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            >
+            <include layout="@layout/display_data_activitymonitor_value_layout"
+                android:id="@+id/value_layout_bpm" />
+        </FrameLayout>
+        
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            >
+            <include layout="@layout/display_data_activitymonitor_value_layout"
+            android:id="@+id/value_layout_distance" />
+        </FrameLayout>
+        
+    </LinearLayout>
+</com.abhaybmi.app.view.ActivityMonitorDisplayDataLayout>

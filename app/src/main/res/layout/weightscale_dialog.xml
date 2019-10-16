@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/background_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7f000000" >
+
+ 
+    <LinearLayout
+        android:id="@+id/dialog_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_centerInParent="true"
+        >
+
+    <include
+        android:id="@+id/top"
+        layout="@layout/title_bar_device_pairing" />
+
+        <LinearLayout 
+            android:id="@+id/device_setup_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="10"
+            >
+ 
+
+            <ImageView
+                android:id="@+id/weightscale"
+                android:layout_width="300dp"
+                android:layout_gravity="center"
+                android:layout_height="150dp"
+                android:layout_margin="50dp"
+                android:background="@mipmap/applogo"
+                android:contentDescription="@string/image"
+                 />
+
+
+            <TextView 
+                android:id="@+id/device_setup_upper_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:minHeight="30dp"
+                android:gravity="center_horizontal"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/paring_message_bloodpressure_monitor"
+                android:textSize="24sp"
+                android:layout_weight="1.7" />
+    
+            <TextView 
+                android:id="@+id/device_setup_middle_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:minHeight="30dp"
+                android:gravity="center_horizontal"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:text=""
+                android:textSize="14sp"
+                android:layout_weight="0.3" />
+
+            <TextView 
+                android:id="@+id/device_setup_under_text"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:minHeight="30dp"
+                android:gravity="center_horizontal"
+                android:paddingLeft="50dp"
+                android:paddingRight="50dp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/paring_message_notice"
+                android:textSize="24sp"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </LinearLayout>
+    
+</RelativeLayout>

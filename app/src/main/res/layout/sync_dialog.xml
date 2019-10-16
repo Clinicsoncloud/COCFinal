@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bottom_back_move" >
+
+    <TextView
+        android:id="@+id/syncMessages"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:text=""
+        android:textSize="16dip"
+        android:textColor="@android:color/white" 
+        android:textStyle="bold"/>
+
+    <ProgressBar 
+        android:id="@+id/progress_sync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dip"
+        android:maxWidth="25dip"
+        android:maxHeight="25dip"
+        android:visibility="invisible"
+        android:layout_centerVertical="true"/>
+</RelativeLayout>

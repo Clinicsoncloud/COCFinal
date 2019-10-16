@@ -1,0 +1,347 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:id="@+id/layout_1"
+        android:layout_width="300dip"
+        android:layout_height="fill_parent"
+        android:background="#112"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:background="#112" />
+
+        <LinearLayout
+            android:id="@+id/ll_menu_manage_user"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+    <!-- ダッシュボード=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_dashboard"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="@string/side_menu_dashboard"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+        <LinearLayout
+            android:id="@+id/ll_menu_device_setup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="@string/side_menu_device_setup"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_menu_printer_Setup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:visibility="gone"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Printer Setup"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_menu_hemoglobin_Setup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:visibility="gone"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Hemoglobin Setup"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+        <LinearLayout
+            android:id="@+id/ll_menu_glucose_Setup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:visibility="gone"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Glucose Setup"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+    <!-- 目標値設定=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_goal_value_setting"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+    <!-- リマインダー=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_reminder"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+    <!-- 設定=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_settings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+    <!-- ヘルプ=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_help"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="5dp"
+            android:background="#112" />
+
+
+    <!-- ユーザ追加(非表示)=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_adduser"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:visibility="gone"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="@string/side_menu_add_user"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+    <!-- チュートリアル(非表示)=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_tutorial"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal"
+            android:visibility="gone" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="Tutorial/Help"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+    <!-- サインアウト=================================================================== -->
+        <LinearLayout
+            android:id="@+id/ll_menu_signout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#112"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dip"
+                android:layout_marginRight="5dip"
+                android:contentDescription="@string/image" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="@string/side_menu_signout"
+                android:textColor="#ffffff"
+                android:textSize="25sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#112"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dip"
+            android:text="@string/side_menu_signout"
+            android:textColor="#574e4a"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/version"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:paddingLeft="10dip"
+            android:text="@string/side_menu_version"
+            android:textColor="#ffffff"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+</LinearLayout>

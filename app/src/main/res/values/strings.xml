@@ -1,0 +1,605 @@
+<resources>
+    <string name="app_name">COC</string>
+    <string name="action_settings">Settings</string>
+    <string name="side_menu_logout">Logout</string>
+    <string name="side_menu_dashboard">Dashboard</string>
+    <string name="side_menu_account">Account</string>
+    <string name="side_menu_about">About</string>
+    <string name="side_menu_help">Help</string>
+    <string name="side_menu_signout">Sign Out</string>
+
+    <string name="side_menu_my_account">My Account</string>
+    <string name="side_menu_add_user">Add New User</string>
+    <string name="side_menu_manage_user">Manage User</string>
+    <string name="side_menu_device_setup">Device Set-up</string>
+    <string name="side_menu_settings">Setting</string>
+    <string name="side_menu_version">Version</string>
+
+    <string name="side_menu_account_title">My Account</string>
+    <string name="side_menu_account_title_guest">&quot;Guest\'s account&quot;</string>
+
+    <string name="side_menu_reminder">Reminder</string>
+    <string name="side_menu_goal_value">Goal Value Setting</string>
+
+    <string name="side_menu_message_signout">Are you sure you want to Sign Out?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <string name="image">Image</string>
+
+    <string name="app_id">457446357723571</string>
+    <string name="splash_data_new"><b>Precision Measurement Solutions For</b> \n Medical and Weighing Track your Blood Pressure,\n pulse and weight readings</string>
+    <string name="disclaimer_terms_condition">Terms &amp; Privacy</string>
+    <string name="alert_do_not_agree">Do You Really Want to Exit out of Application?</string>
+    <string name="alert_title">AND Medical</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    <string name="text_yes">yes</string>
+    <string name="text_no">no</string>
+    <string name="text_button_done">Done</string>
+    <string name="waiting">waiting</string>
+    <string name="finish">finish</string>
+    <string name="retry">retry</string>
+    <string name="failed">Failed</string>
+
+    <!-- Login -->
+    <string name="username">abc@xyz.com</string>
+    <string name="username1">Username</string>
+    <string name="hint">&#8230;&#8230;&#8230;.</string>
+    <string name="password">Password</string>
+    <string name="remember">Continue as Guest</string>
+    <string name="sign">Sign In</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="enter_as_guest">Create Account</string>
+    <string name="terms">Terms and Conditions</string>
+    <string name="signup">By using, I agree to the</string>
+    <string name="aleady_filled">already Filled</string>
+
+    <!-- Login (stand alone) -->
+    <string name="login_qot">PLEASE SIGN IN TO YOUR ACCOUNT</string>
+    <string name="text_login_continue">Start Test</string>                <!-- Provisional -->
+    <string name="login">Logging in�.</string>
+
+    <!-- Forgot login password -->
+    <string name="hint_enter_email">Enter email here&#8230;</string>
+    <string name="text_get_password">Get Password</string>
+    <string name="please_enter"> Please enter your email ID:</string>
+
+    <!-- dialog -->
+    <string name="dialog_info">Info</string>
+    <string name="dialog_deleting">Deleting.</string>
+
+    <!-- Message Dialog for login -->
+    <string name="dialog_enter_email_id">Please enter emailid.</string>
+    <string name="dialog_enter_email_valid">Please enter a valid email address</string>
+    <string name="dialog_no_internet_connect">No Internet Connection</string>
+    <string name="dialog_enter_email_address">Please enter your email address.</string>
+    <string name="dialog_enter_password">Please enter your password.</string>
+    <string name="dialog_progress_wait">Please wait.</string>
+    <string name="dialog_progress_login">Logging in.</string>
+    <string name="dialog_no_data">No Data Available</string>
+    <string name="dialog_fail_login">Unable to Login! Please Try After Sometime</string>
+    <string name="dialog_enter_email_and_password">Please enter valid emailid and password</string>
+
+    <!-- Menu/Header -->
+    <string name="device_set_up">Device Setup</string>
+    <string name="personal_settings">Settings</string>
+    <string name="tutorial_help">Tutorial/Help</string>
+    <string name="sharing">Sharing/Social</string>
+    <string name="addnew">Add New User</string>
+    <string name="manage">Manage User</string>
+
+    <!-- Create Account -->
+    <string name="createaccnt">Create Account</string>
+    <string name="height_prompt">Height</string>
+    <string name="weight_prompt">Weight</string>
+    <string name="dob">Date of Birth</string>
+    <string name="date">2014/04/10</string>
+    <string name="text_male">Male</string>
+    <string name="text_female">Female</string>
+    <string name="text_metric">Metric</string>
+
+    <!-- (ManageSection) -->
+    <string name="text_guest">Guest</string>
+    <string name="height_unit_metric">cm</string>
+    <string name="height_unit_us">in</string>
+    <string name="text_feet">feet</string>
+    <string name="text_inch">inch</string>
+    <string name="sex_male">MALE</string>
+    <string name="sex_female">FEMALE</string>
+
+    <string-array name="gender_array">
+        <item>@string/text_male</item>
+        <item>@string/text_female</item>
+    </string-array>
+
+    <string name="firstname">First Name</string>
+    <string name="lastname">Last Name</string>
+    <string name="emailaddress">Email Address</string>
+    <string name="confirm">Confirm Password</string>
+    <string name="metric">Metric</string>
+    <string name="us">US</string>
+    <string name="continue1"><u>Continue as Guest</u></string>
+
+    <!-- Setting -->
+    <string name="set_goals">Set Goals</string>
+    <string name="set_health_vault"><b>Manage Your Microsoft HealthVault Record</b> Click the blue icon to view health data in your HealthVault record.</string>
+    <string name="set_gravitational_acceleration">Change Gravitational acceleration</string>
+    <string name="pairing_weightscale">Please scale to pairing mode.</string>
+    <string name="finish_set_acceleration_gravity">Complete to setting.</string>
+    <string name="fail_set_acceleration_gravity">Failed to setting. Please retry.</string>
+
+    <!-- Device paring -->
+    <string name="dialog_title_paring_complete">Complete&#8230;!</string>
+    <string name="dialog_message_paring_complete">The device is successfully paired.\n press OK to continue..</string>
+    <string name="dialog_message_pairing_complete_uw302">The device is successfully paired.\n\n To sync tracker, please tap sync icon in dashboard.</string>
+
+    <!-- Reminder -->
+    <string name="header_reminder">Set Reminders</string>
+    <string name="header_add_reminder">Add Reminder</string>
+    <string name="header_sounds">Sounds</string>
+    <string name="header_notes">Notes</string>
+    <string name="text_save">Save</string>
+    <string name="text_repeat">Repeat</string>
+    <string name="text_never">Never</string>
+    <string name="text_label">Notes</string>
+    <string name="text_alarm">Alarm</string>
+    <string name="text_sound">Sound</string>
+    <string name="text_sound_label">Notes</string>
+    <string name="text_snooze">Snooze</string>
+    <string name="text_add">Add</string>
+    <string name="hint_add_note">Add Note&#8230;..</string>
+    <string name="text_everyday">Everyday</string>
+    <string-array name="every_day">
+        <item>@string/text_every_sunday</item>
+        <item>@string/text_every_monday</item>
+        <item>@string/text_every_tuesday</item>
+        <item>@string/text_every_wednesday</item>
+        <item>@string/text_every_thursday</item>
+        <item>@string/text_every_friday</item>
+        <item>@string/text_every_saturday</item>
+    </string-array>
+    <string name="text_every_sunday">Every Sunday</string>
+    <string name="text_every_monday">Every Monday</string>
+    <string name="text_every_tuesday">Every Tuesday</string>
+    <string name="text_every_wednesday">Every Wednesday</string>
+    <string name="text_every_thursday">Every Thursday</string>
+    <string name="text_every_friday">Every Friday</string>
+    <string name="text_every_saturday">Every Saturday</string>
+    <string-array name="reminder_label_static">
+        <item>Take a Walk Today</item>
+        <item>Take my Blood Pressure</item>
+        <item>Weight Myself</item>
+        <item>Get a Good Night\'s Sleep</item>
+    </string-array>
+
+    <!-- Set Goals -->
+    <string name="text_title_steps">Steps</string>
+    <string name="text_steps_per_day">Steps Per Day</string>
+    <string name="hint_enter_value">Please Enter Value</string>
+    <string name="text_title_distance">Distance</string>
+    <string name="text_kilometer">Kilometer</string>
+    <string name="text_title_weight">Weight</string>
+    <string name="text_kilogram">Kilogram</string>
+    <string name="text_unit_kilogram">Kilogram(Kg)</string>
+    <string name="text_unit_pounds">Pounds(Lb)</string>
+    <string name="text_unit_miles_per_day">Miles per day</string>
+    <string name="text_unit_kilometer_per_day">Kilometer(Km)per day</string>
+
+    <string name="info_steps_input_range">Input range is 500 &#8211; 99999</string>
+    <string name="info_weight_input_range_kg">Input range is 1.0 &#8211; 999.0</string>
+    <string name="info_weight_input_range_lb">Input range is 2.205 &#8211; 2202.38</string>
+    <string name="info_distance_input_range_km">Input range is 1.0 &#8211; 1000.0</string>
+    <string name="info_distance_input_range_mile">Input range is 0.1 &#8211; 621.0</string>
+
+    <!-- Manage Personal Information -->
+    <string name="text_age">Age</string>
+    <string name="text_age_1">Age :</string>
+    <string name="text_age_2">Age: </string>
+    <string name="text_title_manage_account">Manage Account</string>
+    <string name="text_delete_account">Delete Account</string>
+    <string name="update">Update</string>
+
+    <!-- Input Profile -->
+    <string name="info_enter_firstname">Please Enter Valid FirstName</string>
+    <string name="info_length_firstname">Firstname must be  be at least 2 characters long</string>
+    <string name="info_enter_lastname">Please Enter Valid LastName</string>
+    <string name="info_enter_email_id">Please Enter Email Id</string>
+    <string name="info_length_lastname">Lastname must be  be at least 2 characters long</string>
+    <string name="info_enter_valid_email_id">Please Enter Valid Email Id</string>
+    <string name="info_enter_password">Please Enter Password</string>
+    <string name="info_minimum_length_and_captal_password">Password must be at least 7 characters long with at least 1 capital letter and at least 1 number</string>
+    <string name="info_minimum_length_password">Password must be at least 7 characters long</string>
+    <string name="info_empty_capital_password">Password must has at least 1 capital letter</string>
+    <string name="info_empty_number_password">Password must has at least 1 number</string>
+    <string name="info_empty_capital_number_password">Password must has at least 1 capital letter and 1 number</string>
+    <string name="info_confirm_password">Please Confirm Password</string>
+    <string name="info_not_match_password">Password did not match</string>
+    <string name="info_enter_date_of_birth">Please Enter Date Of Birth</string>
+
+    <!-- Input Profile Dialog -->
+    <string name="dialog_message_profile_updated">Profile Updated</string>
+    <string name="dialog_message_profile_deleted">Profile Deleted</string>
+    <string name="dialog_message_delete_account">Deleting Account&#8230;</string>
+    <string name="dialog_message_fail_to_create_account">Unable to create account, Please try again later</string>
+
+    <!-- Manage User -->
+    <string name="dialog_message_confirm_switch">Are you sure you want to switch to %s\'s account</string>
+    <string name="text_manage_users">Manage Users</string>
+    <string name="text_switch">Switch</string>
+    <string name="text_delete">Delete</string>
+
+    <!-- Dashboard -->
+    <string name="header_dashboard">Dashboard</string>
+    <string name="header_dashboard_guest">Guest Dashboard </string>
+    <string name="indicator_start_receive">Start receiving</string>
+    <string name="indicator_complete_receive">Complete receiving</string>
+    <string name="indicator_during_receive">During receiving</string>
+    <string name="dialog_to_exit">Click yes to exit!</string>
+    <string name="chooser_title_sendmail">Send mail&#8230;</string>
+    <string name="value_error">Err</string>
+    <string name="blood_pressure_synced">Blood Pressure:Synced</string>
+
+    <!-- Activity Monitor -->
+    <string name="activitymonitor_monitor">Activity Monitor</string>
+    <string name="activitymonitor_title">Activity</string>
+    <string name="activitymonitor_title_steps">Steps</string>
+    <string name="activitymonitor_title_distance">Distance</string>
+    <string name="activitymonitor_title_calorie">Calorie</string>
+    <string name="activitymonitor_title_sleep">Sleep</string>
+    <string name="activitymonitor_unit_cal">cal</string>
+    <string name="activitymonitor_unit_kcal">kcal</string>
+    <string name="activitymonitor_unit_km">Km</string>
+    <string name="activitymonitor_unit_mi">mi</string>
+    <string name="activitymonitor_unit_bpm">bpm</string>
+    <string name="activitymonitor_unit_sleep">sleep</string>
+    <string name="activitymonitor_string_total">total</string>
+    <string name="activitymonitor_unit_steps">steps</string>
+    <string name="activitymonitor_unit_distance">distance</string>
+    <string name="activitymonitor_calorie_unit">Calorie\n(cal)</string>
+
+    <!-- Blood Pressure -->
+    <string name="bloodpressure_title">Blood Pressure</string>
+    <string name="bloodpressure_title_systolic">Systolic</string>
+    <string name="bloodpressure_title_diastolic">Diastolic</string>
+    <string name="bloodpressure_title_pulse">Pulse</string>
+    <string name="bloodpressure_history_column_date">Date</string>
+    <string name="bloodpressure_history_column_systolic">systolic\n(mmHg)</string>
+    <string name="bloodpressure_history_column_diastolic">diastolic\n(mmHg)</string>
+    <string name="bloodpressure_history_column_pulse">pulse Rate\n(bpm)</string>
+    <string name="bloodpressure_unit_bpm">bpm</string>
+    <string name="bloodpressure_unit_mmhg">mmHg</string>
+    <string name="report_title">%1$s BP Report</string>
+    <string name="report_duration">Duration: </string>
+    <string name="report_average">Average</string>
+    <string name="report_data_all">All Data</string>
+    <string name="report_data_am">Morning</string>
+    <string name="report_data_pm">Evening</string>
+    <string name="report_bp_class">Classification</string>
+    <string name="report_bp_hyper">Hypertension</string>
+    <string name="report_bp_hyper_pre">Prehypertension</string>
+    <string name="report_bp_normal_s2">Normal (Stage2)</string>
+    <string name="report_bp_normal_s1"> </string>
+    <string name="report_comment">Notes</string>
+    <string name="report_date">Date</string>
+    <string name="report_average_am">Avg. of Morning Blood pressure</string>
+    <string name="report_average_pm">Avg. of Evening Blood pressure</string>
+    <string name="report_systolic">Systolic</string>
+    <string name="report_diastolic">Diastolic</string>
+    <string name="report_pulse">Pul.</string>
+    <string name="report_bp_ave_am">Avg. of Morning Blood pressure</string>
+    <string name="report_bp_ave_pm">Avg. of Evening Blood pressure</string>
+    <string name="report_pul_ave_am">Avg. of Morning Pulse</string>
+    <string name="report_pul_ave_pm">Avg. of Morning Pulse</string>
+    <string name="report_supervisor"> </string>
+    <string name="report_guideline">ESH:2014</string>
+
+    <!-- Weight Scale -->
+    <string name="weightscale_title">Weight Scale</string>
+    <string name="text_goals">Value</string>
+    <string name="weightscale_history_column_date">Date</string>
+    <string name="weightscale_history_column_weight">Weight</string>
+    <string name="weightscale_history_column_bmi">BMI</string>
+
+    <!-- Thermometer -->
+    <string name="thermometer_title">Thermometer</string>
+    <string name="thermometer_degree_unit_celsius">℃</string>
+    <string name="thermometer_degree_unit_fahrenheit">℉</string>
+    <string name="thermometer_histly_title_date">Date</string>
+    <string name="thermometer_histly_title_value">Temperature</string>
+    <string name="thermometer_histly_title_unit">Unit</string>
+
+    <!-- About Screen -->
+    <string name="about">About</string>
+    <string name="about_cmpy_name">About A&amp;D</string>
+    <string name="about_legal_stat">Legal Statement</string>
+    <string name="about_help">Help</string>
+    <string name="about_contact_for_supp">Contact For Support</string>
+    <string name="about_faq">FAQ</string>
+    <string name="about_faq_url">http://www.wellnessconnected.jp/smart/faq</string>
+    <string name="about_contact_for_supp_url">https://www.wellnessconnected.jp/smart/contact</string>
+    <string name="about_us_new">A&amp;D is a world leader in the design and production of precision measurement equipment. A&amp;D Engineering, headquartered in San Jose CA and focusing on the Americas, has two main divisions- A&amp;D Medical and A&amp;D Weighing- which design, market, and sell A&amp;D measurement solutions to the consumer, healthcare, laboratory, and industrial markets.\n\nA&amp;D Engineering is a wholly owned subsidiary of A&amp;D Company Ltd. ("A&amp;D"), a multinational measurement and control equipment manufacturer. A&amp;D, headquartered in Japan, has operations and distribution centers in Japan, Korea, China, Europe, Great Britain, Australia, Russia, India and North and South America.</string>
+
+    <!-- Dialog Information -->
+    <string name="attention">attention</string>
+    <string name="network_error">network_error.</string>
+    <string name="please_wait">please_wait</string>
+    <string name="refrshing">refrshing</string>
+
+    <!-- Unuse -->
+    <string name="congo">Congratulations..!</string> <!-- LifeTrackerを使用していなければ不要 -->
+    <string name="success">You have successfully Set Up Life Track Zone </string>
+
+    <!-- Resource Preparing -->
+    <string name="dialog_message_export_db">Exporting database&#8230;</string>
+    <string name="message_export_success">Export successful!</string>
+    <string name="message_export_failed">Export failed</string>
+
+    <!-- (Device Setup) -->
+    <string name="paring_title_bloodpressure_monitor">Blood\nPressure\nMonitor</string>
+    <string name="paring_title_weight_scale">Weight\nScale</string>
+    <string name="paring_title_thermometer">Thermometer</string>
+    <string name="paring_title_activity_monitor">Activity\nMonitor</string>
+    <string name="paring_message_bloodpressure_monitor">Press the Start button on your blood pressure monitor until you see Pr on the screen. The pairing process will begin shortly after</string>
+    <string name="paring_message_weight_scale">Press the button on the bottom of your scale until you see Pr on the scale\'s screen. The pairing process will begin shortly after</string>
+    <string name="paring_message_activity_monitor">Press and hold the sync button on your device in Main dashboard.</string>
+    <string name="paring_message_thermometer">Press the button on your thermometer until you see an L on the screen. Press the  button again to begin pairing to your mobile device. You will see a Pr on the screen while pairing</string>
+    <string name="paring_message_notice">Ensure Bluetooth is turned on for your device.</string>
+
+    <!-- (for array.xml) -->
+    <string name="date_range_daily">Daily</string>
+    <string name="date_range_weekly">Weekly</string>
+    <string name="date_range_monthly">Monthly</string>
+    <string name="date_range_history">History</string>
+    <string name="graph_x_value_hours">Hours</string>
+    <string name="graph_x_value_days">Days</string>
+    <string name="graph_x_value_weeks">Weeks</string>
+    <string name="report_graph">Report(Graph)</string>
+    <string name="report_class">Report(Class)</string>
+
+    <!-- email -->
+    <string name="email_screenshot_main_dashboard">ScreenShot of %1$s\'s Main Dashboard</string>
+    <string name="email_screenshot_dashboard">ScreenShot of %1$s\'s AM Dashboard</string>
+    <string name="email_screenshot_bp_dashboard">ScreenShot of %1$s\'s BP Dashboard</string>
+    <string name="email_screenshot_gm_dashboard">ScreenShot of %1$s\'s GM Dashboard</string>
+    <string name="email_screenshot_tm_dashboard">ScreenShot of %1$s\'s TH Dashboard</string>
+    <string name="email_screenshot_ws_dashboard">ScreenShot of %1$s\'s WS Dashboard</string>
+    <string name="email_screenshot_graph">ScreenShot of Graph</string>
+    <string name="email_screenshot_activity_dashboard">ScreenShot of Activity Dashboard</string>
+    <string name="email_csv_activity_monitor_history">CSV File of Activity Monitor History</string>
+    <string name="email_CSV_am_dashboard">CSV File of %s\'s AM History</string>
+    <string name="email_CSV_bp_dashboard">CSV File of %1$s\'s BP History</string>
+    <string name="email_CSV_gm_dashboard">CSV File of %1$s\'s GM History</string>
+    <string name="email_CSV_tm_dashboard">CSV File of %1$s\'s TH History</string>
+    <string name="email_CSV_ws_dashboard">CSV File of %1$s\'s WS History</string>
+    <string name="email_message_temp_file">Please find the attached file</string>
+
+    <!-- facebook -->
+    <string name="facebook_error">fbError</string>
+    <string name="facebook_on_error">onError</string>
+    <string name="facebook_on_cancel">onCancel</string>
+
+    <!-- week -->
+    <string name="week_sun">Sun</string>
+    <string name="week_mon">Mon</string>
+    <string name="week_tue">Tue</string>
+    <string name="week_wed">Wed</string>
+    <string name="week_thu">Thu</string>
+    <string name="week_fri">Fri</string>
+    <string name="week_sat">Sat</string>
+    <string name="week_separator">,</string>
+
+    <!-- date formatte -->
+    <!-- 日付フォーマットの名前は日本での並びを基準とした -->
+    <string name="date_formatte_main_dashboard">MM. Dd.yyyy HH:mm</string>
+    <string name="date_formatte_graph_display_day">MMM. Dd,yyyy</string>
+    <string name="date_formatte_graph_display_week">MMM. Dd,yyyy</string>
+    <string name="date_formatte_graph_display_month">MMM, yyyy</string>
+    <string name="date_formatte_graph_history">MMM. Dd,yyyy HH:mm</string>
+    <string name="date_formatte_hh_mmy">HH:mm</string>
+
+    <!-- 重力下層度設定の地域表示 -->
+    <string name="default_acceleration_gravity">Default</string>
+    <string name="area_africa">Africa</string>
+    <string name="area_asia">Asia</string>
+    <string name="area_europe">Europe</string>
+    <string name="area_mideast">Middle East</string>
+    <string name="area_north_america">North America</string>
+    <string name="area_oceania">Oceania</string>
+    <string name="area_south_america">South America</string>
+
+    <string name="area_cape_town">Capetown</string>
+    <string name="area_bangkok">Bangkok</string>
+    <string name="area_calcutta">Kolkata</string>
+    <string name="area_jakarta">Jakarta</string>
+    <string name="area_manila">Manila</string>
+    <string name="area_new_delhi">New Delhi</string>
+    <string name="area_singapore">Singapore</string>
+    <string name="area_taipei">Taipei</string>
+    <string name="area_japan">Japan</string>
+    <string name="area_amsterdam">Amsterdam</string>
+    <string name="area_athens">Athens</string>
+    <string name="area_birmingham">Birmingham</string>
+    <string name="area_brussels">Brussels</string>
+    <string name="area_copenhagen">Copenhagen</string>
+    <string name="area_cyprus">Cyprus</string>
+    <string name="area_frankfurt">Frankfurt</string>
+    <string name="area_glasgow">Glasgow</string>
+    <string name="area_helsinki">Helsinki</string>
+    <string name="area_lisbon">Lisbon</string>
+    <string name="area_london">London</string>
+    <string name="area_milan">Milan</string>
+    <string name="area_oslo">Oslo</string>
+    <string name="area_paris">Paris</string>
+    <string name="area_roma">Rome</string>
+    <string name="area_stockholm">Stockholm</string>
+    <string name="area_zurich">Zurich</string>
+    <string name="area_kuwait">Kuwait</string>
+    <string name="area_chicago">Chicago</string>
+    <string name="area_havana">Havana</string>
+    <string name="area_los_angeles">Los Angeles</string>
+    <string name="area_mexico">Mexico</string>
+    <string name="area_new_york">New York</string>
+    <string name="area_ottawa">Ottawa</string>
+    <string name="area_san_francisco">San Francisco</string>
+    <string name="area_vancouver">Vancouver</string>
+    <string name="area_washington_dc">Washington DC</string>
+    <string name="area_oakland">Auckland</string>
+    <string name="area_melbourne">Melbourne</string>
+    <string name="area_sydney">Sydney</string>
+    <string name="area_wellington">Wellington</string>
+    <string name="area_buenos_aires">Buenos Aires</string>
+    <string name="area_rio_de_janeiro">Rio de Janeiro</string>
+    <!-- start デバッグ用データ。本番では使われない  -->
+    <string name="area_max_gravity" translatable="false">最大加速値 9.999</string>
+    <string name="area_min_gravity" translatable="false">最小加速値 9.744</string>
+    <!-- end デバッグ用データ。本番では使われない  -->
+
+    <string name="area_tokyo_osaka">Tokyo, Osaka</string>
+    <string name="area_sapporo">Sapporo</string>
+    <string name="area_sendai">Sendai</string>
+    <string name="area_kagoshima">Kagoshima</string>
+    <string name="area_naha">Naha</string>
+
+
+    <string name="detected_dialog_message">More than one Bluetooth device is\nin range. Please select witch \n device you would like to use.</string>
+    <string name="arrow_up">&#xf106;</string>
+    <string name="arrow_down">&#xf107;</string>
+    <string name="detected_message">Cool Design Blood Pressure\nMonitor\n DETECTED</string>
+    <string name="detected_take_measurement">Take Measurement</string>
+    <string name="detected_read_stored_data">Read Stored Data</string>
+
+    <!-- New device screen Setup  -->
+    <string name="bloodPressure_heading">Blood Pressure Monitors</string>
+    <string name="weightscale_heading">Weight Scales</string>
+    <string name="activitymonitor_heading" translatable="false">Hemoglobin</string>
+    <string name="pulseoximeter_heading">Pulse Oximeter</string>
+    <string name="thermometer_heading">Thermometer</string>
+
+    <!-- UW Tracker information  -->
+    <string name="pairing_instruction_one">Slowly but firmly swipe from right to left to reach the setting icon</string>
+    <string name="pairing_instruction_two">Tap</string>
+    <string name="pairing_instruction_three">Pairing begins</string>
+    <string name="title_activity_otp_login_screen">OtpLoginScreen</string>
+    <string name="title_activity_otp_verify_screen">OtpVerifyScreen</string>
+
+    <string name="home">Home</string>
+    <string name="scan_button">Scan</string>
+
+    <string name="ble_not_supported">BLE is not supported</string>
+    <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
+
+    <string name="unknown_device">Unknown device</string>
+    <string name="starttest">Start the Test</string>
+    <string name="writedata">Write Calib Data</string>
+    <string name="getdata">Get Data</string>
+    <string name="stoptest">Stop the Test</string>
+    <string name="restartTest">Restart Test</string>
+    <string name="canceled">Canceled!</string>
+    <string name="scandevices">Scan Devices</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="connected">Connected</string>
+
+
+    <string name="device_type_dumo">Duplex mode Bluetooth</string>
+    <string name="btn_ok">OK</string>
+    <string name="dialog_title_sys_err">系统错误</string>
+    <string name="actMain_link_device_info_title">Selected Device :</string>
+    <string name="actMain_device_info">%1$s</string>
+    <string name="actMain_btn_pair">Pair</string>
+    <string name="actMain_btn_comm">Connect</string>
+    <string name="actMain_tv_hint_service_uuid_not_bond">Please pair with the Device.</string>
+    <string name="actMain_msg_does_not_support_uuid_service">Application BT version does not support this Mobile.</string>
+    <string name="actMain_msg_bluetooth_Bonding">pairing&#8230;</string>
+    <string name="actMain_msg_device_connecting">Connecting device</string>
+    <string name="actMain_msg_device_connect_fail">communication failure</string>
+    <string name="actMain_msg_bluetooth_Bond_Success">Pairing successful</string>
+    <string name="actMain_msg_bluetooth_Bond_fail">Pairing failed</string>
+    <string name="actMain_msg_pair_pwd_error">Pairing password must be 4 digits</string>
+    <string name="actMain_menu_rescan">Rescan</string>
+    <string name="actDiscovery_msg_select_device">Select the device you need to connect</string>
+    <string name="actDiscovery_msg_not_find_device">Devices not found</string>
+    <string name="actDiscovery_msg_scaning_device">Searching for Bluetooth devices,please wait&#8230;</string>
+    <string name="actDiscovery_msg_starting_device">Bluetooth is turned on&#8230;</string>
+    <string name="actDiscovery_msg_start_bluetooth_fail">Bluetooth turn on failed</string>
+    <string name="actDiscovery_msg_bluetooth_not_start">Bluetooth is not enabled</string>
+    <string name="actDiscovery_menu_scan">Scan</string>
+    <string name="actDiscovery_bond_bonded">Bonded</string>
+    <string name="actDiscovery_bond_nothing">Nothing</string>
+    <string name="actByteStream_btn_send_desc">Send button</string>
+    <string name="actByteStream_tv_receive_text">Data receive</string>
+    <string name="protocol">General Protocol</string>
+    <string name="escprotocol">Esc Sequence Protocol</string>
+    <string name="device_type_bredr">BR/EDR Bluetooth</string>
+    <string name="device_type_ble">Bluetooth Energy is Low</string>
+    <string name="msg_msg_bt_connect_lost">Bluetooth device connection is lost, try to reconnect</string>
+    <string name="Connect">Connect</string>
+    <string name="not_connected">Mobile is not connected with device</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Exiting Application.</string>
+    <string name="title_connecting">connecting...</string>
+    <string name="title_not_connected">not connected</string>
+    <string name="hello_world">Hello</string>
+    <!-- DeviceListActivity -->
+    <string name="scanning">Scanning for devices...</string>
+    <string name="select_device">Select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+    <string name="note">Note</string>
+    <!-- Options Menu -->
+    <string name="information">This application has been designed to work with Evolute Systems Pride thermal printer.\n\nProwess Pride SDK is available from Evolute Systems as per your request.</string>
+    <string name="version">Version: V1.19</string>
+    <string name="btn_display">Continue</string>
+    <string name="title_activity_print_priview_screen">PrintPriviewScreen</string>
+    <string name="title_activity_height_screen">HeightScreen</string>
+    <string name="title_activity_thermometer_screen">ThermometerScreen</string>
+
+
+    <string name="turn_on_glucose">Long Press the button to turn on the Device</string>
+    <string name="txt_hemoglobin_img">Insert Strip &amp; Add Blood</string>
+
+
+    <string name="turn_on_bluetooth">Turn On Bluetooth</string>
+    <string name="turn_off_bluetooth">Turn Off Bluetooth</string>
+    <string name="search_oximeters">Search</string>
+    <string name="str_device_name">Device Name</string>
+    <string name="str_firmware_version">Firmware Version</string>
+    <string name="str_bluetooth_version">Bluetooth Version</string>
+    <string name="str_bluetooth_name">Bluetooth Name:</string>
+    <string name="str_berry_med">BerryMed</string>
+    <string name="str_get_source_code"><u>Get Source Code>>></u></string>
+    <string name="strChangeName">Change BT Name</string>
+    <string name="strHintModifyName">Modify Bluetooth Name</string>
+    <string name="title_activity_weight_screen">WeightScreen</string>
+    <string name="title_activity_dashboard_screen">DashboardScreen</string>
+    <string name="title_activity_bp_login_screen">BpLoginScreen</string>
+    <string name="title_activity_post_verified_otp_screen">PostVerifiedOtpScreen</string>
+
+    <string name="bindDevice">Start Test</string>
+    <string name="connectDevice">Connecting device</string>
+    <string name="readSN">Get SN</string>
+    <string name="readID">Get ID</string>
+    <string name="disconnect">Disconnect Bluetooth</string>
+
+    <string name="spo">Blood oxygen</string>
+    <string name="pr">Pulse rate</string>
+    <string name="ID">Device ID</string>
+    <string name="SN">Device SN</string>
+
+    <string name="Connectad">Connnect</string>
+    <string name="Desconectad">Disconnect</string>
+    <string name="ConexionPerdida">Missed Connection</string>
+    <string name="Enviar">Send</string>
+    <string name="Limpiar">Clean</string>
+    <string name="ConectadO">Connected</string>
+    <string name="Conectese">Connect to a device</string>
+    <string name="connecting">Connecting to a device..</string>
+    <string name="Nosepuede">Can not Send</string>
+    <string name="Seleccionado">Selected:</string>
+    <string name="BluetoothEncendido">Bluetooth on</string>
+</resources>

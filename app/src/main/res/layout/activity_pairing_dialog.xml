@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/background_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#7f000000" >
+
+
+    <LinearLayout
+        android:id="@+id/dialog_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:layout_centerInParent="true"
+        >
+
+        <include
+            android:id="@+id/top"
+            layout="@layout/title_bar_device_pairing" />
+
+        <RelativeLayout
+            android:id="@+id/device_setup_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@drawable/pairingpage_uw302"
+            android:weightSum="10">
+
+            <TextView
+                android:id="@+id/device_setup_under_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center_horizontal"
+                android:paddingBottom="15dp"
+                android:text="@string/paring_message_notice"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/pairing_1"
+                android:layout_width="260dp"
+                android:layout_height="70dp"
+                android:maxLines="3"
+                android:minHeight="30dp"
+                android:paddingTop="15dp"
+                android:paddingLeft="55dp"
+                android:paddingRight="50dp"
+                android:text="@string/pairing_instruction_one"
+                android:textSize="16sp" />
+
+
+            <TextView
+                android:id="@+id/pairing_2"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/pairing_1"
+
+                android:maxLines="1"
+
+                android:layout_marginLeft="305dp"
+                android:layout_marginTop="120dp"
+                android:text="@string/pairing_instruction_two"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/pairing_3"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/device_setup_under_text"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="60dp"
+                android:layout_marginTop="250dp"
+                android:layout_marginBottom="50dp"
+                android:maxLines="1"
+                android:text="@string/pairing_instruction_two"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/pairing_4"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/device_setup_under_text"
+                android:maxLines="1"
+                android:layout_marginLeft="175dp"
+                android:layout_marginBottom="50dp"
+                android:text="@string/pairing_instruction_two"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/pairing_5"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/device_setup_under_text"
+                android:layout_alignStart="@+id/pairing_2"
+                android:layout_marginBottom="50dp"
+                android:maxLines="1"
+                android:text="@string/pairing_instruction_two"
+                android:textSize="16sp" />
+
+
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/bgapp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="300dp"
+    android:paddingEnd="300dp"
+    tools:context=".OtpLoginScreen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_weight="5"
+            android:src="@mipmap/applogo"
+            android:layout_gravity="center"
+            android:layout_marginTop="200dp"
+            android:layout_height="100dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:background="@drawable/rectangle"
+            android:layout_margin="20dp"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
+            android:hint="Enter OTP"
+            android:focusable="true"
+            android:paddingLeft="10dp"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:id="@+id/etOTP"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:background="@drawable/greenbg"
+            android:layout_margin="20dp"
+            android:text="Verify"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_height="50dp" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

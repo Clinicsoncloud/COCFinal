@@ -1,0 +1,408 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_rl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_SwipeListner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rl_swipelistner"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/top"
+                android:visibility="invisible"
+                layout="@layout/title_bar" />
+
+            <LinearLayout
+                android:id="@+id/toolbar_layout"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:layout_below="@+id/top"
+                android:background="@drawable/top_line_border_layout"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.0" />
+
+                <RelativeLayout
+                    android:id="@+id/root"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6.0"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:id="@+id/left_arrow"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentLeft="true">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/left_top_arrow"
+                            android:minWidth="15dip"
+                            android:minHeight="21dip" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/right_arrow"
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:background="@drawable/right_top_arrow"
+                            android:minWidth="15dip"
+                            android:minHeight="21dip" />
+
+                    </FrameLayout>
+
+                </RelativeLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.0" />
+
+
+            </LinearLayout>
+
+
+
+            <ScrollView
+                android:id="@+id/scrollView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/toolbar_layout"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/txtmainweight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Height Scale"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtmainheight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Weight Scale"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtmaintempreture"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Temperature"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtmainpulseoximeter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Pulse Oximeter"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtmainbloodpressure"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@color/orange4"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="BP Monitor"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/txtmainhemoglobin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Blood Sugar"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtmainbloodsugar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:background="@drawable/repeat"
+                            android:gravity="center"
+                            android:padding="@dimen/pad5"
+                            android:text="Hemoglobin"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:weightSum="4">
+
+                        <TextView
+                            android:id="@+id/txtName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:layout_weight="1"
+                            android:background="@drawable/rectangle"
+                            android:gravity="center"
+                            android:text="Name : Ashok Songara"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtAge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:layout_weight="1"
+                            android:background="@drawable/rectangle"
+                            android:gravity="center"
+                            android:text="Age : 24"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtGender"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:layout_weight="1"
+                            android:background="@drawable/rectangle"
+                            android:gravity="center"
+                            android:text="Gender : Male"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/txtMobile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/pad10"
+                            android:layout_weight="1"
+                            android:background="@drawable/rectangle"
+                            android:gravity="center"
+                            android:text="Phone : 7984507908"
+                            android:textColor="@color/white"
+                            android:textSize="22sp" />
+
+
+                    </LinearLayout>
+
+
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.0">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal"
+                            android:weightSum="2"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="200dp"
+                                android:padding="@dimen/margin20"
+                                android:src="@drawable/bloodpressure"
+                                android:layout_height="150dp" />
+
+                            <include
+                                android:id="@+id/llinear_bp"
+                                layout="@layout/display_data_layout_bloodpressure" />
+
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.0"
+                        android:visibility="gone">
+
+                        <include
+                            android:id="@+id/llinear_wt"
+                            layout="@layout/display_data_layout_weightscale" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.0"
+                        android:visibility="gone">
+
+                        <include
+                            android:id="@+id/llinear_tm"
+                            layout="@layout/display_data_layout_thermometer" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.0"
+                        android:visibility="gone">
+
+                        <include
+                            android:id="@+id/llinear_am"
+                            layout="@layout/display_data_layout_activitymonitor" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1.0">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:text="Press Device Button and Start Measurement"
+                            android:textSize="@dimen/space25"
+                            android:gravity="center"
+                            android:layout_marginBottom="@dimen/margin20"
+                            android:layout_gravity="center_vertical"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="100dp"
+                            android:orientation="horizontal"
+                            android:weightSum="3">
+
+                            <Button
+                                android:id="@+id/btnrepeat"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="5dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat"
+                                android:gravity="center"
+                                android:text="REPEAT"
+                                android:textColor="@color/white"
+                                android:textSize="35sp"
+                                android:textStyle="bold" />
+
+                            <Button
+                                android:id="@+id/btnstart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/greenback"
+                                android:gravity="center"
+                                android:text="START"
+                                android:textColor="@color/white"
+                                android:textSize="35sp"
+                                android:textStyle="bold" />
+
+
+                            <Button
+                                android:id="@+id/btnnext"
+                                android:layout_width="wrap_content"
+                                android:layout_height="50dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/repeat"
+                                android:gravity="center"
+                                android:text="NEXT"
+                                android:textColor="@color/white"
+                                android:textSize="35sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+
+                    </FrameLayout>
+                </LinearLayout>
+            </ScrollView>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+
+</RelativeLayout>

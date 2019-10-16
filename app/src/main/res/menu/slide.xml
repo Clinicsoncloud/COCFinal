@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_parent_1"
+        android:title="@string/device_set_up">
+    </item>
+    <item
+        android:id="@+id/menu_parent_2"
+        android:title="@string/personal_settings">
+    </item>
+    <item
+        android:id="@+id/tutorial_help_menu"
+        android:title="@string/tutorial_help">
+    </item>
+    <item
+        android:id="@+id/item_sharing_menu"
+        android:title="@string/sharing">
+    </item>
+    <item
+        android:id="@+id/item_addnew_user"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/addnew">
+    </item>
+    <item
+        android:id="@+id/item_manage_user"
+        android:icon="@drawable/ic_launcher"
+        android:title="@string/manage">
+    </item>
+
+</menu>

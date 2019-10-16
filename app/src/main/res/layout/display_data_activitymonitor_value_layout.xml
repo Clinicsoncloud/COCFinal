@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="invisible"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/disp_data_am_value_textview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6.0"
+        android:text="1513"
+        android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="@dimen/dispdata_text_size_m" />
+
+    <TextView
+        android:id="@+id/disp_data_am_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4.0"
+        android:text="@string/activitymonitor_unit_cal"
+        android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/dispdata_text_size_s" />
+
+</LinearLayout>

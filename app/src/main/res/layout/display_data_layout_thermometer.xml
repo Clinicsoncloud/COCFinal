@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.abhaybmi.app.view.ThermometerDisplayDataLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="@drawable/under_line_border_layout"
+    android:orientation="vertical"
+    android:layout_marginLeft="0dp"
+	android:visibility="invisible"
+    android:layout_marginRight="0dp"
+    android:weightSum="10"
+    >
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="right"
+        android:layout_weight="6.0"
+        android:orientation="horizontal"
+        >
+        
+        <LinearLayout 
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="7.0"
+	        android:orientation="horizontal"
+	        >
+	        
+            <LinearLayout 
+		         android:layout_width="0dp"
+		         android:layout_height="match_parent"
+		         android:layout_weight="7.0"
+		         android:orientation="vertical"
+		         >
+	         
+            <FrameLayout
+		         android:layout_width="match_parent"
+		         android:layout_height="0dp"
+		         android:layout_weight="3.0"
+		         android:orientation="horizontal"
+            >
+            <include layout="@layout/display_data_layout_date"
+                android:id="@+id/layout_date_ws" />
+        	</FrameLayout>
+		     
+             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="left|center_vertical"
+                android:layout_weight="7.0"
+                android:text="@string/thermometer_title"
+                android:layout_marginLeft="@dimen/dispdata_text_left_margin"
+                android:textColor="@color/display_data_thermometer_title_color"
+                android:textSize="@dimen/dispdata_text_size_l" />
+                
+            </LinearLayout>
+	        
+	    </LinearLayout>
+	    
+        <LinearLayout 
+	        android:layout_width="120dp"
+	        android:layout_height="match_parent"
+            android:paddingTop="5dp"
+	        android:orientation="horizontal"
+	        >
+	        
+            <ImageView
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="7.5"
+      		    android:layout_gravity="center_vertical|center_horizontal"
+      		    android:layout_margin="@dimen/dispdata_image_margin"
+      		    android:src="@drawable/dashboard_thermo_icon" />
+            <Space
+                 android:layout_width="0dp"
+			     android:layout_height="wrap_content"
+		         android:layout_weight="2.5"
+			     />
+	    </LinearLayout>
+	    
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4.0"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        >
+        
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.0"
+            >
+        </FrameLayout>
+        
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="6.0"
+            >
+            <include layout="@layout/display_data_thermometer_value_layout"
+                android:id="@+id/value_layout_thermometer" />
+        </FrameLayout>
+        
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2.0"
+            >
+
+        </FrameLayout>
+        
+    </LinearLayout>
+</com.abhaybmi.app.view.ThermometerDisplayDataLayout>

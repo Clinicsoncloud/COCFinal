@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="3"
+    android:background="@drawable/background"
+    android:layout_height="match_parent"
+    tools:context=".thermometer.ThermometerScreen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="2"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Height Scale"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:id="@+id/txtmainweight"
+            android:gravity="center"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Weight Scale"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:id="@+id/txtmainheight"
+            android:gravity="center"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Tempreture"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:background="@color/orange4"
+            android:id="@+id/txtmaintempreture"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Pulse Oximeter"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtmainpulseoximeter"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Blood Presure Monitor"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtmainbloodpressure"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Hemoglobin"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtmainhemoglobin"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Blood Sugar"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtmainbloodsugar"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Print"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtmainprinter"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:text="Printer Setup"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:id="@+id/txtprintersetup"
+            android:layout_height="60dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="300dp"
+            android:layout_margin="10dp"
+            android:src="@mipmap/applogo"
+            android:id="@+id/main"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="300dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@drawable/line"
+            android:layout_below="@+id/main"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_below="@+id/main"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:weightSum="3"
+            android:id="@+id/linearone"
+            android:layout_width="match_parent"
+            android:layout_height="150dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:layout_margin="10dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:src="@drawable/mesarone"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:layout_height="60dp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:src="@drawable/mesartwo"
+                    android:layout_height="60dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/thermometer"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:layout_margin="10dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:src="@drawable/elipse"
+                    android:layout_weight="1"
+                    android:layout_gravity="right"
+                    android:foregroundGravity="right"
+                    android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/f"
+                    android:layout_gravity="left"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_below="@+id/lineartwo"
+            android:gravity="center"
+            android:id="@+id/linearthree"
+            android:layout_margin="10dp"
+            android:layout_height="150dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text="Temp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:text=""
+                android:id="@+id/textView1"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:background="@drawable/rectangle"
+                android:layout_height="wrap_content" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:background="@drawable/rectangle"
+                android:text=""
+                android:id="@+id/editText1"
+                android:gravity="center"
+                android:visibility="gone"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:layout_height="30dp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:background="@drawable/line"
+            android:layout_below="@+id/linearfour"
+            android:id="@+id/view1"
+            android:layout_height="1dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@+id/view1"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:src="@drawable/imagedisplay" />
+
+        <LinearLayout
+            android:id="@+id/linearfive"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_below="@+id/view1"
+            android:layout_marginTop="100dp"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+
+            <Button
+                android:id="@+id/buttonSend1"
+                android:layout_width="200dp"
+                android:layout_height="50dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@drawable/greenback"
+                android:gravity="center"
+                android:text="START"
+                android:textColor="@color/white"
+                android:textSize="35sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+
+                <Button
+                    android:id="@+id/btnrepeat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/repeat"
+                    android:text="REPEAT"
+                    android:textColor="@color/white"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btnskip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/repeat"
+                    android:text="SKIP"
+                    android:textColor="@color/white"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+
+                <Button
+                    android:id="@+id/btnnext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_margin="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/repeat"
+                    android:text="NEXT"
+                    android:textColor="@color/white"
+                    android:textSize="35sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

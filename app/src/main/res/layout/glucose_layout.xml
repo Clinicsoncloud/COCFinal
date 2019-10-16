@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/circle_drawable">
+
+        <TextView
+            android:id="@+id/tv_resultText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30sp"
+            android:text="===="
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:layout_gravity="center"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mg/dl"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:layout_gravity="center"/>
+
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:id="@+id/rg_glucose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_fasting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:buttonTint="@color/white"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/white"
+            android:text="Fasting (Before Meal)"/>
+
+        <RadioButton
+            android:id="@+id/rb_post"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:text="Post Prandial (After Meal)"/>
+        <RadioButton
+            android:id="@+id/rb_random"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:padding="10dp"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:text="Random (Not Sure)"/>
+
+    </RadioGroup>
+
+</LinearLayout>

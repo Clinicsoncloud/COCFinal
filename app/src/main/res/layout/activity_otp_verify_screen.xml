@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapp"
+    android:paddingStart="300dp"
+    android:paddingEnd="300dp"
+    tools:context=".OtpLoginScreen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="300dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="100dp"
+            android:layout_weight="5"
+            android:layout_marginBottom="50dp"
+            android:src="@mipmap/applogo" />
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:gravity="center"
+            android:text="Welcome Abhay"
+            android:textColor="@color/white"
+            android:textSize="@dimen/space25"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtmobile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:gravity="center"
+            android:text="mobile number:960124257"
+            android:textColor="@color/white"
+            android:textSize="@dimen/space25"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/txtemail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin20"
+            android:gravity="center"
+            android:text="Email : ashok@gmail.com"
+            android:textColor="@color/white"
+            android:textSize="@dimen/space25"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/etMobile"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:textColorHint="@color/white"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:hint="Enter Mobile Number"
+            android:inputType="number"
+            android:textColor="@color/white_1000"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/etName"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:imeOptions="actionNext"
+            android:hint="Enter Name"
+            android:textColorHint="@color/white"
+            android:inputType="textPersonName"
+            android:textColor="@color/white_1000"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/etDOB"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:drawableRight="@drawable/ic_calender_one"
+            android:hint="Enter DOB"
+            android:paddingStart="@dimen/pad5"
+            android:imeOptions="actionNext"
+            android:focusable="false"
+            android:textColorHint="@color/white"
+            android:inputType="textPersonName"
+            android:textColor="@color/white_1000"
+            android:textSize="25sp" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:imeOptions="actionDone"
+            android:hint="Enter EmailId (Optional)"
+            android:textColorHint="@color/white"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white_1000"
+            android:textSize="25sp" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:weightSum="2"
+            android:orientation="horizontal"
+            android:layout_weight="2"
+            android:id="@+id/genderradio"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:text="male"
+                android:layout_margin="5dp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:id="@+id/malebutton"
+                android:textSize="25sp"
+                android:layout_weight="1"
+                android:background="@drawable/custom_radiobutton"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:layout_width="match_parent"
+                android:text="female"
+                android:layout_margin="5dp"
+                android:background="@drawable/custom_radiobutton"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:id="@+id/femalebutton"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="25sp"
+                android:layout_height="wrap_content" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:background="@drawable/greenbg"
+            android:gravity="center"
+            android:text="Submit"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
