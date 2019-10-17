@@ -275,6 +275,8 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         return bluetoothManager;
     }
 
+
+
     // UIの初期化
     private void initializeUI_new() {
         bloodpressure = (BloodPressureDispalyDataLayout) findViewById(R.id.llinear_bp);
@@ -307,7 +309,6 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
             }
         });
         leftArrow.setOnClickListener(new OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();

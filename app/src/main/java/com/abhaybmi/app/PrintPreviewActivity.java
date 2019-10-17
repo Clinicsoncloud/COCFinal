@@ -1086,7 +1086,7 @@ public class PrintPreviewActivity extends Activity {
                     "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
+                    "Temperature :" + ThermometerObject.getString("data", "") +"F"+ "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
@@ -1152,7 +1152,7 @@ public class PrintPreviewActivity extends Activity {
                     "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
+                    "Temperature :" + ThermometerObject.getString("data", "") +"F"+ "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
@@ -1217,7 +1217,7 @@ public class PrintPreviewActivity extends Activity {
                     "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
+                    "Temperature :" + ThermometerObject.getString("data", "") +"F"+ "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
@@ -1281,7 +1281,7 @@ public class PrintPreviewActivity extends Activity {
                     "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
+                    "Temperature :" + ThermometerObject.getString("data", "") +"F"+ "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +

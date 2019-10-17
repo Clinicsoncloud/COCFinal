@@ -106,9 +106,13 @@ public class DisplayRecord extends AppCompatActivity {
         editor.commit();
 
         btnBack.setOnClickListener(v -> {
-            cleardata();
-            startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
-            finish();
+            try{
+                cleardata();
+                startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
+                finish();
+            }catch (Exception e){}
+
+
         });
     }
 

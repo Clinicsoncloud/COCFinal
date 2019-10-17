@@ -312,6 +312,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
         syncLib.stopReceiver();
     }
 
+
     @Override
     public void onBackPressed() {
         setSwitchActivity();

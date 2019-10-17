@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
         txtMobile = findViewById(R.id.txtMobile);
         stripIV = findViewById(R.id.iv_imageStrip);
         stripTV = findViewById(R.id.tv_insertStrip);
-
 
         txtName.setText("Name : " + shared.getString("name", ""));
         txtGender.setText("Gender : " + shared.getString("gender", ""));
@@ -171,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         startNext.setOnClickListener(v -> {
-
             Intent objIntent = new Intent(getApplicationContext(), Act_Main.class);
             byte[] data = offDevice.getBytes();
             usbService.write(data, 1);
@@ -179,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 AndMedical_App_Global.mBTcomm = null;
             } catch(NullPointerException e) { }
             startActivity(objIntent);
-
-//            finish();
         });
 
         btnRepeat.setOnClickListener(v -> {
@@ -221,11 +218,22 @@ public class MainActivity extends AppCompatActivity {
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
     }
 
+
     @Override
     public void onPause() {
         super.onPause();
         unregisterReceiver(mUsbReceiver);
         unbindService(usbConnection);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(mUsbReceiver);
+            unbindService(usbConnection);
+        }catch (Exception e){}
     }
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {

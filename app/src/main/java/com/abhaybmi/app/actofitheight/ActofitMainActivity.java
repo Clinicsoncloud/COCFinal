@@ -91,9 +91,11 @@ public class ActofitMainActivity extends AppCompatActivity {
         btnnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
-                startActivity(objIntent);
-                finish();
+                try{
+                    Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
+                    startActivity(objIntent);
+                    finish();
+                }catch (Exception e){}
             }
         });
 
@@ -147,46 +149,19 @@ public class ActofitMainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int count = 0;
+                try{
+                    int count = 0;
+                    String packagenames = "com.actofit.actofitengage"; //edtPackagename.getText().toString();
 
-                /*int id_radio = RdioGrp.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) findViewById(id_radio);
-                String gender = radioButton.getText().toString();
-                if (gender.equals("Male")) {
-                    gen = "male";
-                } else {
-                    gen = "female";
+                    if (count == 0) {
+                        String packageName = "com.actofit.actofitengage";
+                        boolean isAppInstalled = appInstalledOrNot("com.actofit.actofitengage");
 
-                }
-                String dob = edtUserDOB.getText().toString();
-                if (dob.equals("")) {
-                    count++;
-                }
+                        if (isAppInstalled) {
 
-                String height = edtHeight.getText().toString();
-                if (height.equals("")) {
-                    edtHeight.setError("Height between 90 - 275");
-                    count++;
-                } else {
-                    Double height_cal = Double.valueOf(height);
-                    if (height_cal < 90 || height_cal > 275) {
-                        edtHeight.setError("Height between 90 - 275");
-                        count++;
-
-                    }
-                }
-*/
-                String packagenames = "com.actofit.actofitengage"; //edtPackagename.getText().toString();
-
-                if (count == 0) {
-                    String packageName = "com.actofit.actofitengage";
-                    boolean isAppInstalled = appInstalledOrNot("com.actofit.actofitengage");
-
-                    if (isAppInstalled) {
-
-                        Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
-                        if (intent != null) {
-                            intent.setAction(Intent.ACTION_SEND);
+                            Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+                            if (intent != null) {
+                                intent.setAction(Intent.ACTION_SEND);
                             /*@SuppressLint("SimpleDateFormat") SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy MM dd");
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat targetFormat = new SimpleDateFormat("dd MM yyyy" );
                             Date date;
@@ -198,45 +173,47 @@ public class ActofitMainActivity extends AppCompatActivity {
                             } catch (ParseException ex) {
                                 // Handle Exception.
                             }*/
-                            @SuppressLint("SimpleDateFormat") Date initDate = null;
-                            try {
-                                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra("dob"));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
+                                @SuppressLint("SimpleDateFormat") Date initDate = null;
+                                try {
+                                    initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra("dob"));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                                String parsedDate = formatter.format(initDate);
+                                System.out.println("Date---------" + parsedDate);
+
+                                intent.putExtra("id", objData.getString("id", ""));
+                                intent.putExtra("name", objData.getString("name", ""));
+                                intent.putExtra("gender", objData.getString("gender", ""));
+                                intent.putExtra("dob", parsedDate);
+                                intent.putExtra("height", getIntent().getStringExtra("height"));
+                                intent.putExtra("amode", String.valueOf(Athlate_val));
+                                intent.putExtra("packagename", packagenames);
+                                intent.setType("text/plain");
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                //startActivity(Intent.createChooser(intent, "Send"));
+                                startActivityForResult(intent, REQUSET_CODE);
+
+                                txtName.setText("Name : " + objData.getString("name", ""));
+                                txtGender.setText("Gender : " + objData.getString("gender", ""));
+                                txtMobile.setText("Phone : " + objData.getString("mobile_number", ""));
+                                txtAge.setText("DOB : " + objData.getString("dob", ""));
+                                //startActivity(intent);
+                                System.out.println("Data-----id=====" + objData.getString("id", ""));
+                                System.out.println("Data-----name=====" + objData.getString("name", ""));
+                                System.out.println("Data-----gender=====" + getIntent().getStringExtra("gender"));
+                                System.out.println("Data-----dob=====" + objData.getString("dob", ""));
+                                System.out.println("Data-----height=====" + getIntent().getStringExtra("height"));
+
                             }
-                            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                            String parsedDate = formatter.format(initDate);
-                            System.out.println("Date---------" + parsedDate);
-
-                            intent.putExtra("id", objData.getString("id", ""));
-                            intent.putExtra("name", objData.getString("name", ""));
-                            intent.putExtra("gender", objData.getString("gender", ""));
-                            intent.putExtra("dob", parsedDate);
-                            intent.putExtra("height", getIntent().getStringExtra("height"));
-                            intent.putExtra("amode", String.valueOf(Athlate_val));
-                            intent.putExtra("packagename", packagenames);
-                            intent.setType("text/plain");
-                            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            //startActivity(Intent.createChooser(intent, "Send"));
-                            startActivityForResult(intent, REQUSET_CODE);
-
-                            txtName.setText("Name : " + objData.getString("name", ""));
-                            txtGender.setText("Gender : " + objData.getString("gender", ""));
-                            txtMobile.setText("Phone : " + objData.getString("mobile_number", ""));
-                            txtAge.setText("DOB : " + objData.getString("dob", ""));
-                            //startActivity(intent);
-                            System.out.println("Data-----id=====" + objData.getString("id", ""));
-                            System.out.println("Data-----name=====" + objData.getString("name", ""));
-                            System.out.println("Data-----gender=====" + getIntent().getStringExtra("gender"));
-                            System.out.println("Data-----dob=====" + objData.getString("dob", ""));
-                            System.out.println("Data-----height=====" + getIntent().getStringExtra("height"));
+                        } else {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
 
                         }
-                    } else {
-                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
-
                     }
-                }
+                }catch (Exception e){}
+
             }
         });
 
@@ -246,33 +223,6 @@ public class ActofitMainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int count = 0;
 
-                /*int id_radio = RdioGrp.getCheckedRadioButtonId();
-                RadioButton radioButton = (RadioButton) findViewById(id_radio);
-                String gender = radioButton.getText().toString();
-                if (gender.equals("Male")) {
-                    gen = "male";
-                } else {
-                    gen = "female";
-
-                }
-                String dob = edtUserDOB.getText().toString();
-                if (dob.equals("")) {
-                    count++;
-                }
-
-                String height = edtHeight.getText().toString();
-                if (height.equals("")) {
-                    edtHeight.setError("Height between 90 - 275");
-                    count++;
-                } else {
-                    Double height_cal = Double.valueOf(height);
-                    if (height_cal < 90 || height_cal > 275) {
-                        edtHeight.setError("Height between 90 - 275");
-                        count++;
-
-                    }
-                }
-*/
                 String packagenames = "com.actofit.actofitengage"; //edtPackagename.getText().toString();
 
                 if (count == 0) {
