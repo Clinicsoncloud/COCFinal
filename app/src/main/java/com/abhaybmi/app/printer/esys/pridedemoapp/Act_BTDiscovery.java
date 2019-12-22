@@ -174,7 +174,7 @@ public class Act_BTDiscovery extends Activity implements OnClickListener{
 			Log.e("Btdiscovery", "btdiscovery oncreate try");
 			Act_GlobalPool.setup=new Setup();
 			Log.e(TAG, "btdiscovery oncreate try1");
-			boolean activate = Act_GlobalPool.setup.blActivateLibrary(context,R.raw.licence);
+			boolean activate = Act_GlobalPool.setup.blActivateLibrary(context,R.raw.licence_nodlg_prdgen);
 			Log.e(TAG, "btdiscovery oncreate try2");
 			if (activate == true) {
 				Log.d(TAG,"Library Activated......");

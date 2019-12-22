@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abhaybmi.app.OtpLoginScreen;
 import com.abhaybmi.app.R;
 import com.abhaybmi.app.actofitheight.ActofitMainActivity;
 import com.abhaybmi.app.utils.ApiUtils;
@@ -33,10 +36,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-public class Principal extends Activity {
+public class Principal extends Activity implements TextToSpeech.OnInitListener {
     private static final int REQUEST_ENABLE_BT = 3;
     String BluetoothEncendido;
     String ConectadO;
@@ -82,7 +86,39 @@ public class Principal extends Activity {
     private StringBuffer sb;
     private int adjustedHeight;
     private String strHeight = "";
+    private TextToSpeech tts;
+    String txt ="";
+    private Context context;
 
+    private int connectTryCount = 0;
+    private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
+
+    //milliseconds declaration
+    //It will take break of 5ms while trying to reconect
+    private int CONNECT_TRY_PAUSE_MILLISECONDS = 500;
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 
 
     private class Connect extends AsyncTask<String, String, String> {
@@ -141,14 +177,41 @@ public class Principal extends Activity {
                 Principal.this.estadoBoton = "Desconectar";
                 Principal.this.estadoBoton2 = Principal.this.disconec;
                 Principal.this.enable = "true";
+                txt = "Please stand below the height sensor and click get Height Button";
+                speakOut(txt);
                 new Recibir().execute(new String[]{Principal.this.enable});
             } else {
-                Principal.this.estadoBoton = "Connect";
-                Principal.this.estadoBoton2 = Principal.this.conec;
-                Principal.this.enable = "false";
+                if(Principal.this.connectTryCount > Principal.this.ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
+                    Principal.this.showCannotConnectToDevice();
+                }else{
+                    try{
+                        Thread.sleep(Principal.this.CONNECT_TRY_PAUSE_MILLISECONDS);
+
+                        // Increase connection try count and try to connect
+                        Principal.this.connectTryCount++;
+                        Principal.this.connectToDevice();
+
+                    }catch(Exception ex){
+
+                        Principal.this.showCannotConnectToDevice();
+
+                    }
+                }
             }
             Principal.this.btn.setText(Principal.this.estadoBoton2);
         }
+
+    }
+
+    private void showCannotConnectToDevice() {
+        // Reset connect try count to 0
+        Principal.this.connectTryCount = 0;
+
+        Principal.this.estadoBoton = "Connect";
+        Principal.this.estadoBoton2 = Principal.this.conec;
+        Principal.this.enable = "false";
+        txt = "No Bluetooth Device Found Please Connect it Manually";
+        speakOut(txt);
     }
 
     public class Recibir extends AsyncTask<String, String, String> {
@@ -198,6 +261,8 @@ public class Principal extends Activity {
             if(!strHeight.equalsIgnoreCase("")) {
                 adjustedHeight = Integer.parseInt(strHeight) + 12;
                 Principal.this.etManualHeight.setText(String.valueOf(adjustedHeight));
+               /* txt = "Please click next Button to go Next";
+                speakOut(txt);*/
             }
 
             if (recib[1] == "false") {
@@ -215,11 +280,21 @@ public class Principal extends Activity {
 
     }
 
+    /*
+    handles back event of the screen
+    onBack press go to the mobile no screen
+    */
+    @Override
+    public void onBackPressed() {
+        context.startActivity(new Intent(this, OtpLoginScreen.class));
+    }
 
     /* access modifiers changed from: protected */
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_height_screen);
+
+        context = Principal.this;
 
         this.multitxt = (EditText) findViewById(R.id.editText2);
         this.multitxt.setBackgroundColor(getResources().getColor(R.color.black));
@@ -269,6 +344,8 @@ public class Principal extends Activity {
 
         this.next = findViewById(R.id.btnnext);
 
+        tts = new TextToSpeech(this,this);
+
 
      /*   if(!objBluetoothAddress.getString("hcbluetooth","").equalsIgnoreCase("")) {
             connectToDevice();
@@ -280,6 +357,8 @@ public class Principal extends Activity {
             public void onClick(View v) {
                 if (etManualHeight.getText().toString().equals("")) {
                     Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
+                    txt = "Please Enter Manual Height";
+                    speakOut(txt);
                 } else {
 
                     System.out.println(" Height : = "+Principal.this.etManualHeight.getText().toString());
@@ -429,6 +508,28 @@ public class Principal extends Activity {
     /* access modifiers changed from: protected */
     public void onPause() {
         super.onPause();
+
+        // close the bluetooth connection
+        closeConnection();
+
+        //close the tts connection
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+       tts.shutdown();
+    }
+
+    private void closeConnection() {
+        if (this.estadoBoton == "Desconectar") {
+            this.estadoBoton = "Connect";
+            this.btn.setText(this.conec);
+            this.enable = "false";
+            try {
+                this.socket.close();
+            } catch (IOException e) {
+            }
+        }
     }
 
     /* access modifiers changed from: protected */

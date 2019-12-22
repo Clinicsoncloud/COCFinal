@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -34,26 +35,46 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.abhaybmi.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
-public class OtpLoginScreen extends AppCompatActivity {
+public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
     private Button btnLogin;
     private EditText etMobile;
     private ProgressDialog pd;
     private String kiosk_id;
     SharedPreferences userData, activator;
+    private TextToSpeech tts;
+    private long  startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_login_screen);
+        tts = new TextToSpeech(this,this);
         init();
         clearDatabase();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        speakOut();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+
+        //Disable the back button
     }
 
     public void init() {
+
+        speakOut();
 
         btnLogin = findViewById(R.id.btnLogin);
         etMobile = findViewById(R.id.etMobile);
@@ -96,6 +117,8 @@ public class OtpLoginScreen extends AppCompatActivity {
         });
 
         btnLogin.setOnClickListener(v -> {
+            System.out.println("start time = "+System.currentTimeMillis());
+            startTime = System.currentTimeMillis();
             if (Utils.getInstance().giveLocationPermission(this)) {
                 if (etMobile.getText().toString().equals("")) {
                     etMobile.setError("Please Enter Mobile Number");
@@ -138,6 +161,8 @@ public class OtpLoginScreen extends AppCompatActivity {
                     System.out.println("Login Response" + response);
                     try {
                         pd.dismiss();
+                        long elapsedTime = System.currentTimeMillis() - startTime;
+                        System.out.println("total time = "+elapsedTime);
                         JSONObject jobj = new JSONObject(response);
                         if (jobj.getJSONObject("data").getJSONArray("patient").length() == 0) {
                             Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
@@ -243,6 +268,32 @@ public class OtpLoginScreen extends AppCompatActivity {
         );
         AndMedical_App_Global.getInstance().addToRequestQueue(jsonStringRequestt);
         jsonStringRequestt.setRetryPolicy(new DefaultRetryPolicy(500000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut();
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut() {
+        String text = "Welcome to Clinics on Cloud, Please Enter Your Mobile Number";
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
 }

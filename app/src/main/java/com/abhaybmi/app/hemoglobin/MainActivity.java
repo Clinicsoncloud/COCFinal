@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,12 +27,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abhaybmi.app.DashboardActivity;
 import com.abhaybmi.app.OtpVerifyScreen;
 import com.abhaybmi.app.R;
+import com.abhaybmi.app.actofitheight.ActofitMainActivity;
 import com.abhaybmi.app.entities.AndMedical_App_Global;
 import com.abhaybmi.app.glucose.Activity_ScanList;
 import com.abhaybmi.app.glucose.adapters.ScanList;
+import com.abhaybmi.app.heightweight.Principal;
 import com.abhaybmi.app.printer.esys.pridedemoapp.Act_Main;
+import com.abhaybmi.app.thermometer.ThermometerScreen;
 import com.abhaybmi.app.utils.ApiUtils;
 import com.abhaybmi.app.utils.Tools;
 import com.github.ybq.android.spinkit.sprite.Sprite;
@@ -44,12 +49,18 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.util.Locale;
 import java.util.Set;
 
-public class MainActivity extends AppCompatActivity {
+import ticker.views.com.ticker.widgets.circular.timer.callbacks.CircularViewCallback;
+import ticker.views.com.ticker.widgets.circular.timer.view.CircularView;
+
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
+
     /*
      * Notifications from UsbService will be received here.
      */
+
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -82,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     private String onDevice = "U371";
     private String offDevice = "U370";
     private String StartTest = "U401";
+    private String readBatchCode = "U402"; //Reading batch code from the device
     private TextView txtName, txtAge, txtGender, txtMobile;
     SharedPreferences shared;
 
@@ -101,12 +113,21 @@ public class MainActivity extends AppCompatActivity {
             usbService = null;
         }
     };
+    private TextToSpeech tts;
+    private String txt = "";
+    private CircularView circularViewWithTimer;
 
+    private TextView txtHeight,txtWeight,txtTemprature,txtOximeter,txtBpMonitor,txtSugar;
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_hemoglobin);
+
+        context = MainActivity.this;
 
         txthemoglobin = findViewById(R.id.txthemoglobin);
         startSensorbtn = findViewById(R.id.startSensorbtn);
@@ -125,6 +146,24 @@ public class MainActivity extends AppCompatActivity {
         stripIV = findViewById(R.id.iv_imageStrip);
         stripTV = findViewById(R.id.tv_insertStrip);
 
+        // Initialization of the top boxes
+
+        txtHeight = findViewById(R.id.txtmainheight);
+        txtWeight = findViewById(R.id.txtmainweight);
+        txtTemprature = findViewById(R.id.txtmaintempreture);
+        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
+        txtBpMonitor = findViewById(R.id.txtmainbloodpressure);
+        txtSugar = findViewById(R.id.txtmainbloodsugar);
+
+        tts = new TextToSpeech(this,this);
+
+        setCounter();
+
+        bindEvents();
+
+        txt = "Please Click on On Sensor Button";
+        speakOut(txt);
+
         txtName.setText("Name : " + shared.getString("name", ""));
         txtGender.setText("Gender : " + shared.getString("gender", ""));
         txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
@@ -141,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 Log.e("TextVIEW", charSequence.toString());
 
-
             }
 
             @Override
@@ -153,13 +191,34 @@ public class MainActivity extends AppCompatActivity {
         startSensorbtn.setOnClickListener((View v) -> {
             byte[] data = onDevice.getBytes();
             usbService.write(data, 1);
+            startTest.setEnabled(false);
+            txt = "Please click on start test Button";
+            speakOut(txt);
+            byte[] batchData = readBatchCode.getBytes();
+            usbService.write(batchData,1);
+            Toast.makeText(getApplicationContext(), "getting the batch code.", Toast.LENGTH_SHORT).show();
+            startTest.setEnabled(true);
         });
         offSensorbtn.setOnClickListener((View v) -> {
 
-            if(txthemoglobin.length() > 0 && (stripIV.getVisibility() == View.VISIBLE))
-              pd = Tools.kHudDialog(MainActivity.this);
-            else
+            if(txthemoglobin.length() > 0 && (stripIV.getVisibility() == View.VISIBLE)) {
+//                pd = Tools.kHudDialog(MainActivity.this);
+                txt = "Please wait we are calculating your result";
+                speakOut(txt);
+
+                //show the new progress dialog with timer in hemoglobin while calculating your resuult
+                circularViewWithTimer.setVisibility(View.VISIBLE);
+                setCounter();
+                startSensorbtn.setEnabled(false);
+                startTest.setEnabled(false);
+                offSensorbtn.setEnabled(false);
+                startNext.setEnabled(false);
+                btnRepeat.setEnabled(false);
+                circularViewWithTimer.startTimer();
+            } else{
                 Toast.makeText(MainActivity.this, "please follow the procedure", Toast.LENGTH_SHORT).show();
+            }
+
 
         });
         startTest.setOnClickListener((View v) -> {
@@ -167,6 +226,8 @@ public class MainActivity extends AppCompatActivity {
             usbService.write(data, 1);
             if (txthemoglobin.getText().toString().length() > 0) {
                 setImage();
+                txt = "Please Insert strip and Add Blood and click on Get Result Button";
+                speakOut(txt);
             }
         });
 
@@ -187,12 +248,51 @@ public class MainActivity extends AppCompatActivity {
                 stripTV.setVisibility(View.GONE);
                 byte[] data = offDevice.getBytes();
                 usbService.write(data, 1);
+                txthemoglobin.setText("");
                 Toast.makeText(MainActivity.this, "Restart the test", Toast.LENGTH_SHORT).show();
             }
-
         });
 
         mHandler = new MyHandler(this, this);
+    }
+
+    private void bindEvents() {
+
+        //bind click events for the top box
+        txtHeight.setOnClickListener(this);
+        txtWeight.setOnClickListener(this);
+        txtTemprature.setOnClickListener(this);
+        txtOximeter.setOnClickListener(this);
+        txtBpMonitor.setOnClickListener(this);
+        txtSugar.setOnClickListener(this);
+
+    }
+
+    private void setCounter() {
+        circularViewWithTimer = findViewById(R.id.circular_view);
+        CircularView.OptionsBuilder builderWithTimer = new
+                CircularView.OptionsBuilder()
+                .shouldDisplayText(true)
+                .setCounterInSeconds(60)
+                .setCircularViewCallback(new CircularViewCallback() {
+                    @Override
+                    public void onTimerFinish() {
+                        circularViewWithTimer.stopTimer();
+                        startSensorbtn.setEnabled(true);
+                        startTest.setEnabled(true);
+                        offSensorbtn.setEnabled(true);
+                        startNext.setEnabled(true);
+                        btnRepeat.setEnabled(true);
+                        circularViewWithTimer.setVisibility(View.GONE);
+//                        Toast.makeText(MainActivity.this, "CircularCallback: Timer Finished ", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onTimerCancelled() {
+                        Toast.makeText(MainActivity.this, "CircularCallback: Timer Cancelled ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+        circularViewWithTimer.setOptions(builderWithTimer);
     }
 
     private void setImage() {
@@ -214,16 +314,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        Log.e("onResume","service restarted");
         setFilters();  // Start listening notifications from UsbService
         startService(UsbService.class, usbConnection, null); // Start UsbService(if it was not started before) and Bind it
+
+        //recreation of tts object
+        tts = new TextToSpeech(this,this);
     }
 
 
     @Override
     public void onPause() {
         super.onPause();
+        Log.e("onPause", "service unbinded");
         unregisterReceiver(mUsbReceiver);
         unbindService(usbConnection);
+
+        //close the connection of the tts object
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+       tts.shutdown();
     }
 
 
@@ -231,9 +343,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
+            Log.e("onDestroy", "service unbinded");
             unregisterReceiver(mUsbReceiver);
             unbindService(usbConnection);
-        }catch (Exception e){}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void startService(Class<?> service, ServiceConnection serviceConnection, Bundle extras) {
@@ -264,9 +379,75 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    @Override
+    public void onBackPressed() {
+
+//        super.onBackPressed();
+        //Disable back button
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        //click event listener
+        switch (view.getId()){
+
+            case R.id.txtmainheight:
+                context.startActivity(new Intent(this, Principal.class));
+                break;
+
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
+
+            case R.id.txtmaintempreture:
+                context.startActivity(new Intent(this, ThermometerScreen.class));
+                break;
+
+            case R.id.txtmainpulseoximeter:
+                context.startActivity(new Intent(this, com.abhaybmi.app.oximeter.MainActivity.class));
+                break;
+
+            case R.id.txtmainbloodpressure:
+                context.startActivity(new Intent(this, DashboardActivity.class));
+                break;
+
+            case R.id.txtmainbloodsugar:
+                context.startActivity(new Intent(this,Activity_ScanList.class));
+                break;
+        }
+
+    }
+
     /*
      * This handler will be passed to UsbService. Data received from serial port is displayed through this handler
      */
+
     private static class MyHandler extends Handler {
         private final WeakReference<MainActivity> mActivity;
         Context context;
@@ -281,19 +462,25 @@ public class MainActivity extends AppCompatActivity {
 
             switch (msg.what) {
                 case UsbService.SYNC_READ:
-
-                    if (mActivity.get().pd != null && mActivity.get().pd.isShowing()) {
-                        mActivity.get().pd.dismiss();
+                    Log.e("msg_wht"," = "+msg.what);
+                    if (mActivity.get().circularViewWithTimer != null ) {
+                        mActivity.get().circularViewWithTimer.stopTimer();
+                        mActivity.get().circularViewWithTimer.setVisibility(View.GONE);
+                        enableButtons();
                     }
 
                     String buffer = (String) msg.obj;
 
+                    Log.e("msg_arg1"," = "+msg.arg1);
+
                     if (msg.arg1 == 1) {
                         try {
+
                             String decodedString = URLDecoder.decode(buffer, "UTF-8");
                             String s = mActivity.get().txthemoglobin.getText().toString();
                             s = s + decodedString;
                             mActivity.get().txthemoglobin.setText(s);
+//                            Toast.makeText(context, "data is "+s, Toast.LENGTH_SHORT).show();
                             if (s.length() > 0) {
 //                                Toast.makeText(context, s, Toast.LENGTH_SHORT).show();
                                 if (s.toLowerCase().endsWith("g/dl")) {
@@ -306,37 +493,26 @@ public class MainActivity extends AppCompatActivity {
                                     editor.commit();
                                     mActivity.get().txthemoglobin.setTextSize(TypedValue.COMPLEX_UNIT_SP, 35f);
                                     mActivity.get().txthemoglobin.setText(s);
-
                                 }
                             }
                         } catch (UnsupportedEncodingException e) {
+                            Log.e("Exception ","check");
                             e.printStackTrace();
                         }
-
-
                     }
                     break;
             }
         }
+
+        private void enableButtons() {
+
+            mActivity.get().startSensorbtn.setEnabled(true);
+            mActivity.get().startTest.setEnabled(true);
+            mActivity.get().offSensorbtn.setEnabled(true);
+            mActivity.get().startNext.setEnabled(true);
+            mActivity.get().btnRepeat.setEnabled(true);
+
+        }
     }
-
-
-//    ������o������n������
-//            ������
-//            ������
-//            ������h������i������
-//            ������
-//            ������r������e������a������d������y������ ������f������o������r������ ������b������l������e������
-//            ������b������:������ ������2������3������3������ ������h������b������:������ ������5������.������8������ ������g������/������d������l������
-//            ������
-
-//    ������o������n������
-//            ������
-//            ������
-//            ������h������i������
-//            ������
-//            ������r������e������a������d������y������ ������f������o������r������ ������b������l������e������
-//            ������b������:������ ������2������3������3������ ������h������b������:������ ������7������.������2������ ������g������/������d������l������
-//            ������
 
 }

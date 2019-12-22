@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -36,6 +37,8 @@ import com.abhaybmi.app.BpLoginScreen;
 import com.abhaybmi.app.DashboardActivity;
 import com.abhaybmi.app.OtpVerifyScreen;
 import com.abhaybmi.app.R;
+import com.abhaybmi.app.actofitheight.ActofitMainActivity;
+import com.abhaybmi.app.heightweight.Principal;
 import com.abhaybmi.app.oximeter.MainActivity;
 import com.abhaybmi.app.oxygen.OxygenActivity;
 import com.abhaybmi.app.utils.ApiUtils;
@@ -48,12 +51,13 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
 import static com.abhaybmi.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
-public class ThermometerScreen extends AppCompatActivity {
+public class ThermometerScreen extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
 
     private static final int REQUEST_ENABLE_BT = 3;
     String BluetoothEncendido;
@@ -101,6 +105,44 @@ public class ThermometerScreen extends AppCompatActivity {
     private Button getTemp;
     public static String TAG = "ThermometerActivity";
 
+    TextToSpeech tts;
+    String txt = "";
+
+    private TextView txtHeight,txtWeight;
+
+    Context context;
+
+    private int connectTryCount = 0;
+    private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
+
+    //milliseconds declaration
+    //It will take break of 5ms while trying to reconect
+    private int CONNECT_TRY_PAUSE_MILLISECONDS = 500;
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 
     private class Connect extends AsyncTask<String, String, String> {
         private Connect() {
@@ -161,14 +203,40 @@ public class ThermometerScreen extends AppCompatActivity {
                 ThermometerScreen.this.estadoBoton2 = ThermometerScreen.this.disconec;
                 ThermometerScreen.this.enable = "true";
                 sendCommand();
+                txt = "Device Ready to use Point Device To forehead and Press Button";
+                speakOut(txt);
                 new ThermometerScreen.Recibir().execute(new String[]{ThermometerScreen.this.enable});
             } else {
-                ThermometerScreen.this.estadoBoton = "Connect";
-                ThermometerScreen.this.estadoBoton2 = ThermometerScreen.this.conec;
-                ThermometerScreen.this.enable = "false";
+                if(ThermometerScreen.this.connectTryCount > ThermometerScreen.this.ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
+                    ThermometerScreen.this.showCannotConnectToDevice();
+                }else{
+                    try{
+                        Thread.sleep(ThermometerScreen.this.CONNECT_TRY_PAUSE_MILLISECONDS);
+
+                        // Increase connection try count and try to connect
+                        ThermometerScreen.this.connectTryCount++;
+                        ThermometerScreen.this.connectToDevice();
+
+                    }catch(Exception ex){
+
+                        ThermometerScreen.this.showCannotConnectToDevice();
+
+                    }
+                }
             }
             ThermometerScreen.this.btn.setText(ThermometerScreen.this.estadoBoton2);
         }
+    }
+
+    private void showCannotConnectToDevice() {
+        // Reset connect try count to 0
+        ThermometerScreen.this.connectTryCount = 0;
+
+        ThermometerScreen.this.estadoBoton = "Connect";
+        ThermometerScreen.this.estadoBoton2 = ThermometerScreen.this.conec;
+        ThermometerScreen.this.enable = "false";
+        txt = "No Bluetooth Device Found Please Connect it Manually";
+        speakOut(txt);
     }
 
     public class Recibir extends AsyncTask<String, String, String> {
@@ -202,6 +270,8 @@ public class ThermometerScreen extends AppCompatActivity {
 
             ThermometerScreen.this.editText1.append("" + str);
 
+           /* txt = "Click next to check Pulse and Body Oxygen";
+            speakOut(txt);*/
 
             if (recib[1] == "false") {
                 ThermometerScreen.this.estadoBoton = "Connect";
@@ -215,7 +285,7 @@ public class ThermometerScreen extends AppCompatActivity {
             ThermometerScreen.this.btn.setText(ThermometerScreen.this.estadoBoton2);
         }
     }
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,13 +301,16 @@ public class ThermometerScreen extends AppCompatActivity {
         editText1 = findViewById(R.id.editText1);
         editText1.setVisibility(View.VISIBLE);
 
-       /* InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(editText1, InputMethodManager.SHOW_IMPLICIT);*/
+        context = ThermometerScreen.this;
+
+        tts = new TextToSpeech(this,this);
+
+
+
+        txtHeight = findViewById(R.id.txtmainheight);
+        txtWeight = findViewById(R.id.txtmainweight);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        //String channel = (shared.getString(keyChannel, ""));
-
 
         Log.e(TAG,"pref_address : "+objBluetoothAddress.getString("hcthermometer",""));
 
@@ -254,6 +327,9 @@ public class ThermometerScreen extends AppCompatActivity {
         txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
         txtAge.setText("DOB : " + shared.getString("dob", ""));
         Button baudrateButton = (Button) findViewById(R.id.buttonBaudrate);
+
+
+        bindEvents();
 
         if (this.estadoBoton == "Connect") {
             this.btn.setText(this.conec);
@@ -286,7 +362,6 @@ public class ThermometerScreen extends AppCompatActivity {
         this.spn.setAdapter(this.adp);
         this.spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-
 
                 ThermometerScreen.this.dispositivoSeleccionado = (String) ((CharSequence) ThermometerScreen.this.mMacDispositivos.get(position));
 
@@ -325,12 +400,14 @@ public class ThermometerScreen extends AppCompatActivity {
                     editor.putString("data", editText1.getText().toString());
                     editor.commit();
                     try{
-                        offBluetooth();
+//                        offBluetooth();
                     }catch (Exception e){}
                     startActivity(objpulse);
                     finish();
                 }else{
                     Toast.makeText(ThermometerScreen.this, "Enter Manual Temprature", Toast.LENGTH_SHORT).show();
+                    txt = "Please Enter Body Temprature Manually";
+                    speakOut(txt);
                 }
             }
         });
@@ -351,6 +428,14 @@ public class ThermometerScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+    /*
+    Adding click events on Height and weightscale
+    if we want to test again height and weight we can go from here
+    */
+    private void bindEvents() {
+        txtHeight.setOnClickListener(this);
+        txtWeight.setOnClickListener(this);
     }
 
     private void offBluetooth() {
@@ -441,16 +526,63 @@ public class ThermometerScreen extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         connectToDevice();
+
+        //recreation of the tts object
+        tts = new TextToSpeech(this,this);
+
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
+        closeBluetoothConnection();
+
+        //close the tts connection object
+        closeTtsConnection();
+
+    }
+
+    private void closeBluetoothConnection() {
+        if (this.estadoBoton.equals("Desconectar")) {
+            this.estadoBoton = "Connect";
+            this.btn.setText(this.conec);
+            this.enable = "false";
+            try {
+                this.socket.close();
+                Log.e("socket_temp","closed");
+            } catch (IOException e) {
+
+            }
+        }
+    }
+
+
+    private void closeTtsConnection() {
+        tts.shutdown();
+    }
+
+    //    handles click event on the top navigation boxes
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+            case R.id.txtmainheight:
+                context.startActivity(new Intent(ThermometerScreen.this, Principal.class));
+                break;
+
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(ThermometerScreen.this, ActofitMainActivity.class));
+                break;
+        }
+
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+  //        super.onBackPressed();
+        //Disable the back button click insted we use the top box to go back or previous
     }
+
+
 }

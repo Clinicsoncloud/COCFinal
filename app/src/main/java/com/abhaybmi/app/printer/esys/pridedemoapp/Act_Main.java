@@ -3,6 +3,7 @@ package com.abhaybmi.app.printer.esys.pridedemoapp;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
+import java.util.Locale;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -26,6 +27,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -57,6 +59,7 @@ import com.abhaybmi.app.utils.ApiUtils;
 import com.prowesspride.api.Printer_ESC;
 import com.prowesspride.api.Printer_GEN;
 import com.prowesspride.api.Setup;
+
 /**
  * The main interface <br />
  Â  * Maintain a connection with the Bluetooth communication operations,
@@ -67,7 +70,7 @@ import com.prowesspride.api.Setup;
  * communication modes calls.
  */
 
-public class Act_Main extends Activity{
+public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     /**CONST: scan device menu id*/
     private AndMedical_App_Global mGP = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
@@ -102,13 +105,15 @@ public class Act_Main extends Activity{
     public Dialog dlgCustomdialog;
     public ProgressBar pbProgress;
     private LinearLayout llprog;
-    private Button btnOk;
+    private Button btnOk,btIcon;
     int iRetVal;
     public SharedPreferences preferences ;
+    private LinearLayout scanLL;
 
 
     InputStream input;// = BluetoothComm.misIn;
     OutputStream outstream;
+
 
     private BroadcastReceiver _mPairingRequest = new BroadcastReceiver(){
         @Override
@@ -123,19 +128,51 @@ public class Act_Main extends Activity{
             }
         }
     };
+    private TextToSpeech tts;
+    private String txt = "";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // close the connection of the tts object
+        tts = new TextToSpeech(this,this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //close the connection of tts object
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+
+        tts.shutdown();
+
+    }
 
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
         svScroll = (ScrollView)findViewById(R.id.scroll);
         svRadio = (ScrollView)findViewById(R.id.redioscroll);
+        btIcon = findViewById(R.id.btIcon);
+        scanLL = findViewById(R.id.scanBTLL);
+
+        tts = new TextToSpeech(this,this);
+
+
+        txt = "Please Click on Connect Button";
+        speakOut(txt);
 
         preferences = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         try {
             Log.e("btLibrary", "btLibrary oncreate try");
             Act_GlobalPool.setup=new Setup();
-            boolean activate = Act_GlobalPool.setup.blActivateLibrary(context,R.raw.licence);
+            boolean activate = Act_GlobalPool.setup.blActivateLibrary(context,R.raw.licence_nodlg_prdgen);
             if (activate == true) {
                 Log.d(TAG,"Library Activated......");
             } else if (activate == false) {
@@ -186,6 +223,14 @@ public class Act_Main extends Activity{
             }
         });
 
+        btIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScanOption();
+            }
+        });
+
+
         /*scan bluetooth devices*/
         btnScanbt = (Button)findViewById(R.id.btnScanbt);
         final Animation animScale = AnimationUtils.loadAnimation(this,R.anim.anim_scale);
@@ -226,7 +271,8 @@ public class Act_Main extends Activity{
             SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
             if (data.getString("NAME", "").length() > 0) {
                 svScroll.setVisibility(View.VISIBLE);
-
+                scanLL.setVisibility(View.GONE);
+                btIcon.setVisibility(View.VISIBLE);
                 this.mllDeviceCtrl.setVisibility(View.VISIBLE);
                 this.mhtDeviceInfo.put("NAME", data.getString("NAME", ""));
                 this.mhtDeviceInfo.put("MAC", data.getString("MAC", ""));
@@ -248,6 +294,12 @@ public class Act_Main extends Activity{
 
         } catch (Exception e) {
 
+        }
+    }
+
+    private void showScanOption() {
+        if(scanLL.getVisibility() == View.GONE){
+            scanLL.setVisibility(View.VISIBLE);
         }
     }
 
@@ -328,9 +380,40 @@ public class Act_Main extends Activity{
      * */
     public void onClickBtnConn(View v){
         Log.e(TAG, " 1 onClickBtnConn ConnSocketTask");
+        if(scanLL.getVisibility() == View.VISIBLE){
+            scanLL.setVisibility(View.GONE);
+            btIcon.setVisibility(View.VISIBLE);
+        }
+        txt = "Please wait while calculating your results";
+        speakOut(txt);
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
     // Turn on Bluetooth of the device
     private class StartBluetoothDeviceTask extends AsyncTask<String, String, Integer>{
         private static final int RET_BULETOOTH_IS_START = 0x0001;

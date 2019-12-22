@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -29,12 +30,16 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abhaybmi.app.DashboardActivity;
 import com.abhaybmi.app.PrintPreviewActivity;
 import com.abhaybmi.app.R;
+import com.abhaybmi.app.actofitheight.ActofitMainActivity;
 import com.abhaybmi.app.glucose.adapters.ReadingAdapter;
+import com.abhaybmi.app.heightweight.Principal;
 import com.abhaybmi.app.hemoglobin.MainActivity;
 import com.abhaybmi.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmi.app.printer.esys.pridedemoapp.PrintPriviewScreen;
+import com.abhaybmi.app.thermometer.ThermometerScreen;
 import com.abhaybmi.app.utils.ApiUtils;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -48,8 +53,9 @@ import org.maniteja.com.synclib.helper.Util;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
-public class Activity_Home extends AppCompatActivity implements Communicator {
+public class Activity_Home extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
 
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
@@ -89,22 +95,35 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
     SerializeUUID serializeUUID;
     private TextView txtName, txtAge, txtGender, txtMobile;
     SharedPreferences shared;
+    private TextView txtHeight,txtWeight,txtTemprature,txtOximeter,txtBpMonitor;
     SyncLib syncLib;
 
     ImageView ivGlucose;
 
     Communicator communicator = this;
+    private TextToSpeech tts;
+    private String txt = "";
+    private Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        context = Activity_Home.this;
+
         util = new Util(this, this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setNavigationIcon(null);
         toolbar.setContentInsetsAbsolute(0, 0);
         setSupportActionBar(toolbar);
+
+        txtHeight = findViewById(R.id.txtmainheight);
+        txtWeight = findViewById(R.id.txtmainweight);
+        txtTemprature = findViewById(R.id.txtmaintempreture);
+        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
+        txtBpMonitor = findViewById(R.id.txtmainbloodpressure);
 
         toolbar.setOnTouchListener((v, event) -> {
             try {
@@ -157,11 +176,18 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
         mView = findViewById(R.id.custView);
+        tts = new TextToSpeech(this,this);
+
+        txt = "Please click on start Test";
+        speakOut(txt);
 
         txtName.setText("Name : " + shared.getString("name", ""));
         txtGender.setText("Gender : " + shared.getString("gender", ""));
         txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
         txtAge.setText("DOB : " + shared.getString("dob", ""));
+
+
+        bindEvents();
 
         bluetoothIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -213,28 +239,21 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
         writeData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* if (mConnected)
-                {
-                    IntentIntegrator integrator = new IntentIntegrator(activity_home);
-                    integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                    integrator.setPrompt("scan");
-                    integrator.setCameraId(0);
-
-                    integrator.setBeepEnabled(true);
-                    integrator.setBarcodeImageEnabled(true);
-                    integrator.initiateScan();
-                    integrator.setOrientationLocked(false);
-                } else
-                {
-                    Toast.makeText(getApplicationContext(), "Please Connect to Device!", Toast.LENGTH_SHORT).show();
-                }
-            */
                 if (mConnected) {
                     syncLib.notifyGetData();
                 }
-                Intent objprint = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(objprint);
-                finish();
+
+                if (rgGlucose.getCheckedRadioButtonId() == -1) {
+                    // no radio buttons are checked
+                    Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // one of the radio buttons is checked
+                    Intent objprint = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(objprint);
+                    finish();
+                }
+
             }
         });
 
@@ -268,6 +287,15 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
     }
 
+    //binding events on top boxes textview
+    private void bindEvents() {
+        txtHeight.setOnClickListener(this);
+        txtWeight.setOnClickListener(this);
+        txtTemprature.setOnClickListener(this);
+        txtOximeter.setOnClickListener(this);
+        txtBpMonitor.setOnClickListener(this);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         System.out.println("device id");
@@ -287,11 +315,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         if (!mConnected) {
@@ -299,6 +322,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
         }else if(mConnected){
             syncLib.startReceiver();
         }
+
+        tts = new TextToSpeech(this,this);
     }
 
     @Override
@@ -324,6 +349,18 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+
+        //close the connection of tts object
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+        tts.shutdown();
+    }
+
+    @Override
     public void setLog(String text) {
         Log.e("text_title", " : " + text);
         logDisplay.setText(text);
@@ -333,6 +370,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
             readingrecycler.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            txt = "Please Insert Strip";
+            speakOut(txt);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
             }
@@ -342,6 +381,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
             readingrecycler.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            txt = "Please Add Blood";
+            speakOut(txt);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
             }
@@ -351,13 +392,14 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
             readingrecycler.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            txt = "Please insert the new strip";
+            speakOut(txt);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
             }
 
 
         } else {
-
 
             if (text.contains("Result")) {
 
@@ -488,6 +530,59 @@ public class Activity_Home extends AppCompatActivity implements Communicator {
             readingrecycler.setLayoutManager(mLayoutManager);
             readingrecycler.setItemAnimator(new DefaultItemAnimator());
             readingrecycler.setAdapter(readingAdapter);
+        }
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    //click events on the top boxes
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+
+            case R.id.txtmainheight:
+                context.startActivity(new Intent(this, Principal.class));
+                break;
+
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
+
+            case R.id.txtmaintempreture:
+                context.startActivity(new Intent(this, ThermometerScreen.class));
+                 break;
+
+            case R.id.txtmainpulseoximeter:
+                context.startActivity(new Intent(this, com.abhaybmi.app.oximeter.MainActivity.class));
+                break;
+
+            case R.id.txtmainbloodpressure:
+                context.startActivity(new Intent(this, DashboardActivity.class));
+                break;
         }
     }
 }

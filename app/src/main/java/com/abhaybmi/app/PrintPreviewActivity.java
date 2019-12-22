@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -56,6 +57,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -65,7 +67,7 @@ import butterknife.OnClick;
 import static com.abhaybmi.app.printer.esys.pridedemoapp.PrintPriviewScreen.TAG;
 import static com.abhaybmi.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
-public class PrintPreviewActivity extends Activity {
+public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     List<PrintData> printDataList = new ArrayList<>();
     List<PrintDataNew> printDataListNew = new ArrayList<>();
     @BindView(R.id.parameterTV)
@@ -172,6 +174,8 @@ public class PrintPreviewActivity extends Activity {
     private String hemoglobinResult;
     private String sugarResult;
     private String diastolicResult;
+    private TextToSpeech tts;
+    private String txt = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,6 +183,10 @@ public class PrintPreviewActivity extends Activity {
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
+        tts = new TextToSpeech(this,this);
+
+        txt = "Please click on the print button to get your printout";
+        speakOut(txt);
 
         printerBond();
 
@@ -190,7 +198,6 @@ public class PrintPreviewActivity extends Activity {
 
         getStandardRange();
 
-//         setList();
         setStaticData();
 
         getPrintData();
@@ -918,7 +925,7 @@ public class PrintPreviewActivity extends Activity {
         standardBodyWater = "45-60%";
         standardSkeltonMuscle = "40-50%";
         subcutaneousFat = "18.5-26.7";
-        standardVisceralFat = "< = "+String.valueOf(9);
+        standardVisceralFat = "<=9";
         standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
         Log.e("standardWeightFrom", "" + standardWeightFrom);
         Log.e("standardWeightTo", "" + standardWeightTo);
@@ -975,7 +982,28 @@ public class PrintPreviewActivity extends Activity {
         standardBodyFat = "11-21%";
         subcutaneousFat = "8.6-16.7";
         standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
-        standardVisceralFat = "< = "+String.valueOf(9);
+        standardVisceralFat = "<=9";
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //recreation of tts object
+        tts = new TextToSpeech(this,this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //close the connection of tts object
+        closeTtsConnection();
+
+    }
+
+    private void closeTtsConnection() {
+        tts.shutdown();
     }
 
     private void setStaticData() {
@@ -1327,13 +1355,13 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void postData() {
-        pd = Tools.progressDialog(PrintPreviewActivity.this);
+//        pd = Tools.progressDialog(PrintPreviewActivity.this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINTPOST_URL,
                 response -> {
                     //Disimissing the progress dialog
                     System.out.println("Login_Response" + response);
                     try {
-                        pd.dismiss();
+//                        pd.dismiss();
                         Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
                         //  dlgEnterText();
                     } catch (Exception e) {
@@ -1341,7 +1369,7 @@ public class PrintPreviewActivity extends Activity {
                     }
                 },
                 volleyError -> {
-                    pd.dismiss();
+//                    pd.dismiss();
                 }) {
             @Override
             public Map getHeaders() {
@@ -1586,6 +1614,8 @@ public class PrintPreviewActivity extends Activity {
                 Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
                 EnterTextAsyc asynctask = new EnterTextAsyc();
                 asynctask.execute(0);
+                txt = "Please collect your result receipt";
+                speakOut(txt);
                 break;
         }
     }
@@ -1620,6 +1650,32 @@ public class PrintPreviewActivity extends Activity {
             age--;
         }
         return age;
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {

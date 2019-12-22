@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +49,7 @@ import java.util.regex.Pattern;
 
 import io.fabric.sdk.android.services.concurrency.Task;
 
-public class OtpVerifyScreen extends AppCompatActivity {
+public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
     Button btnLogin;
     TextView txtName, txtmobile, txtemail;
     EditText etMobile, etName, etDOB, etEmail;
@@ -61,6 +62,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
     private int day, month, year;
     public SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
     String gender = "";
+    private TextToSpeech tts;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,9 +74,26 @@ public class OtpVerifyScreen extends AppCompatActivity {
         init();
         enableBluetooth();
 
+        speakOut();
+
         InputMethodManager imm = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobile, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        speakOut();
+    }
+
+
+    /*handles back event of the screen
+    onBack press go to the mobile no screen
+    */
+    @Override
+    public void onBackPressed() {
+        context.startActivity(new Intent(this, OtpLoginScreen.class));
     }
 
     public void init() {
@@ -88,11 +108,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
         selectedId = genderradio.getCheckedRadioButtonId();
         genderbutton = findViewById(selectedId);
 
+        context = OtpVerifyScreen.this;
 
         etMobile = findViewById(R.id.etMobile);
         etName = findViewById(R.id.etName);
         etDOB = findViewById(R.id.etDOB);
         etEmail = findViewById(R.id.etEmail);
+
+        tts = new TextToSpeech(this, this);
 //        System.out.println("====Data====aaaaaaaaaaaaaaaa" + genderbutton.getText().toString());
 
 
@@ -119,7 +142,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 SharedPreferences.Editor editor = objdoctor.edit();
                 editor.putString("gender", genderbutton.getText().toString());
                 editor.commit();
-            } else if(spToken.getString("gender","").equalsIgnoreCase("female")) {
+            } else if (spToken.getString("gender", "").equalsIgnoreCase("female")) {
                 Log.e("gender_log_in_female", "" + spToken.getString("gender", ""));
                 femalebutton.setChecked(true);
                 selectedId = femalebutton.getId();
@@ -323,6 +346,30 @@ public class OtpVerifyScreen extends AppCompatActivity {
         if (!this.mBluetoothAdapter.isEnabled()) {
             startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
         }
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut();
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut() {
+        String text = "Please Enter Your Registration Details";
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 }
 

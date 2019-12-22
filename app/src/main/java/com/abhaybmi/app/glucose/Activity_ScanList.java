@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -40,9 +41,9 @@ import org.maniteja.com.synclib.helper.Util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class Activity_ScanList extends AppCompatActivity
-{
+public class Activity_ScanList extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     private BluetoothAdapter mBluetoothAdapter;
     private boolean mScanning;
@@ -64,6 +65,16 @@ public class Activity_ScanList extends AppCompatActivity
     TextView scaningtext;
 
     boolean isCampSelected = false;
+    private TextToSpeech tts;
+    private String txt = "";
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        //Disable the back button insted use top box to go back previous screen
+
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,10 +99,13 @@ public class Activity_ScanList extends AppCompatActivity
         btnGo = (Button) findViewById(R.id.btnGo);
         scanimage = (ImageView) findViewById(R.id.imageview);
         scanimage.setVisibility(View.GONE);
-
+        tts = new TextToSpeech(this,this);
 
         scaningtext = (TextView) findViewById(R.id.scaningtext);
         scaningtext.setText("Scaning Started");
+
+        txt = "Please long press the device bluetooth button and click on Sync+";
+        speakOut(txt);
 
         btnGo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +114,8 @@ public class Activity_ScanList extends AppCompatActivity
                 startActivity(objIntent);
             }
         });
+
+
 
         btnScanList.setOnClickListener(new View.OnClickListener()
         {
@@ -206,6 +222,10 @@ public class Activity_ScanList extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
+
+        //creation of the tts object
+        tts = new TextToSpeech(this,this);
+
         try
         {
             // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
@@ -231,6 +251,7 @@ public class Activity_ScanList extends AppCompatActivity
         {
             Toast.makeText(getApplicationContext(), "Please scan once again.", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     @Override
@@ -246,8 +267,7 @@ public class Activity_ScanList extends AppCompatActivity
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
         scanLeDevice(false);
 
@@ -259,6 +279,13 @@ public class Activity_ScanList extends AppCompatActivity
         {
             Toast.makeText(getApplicationContext(), "Please scan once again.", Toast.LENGTH_SHORT).show();
         }
+
+        //close the tts connection object
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+        tts.shutdown();
     }
 
     private void scanLeDevice(final boolean enable)
@@ -353,10 +380,35 @@ public class Activity_ScanList extends AppCompatActivity
                                           }
                                       }
                                   }
-
                     );
                 }
             };
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 
     class RecyclerTouchListner implements RecyclerView.OnItemTouchListener
     {

@@ -24,7 +24,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/txtmainweight"
+                    android:id="@+id/txtmainheight"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
@@ -37,7 +37,7 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/txtmainheight"
+                    android:id="@+id/txtmainweight"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"

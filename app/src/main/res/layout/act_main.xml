@@ -11,14 +11,41 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <ImageView
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
+            android:layout_weight="0.1"
             android:src="@mipmap/applogo" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4">
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:layout_weight="0.5">
+            <Button
+                android:id="@+id/btIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="10dp"
+                android:visibility="gone"
+                android:background="@drawable/btnbluetooth" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -40,14 +67,16 @@
                 android:id="@+id/imageView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bluetooth Connectivity"
+                android:text="Connect To Printer"
                 android:textColor="@color/white"
-                android:textSize="25sp"/>
+                android:textSize="30sp"/>
 
             <LinearLayout
+                android:id="@+id/scanBTLL"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:visibility="visible"
                 android:orientation="horizontal" >
 
                 <LinearLayout
@@ -96,72 +125,94 @@
         android:layout_below="@+id/homelay3"
         android:fadingEdge="vertical"
         android:scrollbars="vertical"
-        android:visibility="gone">
-
+        android:visibility="visible">
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
+            android:weightSum="2">
             <LinearLayout
-                android:id="@+id/actMain_ll_device_ctrl"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:layout_marginLeft="26dp"
-                android:layout_marginTop="5dp"
-                android:orientation="horizontal" >
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/actMain_link_device_info_title"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/actMain_tv_device_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dip"
-                    android:text="@string/actMain_device_info"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/white" />
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:src="@drawable/printer"
+                    android:layout_margin="50dp"/>
             </LinearLayout>
-
             <LinearLayout
-                android:id="@+id/actMain_ll_pair_or_comm"
-                android:layout_width="fill_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="150dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal" >
+                android:orientation="vertical">
 
-                <Button
-                    android:id="@+id/actMain_btn_pair"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="150dp"
+                <LinearLayout
+                    android:id="@+id/actMain_ll_device_ctrl"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="15dp"
-                    android:background="@drawable/btnprint_back"
-                    android:onClick="onClickBtnPair"
-                    android:text="@string/actMain_btn_pair"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
 
-                <Button
-                    android:id="@+id/actMain_btn_conn"
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="150dp"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/actMain_link_device_info_title"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white"
+                        android:textSize="30sp"/>
+
+                    <TextView
+                        android:id="@+id/actMain_tv_device_info"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dip"
+                        android:textSize="30sp"
+                        android:text="@string/actMain_device_info"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/actMain_ll_pair_or_comm"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/btnprint_back"
-                    android:onClick="onClickBtnConn"
-                    android:text="@string/actMain_btn_comm"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="20dp"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/actMain_btn_pair"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="15dp"
+                        android:background="@drawable/btnprint_back"
+                        android:onClick="onClickBtnPair"
+                        android:text="@string/actMain_btn_pair"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/actMain_btn_conn"
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/btnprint_back"
+                        android:onClick="onClickBtnConn"
+                        android:text="@string/actMain_btn_comm"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
 
     <ScrollView
@@ -275,6 +326,7 @@
                 android:id="@+id/back_but"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:background="@drawable/back_but12" />
         </LinearLayout>
 

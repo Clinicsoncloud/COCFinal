@@ -19,8 +19,8 @@
             android:layout_weight="5"
             android:src="@mipmap/applogo"
             android:layout_gravity="center"
-            android:layout_marginTop="200dp"
-            android:layout_height="100dp" />
+            android:layout_marginTop="100dp"
+            android:layout_height="200dp" />
 
         <EditText
             android:layout_width="match_parent"

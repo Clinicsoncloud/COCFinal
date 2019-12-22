@@ -75,9 +75,9 @@
                 <ImageView
                     android:id="@+id/iv_glucose"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="349dp"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/device_glucose" />
+                    android:src="@drawable/sync_png" />
 
                 <TextView
                     android:layout_width="wrap_content"

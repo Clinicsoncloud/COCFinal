@@ -20,7 +20,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.speech.tts.TextToSpeech;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -32,7 +34,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.abhaybmi.app.actofitheight.ActofitMainActivity;
 import com.abhaybmi.app.glucose.Activity_ScanList;
+import com.abhaybmi.app.heightweight.Principal;
 import com.abhaybmi.app.oximeter.MainActivity;
 import com.abhaybmi.app.slidemenu.SlideMenu;
 
@@ -52,6 +56,7 @@ import com.abhaybmi.app.entities.DataBase;
 import com.abhaybmi.app.entities.Lifetrack_infobean;
 import com.abhaybmi.app.gatt.ADGattUUID;
 import com.abhaybmi.app.gatt.BleReceivedService;
+import com.abhaybmi.app.thermometer.ThermometerScreen;
 import com.abhaybmi.app.utilities.ADSharedPreferences;
 import com.abhaybmi.app.utilities.ANDMedicalUtilities;
 import com.abhaybmi.app.utilities.ScanRecordParser;
@@ -63,7 +68,7 @@ import com.abhaybmi.app.view.ThermometerDisplayDataLayout;
 import com.abhaybmi.app.view.WeightScaleDisplayDataLayout;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
-public class DashboardActivity extends ADBaseActivity implements OnRefreshListener {
+public class DashboardActivity extends ADBaseActivity implements OnRefreshListener, TextToSpeech.OnInitListener, OnClickListener {
 
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1000;
@@ -93,6 +98,12 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     ArrayList<String> pairedDeviceList = new ArrayList<String>(); //ACGS-10
     private TextView txtName, txtAge, txtGender, txtMobile;
     private BluetoothAdapter mBluetoothAdapter;
+    private TextToSpeech tts;
+    private String txt = "";
+
+    private TextView txtHeight,txtWeight,txtTemprature,txtOximeter;
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +115,8 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         disp_data_bp_value_textview = findViewById(R.id.disp_data_bp_value_textview);
         int val = ((0x07 & 0xff) << 8) | (0xE1 & 0xff);
         int sys = ((0x00 & 0xff) << 8) | (0x65 & 0xff);
+
+        context = DashboardActivity.this;
 
         registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
         //Call function to get paired device
@@ -123,6 +136,11 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         btnrepeat = findViewById(R.id.btnrepeat);
         linearContainer = findViewById(R.id.linearContainer);
 
+        txtHeight = findViewById(R.id.txtmainheight);
+        txtWeight = findViewById(R.id.txtmainweight);
+        txtTemprature = findViewById(R.id.txtmaintempreture);
+        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
+
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         //String channel = (shared.getString(keyChannel, ""));
 
@@ -133,10 +151,16 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
 
+        tts = new TextToSpeech(this,this);
+        txt = "please insert hand to the cuff and tight it properly,and then start Machine and click start Button";
+        speakOut(txt);
+
         txtName.setText("Name : " + shared.getString("name", ""));
         txtGender.setText("Gender : " + shared.getString("gender", ""));
         txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
         txtAge.setText("DOB : " + shared.getString("dob", ""));
+
+        bindEvents();
 
         btnnext.setOnClickListener(v -> {
             try{
@@ -183,6 +207,15 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
 
     }
 
+    private void bindEvents() {
+
+        txtHeight.setOnClickListener(this);
+        txtWeight.setOnClickListener(this);
+        txtTemprature.setOnClickListener(this);
+        txtOximeter.setOnClickListener(this);
+
+    }
+
     private void offBluetooth() {
         this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter.isEnabled()) {
@@ -199,11 +232,20 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //recreation of the tts object
+        tts = new TextToSpeech(this,this);
+    }
+
     private boolean mIsCheckBleetoothEnabled = false;
 
     @Override
     protected void onResume() {
         super.onResume();
+
         isDevicePaired();
 
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
@@ -247,6 +289,20 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
 
         if (!mIsSendCancel) {
             mIsSendCancel = true;
+        }
+
+        //close the tts object connection
+        closeTtsConnection();
+    }
+
+    private void closeTtsConnection() {
+        try {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
         }
     }
 
@@ -1028,6 +1084,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         }
     }
 
+
     private void refreshActivityMonitorLayout() {
         // Data Sync
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
@@ -1138,7 +1195,8 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
 
     public void onBackPressed() {
         //ANDMedicalUtilities.CreateDialog(this, "Confirm To Exit", this);
-        finish();
+//        finish();
+        //Disable the back button insted use the top box to go back or previous screen
     }
 
     public long convertDateintoMs(String date) {
@@ -1218,5 +1276,55 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     public static String byte2hex(byte[] bytes) {
         BigInteger bi = new BigInteger(1, bytes);
         return String.format("%0" + (bytes.length << 1) + "X", bi);
+    }
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            tts.setSpeechRate(1);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+
+            case R.id.txtmainheight:
+                context.startActivity(new Intent(context, Principal.class));
+                break;
+
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(context, ActofitMainActivity.class));
+                break;
+
+            case R.id.txtmaintempreture:
+                context.startActivity(new Intent(context, ThermometerScreen.class));
+                break;
+
+            case R.id.txtmainpulseoximeter:
+                context.startActivity(new Intent(context, MainActivity.class));
+                break;
+        }
+
     }
 }

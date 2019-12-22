@@ -1,9 +1,11 @@
 package com.abhaybmi.app;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -28,20 +30,37 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-public class PostVerifiedOtpScreen extends AppCompatActivity {
+public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
 
     String Id, MobileNo;
     Button btnVerify;
     EditText etOTP;
     ProgressDialog pd;
 
+    TextToSpeech tts;
+    private Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_verified_otp_screen);
         init();
+        speakOut();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        speakOut();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //Back to the mobile no screen
+        context.startActivity(new Intent(this,OtpLoginScreen.class));
     }
 
     public void init() {
@@ -49,6 +68,10 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
         MobileNo = getIntent().getStringExtra("mobile");
         etOTP = findViewById(R.id.etOTP);
         btnVerify = findViewById(R.id.btnLogin);
+
+        tts = new TextToSpeech(this,this);
+
+        context = PostVerifiedOtpScreen.this;
 
         btnVerify.setOnClickListener(v -> {
             if (etOTP.getText().toString().equals("")) {
@@ -97,4 +120,27 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(90000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut();
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut() {
+        String text = "Please Enter Your Otp";
+//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
 }

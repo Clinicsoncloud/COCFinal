@@ -560,7 +560,7 @@
     <string name="title_activity_thermometer_screen">ThermometerScreen</string>
 
 
-    <string name="turn_on_glucose">Long Press the button to turn on the Device</string>
+    <string name="turn_on_glucose">\t\t\t\t\tLong Press the \n Right button to turn on the Device</string>
     <string name="txt_hemoglobin_img">Insert Strip &amp; Add Blood</string>
 
 
@@ -602,4 +602,5 @@
     <string name="Nosepuede">Can not Send</string>
     <string name="Seleccionado">Selected:</string>
     <string name="BluetoothEncendido">Bluetooth on</string>
+    <string name="subscription_over">Seems like your subscription is finished. Please Renew your subscription to continue.</string>
 </resources>

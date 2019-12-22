@@ -274,7 +274,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         if (printData.getCurr_value() > 26) {
                             viewHolder.resultTV.setText("Seriously High");
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 26 && printData.getCurr_value() >= 21) {
+                        } else if (printData.getCurr_value() <= 26 && printData.getCurr_value() > 21) {
                             viewHolder.resultTV.setText("High");
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
                         } else if (printData.getCurr_value() <= 21 && printData.getCurr_value() >= 11) {
@@ -286,7 +286,6 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         }
                         viewHolder.rangeTV.setText("11 - 21" + "(%)");
 
-
                     } else { //female bofy fat
 
                         viewHolder.rangeTV.setText("21 - 30" + "(%)");
@@ -294,7 +293,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         if (printData.getCurr_value() > 36) {
                             viewHolder.resultTV.setText("Seriously High");
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 36 && printData.getCurr_value() >= 31) {
+                        } else if (printData.getCurr_value() <= 36 && printData.getCurr_value() > 30) {
                             viewHolder.resultTV.setText("High");
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
                         } else if (printData.getCurr_value() <= 30 && printData.getCurr_value() >= 21) {
@@ -958,7 +957,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                                 viewHolder.resultTV.setText("High");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                            } else if (printData.getCurr_value() >= 2.7 && printData.getCurr_value() <= 3.1) {
+                            } else if (printData.getCurr_value() <= 3.1 && printData.getCurr_value() >= 2.7) {
 
                                 viewHolder.resultTV.setText("Standard");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -979,7 +978,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                                 viewHolder.resultTV.setText("High");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                            } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
+                            } else if (printData.getCurr_value() <= 2.7 && printData.getCurr_value() >= 2.3) {
 
                                 viewHolder.resultTV.setText("Standard");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -1011,7 +1010,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                                 viewHolder.resultTV.setText("High");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                            } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
+                            } else if (printData.getCurr_value() <= 2.7 && printData.getCurr_value() >= 2.3) {
 
                                 viewHolder.resultTV.setText("Standard");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -1038,7 +1037,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
 
-                            } else if (printData.getCurr_value() >= 2.0 && printData.getCurr_value() <= 2.4) {
+                            } else if (printData.getCurr_value() <= 2.4 && printData.getCurr_value() >= 2.0) {
 
                                 viewHolder.resultTV.setText("Standard");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -1061,7 +1060,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                                 viewHolder.resultTV.setText("High");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                            } else if (printData.getCurr_value() >= 1.6 && printData.getCurr_value() <= 2.0) {
+                            } else if (printData.getCurr_value() <= 2.0 && printData.getCurr_value() >= 1.6) {
 
                                 viewHolder.resultTV.setText("Standard");
                                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -1128,7 +1127,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         viewHolder.resultTV.setText("High");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                    } else if (printData.getCurr_value() >= 90 && printData.getCurr_value() <= 139) {
+                    } else if (printData.getCurr_value() <= 139 && printData.getCurr_value() >= 90) {
 
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
@@ -1297,7 +1296,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                             viewHolder.resultTV.setText("High");
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
 
-                        } else if (printData.getCurr_value() >= 70 && printData.getCurr_value() <= 140) {
+                        } else if (printData.getCurr_value() <= 140 && printData.getCurr_value() >= 70) {
 
 
                             viewHolder.resultTV.setText("Standard");
@@ -1395,7 +1394,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
 
                         }
-                        viewHolder.rangeTV.setText("15.1 - 12.1 g/dl");
+                        viewHolder.rangeTV.setText("12.1 - 15.1 g/dl");
                     }
                 }
                 break;
