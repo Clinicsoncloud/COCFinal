@@ -1,0 +1,28 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="dispdata_text_size_l2">30sp</dimen>
+    <dimen name="dispdata_text_size_l">25sp</dimen>
+    <dimen name="dispdata_text_size_m">20sp</dimen>
+    <dimen name="dispdata_text_size_ms">18sp</dimen>
+    <dimen name="dispdata_text_size_s">16sp</dimen>
+    <dimen name="dispdata_text_size_s2">14sp</dimen>
+    <dimen name="dispdata_text_left_margin">10dp</dimen>
+    <dimen name="dispdata_image_margin">0dp</dimen>
+    <dimen name="bp_division_bar_margin">5dp</dimen>
+
+    <!-- 設定画面 -->
+    <dimen name="setting_list_min_height">55dp</dimen>
+
+    <dimen name="pad10">10dp</dimen>
+    <dimen name="margin20">20dp</dimen>
+    <dimen name="pad5">5dp</dimen>
+    <dimen name="space25">25dp</dimen>
+    <dimen name="hgt45">45dp</dimen>
+    <dimen name="pad15">15dp</dimen>
+    <dimen name="textsize18">18sp</dimen>
+    <dimen name="textsize24">24sp</dimen>
+    <dimen name="row_padding_vertical">10dp</dimen>
+</resources>

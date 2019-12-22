@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="date_range_change_tracker_array">
+        <item >@string/date_range_weekly</item>
+        <item >@string/date_range_monthly</item>
+        <item >@string/date_range_history</item>
+    </string-array>
+    <string-array name="date_range_change_title_array">
+        <item >@string/date_range_daily</item>
+        <item >@string/date_range_weekly</item>
+        <item >@string/date_range_monthly</item>
+        <item >@string/date_range_history</item>
+    </string-array>
+    <string-array name="date_range_change_title_array_blood_pressure">
+        <item >@string/date_range_daily</item>
+        <item >@string/date_range_weekly</item>
+        <item >@string/date_range_monthly</item>
+        <item >@string/report_graph</item>
+        <item >@string/report_class</item>
+        <item >@string/date_range_history</item>
+    </string-array>
+    <string-array name="graph_x_axis_value_name_array">
+        <item >@string/graph_x_value_hours</item>
+        <item >@string/graph_x_value_days</item>
+        <item >@string/graph_x_value_weeks</item>
+    </string-array>
+
+    <string-array name="date_range_change_am_title_array">
+        <item >@string/date_range_weekly</item>
+        <item >@string/date_range_monthly</item>
+        <item >@string/date_range_history</item>
+    </string-array>
+    <string-array name="graph_x_axis_value_name_am_array">
+        <item >@string/graph_x_value_days</item>
+        <item >@string/date_range_weekly</item>
+    </string-array>
+    
+    
+</resources>

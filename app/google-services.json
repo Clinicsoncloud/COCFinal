@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "652205542330",
+    "firebase_url": "https://clinicsoncloud-ba3a7.firebaseio.com",
+    "project_id": "clinicsoncloud-ba3a7",
+    "storage_bucket": "clinicsoncloud-ba3a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:652205542330:android:e6c9435b9b658371",
+        "android_client_info": {
+          "package_name": "com.abhaybmi.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "652205542330-siql36bjg4crvdmp4u8oplfqk0kepglb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5NjsrO2nThsAA9H73l6SxXNTU5Z1aeJQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "652205542330-siql36bjg4crvdmp4u8oplfqk0kepglb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

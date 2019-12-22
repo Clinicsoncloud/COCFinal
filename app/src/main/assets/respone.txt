@@ -1,0 +1,3 @@
+
+
+[{"measurements":[{"value":89,"measurementType":"pulse","startTime":null,"units":"bpm","quality":null,"endTime":null},{"value":123,"measurementType":"systolic","startTime":null,"units":"mmHg","quality":null,"endTime":null},{"value":87,"measurementType":"diastolic","startTime":null,"units":"mmHg","quality":null,"endTime":null}],"readingTakenTime":"1404434919000","userId":2,"readingType":"bp","metadata":{"lastChangedBy":"self"},"deviceId":"7FD55184-262A-5F46-52E6-57E97F7F368C"}]

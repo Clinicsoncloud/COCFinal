@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <drawable name="darkgray">#404040ff</drawable>
+    <color name="background">#c96088</color>
+    <drawable name="black">#000000</drawable>
+    <drawable name="red">#ff00ff</drawable>
+    <drawable name="green">#0ff0ff</drawable>
+    <drawable name="lightgray">#c0c0c0ff</drawable>
+    <drawable name="white">#ffffff</drawable>
+    <drawable name="yellow">#ffff0f</drawable>
+    <drawable name="blue">#00ffff</drawable>
+    <drawable name="gray">#808080ff</drawable>
+    <drawable name="magenta">#ff0fff</drawable>
+    <drawable name="cyan">#0fffff</drawable>
+    <color name="colorblack">#111111</color>
+    <color name="l_blue">#909BAA</color>
+    <color name="d_blue">#6D7B92</color>
+    <color name="gray">#CCCCCC</color>
+    <color name="d_gray">#666</color>
+    <color name="app_color">#63ccf1</color>
+    <color name = "waveform_background">#2E94D8</color>
+    <drawable name="screen_background_black">#ff000000</drawable>
+    <drawable name="translucent_background">#e0000000</drawable>
+    <drawable name="transparent_background">#00000000</drawable>
+
+    <color name="purple">#ad63b0</color>
+    <color name="solid_red">#f00</color>
+    <color name="solid_blue">#0000ff</color>
+    <color name="solid_green">#f0f0</color>
+    <color name="solid_yellow">#ffffff00</color>
+    <color name="white">#ffffff</color>
+    <color name="lightpink">#fa9938</color>
+    <color name="yash">#e8e8e8</color>
+    <color name="transparent">#00000000</color>
+    <color name="solid_pink">#8f0065</color>
+    <color name="topbbar_color">#27B5BC</color>
+    <color name="listviewbackground">#c1b59e</color>
+    <color name="layoutviewbackground">#ff9a39</color>
+    <color name="black">#000000</color>
+    <color name="buttoncolor">#c1b59e</color>
+    <color name="lightblue">#6178a4</color>
+    <color name="lightgray">#eeeeee</color>
+    <color name="lightbrown">#634526</color>
+    <color name="green">#22b14c</color>
+    <color name="blue">#6365ff</color>
+    <color name="app_theme_color">#44A1C2</color>
+    <color name="symptom_color_selected">#003366</color>
+    <color name="reaction_color_selected">#003366</color>
+    <color name="static_text_color">#003366</color>
+    <color name="journal_entry_listitem_text_color">#003366</color>
+    <color name="note_text_disabled">#333333</color>
+    <color name="circular_progress_default_progress">#bada55</color>
+    <color name="circular_progress_default_background">#787878</color>
+    <color name="circular_progress_default_title">#bada55</color>
+    <color name="circular_progress_default_subtitle">#D1D1D1</color>
+    <color name="display_data_activitymoniter_title_color">#0e7cd9</color>
+    <color name="display_data_bloodpresure_title_color">#f14324</color>
+    <color name="display_data_weightscale_title_color">#2ac478</color>
+    <color name="display_data_thermometer_title_color">#ffc896</color>
+    <!-- Blood Pressure Dashboard -->
+    <color name="dashboard_theme_color_bloodpresure">#ff3300</color>
+    <color name="dashboard_theme_color_bloodpresure_strong_color">#ff0000</color>
+    <color name="dashboard_bloodpresure_text_strong_color">#4B9011</color>
+    <color name="page_controller_disable_color">#555555</color>
+    <color name="page_controller_enable_color_bp">#ff0000</color>
+    <color name="graph_color_bp_systolic">#F0432D</color>
+    <color name="graph_color_bp_diastolic">#F18A1C</color>
+    <color name="graph_color_bp_pulse">#F18A1C</color>
+    <color name="report_graph_line">#f0ebdd</color>
+    <color name="report_graph_line_outside">#5b7671</color>
+    <color name="report_graph_bp_am">#b1d600</color>
+    <color name="report_graph_bp_pm">#86b3e0</color>
+    <color name="report_graph_bp_high">#f49b83</color>
+    <color name="report_graph_bp_low">#c0c0c0</color>
+    <color name="report_graph_bp_hypertension_value">#c00000</color>
+    <color name="report_graph_division_bp_optimum">#c0c0c0</color>
+    <color name="report_graph_division_bp_normal">#ccff99</color>
+    <color name="report_graph_division_bp_normal_high">#fad26a</color>
+    <color name="report_graph_division_bp_high">#f49b83</color>
+    <color name="report_graph_division_bp_plot">#000000</color>
+    <color name="report_graph_table_bp_optimum">#000000</color>
+    <color name="report_graph_table_bp_normal">#548135</color>
+    <color name="report_graph_table_bp_normal_high">#ff9900</color>
+    <color name="report_graph_table_bp_high">#c00000</color>
+    <color name="report_graph_round_line">#ff9425</color>
+    <color name="report_graph_date_background_high_light">#7fbd9bc1</color>
+    <color name="report_graph_date_background_selected">#7dfcf8</color>
+    <!-- Weight Scale Dashboard -->
+    <color name="dashboard_theme_color_weightscale">#2AC478</color>
+    <color name="dashboard_theme_color_weightscale_strong_color">#1FB169</color>
+    <color name="page_controller_enable_color_ws">#1FB169</color>
+    <color name="graph_color_ws_weight">#1FB169</color>
+    <color name="graph_color_ws_goal_weight">#DC7F00</color>
+    <!-- Activity Monitor Dashboard -->
+    <color name="dashboard_theme_color_activitymonitor">#2A78C4</color>
+    <color name="dashboard_theme_color_activitymonitor_strong_color">#1F69B1</color>
+    <color name="page_controller_enable_color_am">#1F69B1</color>
+    <color name="graph_color_am_step">#1F69B1</color>
+    <!-- Thermometer Dashboard -->
+    <color name="thermometer_theme_color">#F0922E</color>
+    <color name="thermometer_date_color">#EA7F29</color>
+    <color name="thermometer_theme_strong_color">#DE7223</color>
+    <!-- Wheel -->
+    <color name="wheel_color">#FD1</color>
+    <!--Device Setup Color -->
+    <color name="bp_device_header">#F04323</color>
+    <color name="ws_device_header">#2AC478</color>
+    <color name="activity_device_header">#0E7BD9</color>
+    <color name="sky_blue">#2D9DF3</color>
+    <color name="th_device_header">#F09315</color>
+    <color name="spo2_device_header">#12B8B8</color>
+    <color name="devicepairinglabel1">#B3B3B3</color>
+    <color name="devicepairinglabel2">#4C4C4C</color>
+
+    <color name="maintextcolor">#568C9B</color>
+
+    <color name="yellow1">#FFFF00</color>
+    <color name="yellow2">#00868B</color>
+    <color name="grey05">#00868B</color>
+    <color name="orange4">#FFA500</color>
+    <color name="blue2">#05E9FF</color>
+    <color name="blue25">#00868B</color>
+    <color name="orange5">#000080</color>
+
+    <color name="white_1000">#ffffff</color>
+    <color name="transparent_color">#00000000</color>
+
+    <!-- deep purples -->
+    <color name="orangecolor">#ff8b00</color>
+    <!-- indigo -->
+    <color name="buttonback">#008fd1</color>
+    <!--blue-->
+
+
+</resources>
