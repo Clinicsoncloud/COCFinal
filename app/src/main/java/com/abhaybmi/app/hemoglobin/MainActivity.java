@@ -21,11 +21,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.icu.util.ULocale;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.ParcelUuid;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +52,8 @@ import com.abhaybmi.app.hemoglobin.util.StringUtils;
 import com.abhaybmi.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmi.app.utils.ApiUtils;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.text.ParseException;
@@ -58,13 +62,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.abhaybmi.app.hemoglobin.Constants.SCAN_PERIOD;
 import static com.abhaybmi.app.hemoglobin.Constants.SERVICE_UUID;
 
 
-public class MainActivity extends AppCompatActivity implements GattClientActionListener {
+public class MainActivity extends AppCompatActivity implements GattClientActionListener,TextToSpeech.OnInitListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -94,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     Spinner spinnerDevice;
     ArrayList<String> deviceArrayList;
     ProgressDialog progressDialog, scanprogressDialog;
+    private TextToSpeech tts;
+    private String txt;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -169,13 +176,42 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private void init() {
 
+        tts = new TextToSpeech(this,this);
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         sharedPreferences = getSharedPreferences("device_data", MODE_PRIVATE);
         hemoglobinObject = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         personalObject = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
+        //voice command for the device
+        txt = "Please press the power button of device and click on scan button";
+        speakOut(txt);
     }
+
+
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+
+            int result = tts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    private void speakOut(String textToSpeech) {
+        String text = textToSpeech;
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void requestPermission() {
