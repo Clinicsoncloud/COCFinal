@@ -123,7 +123,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         btnnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
+                Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
                 startActivity(objIntent);
                 finish();
             }

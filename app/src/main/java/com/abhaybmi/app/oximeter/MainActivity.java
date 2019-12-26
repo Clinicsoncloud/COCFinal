@@ -172,7 +172,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         Button txtnext = findViewById(R.id.txtnext);
         Button btnskip = findViewById(R.id.btnskip);
         txtnext.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
+            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
             startActivity(objIntent);
             finish();
         });
@@ -188,9 +188,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         //click evet
         txtHeight.setOnClickListener(this);
         txtWeight.setOnClickListener(this);
-
     }
-
 
     private void enableBlutooth() {
         this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();

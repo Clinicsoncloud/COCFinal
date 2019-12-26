@@ -341,7 +341,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (dispositivos.size() > 0) {
             for (BluetoothDevice device : dispositivos) {
 
-                if (device.getName().equals("TEMPERATURE")) {
+                if (device.getName().equals("THERMOMETER")) {
 
                     this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
                     this.mMacDispositivos.add(device.getAddress());
@@ -390,6 +390,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 }
             }
         });
+
         baudrateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

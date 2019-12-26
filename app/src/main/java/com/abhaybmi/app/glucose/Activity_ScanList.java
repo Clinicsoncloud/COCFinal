@@ -342,7 +342,7 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
                                           {
                                               Log.i("SCANNING ", util.readString(HelperC.key_devname, "Sync"));
                                               System.out.println("SCANNING " + util.readString(HelperC.key_devname, "Sync"));
-                                              if ("Sync+".equals(device.getName()) || util.readString(HelperC.key_devname, "Sync+").equals(device.getName()))
+                                              if ("SyncPlus".equals(device.getName()) || util.readString(HelperC.key_devname, "SyncPlus").equals(device.getName()))
                                               {
                                                   System.out.println("Scan List : " + device.getAddress());
                                                   adapter.addDevice(device);
