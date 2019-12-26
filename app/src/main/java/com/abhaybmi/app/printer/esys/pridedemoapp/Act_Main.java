@@ -174,8 +174,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         this.btnPair = (Button)this.findViewById(R.id.actMain_btn_pair);
         this.btnComm = (Button)this.findViewById(R.id.actMain_btn_conn);
 
-
-
         tts = new TextToSpeech(this,this);
 
         txt = "Please Click on Connect Button";

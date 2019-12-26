@@ -17,8 +17,19 @@
             android:id="@+id/tv_resultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30sp"
-            android:text="===="
+            android:layout_marginTop="5sp"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="5sp"
+            android:layout_gravity="center"/>
+
+
+        <TextView
+            android:id="@+id/tv_resultNew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="35sp"
             android:layout_gravity="center"/>

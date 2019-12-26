@@ -97,6 +97,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
     SharedPreferences shared;
     SyncLib syncLib;
 
+    String resultOfGlucose;
+
     ImageView ivGlucose;
 
     Communicator communicator = this;
@@ -106,6 +108,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
     private TextView txtHeight,txtWeight,txtTemprature,txtOximeter,txtBpMonitor;
 
     Context context;
+    private TextView resultTextNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         llGlucose = (LinearLayout) findViewById(R.id.ll_glucose);
 
         resultText = llGlucose.findViewById(R.id.tv_resultText);
+
+        resultTextNew = llGlucose.findViewById(R.id.tv_resultNew);
 
         rgGlucose = llGlucose.findViewById(R.id.rg_glucose);
         rbFasting = llGlucose.findViewById(R.id.rb_fasting);
@@ -259,9 +264,16 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
                 if (mConnected) {
                     syncLib.notifyGetData();
                 }
-                Intent objprint = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(objprint);
-                finish();
+                if (rgGlucose.getCheckedRadioButtonId() == -1) {
+                    // no radio buttons are checked
+                    Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // one of the radio buttons is checked
+                    Intent objprint = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(objprint);
+                    finish();
+                }
             }
         });
 
@@ -439,7 +451,20 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
                 text = text.replace("Result is", "");
                 text = text.replace(" ", "");
 
-                resultText.setText(text);
+
+                resultOfGlucose = text;
+
+                Log.e("text_result",""+text);
+
+                Log.e("result_sugar",""+resultOfGlucose);
+
+                resultText.setText(resultOfGlucose);
+
+                resultTextNew.setText(resultOfGlucose);
+
+
+                Log.e("result_after_setText",""+resultOfGlucose);
+
                 readingrecycler.setVisibility(View.GONE);
                 ivSteps.setVisibility(View.GONE);
                 ivGlucose.setVisibility(View.GONE);
@@ -457,10 +482,10 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
                         glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
                         SharedPreferences.Editor editor = glucoseData.edit();
                         editor.putString("glucosetype", radioButtonId.getText().toString());
-                        editor.putString("last", resultText.getText().toString());
+                        editor.putString("last", resultTextNew.getText().toString());
 
                         Log.e("glucosetype", "" + radioButtonId.getText().toString());
-                        Log.e("result", "" + resultText.getText().toString());
+                        Log.e("result", "" + resultTextNew.getText().toString());
 
                         editor.commit();
 

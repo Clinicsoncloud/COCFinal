@@ -47,19 +47,6 @@
                 android:textSize="22sp" />
 
             <TextView
-                android:id="@+id/txtmainpulseoximeter"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/pad10"
-                android:background="@drawable/repeat"
-                android:gravity="center"
-                android:padding="@dimen/pad5"
-                android:text="Pulse Oximeter"
-                android:textColor="@color/white"
-                android:textSize="22sp" />
-
-            <TextView
                 android:id="@+id/txtmaintempreture"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
@@ -69,6 +56,19 @@
                 android:gravity="center"
                 android:padding="@dimen/pad5"
                 android:text="Temperature"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/txtmainpulseoximeter"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Pulse Oximeter"
                 android:textColor="@color/white"
                 android:textSize="22sp" />
 
@@ -242,7 +242,7 @@
                 android:gravity="center"
                 android:textAlignment="center"
                 android:scrollbars="vertical"
-                android:textColor="@color/buttoncolor"
+                android:textColor="@color/white"
                 android:textSize="30sp" />
 
 

@@ -149,7 +149,7 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
 
         btnBack.setOnClickListener(v -> {
             cleardata();
-            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
             finish();
         });
     }

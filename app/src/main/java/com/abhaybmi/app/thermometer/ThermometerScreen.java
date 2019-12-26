@@ -163,10 +163,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             case R.id.txtmainweight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
-
-            case R.id.txtmainpulseoximeter:
-                context.startActivity(new Intent(this,MainActivity.class));
-                break;
         }
 
     }
@@ -216,7 +212,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         /* access modifiers changed from: protected */
         public void onPostExecute(String res) {
-            progressDialog.dismiss();
+            if(progressDialog.isShowing()) {
+                progressDialog.dismiss();
+            }
             String mEstado = res;
             String eg = res;
             if (res.equals("Conectado")) {
@@ -444,7 +442,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 if(editText1.getText().length() > 0) {
                     if(editText1.getText().toString().indexOf(".") == editText1.getText().length() - 2) {
                         Log.e("length", " = " + editText1.getText().length());
-                        Intent objpulse = new Intent(getApplicationContext(), DashboardActivity.class);
+                        Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
                         SharedPreferences.Editor editor = userData.edit();
                         editor.putString("data", editText1.getText().toString());
                         editor.commit();
@@ -490,7 +488,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         //click events on box
         txtHeight.setOnClickListener(this);
         txtWeight.setOnClickListener(this);
-        txtOximeter.setOnClickListener(this);
+//        txtOximeter.setOnClickListener(this);
     }
 
 

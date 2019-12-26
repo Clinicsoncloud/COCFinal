@@ -273,9 +273,9 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
             System.out.println("=======Str :==="+str);
 
-//            Principal.this.etManualHeight.append("" + str);
+            Principal.this.etManualHeight.append("" +str);
 
-            strHeight += str;
+           /* strHeight += str;
             System.out.println("=======Str2 :==="+Principal.this.etManualHeight.getText());
             System.out.println("=======strHeight :==="+strHeight);
 
@@ -286,7 +286,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 }
             }catch (Exception e){
 
-            }
+            }*/
 
             if (recib[1].equals("false")) {
                 Principal.this.estadoBoton = "Connect";

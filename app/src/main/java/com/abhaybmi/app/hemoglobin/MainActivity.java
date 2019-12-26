@@ -3,6 +3,7 @@ package com.abhaybmi.app.hemoglobin;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +17,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.bluetooth.le.ScanSettings;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -44,12 +46,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.abhaybmi.app.DashboardActivity;
 import com.abhaybmi.app.R;
+import com.abhaybmi.app.actofitheight.ActofitMainActivity;
+import com.abhaybmi.app.entities.AndMedical_App_Global;
+import com.abhaybmi.app.glucose.Activity_ScanList;
+import com.abhaybmi.app.heightweight.Principal;
 import com.abhaybmi.app.hemoglobin.GattClientActionListener;
 import com.abhaybmi.app.hemoglobin.util.AppUtils;
 import com.abhaybmi.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmi.app.hemoglobin.util.StringUtils;
 import com.abhaybmi.app.printer.esys.pridedemoapp.Act_Main;
+import com.abhaybmi.app.thermometer.ThermometerScreen;
 import com.abhaybmi.app.utils.ApiUtils;
 
 import org.w3c.dom.Text;
@@ -69,7 +77,7 @@ import static com.abhaybmi.app.hemoglobin.Constants.SCAN_PERIOD;
 import static com.abhaybmi.app.hemoglobin.Constants.SERVICE_UUID;
 
 
-public class MainActivity extends AppCompatActivity implements GattClientActionListener,TextToSpeech.OnInitListener {
+public class MainActivity extends AppCompatActivity implements GattClientActionListener,TextToSpeech.OnInitListener, View.OnClickListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -98,9 +106,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     Button buttonconnect;
     Spinner spinnerDevice;
     ArrayList<String> deviceArrayList;
-    ProgressDialog progressDialog, scanprogressDialog;
+    ProgressDialog progressDialog, scanprogressDialog,connectionProgressDialog;
     private TextToSpeech tts;
     private String txt;
+    private TextView txtmainHeight,txtmainWeight,txtmainTemprature,txtmainOximeter,txtmainBpMonitor,txtmainSugar;
+    private Context context;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -111,11 +121,63 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         init();
 
         setupUI();
+        bindEvents();
 
         progressDialogs();
 
         requestPermission();
 
+    }
+
+    private void bindEvents() {
+        txtmainHeight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                context.startActivity(new Intent(MainActivity.this, Principal.class));
+            }
+        });
+
+        txtmainWeight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(MainActivity.this, ActofitMainActivity.class));
+            }
+        });
+
+        txtmainTemprature.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(MainActivity.this, ThermometerScreen.class));
+            }
+        });
+        txtmainOximeter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(MainActivity.this, com.abhaybmi.app.oximeter.MainActivity.class));
+            }
+        });
+
+        txtmainBpMonitor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+            }
+        });
+
+        txtmainSugar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(MainActivity.this, Activity_ScanList.class));
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        context.startActivity(new Intent(this,Activity_ScanList.class));
     }
 
     private void progressDialogs() {
@@ -142,6 +204,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 dialog.dismiss();
             }
         });
+
+        connectionProgressDialog = new ProgressDialog(MainActivity.this);
+        connectionProgressDialog.setMessage("Connecting...");
+        connectionProgressDialog.setCancelable(false);
     }
 
     private void setupUI() {
@@ -160,6 +226,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         textGender = findViewById(R.id.txtGender);
         textMobile = findViewById(R.id.txtMobile);
 
+        txtmainHeight = findViewById(R.id.txtmainheight);
+        txtmainWeight = findViewById(R.id.txtmainweight);
+        txtmainTemprature = findViewById(R.id.txtmaintempreture);
+        txtmainOximeter = findViewById(R.id.txtmainpulseoximeter);
+        txtmainBpMonitor = findViewById(R.id.txtmainbloodpressure);
+        txtmainSugar = findViewById(R.id.txtmainbloodsugar);
+
         deviceArrayList = new ArrayList();
 
         setUserInfo();
@@ -175,6 +248,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     private void init() {
+
+        context = MainActivity.this;
 
         tts = new TextToSpeech(this,this);
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
@@ -232,6 +307,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onResume() {
         super.onResume();
+
+        tts = new TextToSpeech(this,this);
+
         // Check low energy support
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             // Get a newer device
@@ -241,11 +319,23 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if(textViewdisplay.getText().toString().contains("Test")){
+            sendMessage("U370");
+            disconnectGattServer();
+        }
+
+        if(tts != null){
+            tts.shutdown();
+        }
+    }
 
     @Override
     public void showToast(final String msg) {
 
-//for progress bar
+       //for progress bar
         new Thread() {
             public void run() {
                 MainActivity.this.runOnUiThread(new Runnable() {
@@ -302,6 +392,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void setConnected(boolean connected) {
+        connectionProgressDialog.dismiss();
         mConnected = connected;
         buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
         buttonconnect.setText("Connected");
@@ -471,6 +562,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             String s = spinnerDevice.getSelectedItem().toString();
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(s.substring(s.length() - 17));
             connectDevice(device);
+            connectionProgressDialog.show();
             showToast(device.getName() + "");
             deviceName = device.getName();
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -528,8 +620,47 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sendMessage("U370");
         disconnectGattServer();
 
+        try {
+            AndMedical_App_Global.mBTcomm = null;
+        } catch(NullPointerException e) { }
         //when device is off we can move to next screen
         startActivity(new Intent(MainActivity.this, Act_Main.class));
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.txtmainheight:
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                context.startActivity(new Intent(this, Principal.class));
+                break;
+
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
+
+
+            case R.id.txtmaintempreture:
+                context.startActivity(new Intent(this, ThermometerScreen.class));
+                break;
+
+
+            case R.id.txtmainpulseoximeter:
+                Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
+                context.startActivity(new Intent(this, com.abhaybmi.app.oximeter.MainActivity.class));
+                break;
+
+
+            case R.id.txtmainbloodpressure:
+                context.startActivity(new Intent(this, DashboardActivity.class));
+                break;
+
+
+            case R.id.txtmainbloodsugar:
+                context.startActivity(new Intent(this, Activity_ScanList.class));
+                break;
+
+        }
     }
 
 

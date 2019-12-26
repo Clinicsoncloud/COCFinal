@@ -150,7 +150,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
 
         txtHeight = findViewById(R.id.txtmainheight);
         txtWeight = findViewById(R.id.txtmainweight);
-//        txtTemprature = findViewById(R.id.txtmaintempreture);
+        txtTemprature = findViewById(R.id.txtmaintempreture);
 
         //bind click events of the top boxes for previous test only
         bindEvents();
@@ -172,7 +172,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         Button txtnext = findViewById(R.id.txtnext);
         Button btnskip = findViewById(R.id.btnskip);
         txtnext.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
+            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
             startActivity(objIntent);
             finish();
         });
@@ -188,6 +188,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         //click evet
         txtHeight.setOnClickListener(this);
         txtWeight.setOnClickListener(this);
+        txtTemprature.setOnClickListener(this);
 
     }
 
@@ -299,6 +300,11 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
             case R.id.txtmainweight:
                 //back to the actofit screen
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
+
+            case R.id.txtmaintempreture:
+                //back to the actofit screen
+                context.startActivity(new Intent(this, ThermometerScreen.class));
                 break;
 
         }

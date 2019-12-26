@@ -61,8 +61,14 @@ import org.json.JSONObject;
 import org.xml.sax.Parser;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1031,8 +1037,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
-        //Disable the back button
+        super.onBackPressed();
     }
 
     private void setStaticData() {
@@ -1043,16 +1048,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         genderTV.setText("Gender :" + PersonalObject.getString("gender", ""));
 
     }
-/*
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(PrintPreviewActivity.this,Act_Main.class);
-        try {
-            AndMedical_App_Global.mBTcomm = null;
-        } catch(NullPointerException e) { }
-        startActivity(intent);
-//        super.onBackPressed();
-    }*/
 
     private void calculations() {
         String parsedDate = null;
@@ -1388,8 +1383,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 response -> {
                     //Disimissing the progress dialog
                     System.out.println("Login_Response" + response);
-
                     readFileName(response);
+//                    downloadFile();
 
                     try {
 //                        pd.dismiss();
@@ -1664,54 +1659,25 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 break;
 
             case R.id.iv_download:
-                downloadFile();
+                if(fileName != null) {
+                    downloadFile();
+                }else{
+                    Toast.makeText(PrintPreviewActivity.this, "No PDF Available ", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
 
     private void downloadFile() {
 
-        downloadUrl = "http://45.252.190.29/api/v1/pdf/"+fileName;
+        downloadUrl = "http://45.252.190.29/api/v1/pdf/" + fileName;
 
-        openPDFFile();
-
-       /* StringRequest jsonStringRequestt = new StringRequest(Request.Method.GET, url,
-                jsonObject -> {
-
-                    pd.dismiss();
-                    System.out.println("Response is = " + jsonObject);
-                    openPDFFile();
-                },
-                volleyError -> {
-                    Log.d("", "onErrorResponse: " + volleyError.toString());
-                    pd.dismiss();
-                }
-        );
-        AndMedical_App_Global.getInstance().addToRequestQueue(jsonStringRequestt);
-        jsonStringRequestt.setRetryPolicy(new DefaultRetryPolicy(500000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-*/    }
-
-    private void openPDFFile() {
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-
-            if(checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
-
-                //permission denied
-                String [] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-                //show popup for permission
-                requestPermissions(permissions,PERMISSION_STORAGE_CODE);
-
-
-            }else{
-                //permission granted
-
-                startDownload();
-
-            }
+        if(fileName != null) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
         }else{
-            startDownload();
+            Toast.makeText(PrintPreviewActivity.this, "No Pdf file Available ", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     private void startDownload() {
@@ -1729,8 +1695,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
-    }
 
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -1952,7 +1918,4 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         });
         dlgCustomdialog.show();
     }
-
-
-
 }
