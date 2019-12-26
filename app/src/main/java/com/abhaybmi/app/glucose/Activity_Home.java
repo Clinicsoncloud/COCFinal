@@ -445,6 +445,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
             if (text.contains("Result")) {
 
                 logDisplay.setVisibility(View.VISIBLE);
+                resultTextNew.setVisibility(View.GONE);
+                resultText.setVisibility(View.VISIBLE);
 
                 logDisplay.setText("Blood Glucose Result is");
 
@@ -458,7 +460,10 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
 
                 Log.e("result_sugar",""+resultOfGlucose);
 
-                resultText.setText(resultOfGlucose);
+                resultText.setText(text);
+
+                resultText.setVisibility(View.GONE);
+                resultTextNew.setVisibility(View.VISIBLE);
 
                 resultTextNew.setText(resultOfGlucose);
 
