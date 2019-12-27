@@ -278,10 +278,11 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
             strHeight += str;
             System.out.println("=======Str2 :==="+Principal.this.etManualHeight.getText());
             System.out.println("=======strHeight :==="+strHeight);
+            System.out.println("=======strHeightLength :==="+strHeight.length());
 
             try {
                 if (!strHeight.equalsIgnoreCase("")) {
-                    adjustedHeight = Integer.parseInt(strHeight) - 11;
+                    adjustedHeight = Integer.parseInt(strHeight) - 1;
                     Principal.this.etManualHeight.setText(String.valueOf(adjustedHeight));
                 }
             }catch (Exception e){

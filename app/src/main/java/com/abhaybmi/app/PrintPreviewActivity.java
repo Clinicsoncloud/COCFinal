@@ -1671,25 +1671,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void downloadFile() {
 
-        downloadUrl = "http://45.252.190.29/api/v1/pdf/"+fileName;
+        downloadUrl = "http://45.252.190.29/api/v1/pdf/" + fileName;
 
-        openPDFFile();
+        if(fileName != null) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
+        }else{
+            Toast.makeText(PrintPreviewActivity.this, "No Pdf file Available ", Toast.LENGTH_SHORT).show();
+        }
 
-       /* StringRequest jsonStringRequestt = new StringRequest(Request.Method.GET, url,
-                jsonObject -> {
-
-                    pd.dismiss();
-                    System.out.println("Response is = " + jsonObject);
-                    openPDFFile();
-                },
-                volleyError -> {
-                    Log.d("", "onErrorResponse: " + volleyError.toString());
-                    pd.dismiss();
-                }
-        );
-        AndMedical_App_Global.getInstance().addToRequestQueue(jsonStringRequestt);
-        jsonStringRequestt.setRetryPolicy(new DefaultRetryPolicy(500000, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-*/    }
+    }
 
     private void openPDFFile() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {

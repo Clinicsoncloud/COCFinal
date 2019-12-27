@@ -185,11 +185,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         mView = findViewById(R.id.custView);
         tts = new TextToSpeech(this,this);
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Please wait");
-        progressDialog.setCancelable(true);
-        progressDialog.show();
-
       /*  txt = "Please click on start Test";
         speakOut(txt);*/
 
@@ -211,10 +206,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         activity_home = Activity_Home.this;
 
         //communicator = (Communicator) activity_home;
-
-        if(mConnected) {
-            progressDialog.dismiss();
-        }
 
         startTest = (Button) findViewById(R.id.startTest);
         startTest.setOnClickListener(new View.OnClickListener() {
@@ -371,7 +362,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
 
     @Override
     public boolean go(String text) {
-
         Log.e("go_text",""+text);
 
         //set the log of the go text
@@ -381,7 +371,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         if(text.equals("Go")){
             txt = "Click on start Test";
             speakOut(txt);
-            progressDialog.dismiss();
         }
 
         //already existed the return statement of the boolean method
