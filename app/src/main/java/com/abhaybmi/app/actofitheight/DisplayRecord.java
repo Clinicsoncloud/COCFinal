@@ -222,6 +222,5 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
         }
-
     }
 }

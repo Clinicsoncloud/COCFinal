@@ -53,7 +53,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_login_screen);
-        tts = new TextToSpeech(this, this);
+        tts = new TextToSpeech(getApplicationContext(), this);
         init();
         clearDatabase();
 
@@ -66,7 +66,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         try {
             if (tts != null) {
                 tts.stop();
-                tts.shutdown();
+//                tts.shutdown();
 //            Toast.makeText(getApplicationContext(), "TTS Stoped", Toast.LENGTH_SHORT).show();
             }
         }catch (Exception e){
@@ -79,7 +79,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onResume() {
         super.onResume();
         // reintialize the tts engine to speak voice commands
-        tts = new TextToSpeech(this,this);
+//        tts = new TextToSpeech(this,this);
         speakOut();
 
     }
@@ -168,6 +168,13 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         objUrl.edit().clear().commit();
         objAshok.edit().clear().commit();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tts.shutdown();
+    }
+
 
     private void GenerateOTP() {
         pd = Tools.progressDialog(OtpLoginScreen.this);

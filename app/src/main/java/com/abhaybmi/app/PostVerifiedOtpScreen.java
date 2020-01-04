@@ -58,7 +58,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         try {
             if (tts != null) {
                 tts.stop();
-                tts.shutdown();
+//                tts.shutdown();
 //            Toast.makeText(getApplicationContext(), "TTS Stoped", Toast.LENGTH_SHORT).show();
             }
         }catch (Exception e){
@@ -75,7 +75,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     protected void onResume() {
         super.onResume();
         // reinitialize the tts engine to speak voice commands
-        tts = new TextToSpeech(this,this);
+//        tts = new TextToSpeech(this,this);
         speakOut();
     }
 
@@ -87,7 +87,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
         context = PostVerifiedOtpScreen.this;
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         //voice cmd for user to enter otp for verify
         speakOut();
@@ -107,7 +107,6 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
                 jsonObject1 -> {
                     System.out.println("Response is" + jsonObject1);
                     pd.dismiss();
-
                     try {
                         JSONObject jobj = new JSONObject(jsonObject1);
                         SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);

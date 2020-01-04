@@ -129,7 +129,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             } catch (Exception crap) {
                 crap.printStackTrace();
-
             }
             return false;
         });
@@ -183,7 +182,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
         mView = findViewById(R.id.custView);
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
       /*  txt = "Please click on start Test";
         speakOut(txt);*/
@@ -352,6 +351,8 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
     protected void onDestroy() {
         super.onDestroy();
         syncLib.stopReceiver();
+        tts.shutdown();
+
     }
 
 
@@ -380,7 +381,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
 
     @Override
     protected void onPause() {
-        super.onPause();
         //close the text to speach object to avoid run time exception
         try {
             if (tts != null) {
@@ -390,6 +390,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
         }
+        super.onPause();
     }
 
     @Override
@@ -429,7 +430,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
             }
-
 
         } else {
             if (text.contains("Result")) {

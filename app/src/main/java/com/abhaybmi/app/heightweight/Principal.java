@@ -377,7 +377,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
         this.next = findViewById(R.id.btnnext);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         this.next.setOnClickListener(new OnClickListener() {
             @Override
@@ -526,8 +526,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
     /* access modifiers changed from: protected */
     public void onResume() {
         super.onResume();
-
-        tts = new TextToSpeech(this,this);
+//        tts = new TextToSpeech(getApplicationContext(),this);
 
         if(!objdoctor.getString("height","").equals("")) {
             Log.e("onResume : ", "Height :" + objdoctor.getString("height", ""));
@@ -605,6 +604,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
     /* access modifiers changed from: protected */
     public void onDestroy() {
         super.onDestroy();
+        tts.shutdown();
     }
 
     public void encenderBluetooth() {

@@ -81,7 +81,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         context = ActofitMainActivity.this;
 
-        tts = new TextToSpeech(this, this);
+        tts = new TextToSpeech(getApplicationContext(), this);
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
         edtUserId = (EditText) findViewById(R.id.txtuid);
@@ -209,10 +209,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                             intent.putExtra("dob", parsedDate);
                             intent.putExtra("height", Integer.parseInt(height));
                             intent.putExtra("isAthlete", Athlate_val);
-//                            intent.putExtra("packagename", packagenames);
                             intent.setType("text/plain");
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            //startActivity(Intent.createChooser(intent, "Send"));
                             startActivityForResult(intent, REQUSET_CODE);
 
                             txtName.setText("Name : " + objData.getString("name", ""));
@@ -315,7 +313,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         //reinitialization of the tts engine for voice commands
 
-        tts = new TextToSpeech(this,this);
+//        tts = new TextToSpeech(this,this);
 
     }
 
@@ -369,6 +367,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
 
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tts.shutdown();
     }
 
     @Override

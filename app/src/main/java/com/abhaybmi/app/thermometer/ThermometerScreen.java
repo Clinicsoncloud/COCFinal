@@ -343,7 +343,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         editText1 = findViewById(R.id.editText1);
         editText1.setVisibility(View.VISIBLE);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -610,6 +610,14 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             }
         }
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        tts.shutdown();
+    }
+
 
     @Override
     public void onBackPressed() {

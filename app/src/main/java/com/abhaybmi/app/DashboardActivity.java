@@ -154,7 +154,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
         txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
         speakOut(txt);
 
@@ -235,6 +235,8 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         dismissIndicator();
         doStopService();
         unregisterReceiver(mMeasudataUpdateReceiver);
+
+        tts.shutdown();
     }
 
     private boolean mIsCheckBleetoothEnabled = false;
@@ -297,7 +299,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         try {
             if (tts != null) {
                 tts.stop();
-                tts.shutdown();
+//                tts.shutdown();
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
