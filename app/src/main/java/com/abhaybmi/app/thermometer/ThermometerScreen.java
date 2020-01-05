@@ -301,19 +301,26 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 Log.e("str", "" + str);
 
                 str = str.replace("�", "");
-               /* if(str.indexOf("0") == str.length() - 5){
-                    str = str.replace("0", "");
-                }
-*/
+
                 strTemp += str;
 
                 Log.e("strTemp", "" + strTemp);
-                if(strTemp.indexOf(".") == strTemp.length() - 2) {
-                    if(strTemp.indexOf("0") == strTemp.length() - 5){
-                        strTemp = strTemp.replaceFirst("0","");
-                    }
-                    ThermometerScreen.this.editText1.setText("" + strTemp);
+
+                String length = strTemp.trim();
+
+            Log.e("length", "" +length.length());
+
+                if(length.length() == 4){
+                    ThermometerScreen.this.editText1.setText(strTemp);
                     strTemp = "";
+                }else{
+                    if(strTemp.indexOf(".") == strTemp.length() - 2) {
+                        if(strTemp.indexOf("0") == strTemp.length() - 5){
+                            strTemp = strTemp.replaceFirst("0","");
+                        }
+                        ThermometerScreen.this.editText1.setText("" + strTemp);
+                        strTemp = "";
+                    }
                 }
             if (recib[1].equals("false")) {
                 ThermometerScreen.this.estadoBoton = "Connect";
@@ -390,7 +397,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (dispositivos.size() > 0) {
             for (BluetoothDevice device : dispositivos) {
 
-                if (device.getName().equals("HC 05 THERMOMETER")) {
+                if (device.getName().contains("THERMOMETER")) {
 
                     this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
                     this.mMacDispositivos.add(device.getAddress());
@@ -440,11 +447,11 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             public void onClick(View v) {
                 // getApplicationContext().stopService(new Intent(getApplicationContext(), ThermometerUsbService.class));
                 if(editText1.getText().length() > 0) {
-                    if(editText1.getText().toString().indexOf(".") == editText1.getText().length() - 2) {
+                    if(editText1.getText().toString().indexOf(".") == editText1.getText().length() - 2 || editText1.getText().toString().contains(".")) {
                         Log.e("length", " = " + editText1.getText().length());
                         Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
                         SharedPreferences.Editor editor = userData.edit();
-                        editor.putString("data", editText1.getText().toString());
+                        editor.putString("data", editText1.getText().toString().trim());
                         editor.commit();
                         try {
 //                            offBluetooth();

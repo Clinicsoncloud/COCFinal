@@ -1142,9 +1142,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "" + "Above are the indicative" + "\n" +
-                    "   " + "figure consult your" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n";
+                    "   "  + "Above results are"+ "\n" +
+                    "      "+" indicative"+"\n"+
+                    "  "+"figure,don't follow it"+"\n"+
+                    "   "+"without consulting a"+ "\n"+
+                    "        " + "doctor" + "\n\n\n\n\n\n\n";
 
         }else if(!BiosenseObject.getString("last","").equalsIgnoreCase("") && HemoglobinObject.getString("hemoglobin","").equalsIgnoreCase("")){
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
@@ -1208,9 +1210,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "" + "Above are the indicative" + "\n" +
-                    "   " + "figure consult your" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n";
+                    "   "  + "Above results are"+ "\n" +
+                    "      "+" indicative"+"\n"+
+                    "  "+"figure,don't follow it"+"\n"+
+                    "   "+"without consulting a"+ "\n"+
+                    "        " + "doctor" + "\n\n\n\n\n\n\n";
         }else if(BiosenseObject.getString("last","").equalsIgnoreCase("") && !HemoglobinObject.getString("hemoglobin","").equalsIgnoreCase("")){
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                     "" + "-----------------------" + "\n" +
@@ -1273,9 +1277,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "" + "Above are the indicative" + "\n" +
-                    "   " + "figure consult your" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n";
+                    "   "  + "Above results are"+ "\n" +
+                    "      "+" indicative"+"\n"+
+                    "  "+"figure,don't follow it"+"\n"+
+                    "   "+"without consulting a"+ "\n"+
+                    "        " + "doctor" + "\n\n\n\n\n\n\n";
         }else{
 
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
@@ -1337,9 +1343,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "" + "Above are the indicative" + "\n" +
-                    "   " + "figure consult your" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n";
+                    "   "  + "Above results are"+ "\n" +
+                    "      "+" indicative"+"\n"+
+                    "  "+"figure,don't follow it"+"\n"+
+                    "   "+"without consulting a"+ "\n"+
+                    "        " + "doctor" + "\n\n\n\n\n\n\n";
         }
     }
 
