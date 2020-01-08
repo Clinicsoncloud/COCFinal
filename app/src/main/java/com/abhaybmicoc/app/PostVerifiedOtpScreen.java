@@ -65,8 +65,6 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     @Override
     protected void onResume() {
         super.onResume();
-        // reinitialize the tts engine to speak voice commands
-        tts = new TextToSpeech(this,this);
         speakOut();
     }
 
@@ -78,7 +76,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
         context = PostVerifiedOtpScreen.this;
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         //voice cmd for user to enter otp for verify
         speakOut();

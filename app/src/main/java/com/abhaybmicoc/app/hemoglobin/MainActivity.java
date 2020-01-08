@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         context = MainActivity.this;
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         sharedPreferences = getSharedPreferences("device_data", MODE_PRIVATE);
@@ -291,8 +291,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onResume() {
         super.onResume();
-
-        tts = new TextToSpeech(this,this);
 
         // Check low energy support
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {

@@ -284,20 +284,26 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                 strTemp += str;
 
-                Log.e("strTemp", "" + strTemp);
+           //Akshay Thermometer code
+            ThermometerScreen.this.editText1.setText(""+strTemp);
+
+            strTemp = "";
+
+
+            Log.e("strTemp", "" + strTemp);
 
                 String length = strTemp.trim();
 
                     Log.e("length", "" +length.length());
 
-
-                    if(strTemp.indexOf(".") == strTemp.length() - 2) {
+    //  Ajit Thermometer code
+                 /*   if(strTemp.indexOf(".") == strTemp.length() - 2) {
                         if(strTemp.indexOf("0") == strTemp.length() - 5){
                             strTemp = strTemp.replaceFirst("0","");
                         }
                         ThermometerScreen.this.editText1.setText("" + strTemp);
                         strTemp = "";
-                    }
+                    }*/
 
             if (recib[1].equals("false")) {
                 ThermometerScreen.this.estadoBoton = "Connect";
@@ -332,7 +338,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         editText1 = findViewById(R.id.editText1);
         editText1.setVisibility(View.VISIBLE);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -560,7 +566,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     @Override
     public void onResume() {
         super.onResume();
-        tts = new TextToSpeech(this,this);
         connectToDevice();
     }
 

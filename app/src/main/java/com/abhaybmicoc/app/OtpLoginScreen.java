@@ -46,7 +46,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_login_screen);
-        tts = new TextToSpeech(this, this);
+        tts = new TextToSpeech(getApplicationContext(), this);
         init();
         clearDatabase();
 
@@ -71,8 +71,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     @Override
     protected void onResume() {
         super.onResume();
-        // reintialize the tts engine to speak voice commands
-        tts = new TextToSpeech(this,this);
         speakOut();
 
     }

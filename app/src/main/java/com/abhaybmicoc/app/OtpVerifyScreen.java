@@ -123,7 +123,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         etEmail = findViewById(R.id.etEmail);
 //        System.out.println("====Data====aaaaaaaaaaaaaaaa" + genderbutton.getText().toString());
 
-        tts = new TextToSpeech(this, this);
+        tts = new TextToSpeech(getApplicationContext(), this);
 
         try {
             sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);

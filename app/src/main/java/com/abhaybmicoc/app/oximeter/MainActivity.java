@@ -109,7 +109,6 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         super.onResume();
 
         //reinitialize the tts engine
-        tts = new TextToSpeech(this,this);
 
     }
 
@@ -126,7 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
 
         context = MainActivity.this;
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         txt = "Put Finger inside the Device and Click Start Test Button";
         speakOut(txt);

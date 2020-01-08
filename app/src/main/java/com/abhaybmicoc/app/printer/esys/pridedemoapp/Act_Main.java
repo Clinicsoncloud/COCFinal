@@ -133,9 +133,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     @Override
     protected void onResume() {
         super.onResume();
-
-        //reinitialize the tts engine for voice commands
-        tts = new TextToSpeech(this,this);
     }
 
     @Override
@@ -168,7 +165,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         this.btnPair = (Button)this.findViewById(R.id.actMain_btn_pair);
         this.btnComm = (Button)this.findViewById(R.id.actMain_btn_conn);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         txt = "Please Click on Connect Button";
         speakOut(txt);

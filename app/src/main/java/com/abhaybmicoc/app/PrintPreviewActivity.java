@@ -1649,11 +1649,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 break;
 
             case R.id.iv_download:
-                if(fileName != null) {
-                    downloadFile();
-                }else{
-                    Toast.makeText(PrintPreviewActivity.this, "No PDF Available ", Toast.LENGTH_SHORT).show();
-                }
+                downloadFile();
                 break;
         }
     }

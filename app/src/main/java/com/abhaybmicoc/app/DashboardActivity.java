@@ -152,7 +152,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
         txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
         speakOut(txt);
 
@@ -241,8 +241,6 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     protected void onResume() {
         super.onResume();
 
-        //reinitialize the tts engine for voice commands
-        tts = new TextToSpeech(this,this);
 
         isDevicePaired();
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();

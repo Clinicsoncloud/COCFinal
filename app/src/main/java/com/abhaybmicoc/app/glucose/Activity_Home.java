@@ -180,7 +180,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         txtGender = findViewById(R.id.txtGender);
         txtMobile = findViewById(R.id.txtMobile);
         mView = findViewById(R.id.custView);
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         txt = "Please click on start Test";
         speakOut(txt);
@@ -339,7 +339,6 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
     @Override
     protected void onResume() {
         super.onResume();
-        tts = new TextToSpeech(this,this);
         if (!mConnected) {
             syncLib.startReceiver();
         }else if(mConnected){

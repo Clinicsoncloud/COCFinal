@@ -75,7 +75,7 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_list);
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(getApplicationContext(),this);
 
         flag = getIntent().getIntExtra("flag", -1);
         util = new Util(this, this);
@@ -215,7 +215,6 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
     protected void onResume()
     {
         super.onResume();
-        tts = new TextToSpeech(this,this);
         try{
             // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
             // fire an intent to display a dialog asking the user to grant permission to enable it.

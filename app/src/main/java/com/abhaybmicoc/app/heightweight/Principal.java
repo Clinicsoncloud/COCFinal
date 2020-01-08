@@ -27,6 +27,7 @@ import com.abhaybmicoc.app.OtpLoginScreen;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -170,7 +171,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 return "Conectado";
 
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"Principal.java","doInBackground","not connected");
                 return "";
             }
         }
@@ -207,6 +208,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
                     }catch(Exception ex){
 
+                        ErrorUtils.logErrors(ex,"Principal.java","onPostExecute","not connected");
                         Principal.this.showCannotConnectToDevice();
 
                     }
@@ -251,6 +253,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 } catch (IOException e) {
                     Principal.this.enable = "false";
                     Principal.this.message = "";
+                    ErrorUtils.logErrors(e,"Principal.java","doInBackground","not connected");
                 }
                 publishProgress(new String[]{Principal.this.message, Principal.this.enable});
             }
@@ -266,20 +269,20 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
             System.out.println("=======Str :==="+str);
 
-            Principal.this.etManualHeight.append("" +str);
+//            Principal.this.etManualHeight.append("" +str);
 
-           /* strHeight += str;
+            strHeight += str;
             System.out.println("=======Str2 :==="+Principal.this.etManualHeight.getText());
             System.out.println("=======strHeight :==="+strHeight);
 
             try {
                 if (!strHeight.equalsIgnoreCase("")) {
-                    adjustedHeight = Integer.parseInt(strHeight) - 11;
+                    adjustedHeight = Integer.parseInt(strHeight) - 1;
                     Principal.this.etManualHeight.setText(String.valueOf(adjustedHeight));
                 }
             }catch (Exception e){
-
-            }*/
+                ErrorUtils.logErrors(e,"Principal.java","onProgressUpdate","not connected");
+            }
 
             if (recib[1].equals("false")) {
                 Principal.this.estadoBoton = "Connect";
@@ -471,6 +474,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                         Principal.this.ons.write(env.getBytes(Charset.forName("UTF-8")));
                     }
                 } catch (IOException e) {
+                    ErrorUtils.logErrors(e,"Principal.java","onClick","not connected");
                     Toast.makeText(Principal.this, Principal.this.Nosepuede, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -544,6 +548,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
+            ErrorUtils.logErrors(e,"Principal.java","onPause","not connected");
         }
 
     }
@@ -582,6 +587,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
             try {
                 this.socket.close();
             } catch (IOException e) {
+                ErrorUtils.logErrors(e,"Principal.java","onStop","not connected");
             }
         }
     }
