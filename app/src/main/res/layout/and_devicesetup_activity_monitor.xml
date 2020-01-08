@@ -43,7 +43,7 @@
                 android:layout_weight="2.5" />
         </LinearLayout>
 
-        <com.abhaybmi.app.view.ResizeTextView
+        <com.abhaybmicoc.app.view.ResizeTextView
             android:id="@+id/blood_pressure_monitor_text"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
