@@ -137,6 +137,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
     private class Connect extends AsyncTask<String, String, String> {
         private Connect() {
+
         }
 
         /* synthetic */ Connect(Principal principal, Connect Connect) {
@@ -171,7 +172,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 return "Conectado";
 
             } catch (Exception e) {
-                ErrorUtils.logErrors(e,"Principal.java","doInBackground","not connected");
+                ErrorUtils.logErrors(e,"Principal.java","doInBackground","failed to connect with socket");
                 return "";
             }
         }
@@ -208,7 +209,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
                     }catch(Exception ex){
 
-                        ErrorUtils.logErrors(ex,"Principal.java","onPostExecute","not connected");
+                        ErrorUtils.logErrors(ex,"Principal.java","onPostExecute","error while reconnecting");
                         Principal.this.showCannotConnectToDevice();
 
                     }
@@ -253,7 +254,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 } catch (IOException e) {
                     Principal.this.enable = "false";
                     Principal.this.message = "";
-                    ErrorUtils.logErrors(e,"Principal.java","doInBackground","not connected");
+                    ErrorUtils.logErrors(e,"Principal.java","doInBackground","failed to read bytes data");
                 }
                 publishProgress(new String[]{Principal.this.message, Principal.this.enable});
             }
@@ -281,7 +282,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                     Principal.this.etManualHeight.setText(String.valueOf(adjustedHeight));
                 }
             }catch (Exception e){
-                ErrorUtils.logErrors(e,"Principal.java","onProgressUpdate","not connected");
+                ErrorUtils.logErrors(e,"Principal.java","onProgressUpdate","failed to adjust height");
             }
 
             if (recib[1].equals("false")) {
@@ -452,6 +453,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                     Principal.this.estadoBoton = "Connect";
                     Principal.this.btn.setText(Principal.this.conec);
                 } catch (Exception e) {
+                    ErrorUtils.logErrors(e,"Principal.java","btnonClick","failded to close socket");
                 }
             }
         });
@@ -474,7 +476,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                         Principal.this.ons.write(env.getBytes(Charset.forName("UTF-8")));
                     }
                 } catch (IOException e) {
-                    ErrorUtils.logErrors(e,"Principal.java","onClick","not connected");
+                    ErrorUtils.logErrors(e,"Principal.java","onClick","click event failed");
                     Toast.makeText(Principal.this, Principal.this.Nosepuede, Toast.LENGTH_SHORT).show();
                 }
             }
@@ -548,7 +550,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
-            ErrorUtils.logErrors(e,"Principal.java","onPause","not connected");
+            ErrorUtils.logErrors(e,"Principal.java","onPause","failed to close tts");
         }
 
     }

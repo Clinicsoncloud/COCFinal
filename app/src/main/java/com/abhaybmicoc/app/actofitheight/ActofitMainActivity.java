@@ -41,6 +41,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     public static final String TAG = "MainActivity";
     public static final int REQUSET_CODE = 1001;
+    String KEY_ERROR = "error";
+    String KEY_MESSAGE = "message";
     public SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
     Button btn, btnnext, btnrepeat;
     EditText edtUserId, edtUserName, edtUserEmail, edtHeight;
@@ -61,12 +63,16 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private TextToSpeech tts;
     private String txt = "";
 
+  /*  RESULT_CANCELED = 101;
+    RESULT_CANCELED = 102;
+    RESULT_CANCELED = 100;*/
+
     Context context;
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
 
+  //        super.onBackPressed();
         //Disabling back button for going back
     }
 
@@ -337,6 +343,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 getdata(data);
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
+            /*
             String message = getResources().getString(R.string.subscription_over);
             new AlertDialog.Builder(ActofitMainActivity.this)
                     .setTitle("Subsciption Over!!!")
@@ -348,6 +355,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
+                */
         } else if (requestCode == RESULT_CANCELED) {
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
