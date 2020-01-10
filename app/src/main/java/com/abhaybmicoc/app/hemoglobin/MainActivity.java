@@ -50,6 +50,7 @@ import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -339,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                                 editor.commit();
                                 Log.e("hbvalue", " = " + hbvalue);
                             } catch (Exception e) {
-                                showToast(e.toString());
+                                ErrorUtils.logErrors(e,"MainActivity_hb","showToast","failed getting HB data");
                             }
                         }
                     }
@@ -604,7 +605,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         try {
             AndMedical_App_Global.mBTcomm = null;
-        } catch(NullPointerException e) { }
+        } catch(NullPointerException e) {
+            ErrorUtils.logErrors(e,"MainActivity_hb","device_off","error while setting null to mbtcomm");
+        }
         //when device is off we can move to next screen
         startActivity(new Intent(MainActivity.this, Act_Main.class));
     }

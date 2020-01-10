@@ -29,6 +29,7 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -111,7 +112,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             txtAge.setText("DOB : " + objData.getString("dob", ""));
 
         } catch (Exception e) {
-
+            ErrorUtils.logErrors(e,"ActofitMainActivity","onCreate","failed setting user data");
         }
 
         btnnext = findViewById(R.id.btnnext);
@@ -189,7 +190,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                             try {
                                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra("dob"));
                             } catch (ParseException e) {
-                                e.printStackTrace();
+                                ErrorUtils.logErrors(e,"ActofitMainActivity","onClick","failed dateformat date");
                             }
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                             String parsedDate = formatter.format(initDate);
@@ -278,7 +279,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             editor.commit();
 
         } catch (Exception e) {
-
+            ErrorUtils.logErrors(e,"ActofitMainActivity","getdata","failed to save data in sharedPref");
         }
 
         Log.d(TAG, "getdata: bonemass: " + bonemass + " bmr: " + bmr);
@@ -323,6 +324,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
+            ErrorUtils.logErrors(e,"ActofitMainActivity","onPause","failed closing tts");
         }
     }
 
@@ -337,7 +339,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 getdata(data);
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
-            String message = getResources().getString(R.string.subscription_over);
+            /*String message = getResources().getString(R.string.subscription_over);
             new AlertDialog.Builder(ActofitMainActivity.this)
                     .setTitle("Subsciption Over!!!")
                     .setMessage(message)
@@ -347,8 +349,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                         }
                     })
                     .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+                    .show();*/
         } else if (requestCode == RESULT_CANCELED) {
+            if(data != null){
+                Log.e("data"," = "+data);
+            }
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -358,8 +363,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            ErrorUtils.logErrors(e,"ActofitMainActivity","appInstalledOrNot","failed installing app");
         }
-
         return false;
     }
 

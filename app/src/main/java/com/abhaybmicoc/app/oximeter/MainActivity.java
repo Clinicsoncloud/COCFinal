@@ -23,6 +23,7 @@ import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
@@ -100,6 +101,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
+            ErrorUtils.logErrors(e,"MainActivity_Oximeter","onPause","failed to stop tts");
         }
 
     }

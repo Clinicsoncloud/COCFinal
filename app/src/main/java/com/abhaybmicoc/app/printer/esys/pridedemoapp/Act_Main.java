@@ -50,6 +50,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.prowesspride.api.Printer_ESC;
 import com.prowesspride.api.Printer_GEN;
 import com.prowesspride.api.Setup;
@@ -628,7 +629,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
                 }
             } catch (Exception e) {
-
+                ErrorUtils.logErrors(e,"Act_main","funContinue","funContinue failed");
             }
             // get selected radio button from radioGroup
             int selectedId = rgProtocol.getCheckedRadioButtonId();

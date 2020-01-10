@@ -36,6 +36,7 @@ import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -391,6 +392,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
+            ErrorUtils.logErrors(e,"Activity_Home","onPause","failed setting user data");
         }
     }
 
