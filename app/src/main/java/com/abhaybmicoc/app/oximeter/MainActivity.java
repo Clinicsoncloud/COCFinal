@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.oximeter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -7,10 +8,13 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -35,6 +39,8 @@ import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
 import java.util.Locale;
+
+import static com.abhaybmicoc.app.gatt.BleConnectService.REQUEST_ENABLE_BT;
 
 public class MainActivity extends Activity implements View.OnClickListener,TextToSpeech.OnInitListener {
     private static final String TAG = "MainActivity";
@@ -84,6 +90,7 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
     private BluetoothAdapter mBluetoothAdapter;
     private TextToSpeech tts;
     private String txt = "";
+    private int REQUEST_FINE_LOCATION = 2;
 
     @Override
     public void onBackPressed() {
@@ -378,6 +385,33 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         String text = textToSpeech;
 //        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasPermissions() {
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            requestBluetoothEnable();
+            return false;
+        } else if (!hasLocationPermissions()) {
+            requestPermission();
+            return false;
+        }
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission() {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasLocationPermissions() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestBluetoothEnable() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 }
 

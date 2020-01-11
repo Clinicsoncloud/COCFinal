@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.heightweight;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -8,9 +9,12 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,6 +41,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+
+import static com.abhaybmicoc.app.gatt.BleConnectService.REQUEST_ENABLE_BT;
 
 public class Principal extends Activity implements TextToSpeech.OnInitListener, OnClickListener {
     private static final int REQUEST_ENABLE_BT = 3;
@@ -98,6 +104,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
     //milliseconds declaration
     //It will take break of 5ms while trying to reconect
     private int CONNECT_TRY_PAUSE_MILLISECONDS = 500;
+    private int REQUEST_FINE_LOCATION = 2;
 
     @Override
     public void onInit(int status) {
@@ -370,6 +377,12 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
             this.btn.setText(this.conec);
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!hasPermissions()){
+                return;
+            }
+        }
+
         this.next = findViewById(R.id.btnnext);
 
         tts = new TextToSpeech(getApplicationContext(),this);
@@ -608,5 +621,32 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
         if (!this.mBluetoothAdapter.isEnabled()) {
             startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasPermissions() {
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            requestBluetoothEnable();
+            return false;
+        } else if (!hasLocationPermissions()) {
+            requestPermission();
+            return false;
+        }
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission() {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasLocationPermissions() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestBluetoothEnable() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 }

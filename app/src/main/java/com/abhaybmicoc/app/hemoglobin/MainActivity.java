@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         context.startActivity(new Intent(this,Activity_ScanList.class));
     }
 
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         connectionProgressDialog = new ProgressDialog(MainActivity.this);
         connectionProgressDialog.setMessage("Connecting...");
-        connectionProgressDialog.setCancelable(false);
+        connectionProgressDialog.setCancelable(true);
     }
 
     private void setupUI() {
@@ -333,8 +332,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
                                 hbvalue = hbvalue.replaceAll("[^0-9.]", "");
 
-                                String device_name = sharedPreferences.getString("devicename", "NA");
-                                String device_address = sharedPreferences.getString("device", "NA");
                                 SharedPreferences.Editor editor = hemoglobinObject.edit();
                                 editor.putString("hemoglobin", hbvalue);
                                 editor.commit();
@@ -492,6 +489,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             BluetoothDevice device = mScanResults.get(deviceAddress);
             if (device.getName() != null && device.getName().contains("THB_W"))
                 deviceArrayList.add(device.getName() + "\n" + device);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("devicename", device.getName());
+            editor.putString("deviceaddress", device.getAddress());
+            editor.commit();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);

@@ -1,17 +1,21 @@
 package com.abhaybmicoc.app.actofitheight;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +42,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.abhaybmicoc.app.gatt.BleConnectService.REQUEST_ENABLE_BT;
+
 public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
 
     public static final String TAG = "MainActivity";
@@ -63,6 +69,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private String txt = "";
 
     Context context;
+    private BluetoothAdapter mBluetoothAdapter;
+    private int REQUEST_FINE_LOCATION = 2;
 
     @Override
     public void onBackPressed() {
@@ -99,6 +107,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
         speakOut(txt);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if(!hasPermissions()){
+                return;
+            }
+        }
 
         bindEvents();
 
@@ -190,7 +204,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                             try {
                                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra("dob"));
                             } catch (ParseException e) {
-                                ErrorUtils.logErrors(e,"ActofitMainActivity","onClick","failed dateformat date");
+                                ErrorUtils.logErrors(e,"ActofitMainActivity","onClick","error");
                             }
                             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                             String parsedDate = formatter.format(initDate);
@@ -224,7 +238,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                         }
                     } else {
                         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packageName)));
-
                     }
                 }
             }
@@ -305,11 +318,33 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     protected void onResume() {
         super.onResume();
+    }
 
-        //reinitialization of the tts engine for voice commands
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasPermissions() {
+        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+            requestBluetoothEnable();
+            return false;
+        } else if (!hasLocationPermissions()) {
+            requestPermission();
+            return false;
+        }
+        return true;
+    }
 
-//        tts = new TextToSpeech(this,this);
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission() {
+        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasLocationPermissions() {
+        return checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestBluetoothEnable() {
+        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
     @Override
@@ -353,6 +388,14 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         } else if (requestCode == RESULT_CANCELED) {
             if(data != null){
                 Log.e("data"," = "+data);
+               String key_error = data.getStringExtra("KEY_ERROR");
+               if(key_error.equals("101")){
+                   Toast.makeText(getApplicationContext(), "Subscription over", Toast.LENGTH_SHORT).show();
+               }else if(key_error.equals("102")){
+                   Toast.makeText(getApplicationContext(),"No Saved Device",Toast.LENGTH_SHORT).show();
+               }else if(key_error.equals("100")){
+                   Toast.makeText(getApplicationContext(),"Impedance Measurement Error From SmartScale ",Toast.LENGTH_SHORT).show();
+               }
             }
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
