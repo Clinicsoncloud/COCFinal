@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package com.abhaybmicoc.app.screen;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
@@ -14,17 +14,21 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.abhaybmicoc.app.DeviceSetUpActivityListDesign;
+import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.entities.DataBase;
+import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
+import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
 
 import java.util.Set;
 
 
 /*
- * Class for Login 
+ * Class for Login
  */
-public class LanucherLoginActivity extends Activity implements OnClickListener {
+public class BpLoginScreen extends Activity implements OnClickListener {
 
     private TextView continue_guest;
     DataBase data, databaseGroup;
@@ -44,6 +48,7 @@ public class LanucherLoginActivity extends Activity implements OnClickListener {
         if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
             return;
         }
+
         prefs1 = getSharedPreferences("ANDMEDICAL", MODE_PRIVATE);
     }
 
@@ -81,7 +86,7 @@ public class LanucherLoginActivity extends Activity implements OnClickListener {
 
         databaseGroup = new DataBase(context, "Allaccount.db");
 
-        continue_guest.setOnClickListener(new OnClickListener() {
+        continue_guest.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -92,7 +97,7 @@ public class LanucherLoginActivity extends Activity implements OnClickListener {
                     ADSharedPreferences.putString(ADSharedPreferences.KEY_LOGIN_EMAIL, "guest@gmail.com");
                 }
                 Intent intent = new Intent(getApplicationContext(),
-                        OtpLoginScreen.class);
+                        DeviceSetUpActivityListDesign.class);
                 startActivity(intent);
             }
         });
@@ -107,11 +112,17 @@ public class LanucherLoginActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        setContentView(R.layout.activity_login_stand_alone);
+        setContentView(R.layout.activity_bp_login_screen);
+
+        TextView txtnext = findViewById(R.id.txtnext);
+        txtnext.setOnClickListener(v -> {
+            Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(objIntent);
+        });
 
         ViewGroup continue_guest = (ViewGroup) findViewById(R.id.continue_layout);
 
-        continue_guest.setOnClickListener(new OnClickListener() {
+        continue_guest.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -136,14 +147,14 @@ public class LanucherLoginActivity extends Activity implements OnClickListener {
 
                     if (isPairing) {
                         Intent intent1 = new Intent(getApplicationContext(),
-                                OtpLoginScreen.class);
+                                DashboardActivity.class);
                         startActivity(intent1);
                         return;
                     }
                 }
 
                 Intent intent1 = new Intent(getApplicationContext(),
-                        OtpLoginScreen.class);
+                        DashboardActivity.class);
                 startActivity(intent1);
             }
         });

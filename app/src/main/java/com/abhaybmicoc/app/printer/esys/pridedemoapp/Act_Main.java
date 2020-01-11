@@ -44,7 +44,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abhaybmicoc.app.PrintPreviewActivity;
+import main.java.com.abhaybmicoc.app.activity.PrintPreviewActivity;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;

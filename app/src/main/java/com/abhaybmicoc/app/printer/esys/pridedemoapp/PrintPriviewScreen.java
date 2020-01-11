@@ -52,7 +52,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.abhaybmicoc.app.OtpLoginScreen;
+import main.java.com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;

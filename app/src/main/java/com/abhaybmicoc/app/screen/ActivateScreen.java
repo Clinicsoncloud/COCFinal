@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package main.java.com.abhaybmicoc.app.screen;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

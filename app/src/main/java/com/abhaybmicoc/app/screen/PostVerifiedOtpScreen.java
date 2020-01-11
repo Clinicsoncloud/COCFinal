@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package main.java.com.abhaybmicoc.app.screen;
 
 import android.app.ProgressDialog;
 import android.content.Context;

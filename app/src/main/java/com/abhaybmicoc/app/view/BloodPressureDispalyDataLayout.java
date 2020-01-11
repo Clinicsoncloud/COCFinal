@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.abhaybmicoc.app.DashboardActivity;
+import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;

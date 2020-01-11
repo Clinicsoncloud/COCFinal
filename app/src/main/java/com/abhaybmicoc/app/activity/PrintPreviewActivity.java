@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package com.abhaybmicoc.app.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,6 +34,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.adapter.PrintPreviewActivityNew;
 import com.abhaybmicoc.app.adapter.PrintpriviewAdapter;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;

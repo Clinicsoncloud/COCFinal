@@ -65,12 +65,12 @@
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         
         <activity
-            android:name="com.abhaybmicoc.app.PostVerifiedOtpScreen"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.BpLoginScreen"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.BpLoginScreen"
             android:label="@string/title_activity_bp_login_screen"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
@@ -103,7 +103,7 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.ActivateScreen"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.ActivateScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan">
@@ -126,12 +126,12 @@
             android:label="@string/title_activity_print_priview_screen"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name="com.abhaybmicoc.app.OtpVerifyScreen"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.OtpVerifyScreen"
             android:label="@string/title_activity_otp_verify_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.OtpLoginScreen"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.OtpLoginScreen"
             android:label="@string/title_activity_otp_login_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -147,7 +147,7 @@
         <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
 
         <activity
-            android:name="com.abhaybmicoc.app.SplashActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.SplashActivity"
             android:label="@string/app_name">
 
 
@@ -175,7 +175,7 @@
             android:name="com.abhaybmicoc.app.base.ADInstructionActivity"
             android:theme="@style/Theme.TransBackground" />
         <activity
-            android:name="com.abhaybmicoc.app.LanucherLoginActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.LanucherLoginActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar">
 
@@ -263,7 +263,7 @@
         <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
 
         <activity
-            android:name="com.abhaybmicoc.app.DashboardActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.DashboardActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar">
             <!--<intent-filter>
@@ -279,10 +279,10 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.LoginActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.LoginActivity"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name="com.abhaybmicoc.app.InstructionActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.InstructionActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
@@ -294,7 +294,7 @@
             android:value="be3553252fe706b37ebb6102a8414776371c942d" />
 
         <activity
-            android:name="com.abhaybmicoc.app.DialogActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.DialogActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
@@ -305,7 +305,7 @@
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name="com.abhaybmicoc.app.PrintPreviewActivity"
+            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.PrintPreviewActivity"
             android:screenOrientation="landscape" >
 
 

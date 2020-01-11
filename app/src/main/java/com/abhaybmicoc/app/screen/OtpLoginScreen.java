@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package com.abhaybmicoc.app.screen;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Tools;

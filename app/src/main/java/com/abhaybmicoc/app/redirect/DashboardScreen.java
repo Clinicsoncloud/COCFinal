@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import com.abhaybmicoc.app.BpLoginScreen;
+import main.java.com.abhaybmicoc.app.screen.BpLoginScreen;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.glucose.Activity_ScanList;
 import com.abhaybmicoc.app.heightweight.HeightScreen;

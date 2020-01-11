@@ -23,7 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.abhaybmicoc.app.OtpLoginScreen;
+import main.java.com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;

@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package com.abhaybmicoc.app.activity;
 
 import android.app.Dialog;
 import android.app.FragmentManager;

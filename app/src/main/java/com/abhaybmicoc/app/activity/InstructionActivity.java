@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app;
+package com.abhaybmicoc.app.activity;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
