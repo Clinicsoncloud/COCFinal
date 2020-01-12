@@ -192,7 +192,7 @@
                     android:id="@+id/activity_home"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:context=".glucose.Activity_Home">
+                    tools:context=".glucose.ActivityGlucose">
 
                     <include
                         android:id="@+id/toolbar"

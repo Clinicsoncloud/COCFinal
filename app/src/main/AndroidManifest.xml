@@ -189,7 +189,7 @@
             -->
         </activity>
         <activity
-            android:name="com.abhaybmicoc.app.glucose.Activity_Home"
+            android:name="com.abhaybmicoc.app.glucose.ActivityGlucose"
             android:theme="@style/AppThemeGlucose" />
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main"

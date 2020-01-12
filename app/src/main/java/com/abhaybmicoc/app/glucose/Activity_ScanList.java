@@ -185,7 +185,7 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
                     util.putString(HelperC.key_autoconnecbtname, name.getText().toString());
                     util.putString(HelperC.key_autoconnectaddress, device.getAddress());
                     util.putBoolean(HelperC.key_autoconnectflag, true);
-                    final Intent intent = new Intent(getApplicationContext(), Activity_Home.class);
+                    final Intent intent = new Intent(getApplicationContext(), ActivityGlucose.class);
                     intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, name.getText().toString());
                     intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
                     if (mScanning)
@@ -354,7 +354,7 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
                                                       {
                                                           if (flag != 2)
                                                           {
-                                                              final Intent intent = new Intent(getApplicationContext(), Activity_Home.class);
+                                                              final Intent intent = new Intent(getApplicationContext(), ActivityGlucose.class);
                                                               intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, device.getName());
                                                               intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
                                                               if (mScanning)
