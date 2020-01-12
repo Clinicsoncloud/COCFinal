@@ -1,65 +1,68 @@
-package main.java.com.abhaybmicoc.app.screen;
+package com.abhaybmicoc.app.screen;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.os.Bundle;
 import android.widget.Button;
+import android.content.Intent;
+import android.content.Context;
 import android.widget.EditText;
+import android.app.ProgressDialog;
+import android.speech.tts.TextToSpeech;
+import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
 
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.utils.Tools;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
+
+import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Locale;
+import java.util.HashMap;
+import org.json.JSONObject;
+import org.json.JSONException;
 
 public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+    // region Variables
 
-    String Id, MobileNo;
-    Button btnVerify;
-    EditText etOTP;
-    ProgressDialog pd;
+    private Context context = PostVerifiedOtpScreen.this;
 
-    TextToSpeech tts;
-    private Context context;
+    private final String OTP_MESSAGE = "Please Enter Otp";
+
+    private String kioskId;
+    private String mobileNumber;
+
+    private EditText etOTP;
+    private Button btnVerify;
+    private TextToSpeech tts;
+    private ProgressDialog pd;
+
+    // endregion
+
+    // region Overridden methods
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_verified_otp_screen);
-        init();
+
+        setupUI();
+        setupEvents();
+        initializeLogic();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //close the tts engine to avoide the runtime exception from it
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-//            Toast.makeText(getApplicationContext(), "TTS Stoped", Toast.LENGTH_SHORT).show();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
+
+        stopTextToSpeech();
     }
 
     @Override
     public void onBackPressed() {
-        context.startActivity(new Intent(this,OtpLoginScreen.class));
+        goBack();
     }
 
     @Override
@@ -68,29 +71,105 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         speakOut();
     }
 
-    public void init() {
-        Id = getIntent().getStringExtra("kioskid");
-        MobileNo = getIntent().getStringExtra("mobile");
+    @Override
+    public void onInit(int status) {
+        checkIfTextToSpeechIsActivated();
+    }
+
+    // endregion
+
+    // region Initialization methods
+
+    /**
+     *
+     */
+    private void setupUI(){
+        setContentView(R.layout.activity_post_verified_otp_screen);
+
         etOTP = findViewById(R.id.etOTP);
         btnVerify = findViewById(R.id.btnLogin);
+        kioskId = getIntent().getStringExtra("kioskid");
+        mobileNumber = getIntent().getStringExtra("mobile");
+    }
 
-        context = PostVerifiedOtpScreen.this;
-
-        tts = new TextToSpeech(getApplicationContext(),this);
-
-        //voice cmd for user to enter otp for verify
-        speakOut();
-
+    /**
+     *
+     */
+    private void setupEvents(){
         btnVerify.setOnClickListener(v -> {
-            if (etOTP.getText().toString().equals("")) {
-                etOTP.setError("Please Enter OTP");
-            } else {
-                verifyOtp();
-            }
+            verifyOtp();
         });
     }
 
-    private void verifyOtp() {
+    private void initializeLogic(){
+        tts = new TextToSpeech(getApplicationContext(),this);
+        speakOut(OTP_MESSAGE);
+    }
+
+    // endregion
+
+    // region Logical methods
+
+    /**
+     *
+     */
+    private void speakOut(String message) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     */
+    private void goBack(){
+        context.startActivity(new Intent(this,OtpLoginScreen.class));
+    }
+
+    private void stopTextToSpeech(){
+        /* close the tts engine to avoide the runtime exception from it */
+        try {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
+    }
+
+    private void checkIfTextToSpeechIsActivated(){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = tts.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(OTP_MESSAGE);
+            }
+
+        } else {
+            Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void verifyOtp(){
+        if (etOTP.getText().toString().equals("")) {
+            etOTP.setError("Please Enter OTP");
+        } else {
+            verifyOtpFromAPI();
+        }
+    }
+
+    // endregion
+
+    // region API methods
+
+    /**
+     *
+     */
+    private void verifyOtpFromAPI() {
         pd = Tools.progressDialog(PostVerifiedOtpScreen.this);
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFYOTP_URL,
                 jsonObject1 -> {
@@ -104,7 +183,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
                         editor.putString("token", jobj.getJSONObject("data").getString("token"));
                         editor.commit();
                         Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
-                        objIntent.putExtra("mobile", MobileNo);
+                        objIntent.putExtra("mobile", mobileNumber);
                         startActivity(objIntent);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -118,8 +197,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
             protected Map<String, String> getParams() {
                 Map<String, String> params;
                 params = new HashMap<>();
-                params.put("kiosk_id", Id);
-                params.put("mobile", MobileNo);
+                params.put("kiosk_id", kioskId);
+                params.put("mobile", mobileNumber);
                 params.put("otp", etOTP.getText().toString());
                 return params;
             }
@@ -128,27 +207,5 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(90000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = tts.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut();
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-
-    private void speakOut() {
-        String text = "Please Enter Otp";
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
+    // endregion
 }
