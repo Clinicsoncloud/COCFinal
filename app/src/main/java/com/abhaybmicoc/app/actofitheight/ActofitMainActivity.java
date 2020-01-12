@@ -1,128 +1,104 @@
 package com.abhaybmicoc.app.actofitheight;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.content.Intent;
+import android.content.Context;
+import android.app.DatePickerDialog;
+import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
+import android.support.v7.app.ActionBar;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+
 import android.view.View;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.Switch;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.DatePicker;
+import android.widget.RadioGroup;
+import android.widget.RadioButton;
+import android.widget.CompoundButton;
+
+import android.util.Log;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.utils.ApiUtils;
 
+import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
-public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
+public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+    Context context = ActofitMainActivity.this;
 
-    public static final String TAG = "MainActivity";
     public static final int REQUSET_CODE = 1001;
-    String KEY_ERROR = "error";
-    String KEY_MESSAGE = "message";
-    public SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
-    Button btn, btnnext, btnrepeat;
-    EditText edtUserId, edtUserName, edtUserEmail, edtHeight;
-    Switch aSwitch;
-    RadioGroup RdioGrp;
-    RadioButton radioMale, radioFemale;
-    TextView edtUserDOB;
-    String gen;
-    boolean Athlate_val;
-    TextView distext;
-    android.support.v7.app.ActionBar actionBar;
-    private int day, month, year;
-    SharedPreferences actofitData;
-    SharedPreferences objData;
-    private String globalName, globlaid, globaldob, globalgender;
-    private TextView txtName, txtAge, txtGender, txtMobile;
-    private TextView txtHeight, txtWeight, txtTemprature, txtBpMonitor, txtOxmiter, txtSugar, txtHemoglobin;
-    private TextToSpeech tts;
+    public static final String TAG = "MainActivity";
+
     private String txt = "";
+
+    private boolean isAthlete;
+
+    private int day, month, year;
+
+    private SharedPreferences objData;
+    private SharedPreferences actofitData;
+
+    private SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+
+    private Button btn;
+    private Button btnNext;
+    private Button btnrepeat;
+
+    private EditText edtHeight;
+    private EditText edtUserId;
+    private EditText edtUserName;
+
+    private Switch aSwitch;
+
+    private RadioGroup RdioGrp;
+    private RadioButton radioMale;
+    private RadioButton radioFemale;
+
+    private TextView txtAge;
+    private TextView txtName;
+    private TextView txtHeight;
+    private TextView txtGender;
+    private TextView txtMobile;
+    private TextView edtUserDOB;
+    private ActionBar actionBar;
+
+    private TextToSpeech tts;
 
   /*  RESULT_CANCELED = 101;
     RESULT_CANCELED = 102;
     RESULT_CANCELED = 100;*/
 
-    Context context;
-
     @Override
     public void onBackPressed() {
-
-  //        super.onBackPressed();
-        //Disabling back button for going back
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.actofit_main_activity);
 
-        context = ActofitMainActivity.this;
+        setupUI();
+        setupEvents();
 
-        tts = new TextToSpeech(getApplicationContext(), this);
-        actionBar = getSupportActionBar();
-        actionBar.setTitle("Weight Measurement");
-        edtUserId = (EditText) findViewById(R.id.txtuid);
-        edtUserName = (EditText) findViewById(R.id.txtuname);
-        edtUserDOB = (TextView) findViewById(R.id.txt_sdob);
-        edtHeight = (EditText) findViewById(R.id.txtuheight);
-        RdioGrp = (RadioGroup) findViewById(R.id.rdogrp);
-        radioMale = (RadioButton) findViewById(R.id.radioMale);
-        radioFemale = (RadioButton) findViewById(R.id.radioFemale);
-        aSwitch = (Switch) findViewById(R.id.switchbtn);
+        loadData();
 
-        txtName = findViewById(R.id.txtName);
-        txtAge = findViewById(R.id.txtAge);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
+        btnNext = findViewById(R.id.btnnext);
 
-        txtHeight = findViewById(R.id.txtmainheight);
-
-        txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
-        speakOut(txt);
-
-        bindEvents();
-
-        try {
-            objData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-            // Reading from SharedPreferences
-
-            txtName.setText("Name : " + objData.getString("name", ""));
-            txtGender.setText("Gender : " + objData.getString("gender", ""));
-            txtMobile.setText("Phone : " + objData.getString("mobile_number", ""));
-            txtAge.setText("DOB : " + objData.getString("dob", ""));
-
-        } catch (Exception e) {
-
-        }
-
-        btnnext = findViewById(R.id.btnnext);
-
-        btnnext.setOnClickListener(new View.OnClickListener() {
+        btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
@@ -162,10 +138,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
                 if (isChecked) {
-                    Athlate_val = true;
+                    isAthlete = true;
 
                 } else {
-                    Athlate_val = false;
+                    isAthlete = false;
                 }
             }
         });
@@ -209,7 +185,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                             intent.putExtra("gender", objData.getString("gender", ""));
                             intent.putExtra("dob", parsedDate);
                             intent.putExtra("height", Integer.parseInt(height));
-                            intent.putExtra("isAthlete", Athlate_val);
+                            intent.putExtra("isAthlete", isAthlete);
 //                            intent.putExtra("packagename", packagenames);
                             intent.setType("text/plain");
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -234,11 +210,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 }
             }
         });
-    }
-
-    private void bindEvents() {
-        //Add click events to the top boxes
-        txtHeight.setOnClickListener(this);
     }
 
     private void getdata(Intent intent) {
@@ -374,11 +345,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-
             int result = tts.setLanguage(Locale.US);
 
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
                 speakOut(txt);
@@ -394,21 +363,52 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
-    @Override
-    public void onClick(View view) {
-        //click Listener
-        switch (view.getId()) {
-            case R.id.txtmainheight:
-                context.startActivity(new Intent(this, Principal.class));
-                break;
-        }
-    }
-
     private void setupUI(){
+        setContentView(R.layout.actofit_main_activity);
 
+        actionBar = getSupportActionBar();
+        actionBar.setTitle("Weight Measurement");
+
+        edtUserId = findViewById(R.id.txtuid);
+        edtUserDOB = findViewById(R.id.txt_sdob);
+        edtUserName = findViewById(R.id.txtuname);
+        edtHeight = findViewById(R.id.txtuheight);
+
+        RdioGrp = findViewById(R.id.rdogrp);
+        radioMale = findViewById(R.id.radioMale);
+        radioFemale = findViewById(R.id.radioFemale);
+
+        aSwitch = findViewById(R.id.switchbtn);
+
+        txtAge = findViewById(R.id.txtAge);
+        txtName = findViewById(R.id.txtName);
+        txtGender = findViewById(R.id.txtGender);
+        txtMobile = findViewById(R.id.txtMobile);
+
+        txtHeight = findViewById(R.id.txtmainheight);
+
+        txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
+        tts = new TextToSpeech(getApplicationContext(), this);
+        speakOut(txt);
     }
 
     private void setupEvents(){
-        
+        txtHeight.setOnClickListener(view -> {
+            context.startActivity(new Intent(this, Principal.class));
+        });
+    }
+
+    private void loadData(){
+        try {
+            objData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+            txtName.setText("Name : " + objData.getString("name", ""));
+            txtGender.setText("Gender : " + objData.getString("gender", ""));
+            txtMobile.setText("Phone : " + objData.getString("mobile_number", ""));
+            txtAge.setText("DOB : " + objData.getString("dob", ""));
+
+        } catch (Exception e) {
+
+        }
     }
 }
