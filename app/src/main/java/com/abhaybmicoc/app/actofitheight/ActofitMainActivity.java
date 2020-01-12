@@ -403,4 +403,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 break;
         }
     }
+
+    private void setupUI(){
+
+    }
+
+    private void setupEvents(){
+        
+    }
 }

@@ -1,7 +1,6 @@
 package com.abhaybmicoc.app.activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.view.Window;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,28 +15,27 @@ import android.content.SharedPreferences;
 
 import java.util.Set;
 
-import com.abhaybmicoc.app.DeviceSetUpActivityListDesign;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.entities.DataBase;
 import com.abhaybmicoc.app.heightweight.HeightScreen;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
+import com.abhaybmicoc.app.DeviceSetUpActivityListDesign;
 
 /*
  * Class for Login 
  */
 public class LoginActivity extends Activity {
-
     final Context context = this;
 
-    private TextView txtContinueGuest;
+    private TextView tvContinueGuest;
+    private ProgressDialog progressDialog;
 
     private DataBase data;
     private DataBase databaseGroup;
 
     private String rememberChecked;
-    private ProgressDialog progressDialog;
     private SharedPreferences sharedPreferences;
 
     /**
@@ -90,7 +88,8 @@ public class LoginActivity extends Activity {
 
         sharedPreferences = getSharedPreferences("ANDMEDICAL", MODE_PRIVATE);
 
-        txtContinueGuest = (TextView) findViewById(R.id.continue_guest);        // Wrong name continue_guest, why this is TextView
+        tvContinueGuest = findViewById(R.id.continue_guest);        // ISSUE: Wrong name continue_guest, why this is TextView
+
         String login_username = ADSharedPreferences.getString(ADSharedPreferences.KEY_LOGIN_USER_NAME, "");
         rememberChecked = sharedPreferences.getString("rememberme", "yes");
 
@@ -107,7 +106,7 @@ public class LoginActivity extends Activity {
      *
      */
     private void setupEvents(){
-        txtContinueGuest.setOnClickListener(view ->  {
+        tvContinueGuest.setOnClickListener(view ->  {
             updateSharedPreferences();
 
             Intent intent = new Intent(getApplicationContext(), DeviceSetUpActivityListDesign.class);
@@ -125,13 +124,10 @@ public class LoginActivity extends Activity {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         setContentView(R.layout.activity_login_stand_alone);
 
-        ViewGroup txtContinueGuest = (ViewGroup) findViewById(R.id.continue_layout);
+        ViewGroup tvContinueGuest = findViewById(R.id.continue_layout);
 
-        txtContinueGuest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                continueScreen();
-            }
+        tvContinueGuest.setOnClickListener(view ->  {
+            continueScreen();
         });
     }
 
