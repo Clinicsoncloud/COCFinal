@@ -19,7 +19,6 @@ import android.speech.tts.TextToSpeech;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
-import android.view.View.OnClickListener;
 import android.bluetooth.BluetoothAdapter;
 import android.widget.AdapterView.OnItemSelectedListener;
 
@@ -27,7 +26,6 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
 
 import java.util.Set;
 import java.util.UUID;
@@ -408,9 +406,11 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             connectToDevice();
             return;
         }
+
         HeightActivity.this.multitxt.append(">:" + "1" + "\n");
         String env = "1";
         strHeight = "";
+
         try {
             if (etManualHeight.getText().length() > 0) {
                 etManualHeight.setText("");
@@ -573,7 +573,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                 HeightActivity.this.estadoBoton2 = HeightActivity.this.disconec;
                 HeightActivity.this.enable = "true";
             }
-            HeightActivity.this.btn.setText(HeightActivity.this.estadoBoton2);
+            HeightActivity.this.btnConnect.setText(HeightActivity.this.estadoBoton2);
         }
 
     }
@@ -658,7 +658,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                     }
                 }
             }
-            HeightActivity.this.btn.setText(HeightActivity.this.estadoBoton2);
+            HeightActivity.this.btnConnect.setText(HeightActivity.this.estadoBoton2);
         }
     }
 

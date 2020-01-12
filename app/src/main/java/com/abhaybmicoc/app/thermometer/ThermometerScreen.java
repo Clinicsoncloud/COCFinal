@@ -25,7 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
+import com.abhaybmicoc.app.activity.ActofitMainActivity;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
