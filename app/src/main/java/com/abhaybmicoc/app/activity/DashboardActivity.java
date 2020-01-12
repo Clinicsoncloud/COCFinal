@@ -1324,7 +1324,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         switch (view.getId()){
 
             case R.id.txtmainheight:
-                context.startActivity(new Intent(this, Principal.class));
+                context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
             case R.id.txtmainweight:

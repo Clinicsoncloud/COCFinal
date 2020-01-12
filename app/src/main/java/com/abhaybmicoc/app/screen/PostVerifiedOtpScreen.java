@@ -11,6 +11,7 @@ import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
+import com.abhaybmicoc.app.R;
 import com.android.volley.Request;
 
 import com.abhaybmicoc.app.utils.Tools;
@@ -38,11 +39,11 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private EditText etOTP;
     private Button btnVerify;
     private TextToSpeech tts;
-    private ProgressDialog pd;
+    private ProgressDialog progressDialog;
 
     // endregion
 
-    // region Overridden methods
+    // region Event methods
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,12 +69,12 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     @Override
     protected void onResume() {
         super.onResume();
-        speakOut();
+        speakOut(OTP_MESSAGE);
     }
 
     @Override
     public void onInit(int status) {
-        checkIfTextToSpeechIsActivated();
+        checkIfTextToSpeechIsActivated(status);
     }
 
     // endregion
@@ -113,7 +114,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void speakOut(String message) {
+    private void speakOut(String text) {
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
@@ -124,6 +125,9 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         context.startActivity(new Intent(this,OtpLoginScreen.class));
     }
 
+    /**
+     *
+     */
     private void stopTextToSpeech(){
         /* close the tts engine to avoide the runtime exception from it */
         try {
@@ -136,7 +140,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         }
     }
 
-    private void checkIfTextToSpeechIsActivated(){
+    private void checkIfTextToSpeechIsActivated(int status){
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
 
@@ -162,6 +166,17 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         }
     }
 
+    /**
+     *
+     */
+    private void writeToPersonalSharedPreference(String key, String value){
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
     // endregion
 
     // region API methods
@@ -170,18 +185,18 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      *
      */
     private void verifyOtpFromAPI() {
-        pd = Tools.progressDialog(PostVerifiedOtpScreen.this);
+        progressDialog = Tools.progressDialog(PostVerifiedOtpScreen.this);
+
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFYOTP_URL,
-                jsonObject1 -> {
-                    System.out.println("Response is" + jsonObject1);
-                    pd.dismiss();
+                jsonObject -> {
+                    System.out.println("Response is" + jsonObject);
+                    progressDialog.dismiss();
 
                     try {
-                        JSONObject jobj = new JSONObject(jsonObject1);
-                        SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = objdoctor.edit();
-                        editor.putString("token", jobj.getJSONObject("data").getString("token"));
-                        editor.commit();
+                        JSONObject jobj = new JSONObject(jsonObject);
+
+                        writeToPersonalSharedPreference("token", jobj.getJSONObject("data").getString("token"));
+
                         Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                         objIntent.putExtra("mobile", mobileNumber);
                         startActivity(objIntent);
@@ -191,18 +206,21 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
                 },
                 volleyError -> {
                     Log.d("", "onErrorResponse: " + volleyError.toString());
-                    pd.dismiss();
+                    progressDialog.dismiss();
                 }) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params;
+
                 params = new HashMap<>();
                 params.put("kiosk_id", kioskId);
                 params.put("mobile", mobileNumber);
                 params.put("otp", etOTP.getText().toString());
+
                 return params;
             }
         };
+
         AndMedical_App_Global.getInstance().addToRequestQueue(jsonObjectRequest);
         jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(90000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
