@@ -65,12 +65,12 @@
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.PostVerifiedOtpScreen"
+            android:name="com.abhaybmicoc.app.screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.BpLoginScreen"
+            android:name="com.abhaybmicoc.app.screen.BpLoginScreen"
             android:label="@string/title_activity_bp_login_screen"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
@@ -78,7 +78,7 @@
             android:label="@string/title_activity_dashboard_screen"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name="com.abhaybmicoc.app.weight.WeightScreen"
+            android:name="com.abhaybmicoc.app.actofit.ActofitMainActivity"
             android:label="@string/title_activity_weight_screen"
             android:theme="@style/NoActionBar" />
         <activity
@@ -95,15 +95,14 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.heightweight.Principal"
+            android:name="com.abhaybmicoc.app.activity.HeightActivity"
             android:label="@string/title_activity_height_screen"
             android:theme="@style/AppThemeAction"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.ActivateScreen"
+            android:name="com.abhaybmicoc.app.screen.ActivateScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan">
@@ -121,46 +120,34 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.PrintPriviewScreen"
             android:label="@string/title_activity_print_priview_screen"
             android:theme="@style/NoActionBar" />
+
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.OtpVerifyScreen"
+            android:name="com.abhaybmicoc.app.screen.OtpVerifyScreen"
             android:label="@string/title_activity_otp_verify_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.screen.OtpLoginScreen"
+            android:name="com.abhaybmicoc.app.screen.OtpLoginScreen"
             android:label="@string/title_activity_otp_login_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
 
-        <uses-library
-            android:name="com.samsung.android.sdk.bt"
-            android:required="false" />
-        <uses-library
-            android:name="com.htc.android.bluetooth.le"
-            android:required="false" />
-
-        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
-
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.SplashActivity"
-            android:label="@string/app_name">
+            android:name="com.abhaybmicoc.app.activity.SplashActivity"
+            android:label="@string/app_name"/>
 
-
-        </activity>
-        <activity
-            android:name="com.abhaybmicoc.app.activity.ActofitMainActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppThemeAction" />
         <activity
             android:name="com.abhaybmicoc.app.screen.DisplayRecordScreen"
             android:label="Weight Details"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
+
         <activity
             android:name="com.abhaybmicoc.app.oximeter.MainActivity"
             android:screenOrientation="landscape"
@@ -174,10 +161,6 @@
         <activity
             android:name="com.abhaybmicoc.app.base.ADInstructionActivity"
             android:theme="@style/Theme.TransBackground" />
-        <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.LanucherLoginActivity"
-            android:finishOnTaskLaunch="true"
-            android:theme="@android:style/Theme.NoTitleBar">
 
             <!--
             <intent-filter>
@@ -186,7 +169,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             -->
-        </activity>
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -255,34 +237,14 @@
             android:label="@string/app_name"
             android:theme="@style/AppThemeGlucose" />
 
-
-        <service
-            android:name="com.abhaybmicoc.app.oxygen.ble.BluetoothLeService"
-            android:enabled="true" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
-
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.DashboardActivity"
+            android:name="com.abhaybmicoc.app.activity.DashboardActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar">
-            <!--<intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>-->
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.LoginActivity"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.InstructionActivity"
+            android:name="com.abhaybmicoc.app.activity.InstructionActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
@@ -294,7 +256,7 @@
             android:value="be3553252fe706b37ebb6102a8414776371c942d" />
 
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.DialogActivity"
+            android:name="com.abhaybmicoc.app.activity.DialogActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
@@ -304,12 +266,27 @@
             android:name="com.abhaybmicoc.app.DeviceSetUpActivityListDesign"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar" />
+
         <activity
-            android:name="com.abhaybmicoc.app.main.java.com.abhaybmicoc.app.activity.PrintPreviewActivity"
+            android:name="com.abhaybmicoc.app.activity.PrintPreviewActivity"
             android:screenOrientation="landscape" >
-
-
         </activity>
+
+        <uses-library
+            android:name="com.samsung.android.sdk.bt"
+            android:required="false" />
+        <uses-library
+            android:name="com.htc.android.bluetooth.le"
+            android:required="false" />
+
+        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
+        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
+
+        <service
+            android:name="com.abhaybmicoc.app.oxygen.ble.BluetoothLeService"
+            android:enabled="true" />
+        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
+        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
 
         <!--<service
             android:name=".thermometer.ThermometerUsbService"

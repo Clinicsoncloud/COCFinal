@@ -33,6 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.Activity_ScanList;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.oximeter.MainActivity;

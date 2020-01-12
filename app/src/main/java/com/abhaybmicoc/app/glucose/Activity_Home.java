@@ -28,11 +28,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.activity.ActofitMainActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
-import com.abhaybmicoc.app.heightweight.Principal;
+import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -618,7 +618,7 @@ public class Activity_Home extends AppCompatActivity implements Communicator, Te
         switch (view.getId()){
 
             case R.id.txtmainheight:
-                context.startActivity(new Intent(this, Principal.class));
+                context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
             case R.id.txtmainweight:

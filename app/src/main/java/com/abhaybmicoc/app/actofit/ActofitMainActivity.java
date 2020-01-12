@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app.activity;
+package com.abhaybmicoc.app.actofit;
 
 import android.util.Log;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
