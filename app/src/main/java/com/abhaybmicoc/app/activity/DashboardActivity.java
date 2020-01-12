@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.Activity_ScanList;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.oximeter.MainActivity;
@@ -1324,7 +1324,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         switch (view.getId()){
 
             case R.id.txtmainheight:
-                context.startActivity(new Intent(this, Principal.class));
+                context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
             case R.id.txtmainweight:

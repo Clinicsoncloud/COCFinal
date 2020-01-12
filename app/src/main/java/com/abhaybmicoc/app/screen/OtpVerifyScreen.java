@@ -1,68 +1,84 @@
-package main.java.com.abhaybmicoc.app.screen;
+package com.abhaybmicoc.app.screen;
 
-import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
+import android.os.Bundle;
 import android.widget.Button;
-import android.widget.DatePicker;
+import android.content.Intent;
+import android.content.Context;
 import android.widget.EditText;
+import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.app.ProgressDialog;
+import android.app.DatePickerDialog;
+import android.speech.tts.TextToSpeech;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.bluetooth.BluetoothAdapter;
+import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.heightweight.Principal;
-import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.Tools;
-import com.android.volley.DefaultRetryPolicy;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.activity.HeightActivity;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+
 import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Date;
+import java.util.Locale;
+import java.util.HashMap;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
-    Button btnLogin;
-    TextView txtName, txtmobile, txtemail;
-    EditText etMobile, etName, etDOB, etEmail;
-    ProgressDialog pd;
-    SharedPreferences sp, spToken;
-    private RadioGroup genderradio;
-    private RadioButton genderbutton, malebutton, femalebutton;
-    BluetoothAdapter mBluetoothAdapter;
-    int selectedId;
-    private int day, month, year;
-    public SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    String gender = "";
-    private TextToSpeech tts;
-    private Context context;
+    // region Variables
 
+    private Context context = OtpVerifyScreen.this;
+
+    private int day;
+    private int year;
+    private int month;
+    private int selectedGenderId;
+
+    private String gender = "";
+    private final String FILL_REGISTRATION_MESSAGE = "Please Enter Registration detail";
+
+    private Button btnLogin;
+
+    private EditText etName;
+    private EditText etEmail;
+    private EditText etDateOfBirth;
+    private EditText etMobileNumber;
+
+    private ProgressDialog pd;
+
+    private SharedPreferences sharedPreferenceActofit;
+    private SharedPreferences spToken;
+
+    private RadioButton rdMale;
+    private RadioButton rdFemale;
+    private RadioButton rdGender;
+    private RadioGroup rdGenderGroup;
+
+    private  SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+    private TextToSpeech tts;
+    private BluetoothAdapter mBluetoothAdapter;
+
+    // endregion
+
+    // region Event methods
 
     @Override
     public void onBackPressed() {
-        context.startActivity(new Intent(OtpVerifyScreen.this, OtpLoginScreen.class));
+        goToOtpLoginScreen();
     }
 
     @Override
@@ -70,14 +86,10 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp_verify_screen);
 
-        init();
+        setupUI();
+        setupEvents();
+        initializeData();
         enableBluetooth();
-
-        speakOut();
-
-        InputMethodManager imm = (InputMethodManager)
-                getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(etMobile, InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override
@@ -86,211 +98,144 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
         tts = new TextToSpeech(this,this);
 
-        speakOut();
+        speakOut(FILL_REGISTRATION_MESSAGE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //close the tts engine to avoide the runtime exception
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
+
+        stopTextToSpeech();
     }
 
-    public void init() {
+    @Override
+    public void onInit(int status) {
+        checkIfTextToSpeechIsActivated(status);
+    }
 
+    // endregion
+
+    // region Initialization methods
+
+    public void setupUI() {
         btnLogin = findViewById(R.id.btnLogin);
-        txtName = findViewById(R.id.txtName);
-        txtmobile = findViewById(R.id.txtmobile);
-        txtemail = findViewById(R.id.txtemail);
-        genderradio = findViewById(R.id.genderradio);
-        malebutton = findViewById(R.id.malebutton);
-        femalebutton = findViewById(R.id.femalebutton);
-        selectedId = genderradio.getCheckedRadioButtonId();
-        genderbutton = findViewById(selectedId);
+
+        rdMale = findViewById(R.id.radioMale);
+        rdFemale = findViewById(R.id.radioFemale);
+        rdGender = findViewById(selectedGenderId);
+        rdGenderGroup = findViewById(R.id.radiogrp);
+
+        selectedGenderId = rdGenderGroup.getCheckedRadioButtonId();
 
         context = OtpVerifyScreen.this;
 
-        etMobile = findViewById(R.id.etMobile);
         etName = findViewById(R.id.etName);
-        etDOB = findViewById(R.id.etDOB);
         etEmail = findViewById(R.id.etEmail);
-//        System.out.println("====Data====aaaaaaaaaaaaaaaa" + genderbutton.getText().toString());
+        etDateOfBirth = findViewById(R.id.etDOB);
+        etMobileNumber = findViewById(R.id.etMobile);
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
         tts = new TextToSpeech(getApplicationContext(), this);
 
         try {
-            sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+            sharedPreferenceActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
             spToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-
-            etMobile.setText(getIntent().getStringExtra("mobile"));
             etName.setText(spToken.getString("name", ""));
-            etDOB.setText(spToken.getString("dob", ""));
+            etDateOfBirth.setText(spToken.getString("dob", ""));
+            etMobileNumber.setText(getIntent().getStringExtra("mobile"));
+
             if (spToken.getString("email", "").equalsIgnoreCase("null"))
                 etEmail.setText("");
             else
                 etEmail.setText(spToken.getString("email", ""));
 
-
-            if (spToken.getString("gender", "").equalsIgnoreCase("male")) {
-                Log.e("gender_log", "" + spToken.getString("gender", ""));
-                malebutton.setChecked(true);
-                selectedId = malebutton.getId();
-                genderbutton = findViewById(selectedId);
-                SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                SharedPreferences.Editor editor = objdoctor.edit();
-                editor.putString("gender", genderbutton.getText().toString());
-                editor.commit();
-            } else if (spToken.getString("gender", "").equalsIgnoreCase("female")) {
-                Log.e("gender_log_in_female", "" + spToken.getString("gender", ""));
-                femalebutton.setChecked(true);
-                selectedId = femalebutton.getId();
-                genderbutton = findViewById(selectedId);
-                SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                SharedPreferences.Editor editor = objdoctor.edit();
-                editor.putString("gender", genderbutton.getText().toString());
-                editor.commit();
-            }
-
-            genderradio.setOnCheckedChangeListener((radioGroup, i) -> {
-                selectedId = genderradio.getCheckedRadioButtonId();
-                genderbutton = findViewById(selectedId);
-                SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                SharedPreferences.Editor editor = objdoctor.edit();
-                editor.putString("gender", genderbutton.getText().toString());
-                editor.commit();
-            });
-
-
+            initializeGender();
         } catch (Exception e) {
 
         }
+    }
 
-
-        etDOB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                etDOB.setEnabled(false);
-                showDialog();
-            }
+    private void setupEvents(){
+        etDateOfBirth.setOnClickListener(v -> {
+            showDateOfBirthPicker();
         });
 
         btnLogin.setOnClickListener(v -> {
-            if (etMobile.getText().toString().equals("")) {
-                etMobile.setError("Please Enter Mobile Number");
-            } else if (etMobile.getText().toString().length() < 10) {
-                etMobile.setError("Please Enter Valid Mobile Number");
+            if (etMobileNumber.getText().toString().equals("")) {
+                etMobileNumber.setError("Please Enter Mobile Number");
+            } else if (etMobileNumber.getText().toString().length() < 10) {
+                etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else if (etName.getText().toString().equals("")) {
                 etName.setError("Please Enter Name");
-            } else if (etDOB.getText().toString().equals("")) {
-                etDOB.setError("Please Select Date Of Birth");
+            } else if (etDateOfBirth.getText().toString().equals("")) {
+                etDateOfBirth.setError("Please Select Date Of Birth");
             } else {
-                PostData();
+                postData();
             }
+        });
 
+        rdGenderGroup.setOnCheckedChangeListener((radioGroup, i) -> {
+            selectedGenderId = rdGenderGroup.getCheckedRadioButtonId();
+            rdGender = findViewById(selectedGenderId);
+
+            writeToPersonalSharedPreference("gender", rdGender.getText().toString());
         });
     }
 
-    private void showDialog() {
+    private void initializeData(){
+        speakOut(FILL_REGISTRATION_MESSAGE);
+    }
 
-        etDOB.setEnabled(false);
+    // endregion
+
+    private void showDateOfBirthPicker() {
+        etDateOfBirth.setEnabled(false);
+
         final Calendar c = Calendar.getInstance();
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
+        showDatePickerDialog();
+    }
+
+    /**
+     *
+     */
+    private void showDatePickerDialog(){
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar calander2 = Calendar.getInstance();
-                calander2.setTimeInMillis(0);
-                calander2.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
-                Date SelectedDate = calander2.getTime();
-                DateFormat dateformat_US = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.US);
-                String StringDateformat_US = EEEddMMMyyyyFormat.format(SelectedDate);
-                etDOB.setText(StringDateformat_US);
-                etDOB.setEnabled(true);
+                Calendar calander = Calendar.getInstance();
+                calander.setTimeInMillis(0);
+                calander.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+
+                Date selectedDate = calander.getTime();
+                String dateTimeFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
+                etDateOfBirth.setText(dateTimeFormatUS);
+                etDateOfBirth.setEnabled(true);
             }
         };
+
         DatePickerDialog dpDialog = new DatePickerDialog(OtpVerifyScreen.this, listener, year, month + 1, day);
+
         dpDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         dpDialog.setCancelable(false);
+
         dpDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                etDOB.setEnabled(true);
+                etDateOfBirth.setEnabled(true);
             }
         });
+
         dpDialog.show();
     }
 
-    public static boolean isEmailValid(String email) {
-        boolean isValid = false;
-
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        CharSequence inputStr = email;
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(inputStr);
-        if (matcher.matches()) {
-            isValid = true;
-        }
-        return isValid;
-    }
-
-    private void registerUser() {
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("mobile_number", etMobile.getText().toString());
-            jsonObject.put("name", etName.getText().toString());
-            jsonObject.put("dob", etDOB.getText().toString());
-            jsonObject.put("email", etEmail.getText().toString());
-            jsonObject.put("gender", genderbutton.getText().toString());
-            jsonObject.put("author", 2);
-            jsonObject.put("device", 2);
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        pd = Tools.progressDialog(OtpVerifyScreen.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, ApiUtils.POSTDATA_URL, jsonObject,
-                jsonObject1 -> {
-
-                    System.out.println("Response is" + jsonObject1.toString());
-
-                    pd.dismiss();
-                    try {
-                        String id = jsonObject1.getString("id");
-                        String mobile_number = jsonObject1.getString("mobile_number");
-                        Toast.makeText(getApplicationContext(), "You Will receive Sms Shortly", Toast.LENGTH_SHORT).show();
-                        Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
-                        objIntent.putExtra("id", id);
-                        objIntent.putExtra("mobile_number", mobile_number);
-                        SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = objdoctor.edit();
-                        editor.putString("gender", genderbutton.getText().toString());
-                        editor.commit();
-                        startActivity(objIntent);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                },
-                volleyError -> {
-                    Log.d("", "onErrorResponse: " + volleyError.toString());
-                    pd.dismiss();
-                }
-        );
-        AndMedical_App_Global.getInstance().addToRequestQueue(jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(90000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    }
-
-    private void PostData() {
+    private void postData() {
         pd = Tools.progressDialog(OtpVerifyScreen.this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PROFILE_URL,
                 response -> {
@@ -310,7 +255,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                         editor.commit();
                         finish();
 
-                        Intent objIntent = new Intent(getApplicationContext(), Principal.class);
+                        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                         startActivity(objIntent);
                         finish();
 
@@ -335,8 +280,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 params = new HashMap<>();
                 params.put("name", etName.getText().toString());
                 params.put("email", etEmail.getText().toString());
-                params.put("dob", etDOB.getText().toString());
-                params.put("gender", genderbutton.getText().toString());
+                params.put("dob", etDateOfBirth.getText().toString());
+                params.put("gender", rdGender.getText().toString());
                 return params;
             }
 
@@ -348,24 +293,44 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
-    public void enableBluetooth() {
-        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!this.mBluetoothAdapter.isEnabled()) {
-            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-        }
+    // region Logical methods
+
+    /**
+     *
+     */
+    private void speakOut(String text) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
+    /**
+     *
+     */
+    private void goToOtpLoginScreen() {
+        context.startActivity(new Intent(OtpVerifyScreen.this, OtpLoginScreen.class));
+    }
 
+    /**
+     *
+     */
+    private void writeToPersonalSharedPreference(String key, String value){
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    /**
+     *
+     */
+    private void checkIfTextToSpeechIsActivated(int status){
+        if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
 
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
-                speakOut();
+                speakOut(FILL_REGISTRATION_MESSAGE);
             }
 
         } else {
@@ -373,10 +338,53 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         }
     }
 
-    private void speakOut() {
-        String text = "Please Enter Registration detail";
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    /**
+     *
+     */
+    public void enableBluetooth() {
+        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!this.mBluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
     }
+
+    /**
+     *
+     */
+    private void initializeGender(){
+        if (spToken.getString("gender", "").equalsIgnoreCase("male")) {
+            rdMale.setChecked(true);
+
+            writeToPersonalSharedPreference("gender", getSelectedGender());
+        } else if (spToken.getString("gender", "").equalsIgnoreCase("female")) {
+            rdFemale.setChecked(true);
+
+            writeToPersonalSharedPreference("gender", getSelectedGender());
+        }
+    }
+
+    private String getSelectedGender(){
+        int radioButtonID = rdGenderGroup.getCheckedRadioButtonId();
+
+        RadioButton radioButton = rdGenderGroup.findViewById(radioButtonID);
+        return radioButton.getText().toString();
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        /* close the tts engine to avoide the runtime exception from it */
+        try {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
+    }
+
+    // endregion
 }
 

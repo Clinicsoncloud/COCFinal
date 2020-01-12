@@ -302,7 +302,7 @@
                     android:padding="@dimen/pad10">
 
                     <TextView
-                        android:id="@+id/txtphysics"
+                        android:id="@+id/txtphysique"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"

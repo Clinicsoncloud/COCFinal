@@ -486,7 +486,7 @@
 
 
                 <Button
-                    android:id="@+id/btnsave"
+                    android:id="@+id/btn_smart_scale"
                     android:layout_width="300dp"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content"

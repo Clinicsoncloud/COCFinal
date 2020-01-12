@@ -1,4 +1,4 @@
-package main.java.com.abhaybmicoc.app.screen;
+package com.abhaybmicoc.app.screen;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.SplashActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.skyfishjy.library.RippleBackground;
 

@@ -191,7 +191,7 @@
                 android:layout_weight="0.64" />
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/btn_connect_temperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/repeat"
@@ -277,7 +277,7 @@
                 </LinearLayout>
 
                 <Button
-                    android:id="@+id/button3"
+                    android:id="@+id/btn_get_temperature"
                     android:background="@drawable/repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

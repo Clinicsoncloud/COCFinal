@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app.actofitheight;
+package com.abhaybmicoc.app.screen;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,46 +12,48 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.heightweight.Principal;
+import com.abhaybmicoc.app.activity.HeightActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 
-public class DisplayRecord extends AppCompatActivity implements View.OnClickListener {
-    Context context = DisplayRecord.this;
+public class DisplayRecordScreen extends AppCompatActivity implements View.OnClickListener {
+    // region Variables
+
+    Context context = DisplayRecordScreen.this;
 
     private Button btnBack;
     private ActionBar actionBar;
 
-    private SharedPreferences objData;
-    private SharedPreferences actofitData;
+    private SharedPreferences sharedPreferencesActofit;
+    private SharedPreferences sharedPreferencesPersonal;
 
     private TextView tvAge;
     private TextView tvBmi;
     private TextView tvBmr;
     private TextView tvName;
-    private TextView tvSugar;       // ISSUE: Not in use
     private TextView tvGender;
     private TextView tvSubFat;
     private TextView tvHeight;
-    private TextView tvVisFat;
-    private TextView tvSkemus;
     private TextView tvWeight;
     private TextView tvMobile;
     private TextView tvMetaAge;
     private TextView tvBodyFat;
-    private TextView tvPhysics;
     private TextView tvMusMass;
     private TextView tvProtein;
+    private TextView tvPhysique;
     private TextView tvBoneMass;
-    private TextView tvOximeter;        // ISSUE: Not in use
-    private TextView tvBpMonitor;       // ISSUE: Not in use
     private TextView tvBodyWater;
-    private TextView tvHemoglobin;      // ISSUE: Not in use
-    private TextView tvTemperature;     // ISSUE: Not in use
+    private TextView tvVisceralFat;
     private TextView tvHealthScore;
     private TextView tvFatFreeWeight;
+    private TextView tvSkeletalMuscle;
 
-    private String phy = "--";
+    private String physique = "--";
+
+    // endregion
+
+    // region Events
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -65,7 +67,7 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.txtmainheight:
-                context.startActivity(new Intent(this, Principal.class));
+                context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
             case R.id.txtmainweight:
@@ -74,8 +76,15 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    // endregion
+
+    // region Initialization methods
+
+    /**
+     *
+     */
     private void setupUI(){
-        setContentView(R.layout.layout_secound);        // ISSUE: Bad name for layout
+        setContentView(R.layout.layout_display_record_screen);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Composition Measure Data");
@@ -86,33 +95,28 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
         tvName = findViewById(R.id.txtName);
         tvWeight = findViewById(R.id.txtweight);
         tvSubFat = findViewById(R.id.txtsubfat);
-        tvVisFat = findViewById(R.id.txtvisfat);
         tvGender = findViewById(R.id.txtGender);
-        tvSkemus = findViewById(R.id.txtskemus);
         tvMobile = findViewById(R.id.txtMobile);
         tvWeight = findViewById(R.id.txtweight);
         tvBodyFat = findViewById(R.id.txtbodyfat);
-        tvPhysics = findViewById(R.id.txtphysics);
         tvMusMass = findViewById(R.id.txtmusmass);
         tvProtein = findViewById(R.id.txtprotine);
         tvMetaAge = findViewById(R.id.txtmetaage);
+        tvPhysique = findViewById(R.id.txtphysique);
         tvBoneMass = findViewById(R.id.txtbonemass);
         tvHeight = findViewById(R.id.txtmainheight);
+        tvVisceralFat = findViewById(R.id.txtvisfat);
         tvBodyWater = findViewById(R.id.txtbodywater);
-        tvSugar = findViewById(R.id.txtmainbloodsugar);
+        tvSkeletalMuscle = findViewById(R.id.txtskemus);
         tvHealthScore = findViewById(R.id.txthelthscore);
-        tvHemoglobin = findViewById(R.id.txtmainhemoglobin);
-        tvTemperature = findViewById(R.id.txtmaintempreture);
-        tvOximeter = findViewById(R.id.txtmainpulseoximeter);
         tvFatFreeWeight = findViewById(R.id.txtfatfreeweight);
-        tvBpMonitor = findViewById(R.id.txtmainbloodpressure);
 
         btnBack = findViewById(R.id.btnback);
 
         Intent intent = getIntent();
 
         showData(intent);
-        updateSharedPreferences(intent);
+        updateActofitSharedPreferences(intent);
     }
 
     /**
@@ -122,10 +126,12 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
         tvHeight.setOnClickListener(this);
         tvWeight.setOnClickListener(this);
 
-        btnBack.setOnClickListener(v -> {
-            goBack();
-        });
+        btnBack.setOnClickListener(v -> goBack());
     }
+
+    // endregion
+
+    // region Logical methods
 
     /**
      *
@@ -146,46 +152,46 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
         tvBmr.setText("");
         tvWeight.setText("");
         tvSubFat.setText("");
-        tvVisFat.setText("");
-        tvSkemus.setText("");
         tvBodyFat.setText("");
-        tvPhysics.setText("");
         tvMusMass.setText("");
         tvProtein.setText("");
         tvMetaAge.setText("");
+        tvPhysique.setText("");
         tvBoneMass.setText("");
         tvBodyWater.setText("");
         tvHealthScore.setText("");
+        tvVisceralFat.setText("");
         tvFatFreeWeight.setText("");
+        tvSkeletalMuscle.setText("");
     }
 
     /**
      *
      */
     private void showData(Intent intent){
-        objData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        phy = getPhy((intent.getFloatExtra("physique", 0f)));
+        physique = getPhysique((intent.getFloatExtra("physique", 0f)));
 
-        tvPhysics.setText("" + phy);
-        tvAge.setText("DOB : " + objData.getString("dob", ""));
-        tvName.setText("Name : " + objData.getString("name", ""));
+        tvPhysique.setText("" + physique);
         tvBmi.setText("" + intent.getFloatExtra("bmi", 0f));
-        tvGender.setText("Gender : " + objData.getString("gender", ""));
-        tvVisFat.setText("" + intent.getFloatExtra("visfat", 0f));
-        tvMobile.setText("Phone : " + objData.getString("mobile_number", ""));
         tvWeight.setText(intent.getFloatExtra("weight", 0f) + "Kg");
         tvMetaAge.setText("" + intent.getFloatExtra("metaage", 0f));
         tvBmr.setText("" + intent.getFloatExtra("bmr", 0f) + "kcal");
-        tvSkemus.setText("" + intent.getFloatExtra("skemus", 0f) + "%");
+        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
+        tvVisceralFat.setText("" + intent.getFloatExtra("visfat", 0f));
         tvSubFat.setText("" + intent.getFloatExtra("subfat", 0f) + "%");
-        tvBodyFat.setText("" + intent.getFloatExtra("bodyfat", 0f) + "%");
-        tvProtein.setText("" + intent.getFloatExtra("protine", 0f) + "%");
-        tvMusMass.setText("" + intent.getFloatExtra("musmass", 0f) + "kg");
-        tvHealthScore.setText("" + intent.getFloatExtra("helthscore", 0f));
-        tvBoneMass.setText("" + intent.getFloatExtra("bonemass", 0f) + "kg");
-        tvBodyWater.setText("" + intent.getFloatExtra("bodywater", 0f) + "%");
-        tvFatFreeWeight.setText("" + intent.getFloatExtra("fatfreeweight", 0f));
+        tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
+        tvBodyFat.setText("" + intent.getFloatExtra("bodyFat", 0f) + "%");
+        tvProtein.setText("" + intent.getFloatExtra("protein", 0f) + "%");
+        tvHealthScore.setText("" + intent.getFloatExtra("healthScore", 0f));
+        tvBoneMass.setText("" + intent.getFloatExtra("boneMass", 0f) + "kg");
+        tvMusMass.setText("" + intent.getFloatExtra("muscleMass", 0f) + "kg");
+        tvBodyWater.setText("" + intent.getFloatExtra("bodyWater", 0f) + "%");
+        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
+        tvSkeletalMuscle.setText("" + intent.getFloatExtra("skemus", 0f) + "%");
+        tvFatFreeWeight.setText("" + intent.getFloatExtra("fatFreeWeight", 0f));
+        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobileNumber", ""));
     }
 
     /**
@@ -193,8 +199,8 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
      * @param val
      * @return
      */
-    public String getPhy(float val) {
-        String value = "Phy";
+    public String getPhysique(float val) {
+        String value;
 
         if (val == 1) {
             value = "Potential Overweight";
@@ -221,12 +227,12 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
         return value;
     }
     
-    private void updateSharedPreferences(Intent intent){
-        actofitData = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+    private void updateActofitSharedPreferences(Intent intent){
+        sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
         
-        SharedPreferences.Editor editor = actofitData.edit();
+        SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
-        editor.putString("physique", phy);
+        editor.putString("physique", physique);
         editor.putString("bmi", String.valueOf(intent.getFloatExtra("bmi",0f)));
         editor.putString("bmr", String.valueOf(intent.getFloatExtra("bmr",0f)));
         editor.putString("subfat", String.valueOf(intent.getFloatExtra("subfat",0f)));
@@ -244,4 +250,6 @@ public class DisplayRecord extends AppCompatActivity implements View.OnClickList
 
         editor.commit();
     }
+
+    // endregion
 }

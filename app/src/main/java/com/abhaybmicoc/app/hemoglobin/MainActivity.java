@@ -39,12 +39,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.glucose.Activity_ScanList;
-import com.abhaybmicoc.app.heightweight.Principal;
+import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
-                context.startActivity(new Intent(MainActivity.this, Principal.class));
+                context.startActivity(new Intent(MainActivity.this, HeightActivity.class));
             }
         });
 
@@ -614,7 +614,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         switch (view.getId()){
             case R.id.txtmainheight:
                 Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
-                context.startActivity(new Intent(this, Principal.class));
+                context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
             case R.id.txtmainweight:

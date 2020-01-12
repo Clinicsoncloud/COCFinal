@@ -83,7 +83,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     }
 
     public void init() {
-
         speakOut();
 
         btnLogin = findViewById(R.id.btnLogin);

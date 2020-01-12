@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.actofitheight.ActofitMainActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
