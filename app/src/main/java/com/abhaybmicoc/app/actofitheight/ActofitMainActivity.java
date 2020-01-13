@@ -108,11 +108,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
         speakOut(txt);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!hasPermissions()){
-                return;
-            }
-        }
 
         bindEvents();
 

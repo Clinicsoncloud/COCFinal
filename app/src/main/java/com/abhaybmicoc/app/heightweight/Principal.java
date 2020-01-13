@@ -373,14 +373,10 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
 
         objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
 
+        this.spn = findViewById(R.id.spinner1);
+
         if (this.estadoBoton.equals("Connect")) {
             this.btn.setText(this.conec);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if(!hasPermissions()){
-                return;
-            }
         }
 
         this.next = findViewById(R.id.btnnext);
@@ -438,6 +434,7 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
         }
         this.adp = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
         this.spn.setAdapter(this.adp);
+
         this.spn.setOnItemSelectedListener(new OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View arg1, int position, long arg3) {
 
@@ -525,7 +522,12 @@ public class Principal extends Activity implements TextToSpeech.OnInitListener, 
                 }
             }
             this.adp = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
-            this.spn.setAdapter(this.adp);
+
+            try {
+                this.spn.setAdapter(this.adp);
+            }catch (Exception e){
+                ErrorUtils.logErrors(e,"Principal","spinnerMethod","error while setting adapter");
+            }
             Toast.makeText(this, this.BluetoothEncendido, Toast.LENGTH_LONG).show();
             return;
         }

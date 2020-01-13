@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private String txt;
     private TextView txtmainHeight,txtmainWeight,txtmainTemprature,txtmainOximeter,txtmainBpMonitor,txtmainSugar;
     private Context context;
+    private Button btnScan;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -106,7 +107,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         init();
 
         setupUI();
+
         bindEvents();
+
+        setupEvents();
 
         progressDialogs();
 
@@ -164,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         context.startActivity(new Intent(this,Activity_ScanList.class));
     }
 
+    //region progressDialog
     private void progressDialogs() {
 
         //Test progress Dialog
@@ -193,11 +198,18 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         connectionProgressDialog.setMessage("Connecting...");
         connectionProgressDialog.setCancelable(true);
     }
+    //endregion
 
+    //region setupUI
     private void setupUI() {
 
+        btnScan = findViewById(R.id.btnScan);
+
         buttonconnect = findViewById(R.id.btnconnect);
-        buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
+
+        if(buttonconnect.getVisibility() == View.VISIBLE) {
+            buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
+        }
 
         textViewdevice = findViewById(R.id.textdevice);
 
@@ -220,6 +232,14 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         deviceArrayList = new ArrayList();
 
         setUserInfo();
+    }
+    //endregion
+
+
+    private void setupEvents(){
+        buttonconnect.setOnClickListener(view -> {
+            connect();
+        });
     }
 
     private void setUserInfo() {
@@ -245,6 +265,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         //voice command for the device
         txt = "Please press the power button of device and click on scan button";
         speakOut(txt);
+
+        btnScan.setVisibility(View.GONE);
+        buttonconnect.setVisibility(View.GONE);
+
+        connectHemoglobin();
     }
 
 
@@ -374,8 +399,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void setConnected(boolean connected) {
         connectionProgressDialog.dismiss();
         mConnected = connected;
-        buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
-        buttonconnect.setText("Connected");
+        if(buttonconnect.getVisibility() == View.VISIBLE) {
+            buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
+            buttonconnect.setText("Connected");
+        }
         textViewdevice.setText(deviceName);
     }
 
@@ -492,20 +519,25 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("devicename", device.getName());
             editor.putString("deviceaddress", device.getAddress());
+
+            Log.e("saving","device_address"+sharedPreferences.getString("deviceaddress",""));
+
             editor.commit();
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
         adapter.notifyDataSetChanged();
         spinnerDevice.setAdapter(adapter);
+
     }
-
     // Gatt connection
-
     private void connectDevice(BluetoothDevice device) {
         GattClientCallback gattClientCallback = new GattClientCallback(this);
-        mGatt = device.connectGatt(this, true, gattClientCallback);
-
+        try {
+            mGatt = device.connectGatt(this, true, gattClientCallback);
+        }catch (Exception e){
+            connectionProgressDialog.dismiss();
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -540,26 +572,29 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sendMessage("U502");
     }
 
-    public void connect(View view) {
+    public void connect() {
         disconnectGattServer();
-        if (deviceArrayList.size() != 0) {
+            if (deviceArrayList.size() != 0) {
             String s = spinnerDevice.getSelectedItem().toString();
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(s.substring(s.length() - 17));
-            connectDevice(device);
-            connectionProgressDialog.show();
-            showToast(device.getName() + "");
-            deviceName = device.getName();
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString("device", s.substring(s.length() - 17));
-            editor.putString("devicename", device.getName());
-            editor.commit();
+                if (device != null) {
+                    connectDevice(device);
+                    connectionProgressDialog.show();
+                }
+                showToast(device.getName() + "");
+                deviceName = device.getName();
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("device", s.substring(s.length() - 17));
+                editor.putString("devicename", device.getName());
+                editor.commit();
 
-            deviceArrayList.clear();
-            ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
-            adapter.notifyDataSetChanged();
-            spinnerDevice.setAdapter(adapter);
+                deviceArrayList.clear();
+                ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
+                adapter.notifyDataSetChanged();
+                spinnerDevice.setAdapter(adapter);
+            }
 
-        }
+
     }
 
     public void readBatchCode(View view) {
@@ -684,7 +719,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     // Messaging
-
     private void sendMessage(String msg) {
         if (!mConnected || !mEchoInitialized) {
             showToast("Not Connected");
@@ -712,6 +746,22 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         } else {
             logError("Failed to write data");
+        }
+    }
+
+    private void connectHemoglobin(){
+        try{
+        if(sharedPreferences.getString("deviceaddress","") != null){
+            Log.e("device_address",""+sharedPreferences.getString("deviceaddress",""));
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(sharedPreferences.getString("deviceaddress",""));
+            connectDevice(device);
+        }else {
+            btnScan.setVisibility(View.VISIBLE);
+            buttonconnect.setVisibility(View.VISIBLE);
+        }
+        }catch (Exception e){
+            connectionProgressDialog.dismiss();
+            ErrorUtils.logErrors(e,"MainActivity_Hb","connectHemoglobin","error while connecting");
         }
     }
 }

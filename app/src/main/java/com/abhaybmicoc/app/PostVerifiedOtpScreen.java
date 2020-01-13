@@ -14,6 +14,7 @@ import android.widget.EditText;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
@@ -82,10 +83,12 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         speakOut();
 
         btnVerify.setOnClickListener(v -> {
-            if (etOTP.getText().toString().equals("")) {
-                etOTP.setError("Please Enter OTP");
-            } else {
-                verifyOtp();
+            if (Utils.getInstance().giveLocationPermission(this)) {
+                if (etOTP.getText().toString().equals("")) {
+                    etOTP.setError("Please Enter OTP");
+                } else {
+                    verifyOtp();
+                }
             }
         });
     }

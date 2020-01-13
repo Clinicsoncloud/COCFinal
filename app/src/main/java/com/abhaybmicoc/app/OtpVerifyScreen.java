@@ -25,6 +25,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -183,18 +184,19 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         });
 
         btnLogin.setOnClickListener(v -> {
-            if (etMobile.getText().toString().equals("")) {
-                etMobile.setError("Please Enter Mobile Number");
-            } else if (etMobile.getText().toString().length() < 10) {
-                etMobile.setError("Please Enter Valid Mobile Number");
-            } else if (etName.getText().toString().equals("")) {
-                etName.setError("Please Enter Name");
-            } else if (etDOB.getText().toString().equals("")) {
-                etDOB.setError("Please Select Date Of Birth");
-            } else {
-                PostData();
+            if (Utils.getInstance().giveLocationPermission(this)) {
+                if (etMobile.getText().toString().equals("")) {
+                    etMobile.setError("Please Enter Mobile Number");
+                } else if (etMobile.getText().toString().length() < 10) {
+                    etMobile.setError("Please Enter Valid Mobile Number");
+                } else if (etName.getText().toString().equals("")) {
+                    etName.setError("Please Enter Name");
+                } else if (etDOB.getText().toString().equals("")) {
+                    etDOB.setError("Please Select Date Of Birth");
+                } else {
+                    PostData();
+                }
             }
-
         });
     }
 
@@ -219,6 +221,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 etDOB.setEnabled(true);
             }
         };
+
         DatePickerDialog dpDialog = new DatePickerDialog(OtpVerifyScreen.this, listener, year, month + 1, day);
         dpDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         dpDialog.setCancelable(false);

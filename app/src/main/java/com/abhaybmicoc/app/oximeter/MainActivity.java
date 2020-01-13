@@ -381,7 +381,6 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
     }
 
     private void speakOut(String textToSpeech) {
-
         String text = textToSpeech;
 //        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
