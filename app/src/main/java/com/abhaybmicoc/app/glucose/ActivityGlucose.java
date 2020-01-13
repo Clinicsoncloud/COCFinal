@@ -403,23 +403,23 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
 
-            case R.id.txtmaintempreture:
+            case R.id.tv_header_tempreture:
                 context.startActivity(new Intent(this, ThermometerScreen.class));
                 break;
 
-            case R.id.txtmainpulseoximeter:
+            case R.id.tv_header_pulseoximeter:
                 context.startActivity(new Intent(this, com.abhaybmicoc.app.oximeter.MainActivity.class));
                 break;
 
-            case R.id.txtmainbloodpressure:
+            case R.id.tv_header_bloodpressure:
                 context.startActivity(new Intent(this, DashboardActivity.class));
                 break;
         }
@@ -466,11 +466,11 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         rbPostMeal = layoutGlucose.findViewById(R.id.rb_post);
         rbRandom = layoutGlucose.findViewById(R.id.rb_random);
 
-        tvHeight = findViewById(R.id.txtmainheight);
-        tvWeight = findViewById(R.id.txtmainweight);
-        tvTemprature = findViewById(R.id.txtmaintempreture);
-        tvOximeter = findViewById(R.id.txtmainpulseoximeter);
-        tvBpMonitor = findViewById(R.id.txtmainbloodpressure);
+        tvHeight = findViewById(R.id.tv_header_height);
+        tvWeight = findViewById(R.id.tv_header_weight);
+        tvTemprature = findViewById(R.id.tv_header_tempreture);
+        tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
+        tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
 
         menuIcon = mCustomView.findViewById(R.id.menuIcon);
         menuIcon.setVisibility(View.GONE);
@@ -479,10 +479,10 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        tvName = findViewById(R.id.txtName);
-        tvAge = findViewById(R.id.txtAge);
-        tvGender = findViewById(R.id.txtGender);
-        tvMobile = findViewById(R.id.txtMobile);
+        tvName = findViewById(R.id.tv_name);
+        tvAge = findViewById(R.id.tv_age);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobile = findViewById(R.id.tv_mobile_number);
         mView = findViewById(R.id.custView);
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 

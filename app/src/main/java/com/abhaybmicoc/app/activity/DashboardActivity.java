@@ -19,7 +19,6 @@ import android.app.FragmentManager;
 import android.widget.LinearLayout;
 import android.content.IntentFilter;
 import android.content.ComponentName;
-import android.widget.RelativeLayout;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGatt;
 import android.speech.tts.TextToSpeech;
@@ -38,7 +37,6 @@ import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.slidemenu.SlideMenu;
 import com.abhaybmicoc.app.oximeter.MainActivity;
-import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 
@@ -1214,19 +1212,19 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         //Click events listener
         switch (view.getId()){
 
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
 
-            case R.id.txtmaintempreture:
+            case R.id.tv_header_tempreture:
                 context.startActivity(new Intent(this, ThermometerScreen.class));
                 break;
 
-            case R.id.txtmainpulseoximeter:
+            case R.id.tv_header_pulseoximeter:
                 context.startActivity(new Intent(this, MainActivity.class));
                 break;
         }
@@ -1240,10 +1238,10 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         setContentView(R.layout.and_dashboard_new);
 
         //Initialization of the top boxes
-        txtHeight = findViewById(R.id.txtmainheight);
-        txtWeight = findViewById(R.id.txtmainweight);
-        txtTemprature = findViewById(R.id.txtmaintempreture);
-        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
+        txtHeight = findViewById(R.id.tv_header_height);
+        txtWeight = findViewById(R.id.tv_header_weight);
+        txtTemprature = findViewById(R.id.tv_header_tempreture);
+        txtOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
         context = DashboardActivity.this;
 
@@ -1264,19 +1262,19 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             db = new DataBase(this);
         }
 
-        btnnext = findViewById(R.id.btnnext);
+        btnnext = findViewById(R.id.btn_next);
         btnstart = findViewById(R.id.btnstart);
-        btnrepeat = findViewById(R.id.btnrepeat);
+        btnrepeat = findViewById(R.id.btn_repeat);
         linearContainer = findViewById(R.id.linearContainer);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         db.deleteBpData(this);
 
-        txtName = findViewById(R.id.txtName);
-        txtAge = findViewById(R.id.txtAge);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
+        txtName = findViewById(R.id.tv_name);
+        txtAge = findViewById(R.id.tv_age);
+        txtGender = findViewById(R.id.tv_gender);
+        txtMobile = findViewById(R.id.tv_mobile_number);
 
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
     }

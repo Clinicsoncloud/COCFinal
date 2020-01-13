@@ -161,7 +161,7 @@
 
 
                     <TextView
-                        android:id="@+id/txtweight"
+                        android:id="@+id/tv_weight"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -280,7 +280,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txtphysique"
+                        android:id="@+id/tv_physique"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -399,7 +399,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txtprotine"
+                        android:id="@+id/tv_protine"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -450,7 +450,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txthelthscore"
+                        android:id="@+id/tv_helth_score"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -467,7 +467,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txtskemus"
+                        android:id="@+id/tv_skeletel_muscle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -485,7 +485,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txtsubfat"
+                        android:id="@+id/tv_subcutaneous_fat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"
@@ -519,7 +519,7 @@
                         android:background="@drawable/line" />
 
                     <TextView
-                        android:id="@+id/txtbodyfat"
+                        android:id="@+id/tv_body_fat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="20dp"

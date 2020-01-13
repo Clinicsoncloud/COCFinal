@@ -27,13 +27,13 @@ public class DashboardScreen extends AppCompatActivity implements View.OnClickLi
     }
 
     public void init() {
-        TextView txtmainweight = findViewById(R.id.txtmainweight);
-        TextView txtmainheight = findViewById(R.id.txtmainheight);
-        TextView txtmainbloodpresue = findViewById(R.id.txtmainbloodpressure);
-        TextView txtmainbloodsugar = findViewById(R.id.txtmainbloodsugar);
-        TextView txtmainhemoglobin = findViewById(R.id.txtmainhemoglobin);
-        TextView txtmainpulseoxi = findViewById(R.id.txtmainpulseoximeter);
-        TextView txtmaintempresue = findViewById(R.id.txtmaintempreture);
+        TextView txtmainweight = findViewById(R.id.tv_header_weight);
+        TextView txtmainheight = findViewById(R.id.tv_header_height);
+        TextView txtmainbloodpresue = findViewById(R.id.tv_header_bloodpressure);
+        TextView txtmainbloodsugar = findViewById(R.id.tv_header_bloodsugar);
+        TextView txtmainhemoglobin = findViewById(R.id.tv_header_hemoglobin);
+        TextView txtmainpulseoxi = findViewById(R.id.tv_header_pulseoximeter);
+        TextView txtmaintempresue = findViewById(R.id.tv_header_tempreture);
         TextView txtmainprinter = findViewById(R.id.txtmainprinter);
         TextView txtprintersetup = findViewById(R.id.txtprintersetup);
 
@@ -51,31 +51,31 @@ public class DashboardScreen extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 Intent objheight = new Intent(getApplicationContext(), HeightScreen.class);
                 startActivity(objheight);
                 break;
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 Intent objweight = new Intent(getApplicationContext(), WeightScreen.class);
                 startActivity(objweight);
                 break;
-            case R.id.txtmaintempreture:
+            case R.id.tv_header_tempreture:
                 Intent objtemp = new Intent(getApplicationContext(), ThermometerScreen.class);
                 startActivity(objtemp);
                 break;
-            case R.id.txtmainpulseoximeter:
+            case R.id.tv_header_pulseoximeter:
                 Intent objpulse = new Intent(getApplicationContext(), OxygenActivity.class);
                 startActivity(objpulse);
                 break;
-            case R.id.txtmainbloodpressure:
+            case R.id.tv_header_bloodpressure:
                 Intent objbp = new Intent(getApplicationContext(), BpLoginScreen.class);
                 startActivity(objbp);
                 break;
-            case R.id.txtmainhemoglobin:
+            case R.id.tv_header_hemoglobin:
                 Intent objhemo = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(objhemo);
                 break;
-            case R.id.txtmainbloodsugar:
+            case R.id.tv_header_bloodsugar:
                 Intent objsugar = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
                 startActivity(objsugar);
                 break;

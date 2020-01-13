@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/txtmainheight"
+            android:id="@+id/tv_header_height"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -28,7 +28,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtmainweight"
+            android:id="@+id/tv_header_weight"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -42,7 +42,7 @@
 
 
         <TextView
-            android:id="@+id/txtmaintempreture"
+            android:id="@+id/tv_header_tempreture"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -55,7 +55,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtmainpulseoximeter"
+            android:id="@+id/tv_header_pulseoximeter"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -68,7 +68,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtmainbloodpressure"
+            android:id="@+id/tv_header_bloodpressure"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -82,7 +82,7 @@
 
 
         <TextView
-            android:id="@+id/txtmainhemoglobin"
+            android:id="@+id/tv_header_bloodsugar"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -95,7 +95,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtmainbloodsugar"
+            android:id="@+id/tv_header_hemoglobin"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -118,7 +118,7 @@
         android:weightSum="4">
 
         <TextView
-            android:id="@+id/txtName"
+            android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -130,7 +130,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtAge"
+            android:id="@+id/tv_age"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -142,7 +142,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtGender"
+            android:id="@+id/tv_gender"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -154,7 +154,7 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/txtMobile"
+            android:id="@+id/tv_mobile_number"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
             android:layout_gravity="center"
@@ -187,7 +187,6 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
-            android:layout_below="@+id/main"
             android:background="@drawable/line" />
         <LinearLayout
             android:layout_width="match_parent"
@@ -195,13 +194,13 @@
             android:visibility="visible">
 
             <Spinner
-                android:id="@+id/spinner1"
+                android:id="@+id/sp_height"
                 android:layout_width="119dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.64" />
 
             <Button
-                android:id="@+id/button1"
+                android:id="@+id/btn_connect"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/repeat"
@@ -219,7 +218,7 @@
             android:orientation="vertical">
 
             <EditText
-                android:id="@+id/editText2"
+                android:id="@+id/et_multiline"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:ellipsize="end"
@@ -227,7 +226,7 @@
                 android:inputType="textMultiLine" />
 
             <EditText
-                android:id="@+id/etManualHeight"
+                android:id="@+id/et_manual_height"
                 android:layout_width="300dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
@@ -250,7 +249,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/editText1"
+                android:id="@+id/et_temprature"
                 android:layout_width="139dp"
                 android:layout_marginStart="@dimen/margin20"
                 android:layout_height="wrap_content"
@@ -260,7 +259,7 @@
                 android:ems="10" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/btn_get_height"
                 android:background="@drawable/repeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -270,7 +269,7 @@
                 android:text="Get Height" />
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/btn_clean"
                 android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -284,7 +283,7 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnnext"
+        android:id="@+id/btn_next"
         android:layout_width="700dp"
         android:layout_height="20dp"
         android:layout_margin="10dp"

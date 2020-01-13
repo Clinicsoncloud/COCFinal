@@ -149,7 +149,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             this.btnConnect.setText(this.conec);
         }
 
-        this.btnNext = findViewById(R.id.btnnext);
+        this.btnNext = findViewById(R.id.btn_next);
 
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
@@ -248,7 +248,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         this.mMacDispositivos = new ArrayList();
         this.mDispositivosVinculados = new ArrayList();
 
-        this.multitxt = findViewById(R.id.editText2);
+        this.multitxt = findViewById(R.id.et_multiline);
         this.Enviar = (String) getText(R.string.Enviar);
         this.conec = (String) getText(R.string.Connectad);
         this.Limpiar = (String) getText(R.string.Limpiar);
@@ -262,20 +262,20 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
         this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
 
-        this.btnConnect = findViewById(R.id.button1);
-        this.btnEnviar = findViewById(R.id.button3);
-        this.btnLimpiar = findViewById(R.id.button4);
+        this.btnConnect = findViewById(R.id.btn_connect);
+        this.btnEnviar = findViewById(R.id.btn_get_height);
+        this.btnLimpiar = findViewById(R.id.btn_clean);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
 
-        txtAge = findViewById(R.id.txtAge);
-        txtName = findViewById(R.id.txtName);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
-        etManualHeight = findViewById(R.id.etManualHeight);
+        txtAge = findViewById(R.id.tv_age);
+        txtName = findViewById(R.id.tv_name);
+        txtGender = findViewById(R.id.tv_gender);
+        txtMobile = findViewById(R.id.tv_mobile_number);
+        etManualHeight = findViewById(R.id.et_manual_height);
 
-        this.spn = findViewById(R.id.spinner1);
+        this.spn = findViewById(R.id.sp_height);
     }
 
     private void setupEvents(){

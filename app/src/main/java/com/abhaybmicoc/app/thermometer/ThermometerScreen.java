@@ -191,19 +191,19 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     private void setupUI(){
         setContentView(R.layout.activity_main_temperature);
 
-        datos = findViewById(R.id.editText1);
+        datos = findViewById(R.id.et_temprature);
         editText1.setVisibility(View.VISIBLE);
         display = findViewById(R.id.textView1);
-        editText1 = findViewById(R.id.editText1);
+        editText1 = findViewById(R.id.et_temprature);
 
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        tvAge = findViewById(R.id.txtAge);
-        tvName = findViewById(R.id.txtName);
-        tvGender = findViewById(R.id.txtGender);
-        tvMobile = findViewById(R.id.txtMobile);
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobile = findViewById(R.id.tv_mobile_number);
 
         btnConnect = findViewById(R.id.btn_connect_temperature);
         btnGetTemperature = findViewById(R.id.btn_get_temperature);
@@ -213,17 +213,17 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
         tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
 
-        tvHeight = findViewById(R.id.txtmainheight);
-        tvWeight = findViewById(R.id.txtmainweight);
-        tvOximeter = findViewById(R.id.txtmainpulseoximeter);
+        tvHeight = findViewById(R.id.tv_header_height);
+        tvWeight = findViewById(R.id.tv_header_weight);
+        tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
-        btnBaud = findViewById(R.id.buttonBaudrate);
+        btnBaud = findViewById(R.id.btn_next);
 
         if (estadoBoton.equals("Connect")) {
             btnConnect.setText(conec);
         }
 
-        spinner = findViewById(R.id.spinner1);
+        spinner = findViewById(R.id.sp_temprature);
         adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, mDispositivosVinculados);
         spinner.setAdapter(adapterSpinner);
     }
