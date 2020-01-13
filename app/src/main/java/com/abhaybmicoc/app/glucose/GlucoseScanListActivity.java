@@ -14,7 +14,6 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.view.GestureDetector;
-import android.content.DialogInterface;
 import android.speech.tts.TextToSpeech;
 import android.content.pm.PackageManager;
 import android.support.v7.widget.Toolbar;
