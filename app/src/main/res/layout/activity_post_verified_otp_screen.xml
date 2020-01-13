@@ -33,13 +33,13 @@
             android:paddingLeft="10dp"
             android:textSize="25sp"
             android:gravity="center"
-            android:id="@+id/etOTP"
+            android:id="@+id/et_otp"
             android:inputType="number"
             android:imeOptions="actionDone"
             android:layout_height="50dp" />
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btn_verify"
             android:layout_width="match_parent"
             android:background="@drawable/greenbg"
             android:layout_margin="20dp"

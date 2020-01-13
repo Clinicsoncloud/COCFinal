@@ -25,7 +25,6 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.android.volley.Request;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -39,8 +38,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     // region Variables
 
     private Button btnLogin;
-    private TextToSpeech textTopSpeech;
     private EditText etMobileNumber;
+    private TextToSpeech textTopSpeech;
     private ProgressDialog progressDialog;
 
     private String kiosk_id;
@@ -70,7 +69,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         stopTextToSpeech();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -93,8 +91,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private void setupUI(){
         setContentView(R.layout.activity_otp_login_screen);
 
-        btnLogin = findViewById(R.id.btnLogin);
-        etMobileNumber = findViewById(R.id.etMobile);
+        btnLogin = findViewById(R.id.btn_submit);
+        etMobileNumber = findViewById(R.id.et_mobile_number);
     }
 
     /**

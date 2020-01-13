@@ -38,7 +38,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
     private EditText etOTP;
     private Button btnVerify;
-    private TextToSpeech tts;
+    private TextToSpeech tts; //CHANGE IT
     private ProgressDialog progressDialog;
 
     // endregion
@@ -87,8 +87,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private void setupUI(){
         setContentView(R.layout.activity_post_verified_otp_screen);
 
-        etOTP = findViewById(R.id.etOTP);
-        btnVerify = findViewById(R.id.btnLogin);
+        etOTP = findViewById(R.id.et_otp); //CHANGE IT
+        btnVerify = findViewById(R.id.btn_submit); // CHANGE IT
         kioskId = getIntent().getStringExtra("kioskid");
         mobileNumber = getIntent().getStringExtra("mobile");
     }

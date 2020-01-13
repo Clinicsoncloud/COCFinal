@@ -117,21 +117,21 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     // region Initialization methods
 
     public void setupUI() {
-        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin = findViewById(R.id.btn_login);
 
-        rdMale = findViewById(R.id.radioMale);
-        rdFemale = findViewById(R.id.radioFemale);
+        rdMale = findViewById(R.id.rd_male);
+        rdFemale = findViewById(R.id.rd_female);
         rdGender = findViewById(selectedGenderId);
-        rdGenderGroup = findViewById(R.id.radiogrp);
+        rdGenderGroup = findViewById(R.id.rd_gender);
 
         selectedGenderId = rdGenderGroup.getCheckedRadioButtonId();
 
         context = OtpVerifyScreen.this;
 
-        etName = findViewById(R.id.etName);
-        etEmail = findViewById(R.id.etEmail);
-        etDateOfBirth = findViewById(R.id.etDOB);
-        etMobileNumber = findViewById(R.id.etMobile);
+        etName = findViewById(R.id.et_name);
+        etEmail = findViewById(R.id.et_email_id);
+        etDateOfBirth = findViewById(R.id.et_date_of_birth);
+        etMobileNumber = findViewById(R.id.et_mobile_number);
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
