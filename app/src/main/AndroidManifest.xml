@@ -70,10 +70,6 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.screen.BpLoginScreen"
-            android:label="@string/title_activity_bp_login_screen"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        <activity
             android:name="com.abhaybmicoc.app.redirect.DashboardScreen"
             android:label="@string/title_activity_dashboard_screen"
             android:theme="@style/NoActionBar" />

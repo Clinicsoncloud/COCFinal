@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.abhaybmicoc.app.screen.BpLoginScreen;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.oxygen.ble.BleController;
@@ -103,9 +102,6 @@ public class OxygenActivity extends AppCompatActivity implements BleController.S
         btnnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent objbp = new Intent(getApplicationContext(), BpLoginScreen.class);
-                startActivity(objbp);
-                finish();
             }
         });
     }
@@ -133,18 +129,6 @@ public class OxygenActivity extends AppCompatActivity implements BleController.S
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.btnSearch:
-                /*if(!mBleControl.isConnected()){
-                    mBleControl.scanLeDevice(true);
-                    mSearchDialog.show();
-                    mBtDevices.clear();
-                    mBtDevicesAdapter.notifyDataSetChanged();
-                }
-                else {
-                    mBleControl.disconnect();
-                }*/
-                Intent objbp = new Intent(getApplicationContext(), BpLoginScreen.class);
-                startActivity(objbp);
-                break;
             case R.id.tvGetSource:
                 startActivity(new Intent(Intent.ACTION_VIEW,Uri.parse(Const.GITHUB_SITE)));
                 break;
