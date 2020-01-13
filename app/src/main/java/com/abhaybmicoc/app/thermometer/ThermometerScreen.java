@@ -284,19 +284,19 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                 strTemp += str;
 
-           //Akshay Thermometer code
-            ThermometerScreen.this.editText1.setText(""+strTemp);
-
-            strTemp = "";
+                //Akshay Thermometer code
+                ThermometerScreen.this.editText1.setText(""+str);
 
 
-            Log.e("strTemp", "" + strTemp);
+                strTemp = "";
+
+                Log.e("strTemp", "" + strTemp);
 
                 String length = strTemp.trim();
 
-                    Log.e("length", "" +length.length());
+                Log.e("length", "" +length.length());
 
-    //  Ajit Thermometer code
+                //  Ajit Thermometer code
                  /*   if(strTemp.indexOf(".") == strTemp.length() - 2) {
                         if(strTemp.indexOf("0") == strTemp.length() - 5){
                             strTemp = strTemp.replaceFirst("0","");

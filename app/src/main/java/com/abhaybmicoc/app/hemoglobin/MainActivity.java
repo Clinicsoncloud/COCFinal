@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         connectionProgressDialog = new ProgressDialog(MainActivity.this);
         connectionProgressDialog.setMessage("Connecting...");
-        connectionProgressDialog.setCancelable(false);
+        connectionProgressDialog.setCancelable(true);
     }
 
     private void setupUI() {
@@ -585,6 +585,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 } else {
                     sendMessage("U403" + code);
                 }
+
                 //  Toast.makeText(getApplicationContext(), "Text entered is " + input.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });

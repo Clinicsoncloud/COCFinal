@@ -271,7 +271,6 @@ public class Activity_ScanList extends AppCompatActivity implements TextToSpeech
         //closing the text to speach object to avoid the runtime exception
         try {
             if (tts != null) {
-                tts.stop();
                 tts.shutdown();
             }
         }catch (Exception e){

@@ -72,8 +72,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     public void onBackPressed() {
 
-  //        super.onBackPressed();
-        //Disabling back button for going back
     }
 
     @Override
@@ -357,6 +355,14 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                     .show();
                 */
         } else if (requestCode == RESULT_CANCELED) {
+            String key_error = data.getStringExtra("KEY_ERROR");
+            if(key_error.equals("101")){
+                Toast.makeText(context, "Subscription over", Toast.LENGTH_SHORT).show();
+            }else if(key_error.equals("102")){
+                Toast.makeText(context, "No saved Device", Toast.LENGTH_SHORT).show();
+            }else if(key_error.equals("100")){
+                Toast.makeText(context, " Impedance Measurement Error From SmartScale", Toast.LENGTH_SHORT).show();
+            }
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
