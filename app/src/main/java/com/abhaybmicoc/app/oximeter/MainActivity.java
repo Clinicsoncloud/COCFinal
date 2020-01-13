@@ -146,18 +146,18 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
 //        enableBlutooth();
 
-        tvAge = findViewById(R.id.txtAge);
+        tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.txtname);
-        tvGender = findViewById(R.id.txtGender);
+        tvGender = findViewById(R.id.tv_gender);
         tvMobile = findViewById(R.id.txtmobile);
 
-        tvHeight = findViewById(R.id.txtmainheight);
-        tvWeight = findViewById(R.id.txtmainweight);
-        tvTemperature = findViewById(R.id.txtmaintempreture);
+        tvHeight = findViewById(R.id.tv_header_height);
+        tvWeight = findViewById(R.id.tv_header_weight);
+        tvTemperature = findViewById(R.id.tv_header_tempreture);
 
         btnNext = findViewById(R.id.btn_next);
         btnSkip = findViewById(R.id.btn_skip);
-        btnRepeat = findViewById(R.id.btnrepeat);
+        btnRepeat = findViewById(R.id.btn_repeat);
     }
 
     /**

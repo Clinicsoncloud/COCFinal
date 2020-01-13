@@ -66,11 +66,11 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
         }
@@ -89,29 +89,29 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         actionBar = getSupportActionBar();
         actionBar.setTitle("Composition Measure Data");
 
-        tvBmi = findViewById(R.id.txtbmi);
+        tvBmi = findViewById(R.id.tv_bmi);
         tvBmr = findViewById(R.id.txtbmr);
-        tvAge = findViewById(R.id.txtAge);
-        tvName = findViewById(R.id.txtName);
-        tvWeight = findViewById(R.id.txtweight);
-        tvSubFat = findViewById(R.id.txtsubfat);
-        tvGender = findViewById(R.id.txtGender);
-        tvMobile = findViewById(R.id.txtMobile);
-        tvWeight = findViewById(R.id.txtweight);
-        tvBodyFat = findViewById(R.id.txtbodyfat);
-        tvMusMass = findViewById(R.id.txtmusmass);
-        tvProtein = findViewById(R.id.txtprotine);
-        tvMetaAge = findViewById(R.id.txtmetaage);
-        tvPhysique = findViewById(R.id.txtphysique);
-        tvBoneMass = findViewById(R.id.txtbonemass);
-        tvHeight = findViewById(R.id.txtmainheight);
-        tvVisceralFat = findViewById(R.id.txtvisfat);
-        tvBodyWater = findViewById(R.id.txtbodywater);
-        tvSkeletalMuscle = findViewById(R.id.txtskemus);
-        tvHealthScore = findViewById(R.id.txthelthscore);
-        tvFatFreeWeight = findViewById(R.id.txtfatfreeweight);
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvWeight = findViewById(R.id.tv_weight);
+        tvSubFat = findViewById(R.id.tv_subcutaneous_fat);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobile = findViewById(R.id.tv_mobile_number);
+        tvWeight = findViewById(R.id.tv_weight);
+        tvBodyFat = findViewById(R.id.tv_body_fat);
+        tvMusMass = findViewById(R.id.tv_muscle_mass);
+        tvProtein = findViewById(R.id.tv_protine);
+        tvMetaAge = findViewById(R.id.tv_meta_age);
+        tvPhysique = findViewById(R.id.tv_physique);
+        tvBoneMass = findViewById(R.id.tv_bone_mass);
+        tvHeight = findViewById(R.id.tv_header_height);
+        tvVisceralFat = findViewById(R.id.tv_visceral_fat);
+        tvBodyWater = findViewById(R.id.tv_body_water);
+        tvSkeletalMuscle = findViewById(R.id.tv_skeletel_muscle);
+        tvHealthScore = findViewById(R.id.tv_helth_score);
+        tvFatFreeWeight = findViewById(R.id.tv_fat_free_weight);
 
-        btnBack = findViewById(R.id.btnback);
+        btnBack = findViewById(R.id.btn_next);
 
         Intent intent = getIntent();
 

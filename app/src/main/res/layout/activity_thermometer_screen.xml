@@ -23,7 +23,7 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             android:layout_gravity="center"
-            android:id="@+id/txtmainweight"
+            android:id="@+id/tv_header_weight"
             android:gravity="center"
             android:layout_height="60dp" />
 
@@ -33,7 +33,7 @@
             android:textColor="@color/white"
             android:textSize="30sp"
             android:layout_gravity="center"
-            android:id="@+id/txtmainheight"
+            android:id="@+id/tv_header_height"
             android:gravity="center"
             android:layout_height="60dp" />
 
@@ -45,7 +45,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:background="@color/orange4"
-            android:id="@+id/txtmaintempreture"
+            android:id="@+id/tv_header_tempreture"
             android:layout_height="60dp" />
 
         <TextView
@@ -55,7 +55,7 @@
             android:textSize="30sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/txtmainpulseoximeter"
+            android:id="@+id/tv_header_pulseoximeter"
             android:layout_height="60dp" />
 
         <TextView
@@ -65,7 +65,7 @@
             android:textSize="30sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/txtmainbloodpressure"
+            android:id="@+id/tv_header_bloodpressure"
             android:layout_height="60dp" />
 
         <TextView
@@ -75,7 +75,7 @@
             android:textSize="30sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/txtmainhemoglobin"
+            android:id="@+id/tv_header_hemoglobin"
             android:layout_height="60dp" />
 
         <TextView
@@ -85,7 +85,7 @@
             android:textSize="30sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:id="@+id/txtmainbloodsugar"
+            android:id="@+id/tv_header_bloodsugar"
             android:layout_height="60dp" />
 
         <TextView
@@ -245,7 +245,7 @@
                 android:layout_width="match_parent"
                 android:background="@drawable/rectangle"
                 android:text=""
-                android:id="@+id/editText1"
+                android:id="@+id/et_temprature"
                 android:gravity="center"
                 android:visibility="gone"
                 android:textColor="@color/white"
@@ -305,7 +305,7 @@
 
 
                 <Button
-                    android:id="@+id/btnrepeat"
+                    android:id="@+id/btn_repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_margin="5dp"
@@ -318,7 +318,7 @@
                     android:textStyle="bold" />
 
                 <Button
-                    android:id="@+id/btnskip"
+                    android:id="@+id/btn_skip"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_margin="5dp"
@@ -331,7 +331,7 @@
 
 
                 <Button
-                    android:id="@+id/btnnext"
+                    android:id="@+id/btn_next"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_margin="5dp"

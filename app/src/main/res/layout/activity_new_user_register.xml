@@ -23,7 +23,7 @@
         <TextView
             android:layout_width="match_parent"
             android:text="Welcome Abhay"
-            android:id="@+id/txtName"
+            android:id="@+id/tv_name"
             android:textColor="@color/white"
             android:gravity="center"
             android:textSize="@dimen/space25"

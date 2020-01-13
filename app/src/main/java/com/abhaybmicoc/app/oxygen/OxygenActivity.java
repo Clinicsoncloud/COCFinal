@@ -98,7 +98,7 @@ public class OxygenActivity extends AppCompatActivity implements BleController.S
             }
         };
 
-        btnnext = (Button) findViewById(R.id.btnnext);
+        btnnext = (Button) findViewById(R.id.btn_next);
         btnnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

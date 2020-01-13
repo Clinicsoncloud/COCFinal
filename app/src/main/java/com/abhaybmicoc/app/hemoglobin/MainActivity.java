@@ -205,17 +205,17 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         spinnerDevice = findViewById(R.id.spindevice);
 
-        textName = findViewById(R.id.txtName);
-        textDob = findViewById(R.id.txtAge);
-        textGender = findViewById(R.id.txtGender);
-        textMobile = findViewById(R.id.txtMobile);
+        textName = findViewById(R.id.tv_name);
+        textDob = findViewById(R.id.tv_age);
+        textGender = findViewById(R.id.tv_gender);
+        textMobile = findViewById(R.id.tv_mobile_number);
 
-        txtmainHeight = findViewById(R.id.txtmainheight);
-        txtmainWeight = findViewById(R.id.txtmainweight);
-        txtmainTemprature = findViewById(R.id.txtmaintempreture);
-        txtmainOximeter = findViewById(R.id.txtmainpulseoximeter);
-        txtmainBpMonitor = findViewById(R.id.txtmainbloodpressure);
-        txtmainSugar = findViewById(R.id.txtmainbloodsugar);
+        txtmainHeight = findViewById(R.id.tv_header_height);
+        txtmainWeight = findViewById(R.id.tv_header_weight);
+        txtmainTemprature = findViewById(R.id.tv_header_tempreture);
+        txtmainOximeter = findViewById(R.id.tv_header_pulseoximeter);
+        txtmainBpMonitor = findViewById(R.id.tv_header_bloodpressure);
+        txtmainSugar = findViewById(R.id.tv_header_bloodsugar);
 
         deviceArrayList = new ArrayList();
 
@@ -612,33 +612,33 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
 
 
-            case R.id.txtmaintempreture:
+            case R.id.tv_header_tempreture:
                 context.startActivity(new Intent(this, ThermometerScreen.class));
                 break;
 
 
-            case R.id.txtmainpulseoximeter:
+            case R.id.tv_header_pulseoximeter:
                 Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
                 context.startActivity(new Intent(this, com.abhaybmicoc.app.oximeter.MainActivity.class));
                 break;
 
 
-            case R.id.txtmainbloodpressure:
+            case R.id.tv_header_bloodpressure:
                 context.startActivity(new Intent(this, DashboardActivity.class));
                 break;
 
 
-            case R.id.txtmainbloodsugar:
+            case R.id.tv_header_bloodsugar:
                 context.startActivity(new Intent(this, GlucoseScanListActivity.class));
                 break;
 

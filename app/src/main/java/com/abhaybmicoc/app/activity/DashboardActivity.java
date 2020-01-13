@@ -1119,6 +1119,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             int minutes = bundle.getInt(ADGattService.KEY_MINUTES);
             int seconds = bundle.getInt(ADGattService.KEY_SECONDS);
 
+<<<<<<< HEAD
             String weightString = String.format(Locale.getDefault(), "%.1f", weight);
             String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
             String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
@@ -1135,6 +1136,25 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setIsSynced("no");
             long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
+=======
+            case R.id.tv_header_height:
+                context.startActivity(new Intent(this, HeightActivity.class));
+                break;
+
+            case R.id.tv_header_weight:
+                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
+
+            case R.id.tv_header_tempreture:
+                context.startActivity(new Intent(this, ThermometerScreen.class));
+                break;
+
+            case R.id.tv_header_pulseoximeter:
+                context.startActivity(new Intent(this, MainActivity.class));
+                break;
+        }
+    }
+>>>>>>> origin/feature_refactor_layout
 
             String weightDeviceId = "9DEA020D-1795-3B89-D184-DE7CD609FAD0";
 
@@ -1144,7 +1164,15 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
             db.weighttrackentry(insertObjectList);
 
+<<<<<<< HEAD
             insertObjectList.clear();
+=======
+        //Initialization of the top boxes
+        txtHeight = findViewById(R.id.tv_header_height);
+        txtWeight = findViewById(R.id.tv_header_weight);
+        txtTemprature = findViewById(R.id.tv_header_tempreture);
+        txtOximeter = findViewById(R.id.tv_header_pulseoximeter);
+>>>>>>> origin/feature_refactor_layout
 
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
@@ -1167,6 +1195,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
             String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 
+<<<<<<< HEAD
             Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
             infoBeanObj.setDate(finaldate);
             infoBeanObj.setTime(finaltime);
@@ -1179,6 +1208,12 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             editor.putString("systolic", String.valueOf(sys));
             editor.putString("diastolic", String.valueOf(dia));
             editor.commit();
+=======
+        btnnext = findViewById(R.id.btn_next);
+        btnstart = findViewById(R.id.btnstart);
+        btnrepeat = findViewById(R.id.btn_repeat);
+        linearContainer = findViewById(R.id.linearContainer);
+>>>>>>> origin/feature_refactor_layout
 
             infoBeanObj.setPulseUnit("bpm");
             infoBeanObj.setSystolicUnit("mmhg");
@@ -1192,8 +1227,15 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setDeviceId(weightDeviceId);
             final ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>();
 
+<<<<<<< HEAD
             insertObjectList.add(infoBeanObj);
             db.bpEntry(insertObjectList);
+=======
+        txtName = findViewById(R.id.tv_name);
+        txtAge = findViewById(R.id.tv_age);
+        txtGender = findViewById(R.id.tv_gender);
+        txtMobile = findViewById(R.id.tv_mobile_number);
+>>>>>>> origin/feature_refactor_layout
 
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
 

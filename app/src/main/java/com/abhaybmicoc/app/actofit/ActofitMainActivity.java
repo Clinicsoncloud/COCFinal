@@ -207,7 +207,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     public void onClick(View view) {
         //click Listener
         switch (view.getId()) {
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
         }
@@ -235,15 +235,15 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         switchAthlete = findViewById(R.id.switchbtn);
 
-        txtAge = findViewById(R.id.txtAge);
-        txtName = findViewById(R.id.txtName);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
+        txtAge = findViewById(R.id.tv_age);
+        txtName = findViewById(R.id.tv_name);
+        txtGender = findViewById(R.id.tv_gender);
+        txtMobile = findViewById(R.id.tv_mobile_number);
 
-        txtHeight = findViewById(R.id.txtmainheight);
+        txtHeight = findViewById(R.id.tv_header_height);
 
-        btnNext = findViewById(R.id.btnnext);
-        btnRepeat = findViewById(R.id.btnrepeat);
+        btnNext = findViewById(R.id.btn_next);
+        btnRepeat = findViewById(R.id.btn_repeat);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
     }
 
