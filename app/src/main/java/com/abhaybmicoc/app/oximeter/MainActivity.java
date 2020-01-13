@@ -1,65 +1,79 @@
 package com.abhaybmicoc.app.oximeter;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.util.Log;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.app.Activity;
+import android.widget.Button;
+import android.content.Intent;
+import android.widget.TextView;
+import android.content.Context;
+import android.app.ProgressDialog;
+import android.annotation.SuppressLint;
+import android.speech.tts.TextToSpeech;
+import android.bluetooth.BluetoothAdapter;
+import android.content.SharedPreferences;
 
-import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.heightweight.Principal;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.activity.HeightActivity;
+import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.choicemmed.c208blelibrary.Device.C208Device;
-import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
-import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
-import com.choicemmed.c208blelibrary.cmd.listener.C208ConnectDeviceListener;
-import com.choicemmed.c208blelibrary.cmd.listener.C208DisconnectCommandListener;
-import com.choicemmed.c208blelibrary.utils.LogUtils;
+import com.abhaybmicoc.app.thermometer.ThermometerScreen;
+
 import com.lidroid.xutils.ViewUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 
+import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
+import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
+import com.choicemmed.c208blelibrary.cmd.listener.C208ConnectDeviceListener;
+import com.choicemmed.c208blelibrary.utils.LogUtils;
+
 import java.util.Locale;
 
-public class MainActivity extends Activity implements View.OnClickListener,TextToSpeech.OnInitListener {
-    private static final String TAG = "MainActivity";
-    @ViewInject(R.id.spo)
-    private TextView tv_spo;
-    @ViewInject(R.id.pr)
-    private TextView tv_pr;
-    @ViewInject(R.id.bindDevice)
-    private Button bindDevice;
-    @ViewInject(R.id.connectDevice)
-    private Button connectDevice;
-    @ViewInject(R.id.disconnect)
-    private Button disconnect;
-    private C208Invoker c208Invoker;
+public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
+    // region Variables
+
+    Context context = MainActivity.this;
+
+    private boolean flag = true;
     private static final int RECEIVE_SPO_PR = 1;
+
+    private String txt = "";
     private String macAddress = "";
+    private static final String TAG = "MainActivity";
     public static final String MAC_ADDRESS_KEY = "MAC_ADDRESS_KEY";
-    private Button btnrepeat;
-    private ProgressDialog pd;
-    private SharedPreferences savedata, shared;
-    private TextView txtName, txtAge, txtGender, txtMobile;
-    private TextView txtHeight,txtWeight,txtTemprature;
 
-    Context context;
+    @ViewInject(R.id.pr) private TextView tvPulseRate;
+    @ViewInject(R.id.spo) private TextView tvBodyOxygen;
 
-    boolean flag = true;
+    private TextView tvAge;
+    private TextView tvName;
+    private TextView tvGender;
+    private TextView tvMobile;
+    private TextView tvHeight;
+    private TextView tvWeight;
+    private TextView tvTemperature;
+
+    private ProgressDialog progressDialog;
+
+    private Button btnNext;
+    private Button btnSkip;
+    private Button btnRepeat;
+    @ViewInject(R.id.bindDevice) private Button btnBindDevice;
+    @ViewInject(R.id.connectDevice) private Button btnConnectDevice;
+    @ViewInject(R.id.disconnect) private Button btnDisconnectDevice;
+
+    private C208Invoker c208Invoker;
+    private TextToSpeech textToSpeech;
+    private BluetoothAdapter mBluetoothAdapter;
+
+    private SharedPreferences shared;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -67,65 +81,61 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
             super.handleMessage(msg);
             switch (msg.what) {
                 case RECEIVE_SPO_PR:
-                    tv_pr.setText("Pulse rate: " + msg.arg2);
-                    tv_spo.setText("Body Oxygen：" + msg.arg1);
-                    savedata = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
-                    // Writing data to SharedPreferences
-                    SharedPreferences.Editor editor = savedata.edit();
-                    editor.putString("pulse_rate", String.valueOf(msg.arg2));
-                    editor.putString("body_oxygen", String.valueOf(msg.arg1));
-                    editor.commit();
+                    tvPulseRate.setText("Pulse rate: " + msg.arg2);
+                    tvBodyOxygen.setText("Body Oxygen：" + msg.arg1);
+
+                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, "pulse_rate", String.valueOf(msg.arg2));
+                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, "body_oxygen", String.valueOf(msg.arg1));
                     break;
             }
         }
     };
 
-    private BluetoothAdapter mBluetoothAdapter;
-    private TextToSpeech tts;
-    private String txt = "";
+    // endregion
+
+    // Events
 
     @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-        //Disable back button
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setupUI();
+        setupEvents();
+        initializeData();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
 
+        stopTextToSpeech();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        //reinitialize the tts engine
+        //reinitialize the textToSpeech engine
 
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onInit(int status) {
+        startTextToSpeech(status);
+    }
+
+    // endregion
+
+    // region Initialization methods
+
+    private void setupUI(){
         setContentView(R.layout.activity_pulse_oximeter_main);
+
         ViewUtils.inject(this);
-        macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
-        bindDevice.setOnClickListener(this);
-        connectDevice.setOnClickListener(this);
-        disconnect.setOnClickListener(this);
+
         c208Invoker = new C208Invoker(this);
-
-        context = MainActivity.this;
-
-        tts = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
         txt = "Put Finger inside the Device and Click Start Test Button";
         speakOut(txt);
@@ -136,57 +146,171 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
 
 //        enableBlutooth();
 
-        txtName = findViewById(R.id.txtName);
-        txtAge = findViewById(R.id.txtAge);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
+        tvAge = findViewById(R.id.txtAge);
+        tvName = findViewById(R.id.txtname);
+        tvGender = findViewById(R.id.txtGender);
+        tvMobile = findViewById(R.id.txtmobile);
 
-        //Initialization of the top boxes
+        tvHeight = findViewById(R.id.txtmainheight);
+        tvWeight = findViewById(R.id.txtmainweight);
+        tvTemperature = findViewById(R.id.txtmaintempreture);
 
-        txtHeight = findViewById(R.id.txtmainheight);
-        txtWeight = findViewById(R.id.txtmainweight);
-        txtTemprature = findViewById(R.id.txtmaintempreture);
+        btnNext = findViewById(R.id.btn_next);
+        btnSkip = findViewById(R.id.btn_skip);
+        btnRepeat = findViewById(R.id.btnrepeat);
+    }
 
-        //bind click events of the top boxes for previous test only
-        bindEvents();
+    /**
+     *
+     */
+    private void setupEvents(){
+        tvHeight.setOnClickListener(view -> handleHeight());
+        tvWeight.setOnClickListener(view -> handleWeight());
+        tvTemperature.setOnClickListener(view -> handleTemperature());
 
-        txtName.setText("Name : " + shared.getString("name", ""));
-        txtGender.setText("Gender : " + shared.getString("gender", ""));
-        txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
-        txtAge.setText("DOB : " + shared.getString("dob", ""));
+        btnRepeat.setOnClickListener(view -> handleRepeat());
+        btnNext.setOnClickListener(v -> {
+            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            startActivity(objIntent);
+            finish();
+        });
 
-        btnrepeat = findViewById(R.id.btnrepeat);
-        btnrepeat.setOnClickListener(new View.OnClickListener() {
+        btnSkip.setOnClickListener(v -> {
+            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            startActivity(objIntent);
+            finish();
+        });
+
+        btnBindDevice.setOnClickListener(view -> bindDevice());
+        btnConnectDevice.setOnClickListener(view -> connectDevice());
+        btnDisconnectDevice.setOnClickListener(view -> disconnectDevice());
+    }
+
+    private void initializeData(){
+        tvAge.setText("DOB : " + shared.getString("dob", ""));
+        tvName.setText("Name : " + shared.getString("name", ""));
+        tvGender.setText("Gender : " + shared.getString("gender", ""));
+        tvMobile.setText("Phone : " + shared.getString("mobile_number", ""));
+    }
+
+    // endregion
+
+    // region Logical methods
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        /* close the textToSpeech engine to avoid the runtime exception from it */
+        try {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     */
+    private void handleHeight(){
+        context.startActivity(new Intent(this, HeightActivity.class));
+    }
+
+    /**
+     *
+     */
+    private void handleWeight(){
+        context.startActivity(new Intent(this, ActofitMainActivity.class));
+    }
+
+    /**
+     *
+     */
+    private void handleTemperature(){
+        context.startActivity(new Intent(this, ThermometerScreen.class));
+    }
+
+    /**
+     *
+     */
+    private void handleRepeat(){
+        tvBodyOxygen.setText("spo");
+        tvPulseRate.setText(R.string.pr);
+    }
+
+    /**
+     *
+     */
+    private void bindDevice(){
+        progressDialog = Tools.progressDialog(MainActivity.this);
+
+        c208Invoker.bindDevice(new C208BindDeviceListener() {
             @Override
-            public void onClick(View v) {
-                tv_spo.setText("spo");
-                tv_pr.setText(R.string.pr);
+            public void onDataResponse(int spo, int pr) {
+                LogUtils.d(TAG, "bindDevice---->" + "spo:" + spo + "pr:" + pr);
+                progressDialog.dismiss();
+                flag = false;
+                Message message = new Message();
+                message.arg1 = spo;
+                message.arg2 = pr;
+                message.what = RECEIVE_SPO_PR;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                LogUtils.d(TAG, "Bind device error message--->" + message);
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onStateChanged(int oldState, int newState) {
+                LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
+            }
+
+            @Override
+            public void onBindDeviceSuccess(C208Device c208Device) {
+                LogUtils.d(TAG, "deviceInfo-->" + c208Device.toString());
+                macAddress = c208Device.getDeviceMacAddress();
+                SharePreferenceUtil.put(MainActivity.this, MAC_ADDRESS_KEY, macAddress);
+            }
+
+            @Override
+            public void onBindDeviceFail(String failMessage) {
+                LogUtils.d(TAG, "Bind device failure information--->" + failMessage);
+                progressDialog.dismiss();
             }
         });
-
-        Button txtnext = findViewById(R.id.txtnext);
-        Button btnskip = findViewById(R.id.btnskip);
-        txtnext.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-            startActivity(objIntent);
-            finish();
-        });
-
-        btnskip.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
-            startActivity(objIntent);
-            finish();
-        });
     }
-
-    private void bindEvents() {
-        //click evet
-        txtHeight.setOnClickListener(this);
-        txtWeight.setOnClickListener(this);
-        txtTemprature.setOnClickListener(this);
-
-    }
-
 
     private void enableBlutooth() {
         this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -195,187 +319,69 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bindDevice:/*绑定设备*/
-                    pd = Tools.progressDialog(MainActivity.this);
-                    c208Invoker.bindDevice(new C208BindDeviceListener() {
-                        @Override
-                        public void onDataResponse(int spo, int pr) {
-                            LogUtils.d(TAG, "bindDevice---->" + "spo:" + spo + "pr:" + pr);
-                            pd.dismiss();
-                            flag = false;
-                            Message message = new Message();
-                            message.arg1 = spo;
-                            message.arg2 = pr;
-                            message.what = RECEIVE_SPO_PR;
-                            handler.sendMessage(message);
-                        }
-
-                        @Override
-                        public void onError(String message) {
-                            LogUtils.d(TAG, "Bind device error message--->" + message);
-                        }
-
-                        @Override
-                        public void onStateChanged(int oldState, int newState) {
-                            LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
-                        }
-
-                        @Override
-                        public void onBindDeviceSuccess(C208Device c208Device) {
-                            LogUtils.d(TAG, "deviceInfo-->" + c208Device.toString());
-                            macAddress = c208Device.getDeviceMacAddress();
-                            SharePreferenceUtil.put(MainActivity.this, MAC_ADDRESS_KEY, macAddress);
-                        }
-
-                        @Override
-                        public void onBindDeviceFail(String failMessage) {
-                            LogUtils.d(TAG, "Bind device failure information--->" + failMessage);
-                        }
-                    });
-
-//                    funHandler();
-                break;
-            case R.id.connectDevice:/*连接设备*/
-                if ("".equals(macAddress)) {
-                    LogUtils.d(TAG, "macAddress是空");
-                    Toast.makeText(this, "Please bind the device first！！", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                C208Device device = new C208Device();
-                device.setDeviceMacAddress(macAddress);
-                c208Invoker.connectDevice(device, new C208ConnectDeviceListener() {
-                    @Override
-                    public void onDataResponse(int spo, int pr) {
-                        LogUtils.d(TAG, "connectDevice---->" + "spo:" + spo + "pr:" + pr);
-                        Message message = new Message();
-                        message.arg1 = spo;
-                        message.arg2 = pr;
-                        message.what = RECEIVE_SPO_PR;
-                        handler.sendMessage(message);
-                    }
-
-                    @Override
-                    public void onError(String message) {
-                        LogUtils.d(TAG, "Connection device error message--->" + message);
-                    }
-
-                    @Override
-                    public void onStateChanged(int oldState, int newState) {
-                        LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
-                    }
-
-                    @Override
-                    public void onConnectedDeviceSuccess() {
-                        LogUtils.d(TAG, "onConnectedDeviceSuccess");
-                    }
-
-                    @Override
-                    public void onConnectedDeviceFail(String failMessage) {
-                        LogUtils.d(TAG, "Connection device failure message--->" + failMessage);
-                    }
-                });
-                break;
-            case R.id.disconnect:/*断开设备连接*/
-                c208Invoker.disconnectDevice(new C208DisconnectCommandListener() {
-                    @Override
-                    public void onDisconnected() {
-                        LogUtils.d(TAG, "Disconnect device！！！");
-                    }
-                });
-                break;
-
-            case R.id.txtmainheight:
-                // back to the height screen
-                context.startActivity(new Intent(this, Principal.class));
-                break;
-
-            case R.id.txtmainweight:
-                //back to the actofit screen
-                context.startActivity(new Intent(this, ActofitMainActivity.class));
-                break;
-
-            case R.id.txtmaintempreture:
-                //back to the actofit screen
-                context.startActivity(new Intent(this, ThermometerScreen.class));
-                break;
-
+    /**
+     *
+     */
+    private void connectDevice(){
+        if ("".equals(macAddress)) {
+            LogUtils.d(TAG, "macAddress是空");
+            Toast.makeText(this, "Please bind the device first！！", Toast.LENGTH_SHORT).show();
+            return;
         }
-    }
 
-    private void funHandler() {
+        C208Device device = new C208Device();
+        device.setDeviceMacAddress(macAddress);
 
-        /*  final Handler handler1 = new Handler();
-                    handler1.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            pd.dismiss();
-                            pd = Tools.progressDialog(MainActivity.this);
-                            c208Invoker.bindDevice(new C208BindDeviceListener() {
-                                @Override
-                                public void onDataResponse(int spo, int pr) {
-                                    LogUtils.d(TAG, "bindDevice---->" + "spo:" + spo + "pr:" + pr);
-                                    pd.dismiss();
-                                    flag = false;
-                                    Message message = new Message();
-                                    message.arg1 = spo;
-                                    message.arg2 = pr;
-                                    message.what = RECEIVE_SPO_PR;
-                                    handler.sendMessage(message);
-                                }
-                                @Override
-                                public void onError(String message) {
-                                    LogUtils.d(TAG, "Bind device error message--->" + message);
-                                }
-
-                                @Override
-                                public void onStateChanged(int oldState, int newState) {
-                                    LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
-                                }
-
-                                @Override
-                                public void onBindDeviceSuccess(C208Device c208Device) {
-                                    LogUtils.d(TAG, "deviceInfo-->" + c208Device.toString());
-                                    macAddress = c208Device.getDeviceMacAddress();
-                                    SharePreferenceUtil.put(MainActivity.this, MAC_ADDRESS_KEY, macAddress);
-                                }
-
-                                @Override
-                                public void onBindDeviceFail(String failMessage) {
-                                    LogUtils.d(TAG, "Bind device failure information--->" + failMessage);
-                                }
-                            });
-
-                        }
-                    }, 100);*/
-    }
-
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = tts.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
+        c208Invoker.connectDevice(device, new C208ConnectDeviceListener() {
+            @Override
+            public void onDataResponse(int spo, int pr) {
+                LogUtils.d(TAG, "connectDevice---->" + "spo:" + spo + "pr:" + pr);
+                Message message = new Message();
+                message.arg1 = spo;
+                message.arg2 = pr;
+                message.what = RECEIVE_SPO_PR;
+                handler.sendMessage(message);
             }
 
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
+            @Override
+            public void onError(String message) {
+                LogUtils.d(TAG, "Connection device error message--->" + message);
+            }
+
+            @Override
+            public void onStateChanged(int oldState, int newState) {
+                LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
+            }
+
+            @Override
+            public void onConnectedDeviceSuccess() {
+                LogUtils.d(TAG, "onConnectedDeviceSuccess");
+            }
+
+            @Override
+            public void onConnectedDeviceFail(String failMessage) {
+                LogUtils.d(TAG, "Connection device failure message--->" + failMessage);
+            }
+        });
     }
 
-    private void speakOut(String textToSpeech) {
-
-        String text = textToSpeech;
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    /**
+     *
+     */
+    private void disconnectDevice(){
+        c208Invoker.disconnectDevice(() -> {
+            LogUtils.d(TAG, "Disconnect device！！！");
+        });
     }
+
+    private void writeToSharedPreference(String preferenceName, String key, String value){
+        SharedPreferences sharedPreference = getSharedPreferences(preferenceName, MODE_PRIVATE);
+        // Writing data to SharedPreferences
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+    // endregion
 }
 

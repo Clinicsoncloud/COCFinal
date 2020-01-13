@@ -102,7 +102,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     private TextView txtGender;
     private TextView txtMobile;
 
-    private TextToSpeech tts;
+    private TextToSpeech textToSpeech;
 
 
     private int connectTryCount = 0;
@@ -116,19 +116,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
+        startTextToSpeech(status);
     }
 
     private void showCannotConnectToDevice(){
@@ -163,7 +151,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
         this.btnNext = findViewById(R.id.btnnext);
 
-        tts = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
     }
 
@@ -212,7 +200,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     public void onPause() {
         super.onPause();
 
-        /* close the tts engine to avoide the runtime exception from it */
+        /* close the textToSpeech engine to avoide the runtime exception from it */
         stopTextToSpeech();
     }
 
@@ -357,25 +345,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      * @param text
      */
     private void speakOut(String text) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
-     */
-    private void checkIfTextToSpeechIsActivated(int status){
-        if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut("");
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     /**
@@ -458,13 +428,32 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     /**
      *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
      */
     private void stopTextToSpeech(){
-        /* close the tts engine to avoide the runtime exception from it */
+        /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());

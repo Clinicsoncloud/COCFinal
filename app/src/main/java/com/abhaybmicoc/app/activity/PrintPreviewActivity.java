@@ -1,145 +1,137 @@
 package com.abhaybmicoc.app.activity;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DownloadManager;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
+import android.util.Log;
 import android.os.Bundle;
-import android.os.Environment;
+import android.view.View;
 import android.os.Handler;
 import android.os.Message;
-import android.speech.tts.TextToSpeech;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
+import android.app.Dialog;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.os.AsyncTask;
 import android.widget.Toast;
+import android.app.Activity;
+import android.widget.Button;
+import android.graphics.Color;
+import android.os.Environment;
+import android.text.TextUtils;
+import android.content.Intent;
+import android.app.AlertDialog;
+import android.widget.TextView;
+import android.content.Context;
+import android.widget.ListView;
+import android.widget.ImageView;
+import android.app.ProgressDialog;
+import android.widget.ProgressBar;
+import android.widget.LinearLayout;
+import android.app.DownloadManager;
+import android.speech.tts.TextToSpeech;
+import android.content.DialogInterface;
+import android.annotation.SuppressLint;
+import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.bluetooth.BluetoothAdapter;
+import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.adapter.PrintPreviewActivityNew;
-import com.abhaybmicoc.app.adapter.PrintpriviewAdapter;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.model.PrintDataNew;
-import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
+import com.abhaybmicoc.app.screen.OtpLoginScreen;
+import com.abhaybmicoc.app.adapter.PrintpriviewAdapter;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.adapter.PrintPreviewActivityNew;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
-import com.abhaybmicoc.app.utils.ApiUtils;
-import com.android.volley.DefaultRetryPolicy;
+import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
+
 import com.android.volley.Request;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
+
 import com.prowesspride.api.Printer_GEN;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+
+import java.util.Map;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Hashtable;
 
+import butterknife.OnClick;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
-    List<PrintData> printDataList = new ArrayList<>();
-    List<PrintDataNew> printDataListNew = new ArrayList<>();
-    @BindView(R.id.parameterTV)
-    TextView parameterTV;
-    @BindView(R.id.resultTV)
-    TextView resultTV;
-    @BindView(R.id.valueTV)
-    TextView valueTV;
-    @BindView(R.id.rangeTV)
-    TextView rangeTV;
-    @BindView(R.id.topLL)
-    LinearLayout topLL;
-    @BindView(R.id.lV)
-    ListView lV;
-    @BindView(R.id.txtWish)
-    TextView txtWish;
-    @BindView(R.id.homebtn)
-    Button homebtn;
-    @BindView(R.id.printbtn)
-    Button printbtn;
-    @BindView(R.id.buttonLL)
-    LinearLayout buttonLL;
-    public static Printer_GEN ptrGen;
-    int iRetVal;
-    public static final int DEVICE_NOTCONNECTED = -100;
+    // region Variables
+
+    @BindView(R.id.dobTV) TextView dobTV;
+    @BindView(R.id.nameTV) TextView nameTV;
+    @BindView(R.id.valueTV) TextView valueTV;
+    @BindView(R.id.rangeTV) TextView rangeTV;
+    @BindView(R.id.txtWish) TextView txtWish;
+    @BindView(R.id.heightTV) TextView heightTV;
+    @BindView(R.id.resultTV) TextView resultTV;
+    @BindView(R.id.genderTV) TextView genderTV;
+    @BindView(R.id.parameterTV) TextView parameterTV;
+
+    @BindView(R.id.lV) ListView lV;
+    @BindView(R.id.topLL) LinearLayout topLL;
+
+    private Button btnOk;
+    private Button btnConfirm;
+    private Button btnUnicode11;
+    @BindView(R.id.homebtn) Button homebtn;
+    @BindView(R.id.printbtn) Button printbtn;
+
+    private LinearLayout llprog;
+    @BindView(R.id.buttonLL) LinearLayout buttonLL;
+    @BindView(R.id.headerLL) LinearLayout headerLL;
+
     SharedPreferences ActofitObject, OximeterObject, PersonalObject, ThermometerObject, BPObject, BiosenseObject, HemoglobinObject, spToken;
-    @BindView(R.id.nameTV)
-    TextView nameTV;
-    @BindView(R.id.dobTV)
-    TextView dobTV;
-    @BindView(R.id.heightTV)
-    TextView heightTV;
-    @BindView(R.id.genderTV)
-    TextView genderTV;
-    @BindView(R.id.headerLL)
-    LinearLayout headerLL;
+
+    private ImageView ivDownload;
+
+    private int age;
+    private int height;
+    private int iRetVal;
+    public static int iWidth;
+    public static final int DEVICE_NOTCONNECTED = -100;
+    private static final int  PERMISSION_STORAGE_CODE = 1000;
+
+    private Dialog dlgBarcode;
+    public Dialog dlgCustomdialog;
+    public static ProgressBar pbProgress;
+    private ProgressDialog progressDialog;
+
+    private double weight;
+    double standardWeighRangeTo;
+    double standardWeighRangeFrom;
+    private double standardMetabolism;
+
+    boolean isMale = false;
+    private boolean blBleStatusBefore = false;
+
+    private String subcutaneousFat;
     private String printString = "";
     private String printStringNew = "";
     private String fileName = "";
-
-    public Dialog dlgCustomdialog;
-    private LinearLayout llprog;
-    public static ProgressBar pbProgress;
-    private Button btnUnicode11, btnConfirm;
-    private Dialog dlgBarcode;
-    private Button btnOk;
-    private ImageView ivDownload;
-    public static int iWidth;
-
-    int age;
-
-    String parsedate1 = null;
-
-    String currentDate;
-
-    String currentTime;
-
-    ProgressDialog pd;
-
-    boolean isMale = false;
-
-
-    double standardWeighRangeFrom;
-    double standardWeighRangeTo;
-    private int height;
-    private double weight;
-
-    private String standardWeightFrom, standardWeightTo;
+    private String standardWeightTo;
+    private String standardWeightFrom;
     private String standarHemoglobin;
     private String standardBodyFat;
     private String standardBodyWater;
@@ -148,42 +140,43 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String standardMuscleMass;
     private String standardBMR;
     private String standardGlucose;
-
-    private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
-    public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
-    public static BluetoothDevice mBDevice = null;
-    private AndMedical_App_Global mGP = null;
-    private boolean blBleStatusBefore = false;
-    private String subcutaneousFat;
-    private double standardMetabolism;
-    private String standardWeightRange;
-    private String standardVisceralFat;
-
-    private String heightResult;
-    private String weightResult;
+    private String currentDate;
+    private String currentTime;
+    private String txt = "";
+    private String parsedate1 = null;
     private String bmiResult;
     private String bmrResult;
-    private String metaageResult;
-    private String subcutaneousResult;
-    private String visceralfatResult;
-    private String skeletonmuscleResult;
-    private String bodywaterResult;
-    private String musclemassResult;
-    private String fatfreeweightResult = "";
+    private String sugarResult;
+    private String pulseResult;
+    private String oxygenResult;
+    private String weightResult;
     private String proteinResult;
+    private String metaageResult;
     private String bodyfatResult;
     private String bonemassResult;
-    private String bloodpressureResult;
-    private String oxygenResult;
-    private String pulseResult;
-    private String tempratureResult;
-    private String hemoglobinResult;
-    private String sugarResult;
+    private String bodywaterResult;
     private String diastolicResult;
-    private TextToSpeech tts;
-    private String txt = "";
-    private static final int  PERMISSION_STORAGE_CODE = 1000;
+    private String tempratureResult;
+    private String musclemassResult;
     private String downloadUrl = "";
+    private String hemoglobinResult;
+    private String visceralfatResult;
+    private String subcutaneousResult;
+    private String bloodpressureResult;
+    private String standardVisceralFat;
+    private String standardWeightRange;
+    private String skeletonmuscleResult;
+    private String fatfreeweightResult = "";
+
+    public static Printer_GEN ptrGen;
+    private TextToSpeech textToSpeech;
+    private AndMedical_App_Global mGP = null;
+    public static BluetoothDevice mBDevice = null;
+    public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
+
+    List<PrintData> printDataList = new ArrayList<>();
+    List<PrintDataNew> printDataListNew = new ArrayList<>();
+    private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +184,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
-        tts = new TextToSpeech(this,this);
+        textToSpeech = new TextToSpeech(this,this);
 
         ivDownload = findViewById(R.id.iv_download);
 
@@ -226,8 +219,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     protected void onResume() {
         super.onResume();
 
-        //reinitialization of the tts engine for voice command
-        tts = new TextToSpeech(this,this);
+        //reinitialization of the textToSpeech engine for voice command
+        textToSpeech = new TextToSpeech(this,this);
 
     }
 
@@ -235,11 +228,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     protected void onPause() {
         super.onPause();
 
-        //close the tts engine to avoide runtime exception
+        //close the textToSpeech engine to avoide runtime exception
         try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());
@@ -1369,7 +1362,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void postData() {
-//        pd = Tools.progressDialog(PrintPreviewActivity.this);
+//        progressDialog = Tools.progressDialog(PrintPreviewActivity.this);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINTPOST_URL,
                 response -> {
                     //Disimissing the progress dialog
@@ -1378,7 +1371,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 //                    downloadFile();
 
                     try {
-//                        pd.dismiss();
+//                        progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
                         //  dlgEnterText();
                     } catch (Exception e) {
@@ -1386,7 +1379,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     }
                 },
                 volleyError -> {
-//                    pd.dismiss();
+//                    progressDialog.dismiss();
                 }) {
             @Override
             public Map getHeaders() {
@@ -1699,7 +1692,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getAge(String dobString) {
-
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {
@@ -1734,9 +1726,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
 
-            int result = tts.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.US);
 
-            tts.setSpeechRate(1);
+            textToSpeech.setSpeechRate(1);
 
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -1750,10 +1742,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
-    private void speakOut(String textToSpeech) {
-        String text = textToSpeech;
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {

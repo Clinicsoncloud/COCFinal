@@ -332,7 +332,7 @@
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/btnskip"
+                android:id="@+id/btn_skip"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
                 android:layout_margin="5dp"
@@ -348,7 +348,7 @@
 
 
             <Button
-                android:id="@+id/txtnext"
+                android:id="@+id/btn_next"
                 android:layout_width="700dp"
                 android:layout_height="50dp"
                 android:layout_margin="10dp"
