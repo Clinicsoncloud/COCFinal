@@ -43,7 +43,7 @@ import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.glucose.Activity_ScanList;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         txtmainSugar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(MainActivity.this, Activity_ScanList.class));
+                context.startActivity(new Intent(MainActivity.this, GlucoseScanListActivity.class));
             }
         });
     }
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void onBackPressed() {
         super.onBackPressed();
 
-        context.startActivity(new Intent(this,Activity_ScanList.class));
+        context.startActivity(new Intent(this, GlucoseScanListActivity.class));
     }
 
     private void progressDialogs() {
@@ -639,7 +639,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
 
             case R.id.txtmainbloodsugar:
-                context.startActivity(new Intent(this, Activity_ScanList.class));
+                context.startActivity(new Intent(this, GlucoseScanListActivity.class));
                 break;
 
         }

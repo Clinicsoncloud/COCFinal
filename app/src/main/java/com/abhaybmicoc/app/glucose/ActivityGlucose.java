@@ -340,7 +340,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
     @Override
     public void setSwitchActivity() {
-        Intent intent = new Intent(getApplicationContext(), Activity_ScanList.class);
+        Intent intent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
         intent.putExtra("flag", 2);
         startActivity(intent);
         finish();

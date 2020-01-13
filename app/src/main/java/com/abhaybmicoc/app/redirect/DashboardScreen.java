@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import main.java.com.abhaybmicoc.app.screen.BpLoginScreen;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.glucose.Activity_ScanList;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.heightweight.HeightScreen;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.oxygen.OxygenActivity;
@@ -76,7 +76,7 @@ public class DashboardScreen extends AppCompatActivity implements View.OnClickLi
                 startActivity(objhemo);
                 break;
             case R.id.txtmainbloodsugar:
-                Intent objsugar = new Intent(getApplicationContext(), Activity_ScanList.class);
+                Intent objsugar = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
                 startActivity(objsugar);
                 break;
             case R.id.txtmainprinter:

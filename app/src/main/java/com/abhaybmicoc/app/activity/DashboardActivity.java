@@ -34,7 +34,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.glucose.Activity_ScanList;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.heightweight.Principal;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.slidemenu.SlideMenu;
@@ -163,7 +163,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
 
         btnnext.setOnClickListener(v -> {
             try{
-                Intent objIntent = new Intent(getApplicationContext(), Activity_ScanList.class);
+                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
                 startActivity(objIntent);
                 finish();
             }catch (Exception e){}

@@ -177,7 +177,7 @@
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
         <activity
-            android:name="com.abhaybmicoc.app.glucose.Activity_ScanList"
+            android:name="com.abhaybmicoc.app.glucose.GlucoseScanListActivity"
             android:theme="@style/AppThemeGlucose">
 
             <!--
