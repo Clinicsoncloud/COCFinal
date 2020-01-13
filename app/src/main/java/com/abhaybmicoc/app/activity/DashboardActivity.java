@@ -193,19 +193,19 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
     public void onClick(View view) {
         switch (view.getId()){
 
-            case R.id.txtmainheight:
+            case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
 
-            case R.id.txtmainweight:
+            case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
                 break;
 
-            case R.id.txtmaintempreture:
+            case R.id.tv_header_temperature:
                 context.startActivity(new Intent(this, ThermometerScreen.class));
                 break;
 
-            case R.id.txtmainpulseoximeter:
+            case R.id.tv_header_pulseoximeter:
                 context.startActivity(new Intent(this, MainActivity.class));
                 break;
         }
@@ -525,10 +525,10 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
         setContentView(R.layout.and_dashboard_new);
 
-        tvHeight = findViewById(R.id.txtmainheight);
-        tvWeight = findViewById(R.id.txtmainweight);
-        tvTemperature = findViewById(R.id.txtmaintempreture);
-        tvOximeter = findViewById(R.id.txtmainpulseoximeter);
+        tvHeight = findViewById(R.id.tv_header_height);
+        tvWeight = findViewById(R.id.tv_header_weight);
+        tvTemperature = findViewById(R.id.tv_header_tempreture);
+        tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
         registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
 
@@ -536,10 +536,10 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         checkIfDeviceIsPaired();
         doStartService();
 
-        layoutBloodPressure = (BloodPressureDispalyDataLayout) findViewById(R.id.llinear_bp);
-        weightscale = (WeightScaleDisplayDataLayout) findViewById(R.id.llinear_wt);
-        thermometer = (ThermometerDisplayDataLayout) findViewById(R.id.llinear_tm);
-        activitymonitor = (ActivityMonitorDisplayDataLayout) findViewById(R.id.llinear_am);
+        weightscale = findViewById(R.id.llinear_wt);
+        thermometer = findViewById(R.id.llinear_tm);
+        activitymonitor = findViewById(R.id.llinear_am);
+        layoutBloodPressure = findViewById(R.id.llinear_bp);
 
         // Arrows
         rightArrow = findViewById(R.id.right_arrow);
@@ -555,14 +555,14 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             db = new DataBase(this);
         }
 
-        btnNext = findViewById(R.id.btnnext);
+        btnNext = findViewById(R.id.btn_next);
         btnStart = findViewById(R.id.btnstart);
         btnRepeat = findViewById(R.id.btnrepeat);
 
-        tvName = findViewById(R.id.txtName);
-        tvAge = findViewById(R.id.txtAge);
-        tvGender = findViewById(R.id.txtGender);
-        tvMobileNumber = findViewById(R.id.txtMobile);
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobileNumber = findViewById(R.id.tv_mobile_number);
 
         linearContainer = findViewById(R.id.linearContainer);
 
@@ -1119,7 +1119,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             int minutes = bundle.getInt(ADGattService.KEY_MINUTES);
             int seconds = bundle.getInt(ADGattService.KEY_SECONDS);
 
-<<<<<<< HEAD
             String weightString = String.format(Locale.getDefault(), "%.1f", weight);
             String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
             String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
@@ -1136,25 +1135,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setIsSynced("no");
             long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
-=======
-            case R.id.tv_header_height:
-                context.startActivity(new Intent(this, HeightActivity.class));
-                break;
-
-            case R.id.tv_header_weight:
-                context.startActivity(new Intent(this, ActofitMainActivity.class));
-                break;
-
-            case R.id.tv_header_tempreture:
-                context.startActivity(new Intent(this, ThermometerScreen.class));
-                break;
-
-            case R.id.tv_header_pulseoximeter:
-                context.startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
-    }
->>>>>>> origin/feature_refactor_layout
 
             String weightDeviceId = "9DEA020D-1795-3B89-D184-DE7CD609FAD0";
 
@@ -1164,15 +1144,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
             db.weighttrackentry(insertObjectList);
 
-<<<<<<< HEAD
             insertObjectList.clear();
-=======
-        //Initialization of the top boxes
-        txtHeight = findViewById(R.id.tv_header_height);
-        txtWeight = findViewById(R.id.tv_header_weight);
-        txtTemprature = findViewById(R.id.tv_header_tempreture);
-        txtOximeter = findViewById(R.id.tv_header_pulseoximeter);
->>>>>>> origin/feature_refactor_layout
 
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
@@ -1195,7 +1167,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
             String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 
-<<<<<<< HEAD
             Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
             infoBeanObj.setDate(finaldate);
             infoBeanObj.setTime(finaltime);
@@ -1208,12 +1179,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             editor.putString("systolic", String.valueOf(sys));
             editor.putString("diastolic", String.valueOf(dia));
             editor.commit();
-=======
-        btnnext = findViewById(R.id.btn_next);
-        btnstart = findViewById(R.id.btnstart);
-        btnrepeat = findViewById(R.id.btn_repeat);
-        linearContainer = findViewById(R.id.linearContainer);
->>>>>>> origin/feature_refactor_layout
 
             infoBeanObj.setPulseUnit("bpm");
             infoBeanObj.setSystolicUnit("mmhg");
@@ -1227,15 +1192,8 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setDeviceId(weightDeviceId);
             final ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>();
 
-<<<<<<< HEAD
             insertObjectList.add(infoBeanObj);
             db.bpEntry(insertObjectList);
-=======
-        txtName = findViewById(R.id.tv_name);
-        txtAge = findViewById(R.id.tv_age);
-        txtGender = findViewById(R.id.tv_gender);
-        txtMobile = findViewById(R.id.tv_mobile_number);
->>>>>>> origin/feature_refactor_layout
 
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
 

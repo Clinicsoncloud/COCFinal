@@ -46,7 +46,7 @@
                 android:textSize="30sp"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:id="@+id/tv_header_tempreture"
+                android:id="@+id/tv_header_temperature"
                 android:layout_height="60dp" />
 
             <TextView
