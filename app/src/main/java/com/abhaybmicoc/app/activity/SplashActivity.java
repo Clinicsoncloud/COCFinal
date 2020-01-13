@@ -13,8 +13,13 @@ import com.abhaybmicoc.app.screen.OtpLoginScreen;
  * Splash Activity
  */
 public class SplashActivity extends Activity {
+    // region Variables
 
-    private Handler splashHandler = null;
+    private Handler splashHandler;
+
+    // endregion
+
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +33,10 @@ public class SplashActivity extends Activity {
         super.onDestroy();
         splashHandler.removeCallbacksAndMessages(null);
     }
+
+    // endregion
+
+    // region Initialization methods
 
     /**
      *  Method to initialize the activity
@@ -45,7 +54,7 @@ public class SplashActivity extends Activity {
             SplashActivity.this.startActivity(mainIntent);
             finish();
         }, 2000);
-
     }
 
+    // endregion
 }

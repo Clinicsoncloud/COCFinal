@@ -298,13 +298,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void speakOut(String text) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
-     */
     private void goToOtpLoginScreen() {
         context.startActivity(new Intent(OtpVerifyScreen.this, OtpLoginScreen.class));
     }
@@ -323,6 +316,13 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
+    private void speakOut(String text) {
+        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     */
     private void checkIfTextToSpeechIsActivated(int status){
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
@@ -335,6 +335,21 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
         } else {
             Log.e("TTS", "Initilization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        /* close the tts engine to avoide the runtime exception from it */
+        try {
+            if (tts != null) {
+                tts.stop();
+                tts.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
         }
     }
 
@@ -368,21 +383,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
         RadioButton radioButton = rdGenderGroup.findViewById(radioButtonID);
         return radioButton.getText().toString();
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech(){
-        /* close the tts engine to avoide the runtime exception from it */
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
     }
 
     // endregion

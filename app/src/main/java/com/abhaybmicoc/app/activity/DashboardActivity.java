@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.activity;
 
+import android.app.Activity;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 
+import com.abhaybmicoc.app.MeasuDataManager;
+import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.slidemenu.SlideMenu;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -67,7 +70,7 @@ import com.abhaybmicoc.app.view.ThermometerDisplayDataLayout;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 import com.abhaybmicoc.app.view.ActivityMonitorDisplayDataLayout;
 
-public class DashboardActivity extends ADBaseActivity implements OnRefreshListener, TextToSpeech.OnInitListener, OnClickListener {
+public class DashboardActivity extends Activity implements OnRefreshListener, TextToSpeech.OnInitListener, OnClickListener {
 
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1000;
@@ -97,7 +100,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     ArrayList<String> pairedDeviceList = new ArrayList<String>(); //ACGS-10
     private TextView txtName, txtAge, txtGender, txtMobile;
     private BluetoothAdapter mBluetoothAdapter;
-    private TextToSpeech tts;
+    private TextToSpeech textToSpeech;
     private String txt = "";
     private TextView txtHeight,txtWeight,txtTemprature,txtOximeter;
 
@@ -108,100 +111,10 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.and_dashboard_new);
-
-        //Initialization of the top boxes
-        txtHeight = findViewById(R.id.txtmainheight);
-        txtWeight = findViewById(R.id.txtmainweight);
-        txtTemprature = findViewById(R.id.txtmaintempreture);
-        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
-
-        context = DashboardActivity.this;
-
-        disp_data_bp_value_textview = findViewById(R.id.disp_data_bp_value_textview);
-        int val = ((0x07 & 0xff) << 8) | (0xE1 & 0xff);
-        int sys = ((0x00 & 0xff) << 8) | (0x65 & 0xff);
-
-        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
-        //Call function to get paired device
-        isDevicePaired();
-        doStartService();
-        initializeUI_new();
-        setListiner();
-        bindEvents();
-
-        String login_username = ADSharedPreferences.getString(ADSharedPreferences.KEY_LOGIN_USER_NAME, "");
-
-        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
-            db = new DataBase(this);
-        }
-
-        btnnext = findViewById(R.id.btnnext);
-        btnstart = findViewById(R.id.btnstart);
-        btnrepeat = findViewById(R.id.btnrepeat);
-        linearContainer = findViewById(R.id.linearContainer);
-
-        shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-        db.deleteBpData(this);
-
-        txtName = findViewById(R.id.txtName);
-        txtAge = findViewById(R.id.txtAge);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
-
-        tts = new TextToSpeech(getApplicationContext(),this);
-        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
-        speakOut(txt);
-
-        txtName.setText("Name : " + shared.getString("name", ""));
-        txtGender.setText("Gender : " + shared.getString("gender", ""));
-        txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
-        txtAge.setText("DOB : " + shared.getString("dob", ""));
-
-        btnnext.setOnClickListener(v -> {
-            try{
-                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
-                startActivity(objIntent);
-                finish();
-            }catch (Exception e){}
-        });
-
-        btnstart.setOnClickListener(v -> {
-//            pd = Tools.progressDialog(DashboardActivity.this);
-            pd = Tools.kHudDialog(DashboardActivity.this);
-            pd.setProgress(40);
-        });
-
-        btnrepeat.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setAction(BleReceivedService.TYPE_GATT_CONNECTED);
-            sendBroadcast(intent);
-
-        });
-
-
-        mSlideMenu = (SlideMenu) findViewById(R.id.slideMenu);
-        String addnewUserVisiblity = ADSharedPreferences.getString(ADSharedPreferences.KEY_ADD_NEW_USER_VISIBLITY, "");
-        String manageuservisibility = ADSharedPreferences.getString(ADSharedPreferences.KEY_MANAGER_USER_VISIBILITY,
-                "");
-        String frommanagevisibility = ADSharedPreferences.getString(ADSharedPreferences.KEY_FROM_MANAGER_VISIBILITY,
-                "");
-
-        RelativeLayout mainlayout = (RelativeLayout) findViewById(R.id.root);
-        mSlideMenu.init(this, this, 333, login_username, login_username,
-                addnewUserVisiblity, manageuservisibility,
-                frommanagevisibility,
-                mainlayout);
-
-        mSlideMenu.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSlideMenu.show();
-            }
-        });
+        setupUI();
+        setupEvents();
+        initializeData();
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -210,13 +123,8 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         deviceList = new ArrayList<BluetoothDevice>();
     }
 
-    private void bindEvents() {
-
-        //bind click events of top box
-        txtHeight.setOnClickListener(this);
-        txtWeight.setOnClickListener(this);
-        txtTemprature.setOnClickListener(this);
-        txtOximeter.setOnClickListener(this);
+    @Override
+    public void onRefresh() {
 
     }
 
@@ -289,15 +197,7 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
             mIsSendCancel = true;
         }
 
-        //closing the text to speech object in to avoid run time exception
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
+        stopTextToSpeech();
     }
 
     @Override
@@ -308,16 +208,6 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
                 doBindBleReceivedService();
             }
         }
-    }
-
-    @Override
-    public void onRefresh() {
-
-    }
-
-    @Override
-    public SlideMenu getSlideMenu() {
-        return mSlideMenu;
     }
 
     public BluetoothManager getBluetoothManager() {
@@ -1294,9 +1184,9 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
 
-            int result = tts.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.US);
 
-            tts.setSpeechRate(1);
+            textToSpeech.setSpeechRate(1);
 
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -1310,11 +1200,12 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
         }
     }
 
-
-    private void speakOut(String textToSpeech) {
-        String text = textToSpeech;
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
@@ -1340,4 +1231,138 @@ public class DashboardActivity extends ADBaseActivity implements OnRefreshListen
                 break;
         }
     }
+
+    // region Initialization methods
+
+    private void setupUI(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.and_dashboard_new);
+
+        //Initialization of the top boxes
+        txtHeight = findViewById(R.id.txtmainheight);
+        txtWeight = findViewById(R.id.txtmainweight);
+        txtTemprature = findViewById(R.id.txtmaintempreture);
+        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
+
+        context = DashboardActivity.this;
+
+        disp_data_bp_value_textview = findViewById(R.id.disp_data_bp_value_textview);
+        int val = ((0x07 & 0xff) << 8) | (0xE1 & 0xff);
+        int sys = ((0x00 & 0xff) << 8) | (0x65 & 0xff);
+
+        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
+        //Call function to get paired device
+        isDevicePaired();
+        doStartService();
+        initializeUI_new();
+        setListiner();
+
+        String login_username = ADSharedPreferences.getString(ADSharedPreferences.KEY_LOGIN_USER_NAME, "");
+
+        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
+            db = new DataBase(this);
+        }
+
+        btnnext = findViewById(R.id.btnnext);
+        btnstart = findViewById(R.id.btnstart);
+        btnrepeat = findViewById(R.id.btnrepeat);
+        linearContainer = findViewById(R.id.linearContainer);
+
+        shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        db.deleteBpData(this);
+
+        txtName = findViewById(R.id.txtName);
+        txtAge = findViewById(R.id.txtAge);
+        txtGender = findViewById(R.id.txtGender);
+        txtMobile = findViewById(R.id.txtMobile);
+
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+    }
+
+    /**
+     *
+     */
+    private void setupEvents(){
+        txtHeight.setOnClickListener(this);
+        txtWeight.setOnClickListener(this);
+        txtOximeter.setOnClickListener(this);
+        txtTemprature.setOnClickListener(this);
+
+        btnnext.setOnClickListener(v -> {
+            try{
+                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+                startActivity(objIntent);
+                finish();
+            }catch (Exception e){}
+        });
+
+        btnstart.setOnClickListener(v -> {
+//            pd = Tools.progressDialog(DashboardActivity.this);
+            pd = Tools.kHudDialog(DashboardActivity.this);
+            pd.setProgress(40);
+        });
+
+        btnrepeat.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(BleReceivedService.TYPE_GATT_CONNECTED);
+            sendBroadcast(intent);
+
+        });
+    }
+
+    /**
+     *
+     */
+    private void initializeData(){
+        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+        speakOut(txt);
+
+        txtAge.setText("DOB : " + shared.getString("dob", ""));
+        txtName.setText("Name : " + shared.getString("name", ""));
+        txtGender.setText("Gender : " + shared.getString("gender", ""));
+        txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
+
+    }
+
+    // endregion
+
+    // region Logical methods
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        /* close the textToSpeech engine to avoid the runtime exception from it */
+        try {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
+    }
+
+    // endregion
 }
