@@ -1,23 +1,24 @@
 package com.abhaybmicoc.app.hemoglobin;
 
 
+import android.util.Log;
 import android.Manifest;
-import android.annotation.TargetApi;
+import android.content.Intent;
+import android.content.Context;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.le.ScanResult;
+import android.bluetooth.le.ScanFilter;
+import android.bluetooth.le.ScanSettings;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
-import android.content.Context;
+import android.bluetooth.BluetoothGattCharacteristic;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -28,7 +29,6 @@ import android.speech.tts.TextToSpeech;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -50,6 +50,7 @@ import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ import static com.abhaybmicoc.app.hemoglobin.Constants.SCAN_PERIOD;
 import static com.abhaybmicoc.app.hemoglobin.Constants.SERVICE_UUID;
 
 
-public class MainActivity extends AppCompatActivity implements GattClientActionListener,TextToSpeech.OnInitListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements GattClientActionListener, TextToSpeech.OnInitListener, View.OnClickListener {
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -81,20 +82,24 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private TextView textViewdevice;
     private TextView textViewdisplay;
-    private TextView textName,textDob,textGender,textMobile;
+    private TextView textName, textDob, textGender, textMobile;
 
     private String deviceName;
 
-    SharedPreferences sharedPreferences, hemoglobinObject,personalObject;
+    SharedPreferences sharedPreferences, hemoglobinObject, personalObject;
 
     Button buttonconnect;
     Spinner spinnerDevice;
     ArrayList<String> deviceArrayList;
-    ProgressDialog progressDialog, scanprogressDialog,connectionProgressDialog;
+    ProgressDialog progressDialog, scanprogressDialog, connectionProgressDialog;
     private TextToSpeech tts;
     private String txt;
-    private TextView txtmainHeight,txtmainWeight,txtmainTemprature,txtmainOximeter,txtmainBpMonitor,txtmainSugar;
+    private TextView txtmainHeight, txtmainWeight, txtmainTemprature, txtmainOximeter, txtmainBpMonitor, txtmainSugar;
     private Context context;
+
+    private Button btnScan;
+
+    private String hbvalue;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -111,9 +116,55 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         requestPermission();
 
+        if (!deviceAddressFound()) {
+            Log.e("inside", "if");
+            disconnectGattServer();
+            scan(btnScan);
+            btnScan.setVisibility(View.VISIBLE);
+//            buttonconnect.setVisibility(View.GONE);
+        } else {
+
+            Log.e("Log_ConnectList", ":" + sharedPreferences.getString("device", ""));
+
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(sharedPreferences.getString("device", ""));
+
+            Log.e("device_Logs", ":" + device);
+            connectDevice(device);
+
+
+            connectionProgressDialog.show();
+            showToast(device.getName() + "");
+
+
+            buttonconnect.setVisibility(View.VISIBLE);
+
+
+        }
+
+//        connect();
+
     }
 
     private void bindEvents() {
+
+        btnScan.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                scan(btnScan);
+            }
+        });
+
+
+        buttonconnect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    connect();
+                }
+            }
+        });
+
         txtmainHeight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void onBackPressed() {
         super.onBackPressed();
 
-        context.startActivity(new Intent(this,Activity_ScanList.class));
+        context.startActivity(new Intent(this, Activity_ScanList.class));
     }
 
     private void progressDialogs() {
@@ -195,6 +246,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     private void setupUI() {
+
+        btnScan = findViewById(R.id.btn_scan);
 
         buttonconnect = findViewById(R.id.btnconnect);
         buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
@@ -235,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         context = MainActivity.this;
 
-        tts = new TextToSpeech(getApplicationContext(),this);
+        tts = new TextToSpeech(getApplicationContext(), this);
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         mBluetoothAdapter = bluetoothManager.getAdapter();
         sharedPreferences = getSharedPreferences("device_data", MODE_PRIVATE);
@@ -304,12 +357,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onPause() {
         super.onPause();
-        if(textViewdisplay.getText().toString().contains("Test")){
+        if (textViewdisplay.getText().toString().contains("Test")) {
             sendMessage("U370");
             disconnectGattServer();
         }
 
-        if(tts != null){
+        if (tts != null) {
             tts.shutdown();
         }
     }
@@ -317,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     public void showToast(final String msg) {
 
-       //for progress bar
+        //for progress bar
         new Thread() {
             public void run() {
                 MainActivity.this.runOnUiThread(new Runnable() {
@@ -328,12 +381,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                         } else if (msg.contains("Hb = ")) {
                             progressDialog.dismiss();
                             try {
-                                String hbvalue = msg;
+                                hbvalue = msg;
 
                                 hbvalue = hbvalue.replaceAll("[^0-9.]", "");
 
-                                String device_name = sharedPreferences.getString("devicename", "NA");
-                                String device_address = sharedPreferences.getString("device", "NA");
                                 SharedPreferences.Editor editor = hemoglobinObject.edit();
                                 editor.putString("hemoglobin", hbvalue);
                                 editor.commit();
@@ -538,12 +589,25 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sendMessage("U502");
     }
 
-    public void connect(View view) {
-        disconnectGattServer();
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void connect() {
+
+      /*  if (!deviceAddressFound()) {
+            Log.e("inside", "if");
+            disconnectGattServer();
+//            scan(btnScan);
+            buttonconnect.setVisibility(View.VISIBLE);*/
+
         if (deviceArrayList.size() != 0) {
             String s = spinnerDevice.getSelectedItem().toString();
+
+            Log.e("Spinner_Selectd", ":" + s);
             BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(s.substring(s.length() - 17));
+
+            Log.e("device_Logs", ":" + device);
             connectDevice(device);
+
+
             connectionProgressDialog.show();
             showToast(device.getName() + "");
             deviceName = device.getName();
@@ -552,12 +616,31 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             editor.putString("devicename", device.getName());
             editor.commit();
 
+
+            Log.e("deviceSAved_Log", ":" + sharedPreferences.getString("device", ""));
+            Log.e("devicename_Log", ":" + sharedPreferences.getString("devicename", ""));
             deviceArrayList.clear();
             ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
             adapter.notifyDataSetChanged();
             spinnerDevice.setAdapter(adapter);
 
         }
+       /* } else {
+            // enable scan button
+            btnScan.setVisibility(View.VISIBLE);
+            Log.e("inside", "else");
+        }*/
+    }
+
+    private boolean deviceAddressFound() {
+        Log.e("sharedprefvalue", " = " + sharedPreferences.getString("device", ""));
+
+//        if (!sharedPreferences.getString("deviceaddress", "").equals("")) {
+        if (!sharedPreferences.getString("device", "").equals("")) {
+            Log.e("sharedprefvalueLogs", ":" + sharedPreferences.getString("device", ""));
+            return true;
+        }
+        return false;
     }
 
     public void readBatchCode(View view) {
@@ -605,14 +688,39 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         try {
             AndMedical_App_Global.mBTcomm = null;
-        } catch(NullPointerException e) { }
-        //when device is off we can move to next screen
-        startActivity(new Intent(MainActivity.this, Act_Main.class));
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        saveHemoglobinValue();
+
+    }
+
+    private void saveHemoglobinValue() {
+        try {
+
+            startActivity(new Intent(MainActivity.this, Act_Main.class));
+
+            if (textViewdisplay.getText().toString().contains("Hb") || hbvalue.length() > 0) {
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("hemoglobin", hbvalue);
+                editor.commit();
+
+                //when device is off we can move to next screen
+                startActivity(new Intent(MainActivity.this, Act_Main.class));
+
+            } else {
+                Toast.makeText(context, "Didn't Get the Hb value", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            ErrorUtils.logErrors(e, "MainActivity", "saveHemoglobinValue", "error saving hb value");
+        }
+
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.txtmainheight:
                 Toast.makeText(context, "clicked", Toast.LENGTH_SHORT).show();
                 context.startActivity(new Intent(this, Principal.class));
