@@ -1,25 +1,27 @@
 package com.abhaybmicoc.app.view;
 
-import android.content.Context;
-import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.content.Context;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
 
-import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
-import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.MeasuDataManager;
+import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.entities.Lifetrack_infobean;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.utilities.ThermometerUtilites;
+import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import java.text.DecimalFormat;
 
-
 public class ThermometerDisplayDataLayout extends ADDisplayDataLinearLayout {
+	// region Variables
+
+	private Context mContext;
 
 	private TextView text_thermometer;
 	private TextView text_thermometer_unit;
@@ -28,8 +30,8 @@ public class ThermometerDisplayDataLayout extends ADDisplayDataLinearLayout {
 	private ImageView leftArrowImageView;
 	private ImageView rightArrowImageView;
 
-	private Context mContext;
-	
+	// endregion
+
 	public ThermometerDisplayDataLayout(Context context) {
 		super(context);
 		mContext = context ;

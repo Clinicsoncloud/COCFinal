@@ -58,8 +58,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
     private ProgressDialog pd;
 
-    private SharedPreferences sharedPreferenceActofit;
-    private SharedPreferences spToken;
+    private SharedPreferences sharedPreferencesToken;
+    private SharedPreferences sharedPreferencesActofit;
 
     private RadioButton rdMale;
     private RadioButton rdFemale;
@@ -139,17 +139,17 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         tts = new TextToSpeech(getApplicationContext(), this);
 
         try {
-            sharedPreferenceActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-            spToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+            sharedPreferencesToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-            etName.setText(spToken.getString("name", ""));
-            etDateOfBirth.setText(spToken.getString("dob", ""));
+            etName.setText(sharedPreferencesToken.getString("name", ""));
+            etDateOfBirth.setText(sharedPreferencesToken.getString("dob", ""));
             etMobileNumber.setText(getIntent().getStringExtra("mobile"));
 
-            if (spToken.getString("email", "").equalsIgnoreCase("null"))
+            if (sharedPreferencesToken.getString("email", "").equalsIgnoreCase("null"))
                 etEmail.setText("");
             else
-                etEmail.setText(spToken.getString("email", ""));
+                etEmail.setText(sharedPreferencesToken.getString("email", ""));
 
             initializeGender();
         } catch (Exception e) {
@@ -268,7 +268,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             @Override
             public Map getHeaders() {
                 HashMap headers = new HashMap();
-                String bearer = "Bearer ".concat(spToken.getString("token", ""));
+                String bearer = "Bearer ".concat(sharedPreferencesToken.getString("token", ""));
                 headers.put("Authorization", bearer);
                 return headers;
             }
@@ -366,11 +366,11 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
      *
      */
     private void initializeGender(){
-        if (spToken.getString("gender", "").equalsIgnoreCase("male")) {
+        if (sharedPreferencesToken.getString("gender", "").equalsIgnoreCase("male")) {
             rdMale.setChecked(true);
 
             writeToPersonalSharedPreference("gender", getSelectedGender());
-        } else if (spToken.getString("gender", "").equalsIgnoreCase("female")) {
+        } else if (sharedPreferencesToken.getString("gender", "").equalsIgnoreCase("female")) {
             rdFemale.setChecked(true);
 
             writeToPersonalSharedPreference("gender", getSelectedGender());

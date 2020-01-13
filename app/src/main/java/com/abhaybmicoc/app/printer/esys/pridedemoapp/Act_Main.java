@@ -44,15 +44,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import main.java.com.abhaybmicoc.app.activity.PrintPreviewActivity;
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.PrintPreviewActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
 import com.abhaybmicoc.app.utils.ApiUtils;
+
+import com.prowesspride.api.Setup;
 import com.prowesspride.api.Printer_ESC;
 import com.prowesspride.api.Printer_GEN;
-import com.prowesspride.api.Setup;
 /**
  * The main interface <br />
  Â  * Maintain a connection with the Bluetooth communication operations,

@@ -1,76 +1,79 @@
 package com.abhaybmicoc.app.printer.esys.pridedemoapp;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.util.Log;
+import android.os.Bundle;
+import android.view.View;
+import android.os.Handler;
+import android.app.Dialog;
+import android.view.Window;
+import android.widget.Toast;
+import android.app.Activity;
+import android.os.AsyncTask;
 import android.view.Display;
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
-import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.Spinner;
+import android.content.Intent;
+import android.text.InputType;
+import android.widget.EditText;
+import android.content.Context;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.database.Cursor;
+import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.text.InputFilter;
+import android.widget.ImageView;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
+import android.app.ProgressDialog;
+import android.provider.MediaStore;
+import android.widget.LinearLayout;
+import android.widget.ArrayAdapter;
+import android.graphics.BitmapFactory;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.view.View.OnClickListener;
+import android.graphics.drawable.ColorDrawable;
+import android.view.View.OnFocusChangeListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.Toast;
 
-
-import main.java.com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.android.volley.DefaultRetryPolicy;
+import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
-import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.utils.Tools;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.toolbox.StringRequest;
+
 import com.evolute.qrimage.QRCodeGenerator;
 import com.evolute.textimage.TextGenerator;
 import com.evolute.textimage.TextGenerator.ImageWidth;
 import com.evolute.textimage.TextGenerator.Justify;
+
 import com.prowesspride.api.HexString;
 import com.prowesspride.api.Printer_GEN;
+
+import com.android.volley.Request;
+import com.android.volley.toolbox.StringRequest;
+
+import java.io.File;
+import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
 public class PrintPriviewScreen extends Activity {
+    // region Variables
 
     private final static int MESSAGE_BOX = 1;
     private String sBarcodeStr, sAddDataStr;
@@ -151,7 +154,9 @@ public class PrintPriviewScreen extends Activity {
     private TextView txtskemus, txtsubfat, txtBmi, txtbodyfat, txtheight, txtpulse, txtoxygen;
     private TextView txtname, txtmobile, txttempreture, txtbp, txtglucose, txthemoglobin;
 
-    @SuppressWarnings("deprecation")
+    // endregion
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
