@@ -80,7 +80,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     @Override
     public void onInit(int status) {
-        checkIfTextToSpeechIsActivated(status);
+        startTextToSpeech(status);
     }
 
     // endregion
@@ -159,7 +159,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
-    private void checkIfTextToSpeechIsActivated(int status){
+    private void startTextToSpeech(int status){
         if (status == TextToSpeech.SUCCESS) {
             int result = textTopSpeech.setLanguage(Locale.US);
 

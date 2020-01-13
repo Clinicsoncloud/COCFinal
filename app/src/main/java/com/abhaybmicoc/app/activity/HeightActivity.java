@@ -449,7 +449,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      *
      */
     private void stopTextToSpeech(){
-        /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();

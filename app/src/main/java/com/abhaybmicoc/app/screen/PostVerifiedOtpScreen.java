@@ -74,7 +74,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
     @Override
     public void onInit(int status) {
-        checkIfTextToSpeechIsActivated(status);
+        startTextToSpeech(status);
     }
 
     // endregion
@@ -129,7 +129,6 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      *
      */
     private void stopTextToSpeech(){
-        /* close the tts engine to avoide the runtime exception from it */
         try {
             if (tts != null) {
                 tts.stop();
@@ -140,7 +139,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         }
     }
 
-    private void checkIfTextToSpeechIsActivated(int status){
+    private void startTextToSpeech(int status){
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
 

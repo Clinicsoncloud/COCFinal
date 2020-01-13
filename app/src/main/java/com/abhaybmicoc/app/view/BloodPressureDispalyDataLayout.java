@@ -1,43 +1,43 @@
 package com.abhaybmicoc.app.view;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.content.Context;
 import android.widget.TextView;
+import android.widget.ImageView;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
+import android.content.res.Resources;
 
-import main.java.com.abhaybmicoc.app.activity.DashboardActivity;
-import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.MeasuDataManager;
+import com.abhaybmicoc.app.utilities.AndMedicalLogic;
+import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.entities.Lifetrack_infobean;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
-import com.abhaybmicoc.app.utilities.AndMedicalLogic;
-
+import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 public class BloodPressureDispalyDataLayout extends ADDisplayDataLinearLayout {
-	
-	private TextView bpDateTextView;
-	
-	private TextView systolicValueTextView;
-	private TextView systolicUnitTextView;
-	private TextView systolicTitleTextView;
+	// region Variables
 
-	private TextView diastolicValueTextView;
-	private TextView diastolicUnitTextView;
-	private TextView diastolicTitleTextView;
-	
-	private TextView pulseValueTextView;
+	private Context mContext;
+
+	private TextView bpDateTextView;
+
 	private TextView pulseUnitTextView;
+	private TextView pulseValueTextView;
 	private TextView pulseTitleTextView;
-	
+	private TextView systolicUnitTextView;
+	private TextView systolicValueTextView;
+	private TextView diastolicUnitTextView;
+	private TextView systolicTitleTextView;
+	private TextView diastolicValueTextView;
+	private TextView diastolicTitleTextView;
+
 	private ImageView leftArrowImageView;
 	private ImageView rightArrowImageView;
-	
-	private Context mContext;
+
+	// endregion
 
 	public BloodPressureDispalyDataLayout(Context context) {
 		super(context);

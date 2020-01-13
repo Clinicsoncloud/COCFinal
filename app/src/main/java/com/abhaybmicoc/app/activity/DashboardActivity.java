@@ -19,7 +19,6 @@ import android.app.FragmentManager;
 import android.widget.LinearLayout;
 import android.content.IntentFilter;
 import android.content.ComponentName;
-import android.widget.RelativeLayout;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGatt;
 import android.speech.tts.TextToSpeech;
@@ -34,11 +33,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 
-import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.slidemenu.SlideMenu;
 import com.abhaybmicoc.app.oximeter.MainActivity;
-import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 
@@ -71,42 +69,67 @@ import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 import com.abhaybmicoc.app.view.ActivityMonitorDisplayDataLayout;
 
 public class DashboardActivity extends Activity implements OnRefreshListener, TextToSpeech.OnInitListener, OnClickListener {
+    // region Variables
 
+    private Context context = DashboardActivity.this;
+
+    private String txt = "";
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1000;
 
-    private boolean mIsBindBleReceivedServivce = false;
+    private boolean isTryingScan;
     private boolean isScanning = false;
-    private boolean shouldStartConnectDevice = false;
-
-    private boolean mIsBleReceiver = false;
-
-    private ActivityMonitorDisplayDataLayout activitymonitor;
-    private BloodPressureDispalyDataLayout bloodpressure;
-    private WeightScaleDisplayDataLayout weightscale;
-    private ThermometerDisplayDataLayout thermometer;
-    private FrameLayout rightArrow;
-    private FrameLayout leftArrow;
-    private DataBase db;
-    private SlideMenu mSlideMenu;
-    //    private ProgressDialog pd;
-    private KProgressHUD pd;
-    private LinearLayout linearContainer;
     private boolean mIsSendCancel = false;
-    private Button btnstart, btnnext, btnrepeat;
+    private boolean mIsBleReceiver = false;
+    private boolean mIsCheckBleetoothEnabled = false;
+    private boolean shouldStartConnectDevice = false;
+    private boolean mIsBindBleReceivedServivce = false;
+
+    private long setDateTimeDelay = Long.MIN_VALUE;
+    private long indicationDelay = Long.MIN_VALUE;
+
+    private ThermometerDisplayDataLayout thermometer;
+    private WeightScaleDisplayDataLayout weightscale;
+    private BloodPressureDispalyDataLayout layoutBloodPressure;
+    private ActivityMonitorDisplayDataLayout activitymonitor;
+
+    private FrameLayout leftArrow;
+    private FrameLayout rightArrow;
+    private LinearLayout linearContainer;
+
+    private TextView tvAge;
+    private TextView tvName;
+    private TextView tvGender;
+    private TextView tvHeight;
+    private TextView tvWeight;
+    private TextView tvOximeter;
+    private TextView tvTemperature;
+    private TextView tvMobileNumber;
+
+    private Dialog progress;
+
+    private Button btnNext;
+    private Button btnStart;
+    private Button btnRepeat;
+
+    private Handler uiThreadHandler = new Handler();
+
+    private KProgressHUD pd;
+
+    private DataBase db;
+    private SharedPreferences sharedPreferencesPersonalData;
+    private SharedPreferences sharedPreferencesBloodPressure;
+
     private ArrayList<BluetoothDevice> deviceList;
-    private TextView disp_data_bp_value_textview;
-    private SharedPreferences BpObject, shared;
-    ArrayList<String> pairedDeviceList = new ArrayList<String>(); //ACGS-10
-    private TextView txtName, txtAge, txtGender, txtMobile;
-    private BluetoothAdapter mBluetoothAdapter;
+    ArrayList<String> pairedDeviceList = new ArrayList<String>();
+
     private TextToSpeech textToSpeech;
-    private String txt = "";
-    private TextView txtHeight,txtWeight,txtTemprature,txtOximeter;
+    private BluetoothDevice bluetoothDevice;
+    private BluetoothAdapter mBluetoothAdapter;
 
-    Context context;
+    // endregion
 
-    BluetoothDevice bluetoothDevice;
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,74 +138,26 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         setupUI();
         setupEvents();
         initializeData();
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.commit();
-
-        deviceList = new ArrayList<BluetoothDevice>();
     }
 
     @Override
     public void onRefresh() {
-
-    }
-
-    private void offBluetooth() {
-        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (mBluetoothAdapter.isEnabled()) {
-            mBluetoothAdapter.disable();
-        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
         dismissIndicator();
         doStopService();
         unregisterReceiver(mMeasudataUpdateReceiver);
     }
 
-    private boolean mIsCheckBleetoothEnabled = false;
-
     @Override
     protected void onResume() {
         super.onResume();
 
-
-        isDevicePaired();
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        if (measuDataManager == null) {
-            Log.e("inside_if","onResume");
-            measuDataManager = new MeasuDataManager(this);
-            ((AndMedical_App_Global) getApplication()).setMeasuDataManager(measuDataManager);
-            measuDataManager.syncAllMeasuDatas(true);
-        } else {
-            Log.e("inside_else","onResume");
-            measuDataManager.syncAllMeasuDatas(true);
-            refreshDisplay();
-        }
-        if (mIsSendCancel) {
-            mIsSendCancel = false;
-        }
-
-        BluetoothManager bluetoothManager = getBluetoothManager();
-        if (bluetoothManager != null) {
-            BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
-            if (bluetoothAdapter != null) {
-                if (!bluetoothAdapter.isEnabled()) {
-                    if (!mIsCheckBleetoothEnabled) {
-                        mIsCheckBleetoothEnabled = true;
-                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
-                        return;
-                    }
-                } else {
-                    doBindBleReceivedService();
-                }
-            }
-        }
-        mIsCheckBleetoothEnabled = false;
+        enableBluetooth();
     }
 
     @Override
@@ -191,7 +166,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
         doStopLeScan();
         doUnbindBleReceivedService();
-//        doStopService();
 
         if (!mIsSendCancel) {
             mIsSendCancel = true;
@@ -210,76 +184,36 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         }
     }
 
-    public BluetoothManager getBluetoothManager() {
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        return bluetoothManager;
+    @Override
+    public void onInit(int status) {
+        startTextToSpeech(status);
     }
 
-    // UIの初期化
-    private void initializeUI_new() {
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
 
-        bloodpressure = (BloodPressureDispalyDataLayout) findViewById(R.id.llinear_bp);
-        weightscale = (WeightScaleDisplayDataLayout) findViewById(R.id.llinear_wt);
-        thermometer = (ThermometerDisplayDataLayout) findViewById(R.id.llinear_tm);
-        activitymonitor = (ActivityMonitorDisplayDataLayout) findViewById(R.id.llinear_am);
+            case R.id.txtmainheight:
+                context.startActivity(new Intent(this, HeightActivity.class));
+                break;
 
-        // Arrows
-        rightArrow = (FrameLayout) findViewById(R.id.right_arrow);
-        rightArrow.setVisibility(View.INVISIBLE);
+            case R.id.txtmainweight:
+                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                break;
 
-        leftArrow = (FrameLayout) findViewById(R.id.left_arrow);
-        leftArrow.setVisibility(View.INVISIBLE);
+            case R.id.txtmaintempreture:
+                context.startActivity(new Intent(this, ThermometerScreen.class));
+                break;
 
-        TextView header = (TextView) findViewById(R.id.header);
-        header.setText(R.string.header_dashboard);
-    }
-
-    private void setListiner() {
-        rightArrow.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-                MeasuDataManager manager = appGlobal.getMeasuDataManager();
-                if (manager != null) {
-                    manager.moveDatasToThePast();
-                    refreshDisplay();
-                }
-            }
-        });
-        leftArrow.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-                MeasuDataManager manager = appGlobal.getMeasuDataManager();
-                if (manager != null) {
-                    manager.moveDatasToTheFuture();
-                    refreshDisplay();
-                }
-            }
-        });
-    }
-
-    private void doBindBleReceivedService() {
-        Log.e("inside","dobindBleReceivedService");
-        if (!mIsBindBleReceivedServivce) {
-            bindService(new Intent(DashboardActivity.this,
-                    BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
-            mIsBindBleReceivedServivce = true;
-            Log.e("inside_condition","dobindBleReceivedService");
+            case R.id.txtmainpulseoximeter:
+                context.startActivity(new Intent(this, MainActivity.class));
+                break;
         }
     }
 
-    private void doUnbindBleReceivedService() {
-        Log.e("inside","dounbindBleReceivedService");
-        if (mIsBindBleReceivedServivce) {
-            unbindService(mBleReceivedServiceConnection);
-            mIsBindBleReceivedServivce = false;
-        }
-    }
+    // endregion
 
     private ServiceConnection mBleReceivedServiceConnection = new ServiceConnection() {
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
 
@@ -290,110 +224,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             doStartLeScan();
         }
     };
-
-    private Dialog progress;
-
-    private void showIndicator(String message) {
-        if (!(DashboardActivity.this).isFinishing()) {
-            if (progress == null) {
-                progress = new Dialog(DashboardActivity.this);
-                progress.getWindow().setBackgroundDrawable(new ColorDrawable(0));
-                progress.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                progress.setContentView(R.layout.custom_alert);
-                progress.setCancelable(false);
-            }
-
-            setIndicatorMessage(message);
-
-            if (!progress.isShowing()) {
-                progress.show();
-            }
-        }
-    }
-
-    private void setIndicatorMessage(String message) {
-        if (progress == null) {
-            return;
-        }
-        TextView syncMessages = (TextView) progress.findViewById(R.id.syncMessages1);
-
-        if (message == null) {
-            message = "";
-        }
-
-        if (syncMessages != null) {
-            syncMessages.setText(message);
-        }
-    }
-
-    private void dismissIndicator() {
-        if (progress == null) {
-            return;
-        }
-        if (progress.isShowing()) {
-            progress.dismiss();
-        }
-
-        progress = null;
-    }
-
-    private void startScan() {
-        if (shouldStartConnectDevice) {
-            return;
-        }
-        if (BleReceivedService.getInstance() != null) {
-            if (BleReceivedService.getInstance().isConnectedDevice()) {
-                BleReceivedService.getInstance().disconnectDevice();
-            }
-            isScanning = true;
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);  // For UW-302BLE
-            deviceList.clear();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    boolean result = BleReceivedService.getInstance().getBluetoothManager().getAdapter().startLeScan(mLeScanCallback);
-                }
-            });
-        }
-    }
-
-    private void stopScan() {
-        if (BleReceivedService.getInstance() != null) {
-            isScanning = false;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (BleReceivedService.getInstance().getBluetoothManager().getAdapter() != null) {
-                        BleReceivedService.getInstance().getBluetoothManager().getAdapter().stopLeScan(mLeScanCallback);
-                    }
-                }
-            });
-        }
-    }
-
-    private boolean isTryScanning;
-
-    private void doStartLeScan() {
-        isTryScanning = true;
-        doTryLeScan();
-    }
-
-    private void doTryLeScan() {
-        if (!isTryScanning) {
-            return;
-        }
-        if (!isScanning) {
-            startScan();
-        }
-        isTryScanning = false;
-    }
-
-    private void doStopLeScan() {
-        if (isScanning) {
-            stopScan();
-        }
-    }
-
+    
     private LeScanCallback mLeScanCallback = new LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
@@ -459,65 +290,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         }
     };
 
-    private boolean isAbleToConnectDevice(BluetoothDevice device, byte[] scanRecord) {
-
-        // すでに何かが接続中ならFalse
-        if (BleReceivedService.getInstance().isConnectedDevice()) {
-            return false;
-        }
-        BluetoothAdapter bluetoothAdapter = BleReceivedService.getInstance().getBluetoothManager().getAdapter();
-
-        // ペアリング済みのデバイスのみ許可
-        if (bluetoothAdapter != null) {
-
-            Set<BluetoothDevice> pairingDevices = bluetoothAdapter.getBondedDevices();
-
-            if (device.getName() != null) {
-                return pairingDevices.contains(device) && device.getName().contains("A&D");
-            }
-        }
-        return false;
-    }
-
-    private boolean isAbleToConnectDeviceUW(BluetoothDevice device, byte[] scanRecord) {
-        if (device.getName().contains("UW-302BLE")) { //Add Support for UW-302
-            String deviceName = "";
-            if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
-                db = new DataBase(getApplicationContext());
-                deviceName = db.getTrackerName();
-
-            }
-            if (deviceName != null) {
-                if (deviceName.equalsIgnoreCase(device.getName())) {
-                    ScanRecordParser.ScanRecordItem scanRecordItem = ScanRecordParser.getParser().parseString(scanRecord);
-                    byte[] manufacturerSpecificData = scanRecordItem.getManufacturerSpecificData();
-                    String print_activitydata = byte2hex(manufacturerSpecificData);
-                    if (manufacturerSpecificData != null
-                            && manufacturerSpecificData.length == 3) {
-                        int value = manufacturerSpecificData[2];
-                        if (value == 1 || value == 3) { // 1:Paired, 3:Paired but need to set time
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    } else {
-                        return false;
-                    }
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
-    }
-
-    private long setDateTimeDelay = Long.MIN_VALUE;
-    private long indicationDelay = Long.MIN_VALUE;
-    private Handler uiThreadHandler = new Handler();
     private final BroadcastReceiver bleServiceReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -727,6 +499,612 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         }
     };
 
+    private final BroadcastReceiver mMeasudataUpdateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
+                refreshActivityMonitorLayout();
+            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
+                Log.e("inside","broadCastReceiverBp");
+                refreshBloodPressureLayout();
+            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
+                refreshWeightScaleLayout();
+            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
+                refreshThermometerLayout();
+            }
+            refreshArrowVisible();
+        }
+    };
+
+    // region Initialization methods
+
+    private void setupUI(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        setContentView(R.layout.and_dashboard_new);
+
+        tvHeight = findViewById(R.id.txtmainheight);
+        tvWeight = findViewById(R.id.txtmainweight);
+        tvTemperature = findViewById(R.id.txtmaintempreture);
+        tvOximeter = findViewById(R.id.txtmainpulseoximeter);
+
+        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
+
+        //Call function to get paired device
+        checkIfDeviceIsPaired();
+        doStartService();
+
+        layoutBloodPressure = (BloodPressureDispalyDataLayout) findViewById(R.id.llinear_bp);
+        weightscale = (WeightScaleDisplayDataLayout) findViewById(R.id.llinear_wt);
+        thermometer = (ThermometerDisplayDataLayout) findViewById(R.id.llinear_tm);
+        activitymonitor = (ActivityMonitorDisplayDataLayout) findViewById(R.id.llinear_am);
+
+        // Arrows
+        rightArrow = findViewById(R.id.right_arrow);
+        rightArrow.setVisibility(View.INVISIBLE);
+
+        leftArrow = findViewById(R.id.left_arrow);
+        leftArrow.setVisibility(View.INVISIBLE);
+
+        TextView header = findViewById(R.id.header);
+        header.setText(R.string.header_dashboard);
+
+        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
+            db = new DataBase(this);
+        }
+
+        btnNext = findViewById(R.id.btnnext);
+        btnStart = findViewById(R.id.btnstart);
+        btnRepeat = findViewById(R.id.btnrepeat);
+
+        tvName = findViewById(R.id.txtName);
+        tvAge = findViewById(R.id.txtAge);
+        tvGender = findViewById(R.id.txtGender);
+        tvMobileNumber = findViewById(R.id.txtMobile);
+
+        linearContainer = findViewById(R.id.linearContainer);
+
+        sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        db.deleteBpData(this);
+
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+    }
+
+    /**
+     *
+     */
+    private void setupEvents(){
+        tvHeight.setOnClickListener(this);
+        tvWeight.setOnClickListener(this);
+        tvOximeter.setOnClickListener(this);
+        tvTemperature.setOnClickListener(this);
+
+        btnNext.setOnClickListener(v -> {
+            try{
+                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+                startActivity(objIntent);
+                finish();
+            }catch (Exception e){}
+        });
+
+        btnStart.setOnClickListener(v -> {
+            pd = Tools.kHudDialog(DashboardActivity.this);
+            pd.setProgress(40);
+        });
+
+        btnRepeat.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.setAction(BleReceivedService.TYPE_GATT_CONNECTED);
+            sendBroadcast(intent);
+        });
+
+        rightArrow.setOnClickListener(view -> {
+            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
+            MeasuDataManager manager = appGlobal.getMeasuDataManager();
+
+            if (manager != null) {
+                manager.moveDatasToThePast();
+                refreshDisplay();
+            }
+        });
+
+        leftArrow.setOnClickListener(view -> {
+            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
+            MeasuDataManager manager = appGlobal.getMeasuDataManager();
+
+            if (manager != null) {
+                manager.moveDatasToTheFuture();
+                refreshDisplay();
+            }
+        });
+    }
+
+    /**
+     *
+     */
+    private void initializeData(){
+        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+        speakOut(txt);
+
+        tvAge.setText("DOB : " + sharedPreferencesPersonalData.getString("dob", ""));
+        tvName.setText("Name : " + sharedPreferencesPersonalData.getString("name", ""));
+        tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString("gender", ""));
+        tvMobileNumber.setText("Phone : " + sharedPreferencesPersonalData.getString("mobile_number", ""));
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.commit();
+
+        deviceList = new ArrayList<BluetoothDevice>();
+    }
+
+    // endregion
+
+    // region Logical methods
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        try {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
+    }
+
+    /**
+     *
+     * @param bytes
+     * @return
+     */
+    public static String byte2hex(byte[] bytes) {
+        BigInteger bi = new BigInteger(1, bytes);
+        return String.format("%0" + (bytes.length << 1) + "X", bi);
+    }
+
+    /**
+     * 
+     * @param date
+     * @return
+     */
+    public long convertDateToMilliSeconds(String date) {
+        long timestamp = 0;
+
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+
+        Date convertedDate = null;
+        try {
+            convertedDate = formatter.parse(date);
+            timestamp = convertedDate.getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return timestamp;
+    }
+
+    /**
+     *
+     */
+    private void doStartService() {
+        Log.e("inside","doStartService");
+        Intent intent1 = new Intent(this, BleReceivedService.class);
+        startService(intent1);
+        if (!mIsBleReceiver) {
+            IntentFilter filter = new IntentFilter(BleReceivedService.ACTION_BLE_SERVICE);
+            registerReceiver(bleServiceReceiver, filter);
+            mIsBleReceiver = true;
+        }
+    }
+
+    /**
+     *
+     */
+    private void doStopService() {
+        Log.e("inside","doStopService");
+        if (mIsBleReceiver) {
+            unregisterReceiver(bleServiceReceiver);
+            mIsBleReceiver = false;
+        }
+
+        Intent intent1 = new Intent(this, BleReceivedService.class);
+        stopService(intent1);
+    }
+
+    /**
+     *
+     */
+    private boolean checkIfDeviceIsPaired() {
+        final BluetoothManager bluetoothManager = (BluetoothManager) DashboardActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
+
+        Set<BluetoothDevice> pairingDevices = bluetoothManager.getAdapter().getBondedDevices();
+
+        /* Clear and initialize the list */
+        pairedDeviceList.clear();
+
+        if (pairingDevices == null || pairingDevices.isEmpty()) {
+            return false;
+        } else {
+            for (BluetoothDevice bdevice : pairingDevices) {
+                String name = bdevice.getName();
+
+                if (name.contains("A&D")) {
+                    //Check if its 651 or 352
+                    if (name.contains("651")) {
+                        //This is BP
+                        Log.e("bpDevice_condition","");
+                        if (!pairingDevices.contains("bpDevice")) {
+                            pairedDeviceList.add("bpDevice");
+                            Log.e("bpDevice_condition","");
+                        }
+
+                    } else if (name.contains("352")) {
+                        //This is weight scale
+                        if (!pairingDevices.contains("wsDevice")) {
+                            pairedDeviceList.add("wsDevice");
+                        }
+
+                    }
+                } else if (name.contains("UW-302")) {
+                    //This is activity tracker
+                    if (!pairingDevices.contains("activityDevice")) {
+                        pairedDeviceList.add("activityDevice");
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+
+    /**
+     *
+     */
+    private void turnBluetoothOff() {
+        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.disable();
+        }
+    }
+
+    /**
+     *
+     */
+    private void enableBluetooth(){
+        if(checkIfDeviceIsPaired()) {
+            MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+
+            if (measuDataManager == null) {
+                measuDataManager = new MeasuDataManager(this);
+                ((AndMedical_App_Global) getApplication()).setMeasuDataManager(measuDataManager);
+                measuDataManager.syncAllMeasuDatas(true);
+            } else {
+                measuDataManager.syncAllMeasuDatas(true);
+                refreshDisplay();
+            }
+
+            if (mIsSendCancel) {
+                mIsSendCancel = false;
+            }
+
+            BluetoothManager bluetoothManager = getBluetoothManager();
+            if (bluetoothManager != null) {
+                BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
+                if (bluetoothAdapter != null) {
+                    if (!bluetoothAdapter.isEnabled()) {
+                        if (!mIsCheckBleetoothEnabled) {
+                            mIsCheckBleetoothEnabled = true;
+                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
+                            return;
+                        }
+                    } else {
+                        doBindBleReceivedService();
+                    }
+                }
+            }
+
+            mIsCheckBleetoothEnabled = false;
+        }
+    }
+
+
+    private void refreshActivityMonitorLayout() {
+        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
+        boolean isExistData = (data != null);
+        if (isExistData) {
+            activitymonitor.setHide(false);
+            activitymonitor.setData(data);
+        } else {
+            if ((pairedDeviceList.size() == 0) ||
+                    !(pairedDeviceList.contains("activityDevice"))) {
+                activitymonitor.setHide(!isExistData);
+            } else {
+                activitymonitor.setDataNull(); //Activity device has been paired
+            }
+        }
+    }
+
+    private void refreshBloodPressureLayout() {
+        Log.e("inside","refreshBloodPressureLayout");
+        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_BP);
+        boolean isExistData = (data != null);
+        if (isExistData) {
+            layoutBloodPressure.setData(data);
+            System.out.println("===============Ashok====" + data.getSystolic() + "===" + data.getDiastolic());
+        }
+        layoutBloodPressure.setHide(!isExistData);
+    }
+
+    private void refreshWeightScaleLayout() {
+        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
+        boolean isExistData = (data != null);
+        if (isExistData) {
+            weightscale.setData(data);
+            weightscale.setVisibility(View.VISIBLE);
+        }
+        weightscale.setHide(!isExistData);
+    }
+
+    private void refreshThermometerLayout() {
+        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
+        boolean isExistData = (data != null);
+        if (isExistData) {
+            thermometer.setData(data);
+        }
+        thermometer.setHide(!isExistData);
+    }
+
+    private void refreshArrowVisible() {
+        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
+        leftArrow.setVisibility((measuDataManager.isExistPastDatas()) ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void refreshDisplay(int dataType) {
+        if (dataType == MeasuDataManager.MEASU_DATA_TYPE_BP) {
+            refreshBloodPressureLayout();
+        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_WS) {
+            refreshWeightScaleLayout();
+        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_TH) {
+            refreshThermometerLayout();
+        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_AM) {
+            refreshActivityMonitorLayout();
+        }
+    }
+
+    private void refreshDisplay() {
+        refreshActivityMonitorLayout();
+        refreshBloodPressureLayout();
+        refreshWeightScaleLayout();
+        refreshThermometerLayout();
+        refreshArrowVisible();
+    }
+
+    // 対象の項目の次のデータを表示
+    private void moveDatasToTheFuture(int dataType) {
+        AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
+        MeasuDataManager manager = appGlobal.getMeasuDataManager();
+        if (manager != null) {
+            manager.moveDatasToTheFuture(dataType);
+        }
+
+        refreshDisplay(dataType);
+    }
+
+
+    public BluetoothManager getBluetoothManager() {
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+        return bluetoothManager;
+    }
+
+    private void doBindBleReceivedService() {
+        if (!mIsBindBleReceivedServivce) {
+            bindService(new Intent(DashboardActivity.this,
+                    BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
+            mIsBindBleReceivedServivce = true;
+            Log.e("inside_condition","dobindBleReceivedService");
+        }
+    }
+
+    private void doUnbindBleReceivedService() {
+        if (mIsBindBleReceivedServivce) {
+            unbindService(mBleReceivedServiceConnection);
+            mIsBindBleReceivedServivce = false;
+        }
+    }
+
+
+    private void showIndicator(String message) {
+        if (!(DashboardActivity.this).isFinishing()) {
+            if (progress == null) {
+                progress = new Dialog(DashboardActivity.this);
+                progress.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                progress.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                progress.setContentView(R.layout.custom_alert);
+                progress.setCancelable(false);
+            }
+
+            setIndicatorMessage(message);
+
+            if (!progress.isShowing()) {
+                progress.show();
+            }
+        }
+    }
+
+    private void setIndicatorMessage(String message) {
+        if (progress == null) {
+            return;
+        }
+        TextView syncMessages = (TextView) progress.findViewById(R.id.syncMessages1);
+
+        if (message == null) {
+            message = "";
+        }
+
+        if (syncMessages != null) {
+            syncMessages.setText(message);
+        }
+    }
+
+    private void dismissIndicator() {
+        if (progress == null) {
+            return;
+        }
+        if (progress.isShowing()) {
+            progress.dismiss();
+        }
+
+        progress = null;
+    }
+
+    private void startScan() {
+        if (shouldStartConnectDevice) {
+            return;
+        }
+        if (BleReceivedService.getInstance() != null) {
+            if (BleReceivedService.getInstance().isConnectedDevice()) {
+                BleReceivedService.getInstance().disconnectDevice();
+            }
+            isScanning = true;
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);  // For UW-302BLE
+            deviceList.clear();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    boolean result = BleReceivedService.getInstance().getBluetoothManager().getAdapter().startLeScan(mLeScanCallback);
+                }
+            });
+        }
+    }
+
+    private void stopScan() {
+        if (BleReceivedService.getInstance() != null) {
+            isScanning = false;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (BleReceivedService.getInstance().getBluetoothManager().getAdapter() != null) {
+                        BleReceivedService.getInstance().getBluetoothManager().getAdapter().stopLeScan(mLeScanCallback);
+                    }
+                }
+            });
+        }
+    }
+
+    private void doStartLeScan() {
+        isTryingScan = true;
+        doTryLeScan();
+    }
+
+    private void doTryLeScan() {
+        if (!isTryingScan) {
+            return;
+        }
+        if (!isScanning) {
+            startScan();
+        }
+        isTryingScan = false;
+    }
+
+    private void doStopLeScan() {
+        if (isScanning) {
+            stopScan();
+        }
+    }
+    private boolean isAbleToConnectDevice(BluetoothDevice device, byte[] scanRecord) {
+        if (BleReceivedService.getInstance().isConnectedDevice()) {
+            return false;
+        }
+
+        BluetoothAdapter bluetoothAdapter = BleReceivedService.getInstance().getBluetoothManager().getAdapter();
+
+        if (bluetoothAdapter != null) {
+
+            Set<BluetoothDevice> pairingDevices = bluetoothAdapter.getBondedDevices();
+
+            if (device.getName() != null) {
+                return pairingDevices.contains(device) && device.getName().contains("A&D");
+            }
+        }
+        return false;
+    }
+
+    private boolean isAbleToConnectDeviceUW(BluetoothDevice device, byte[] scanRecord) {
+        if (device.getName().contains("UW-302BLE")) { //Add Support for UW-302
+            String deviceName = "";
+            if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
+                db = new DataBase(getApplicationContext());
+                deviceName = db.getTrackerName();
+
+            }
+            if (deviceName != null) {
+                if (deviceName.equalsIgnoreCase(device.getName())) {
+                    ScanRecordParser.ScanRecordItem scanRecordItem = ScanRecordParser.getParser().parseString(scanRecord);
+                    byte[] manufacturerSpecificData = scanRecordItem.getManufacturerSpecificData();
+                    String print_activitydata = byte2hex(manufacturerSpecificData);
+                    if (manufacturerSpecificData != null
+                            && manufacturerSpecificData.length == 3) {
+                        int value = manufacturerSpecificData[2];
+                        if (value == 1 || value == 3) { // 1:Paired, 3:Paired but need to set time
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+    }
+
     private void receivedData(String characteristicUuidString, Bundle bundle) {
         if (ADGattUUID.WeightScaleMeasurement.toString().equals(characteristicUuidString) ||
                 ADGattUUID.AndCustomWeightScaleMeasurement.toString().equals(characteristicUuidString)) {
@@ -755,7 +1133,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             ADSharedPreferences.putString(ADSharedPreferences.KEY_WEIGHT_SCALE_UNITS, units);
 
             infoBeanObj.setIsSynced("no");
-            long dateValue = convertDateintoMs(finalTimeStamp);
+            long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
 
             String weightDeviceId = "9DEA020D-1795-3B89-D184-DE7CD609FAD0";
@@ -795,9 +1173,9 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setPulse(String.valueOf(pul));
             infoBeanObj.setSystolic(String.valueOf(sys));
             infoBeanObj.setDiastolic(String.valueOf(dia));
-            BpObject = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+            sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
             // Writing data to SharedPreferences
-            SharedPreferences.Editor editor = BpObject.edit();
+            SharedPreferences.Editor editor = sharedPreferencesBloodPressure.edit();
             editor.putString("systolic", String.valueOf(sys));
             editor.putString("diastolic", String.valueOf(dia));
             editor.commit();
@@ -807,7 +1185,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             infoBeanObj.setDiastolicUnit("mmhg");
             infoBeanObj.setIsSynced("no");
             infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
-            long dateValue = convertDateintoMs(finalTimeStamp);
+            long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
             String weightDeviceId = "web." + ADSharedPreferences.getString(ADSharedPreferences.KEY_USER_ID, "");
 
@@ -845,7 +1223,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             Lifetrack_infobean thermometerInfo = new Lifetrack_infobean();
             thermometerInfo.setDate(finaldate);
             thermometerInfo.setTime(finaltime);
-            long dateValue = convertDateintoMs(finalTimeStamp);
+            long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             thermometerInfo.setDateTimeStamp(String.valueOf(dateValue));
 
             thermometerInfo.setThermometerDeviceName(deviceName);
@@ -921,7 +1299,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
                 infoBeanObj.setDiastolicUnit("mmhg");
                 infoBeanObj.setIsSynced("no");
                 //infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
-                long dateValue = convertDateintoMs(finalTimeStamp);
+                long dateValue = convertDateToMilliSeconds(finalTimeStamp);
                 infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
                 infoBeanObj.setDeviceId("UW-302");
                 insertObjectList.add(infoBeanObj);
@@ -964,7 +1342,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
                 infoBeanObj.setWeightUnit(unit);
                 infoBeanObj.setIsSynced("no");
                 //infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
-                long dateValue = convertDateintoMs(finalTimeStamp);
+                long dateValue = convertDateToMilliSeconds(finalTimeStamp);
                 infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
                 infoBeanObj.setDeviceId("UW-302");
                 insertObjectList.add(infoBeanObj);
@@ -977,390 +1355,6 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
 
-        }
-    }
-
-    private void refreshActivityMonitorLayout() {
-        // Data Sync
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
-        boolean isExistData = (data != null);
-        if (isExistData) {
-            activitymonitor.setHide(false);
-            activitymonitor.setData(data);
-        } else {
-            if ((pairedDeviceList.size() == 0) ||
-                    !(pairedDeviceList.contains("activityDevice"))) {
-                activitymonitor.setHide(!isExistData);
-            } else {
-                activitymonitor.setDataNull(); //Activity device has been paired
-            }
-
-
-        }
-        //activitymonitor.setHide(!isExistData);
-    }
-
-    private void refreshBloodPressureLayout() {
-        Log.e("inside","refreshBloodPressureLayout");
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_BP);
-        boolean isExistData = (data != null);
-        if (isExistData) {
-            bloodpressure.setData(data);
-            System.out.println("===============Ashok====" + data.getSystolic() + "===" + data.getDiastolic());
-        }
-        bloodpressure.setHide(!isExistData);
-    }
-
-    private void refreshWeightScaleLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
-        boolean isExistData = (data != null);
-        if (isExistData) {
-            weightscale.setData(data);
-            weightscale.setVisibility(View.VISIBLE);
-        }
-        weightscale.setHide(!isExistData);
-    }
-
-    private void refreshThermometerLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
-        boolean isExistData = (data != null);
-        if (isExistData) {
-            thermometer.setData(data);
-        }
-        thermometer.setHide(!isExistData);
-    }
-
-    private void refreshArrowVisible() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
-        leftArrow.setVisibility((measuDataManager.isExistPastDatas()) ? View.VISIBLE : View.INVISIBLE);
-    }
-
-    private void refreshDisplay(int dataType) {
-        if (dataType == MeasuDataManager.MEASU_DATA_TYPE_BP) {
-            refreshBloodPressureLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_WS) {
-            refreshWeightScaleLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_TH) {
-            refreshThermometerLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_AM) {
-            refreshActivityMonitorLayout();
-        }
-    }
-
-    private void refreshDisplay() {
-        refreshActivityMonitorLayout();
-        refreshBloodPressureLayout();
-        refreshWeightScaleLayout();
-        refreshThermometerLayout();
-        refreshArrowVisible();
-    }
-
-    // 対象の項目の次のデータを表示
-    private void moveDatasToTheFuture(int dataType) {
-        AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-        MeasuDataManager manager = appGlobal.getMeasuDataManager();
-        if (manager != null) {
-            manager.moveDatasToTheFuture(dataType);
-        }
-
-        refreshDisplay(dataType);
-    }
-
-    private final BroadcastReceiver mMeasudataUpdateReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
-                refreshActivityMonitorLayout();
-            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
-                Log.e("inside","broadCastReceiverBp");
-                refreshBloodPressureLayout();
-            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
-                refreshWeightScaleLayout();
-            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
-                refreshThermometerLayout();
-            }
-            refreshArrowVisible();
-        }
-    };
-
-    public void onBackPressed() {
-        //ANDMedicalUtilities.CreateDialog(this, "Confirm To Exit", this);
-//        finish();
-        //Disable back button in Blood pressure
-    }
-
-    public long convertDateintoMs(String date) {
-        long final_birth_date_timestamp = 0;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
-        Date converteddate = null;
-        try {
-            converteddate = (Date) formatter.parse(date);
-            final_birth_date_timestamp = converteddate.getTime();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return final_birth_date_timestamp;
-    }
-
-
-    private void doStartService() {
-        Log.e("inside","doStartService");
-        Intent intent1 = new Intent(this, BleReceivedService.class);
-        startService(intent1);
-        if (!mIsBleReceiver) {
-            IntentFilter filter = new IntentFilter(BleReceivedService.ACTION_BLE_SERVICE);
-            registerReceiver(bleServiceReceiver, filter);
-            mIsBleReceiver = true;
-        }
-
-    }
-
-    private void doStopService() {
-        Log.e("inside","doStopService");
-        if (mIsBleReceiver) {
-            unregisterReceiver(bleServiceReceiver);
-            mIsBleReceiver = false;
-        }
-
-        Intent intent1 = new Intent(this, BleReceivedService.class);
-        stopService(intent1);
-    }
-
-    void isDevicePaired() {
-        Log.e("inside","isDevicePaired");
-        final BluetoothManager bluetoothManager = (BluetoothManager) DashboardActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
-        Set<BluetoothDevice> pairingDevices = null;
-        pairingDevices = bluetoothManager.getAdapter().getBondedDevices();
-        BluetoothDevice deviceName;
-        pairedDeviceList.clear();//Clear the list , then initialize the list
-        if (pairingDevices == null) {
-            pairedDeviceList.clear();
-            return;
-        } else {
-            for (BluetoothDevice bdevice : pairingDevices) {
-                String name = bdevice.getName();
-                if (name.contains("A&D")) {
-                    //Check if its 651 or 352
-                    if (name.contains("651")) {
-                        //This is BP
-                        Log.e("bpDevice_condition","");
-                        if (!pairingDevices.contains("bpDevice")) {
-                            pairedDeviceList.add("bpDevice");
-                            Log.e("bpDevice_condition","");
-                        }
-
-                    } else if (name.contains("352")) {
-                        //This is weight scale
-                        if (!pairingDevices.contains("wsDevice")) {
-                            pairedDeviceList.add("wsDevice");
-                        }
-
-                    }
-                } else if (name.contains("UW-302")) {
-                    //This is activity tracker
-                    if (!pairingDevices.contains("activityDevice")) {
-                        pairedDeviceList.add("activityDevice");
-                    }
-                }
-            }
-
-        }
-
-    }
-
-    public static String byte2hex(byte[] bytes) {
-        BigInteger bi = new BigInteger(1, bytes);
-        return String.format("%0" + (bytes.length << 1) + "X", bi);
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            textToSpeech.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-
-    /**
-     *
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    @Override
-    public void onClick(View view) {
-
-        //Click events listener
-        switch (view.getId()){
-
-            case R.id.txtmainheight:
-                context.startActivity(new Intent(this, HeightActivity.class));
-                break;
-
-            case R.id.txtmainweight:
-                context.startActivity(new Intent(this, ActofitMainActivity.class));
-                break;
-
-            case R.id.txtmaintempreture:
-                context.startActivity(new Intent(this, ThermometerScreen.class));
-                break;
-
-            case R.id.txtmainpulseoximeter:
-                context.startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
-    }
-
-    // region Initialization methods
-
-    private void setupUI(){
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        setContentView(R.layout.and_dashboard_new);
-
-        //Initialization of the top boxes
-        txtHeight = findViewById(R.id.txtmainheight);
-        txtWeight = findViewById(R.id.txtmainweight);
-        txtTemprature = findViewById(R.id.txtmaintempreture);
-        txtOximeter = findViewById(R.id.txtmainpulseoximeter);
-
-        context = DashboardActivity.this;
-
-        disp_data_bp_value_textview = findViewById(R.id.disp_data_bp_value_textview);
-        int val = ((0x07 & 0xff) << 8) | (0xE1 & 0xff);
-        int sys = ((0x00 & 0xff) << 8) | (0x65 & 0xff);
-
-        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
-        //Call function to get paired device
-        isDevicePaired();
-        doStartService();
-        initializeUI_new();
-        setListiner();
-
-        String login_username = ADSharedPreferences.getString(ADSharedPreferences.KEY_LOGIN_USER_NAME, "");
-
-        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
-            db = new DataBase(this);
-        }
-
-        btnnext = findViewById(R.id.btnnext);
-        btnstart = findViewById(R.id.btnstart);
-        btnrepeat = findViewById(R.id.btnrepeat);
-        linearContainer = findViewById(R.id.linearContainer);
-
-        shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-        db.deleteBpData(this);
-
-        txtName = findViewById(R.id.txtName);
-        txtAge = findViewById(R.id.txtAge);
-        txtGender = findViewById(R.id.txtGender);
-        txtMobile = findViewById(R.id.txtMobile);
-
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
-    }
-
-    /**
-     *
-     */
-    private void setupEvents(){
-        txtHeight.setOnClickListener(this);
-        txtWeight.setOnClickListener(this);
-        txtOximeter.setOnClickListener(this);
-        txtTemprature.setOnClickListener(this);
-
-        btnnext.setOnClickListener(v -> {
-            try{
-                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
-                startActivity(objIntent);
-                finish();
-            }catch (Exception e){}
-        });
-
-        btnstart.setOnClickListener(v -> {
-//            pd = Tools.progressDialog(DashboardActivity.this);
-            pd = Tools.kHudDialog(DashboardActivity.this);
-            pd.setProgress(40);
-        });
-
-        btnrepeat.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setAction(BleReceivedService.TYPE_GATT_CONNECTED);
-            sendBroadcast(intent);
-
-        });
-    }
-
-    /**
-     *
-     */
-    private void initializeData(){
-        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
-        speakOut(txt);
-
-        txtAge.setText("DOB : " + shared.getString("dob", ""));
-        txtName.setText("Name : " + shared.getString("name", ""));
-        txtGender.setText("Gender : " + shared.getString("gender", ""));
-        txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
-
-    }
-
-    // endregion
-
-    // region Logical methods
-
-    /**
-     *
-     * @param status
-     */
-    private void startTextToSpeech(int status){
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech(){
-        /* close the textToSpeech engine to avoid the runtime exception from it */
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
         }
     }
 

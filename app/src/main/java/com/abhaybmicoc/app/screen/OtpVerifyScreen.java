@@ -47,7 +47,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private int month;
     private int selectedGenderId;
 
-    private String gender = "";
     private final String FILL_REGISTRATION_MESSAGE = "Please Enter Registration detail";
 
     private Button btnLogin;
@@ -110,7 +109,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
     @Override
     public void onInit(int status) {
-        checkIfTextToSpeechIsActivated(status);
+        startTextToSpeech(status);
     }
 
     // endregion
@@ -323,7 +322,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void checkIfTextToSpeechIsActivated(int status){
+    private void startTextToSpeech(int status){
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
 
