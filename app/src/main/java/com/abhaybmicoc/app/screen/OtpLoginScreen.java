@@ -25,7 +25,6 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.android.volley.Request;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -92,7 +91,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private void setupUI(){
         setContentView(R.layout.activity_otp_login_screen);
 
-        btnLogin = findViewById(R.id.btnLogin);
+        btnLogin = findViewById(R.id.btn_submit);
         etMobileNumber = findViewById(R.id.et_mobile_number);
     }
 

@@ -87,8 +87,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private void setupUI(){
         setContentView(R.layout.activity_post_verified_otp_screen);
 
-        etOTP = findViewById(R.id.etOTP); //CHANGE IT
-        btnVerify = findViewById(R.id.btnLogin); // CHANGE IT
+        etOTP = findViewById(R.id.et_otp); //CHANGE IT
+        btnVerify = findViewById(R.id.btn_submit); // CHANGE IT
         kioskId = getIntent().getStringExtra("kioskid");
         mobileNumber = getIntent().getStringExtra("mobile");
     }

@@ -123,7 +123,7 @@
             android:weightSum="2"
             android:orientation="horizontal"
             android:layout_weight="2"
-            android:id="@+id/rg_gender"
+            android:id="@+id/rd_gender"
             android:layout_height="wrap_content">
 
             <RadioButton
@@ -132,7 +132,7 @@
                 android:layout_margin="5dp"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:id="@+id/rb_male_button"
+                android:id="@+id/rd_male"
                 android:textSize="25sp"
                 android:layout_weight="1"
                 android:background="@drawable/custom_radiobutton"
@@ -146,7 +146,7 @@
                 android:background="@drawable/custom_radiobutton"
                 android:textColor="@color/white"
                 android:textStyle="bold"
-                android:id="@+id/rb_female_button"
+                android:id="@+id/rd_female"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:textSize="25sp"
@@ -155,7 +155,7 @@
         </RadioGroup>
 
         <Button
-            android:id="@+id/btnLogin"
+            android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center"
