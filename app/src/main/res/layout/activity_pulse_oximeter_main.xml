@@ -42,8 +42,6 @@
             android:textColor="@color/white"
             android:textSize="22sp" />
 
-
-
         <TextView
             android:id="@+id/tv_header_tempreture"
             android:layout_width="wrap_content"
@@ -70,8 +68,6 @@
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-
-
         <TextView
             android:id="@+id/tv_header_bloodpressure"
             android:layout_width="wrap_content"
@@ -84,10 +80,6 @@
             android:text="BP Monitor"
             android:textColor="@color/white"
             android:textSize="22sp" />
-
-
-
-
 
         <TextView
             android:id="@+id/tv_header_hemoglobin"
@@ -226,7 +218,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_spo"
+                    android:id="@+id/tv_body_oxygen"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -241,8 +233,8 @@
                     android:id="@+id/tv_pulse_rate"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/tv_spo"
-                    android:layout_alignStart="@+id/tv_spo"
+                    android:layout_below="@+id/tv_body_oxygen"
+                    android:layout_alignStart="@+id/tv_body_oxygen"
                     android:layout_marginTop="20dp"
                     android:text="@string/pr"
                     android:gravity="center"
@@ -263,7 +255,7 @@
             android:layout_marginTop="100dp">
 
             <Button
-                android:id="@+id/connectDevice"
+                android:id="@+id/btn_connect_device"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="80dp"
@@ -283,7 +275,7 @@
             android:layout_marginTop="20dp">
 
             <Button
-                android:id="@+id/disconnect"
+                android:id="@+id/btn_disconnect_device"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textColor="@color/white"

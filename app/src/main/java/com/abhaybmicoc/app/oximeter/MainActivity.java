@@ -48,8 +48,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private static final String TAG = "MainActivity";
     public static final String MAC_ADDRESS_KEY = "MAC_ADDRESS_KEY";
 
-    @ViewInject(R.id.pr) private TextView tvPulseRate;
-    @ViewInject(R.id.spo) private TextView tvBodyOxygen;
+    @ViewInject(R.id.tv_pulse_rate) private TextView tvPulseRate;
+    @ViewInject(R.id.tv_body_oxygen) private TextView tvBodyOxygen;
 
     private TextView tvAge;
     private TextView tvName;
@@ -64,9 +64,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private Button btnNext;
     private Button btnSkip;
     private Button btnRepeat;
-    @ViewInject(R.id.bindDevice) private Button btnBindDevice;
-    @ViewInject(R.id.connectDevice) private Button btnConnectDevice;
-    @ViewInject(R.id.disconnect) private Button btnDisconnectDevice;
+    
+    @ViewInject(R.id.btn_start_test) private Button btnStartTest;
+    @ViewInject(R.id.btn_connect_device) private Button btnConnectDevice;
+    @ViewInject(R.id.btn_disconnect_device) private Button btnDisconnectDevice;
 
     private C208Invoker c208Invoker;
     private TextToSpeech textToSpeech;
@@ -181,7 +182,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             finish();
         });
 
-        btnBindDevice.setOnClickListener(view -> bindDevice());
+        btnStartTest.setOnClickListener(view -> bindDevice());
         btnConnectDevice.setOnClickListener(view -> connectDevice());
         btnDisconnectDevice.setOnClickListener(view -> disconnectDevice());
     }

@@ -108,7 +108,7 @@ public class HeightScreen extends AppCompatActivity implements View.OnClickListe
 
 
         display = findViewById(R.id.txtheight);
-        Button sendButton = findViewById(R.id.btnstart);
+        Button sendButton = findViewById(R.id.btn_start);
         sendButton.setOnClickListener(v -> {
             etManualheight.setText("");
             String data = "1";

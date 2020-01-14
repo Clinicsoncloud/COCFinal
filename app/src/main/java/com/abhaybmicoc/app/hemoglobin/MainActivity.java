@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     private void setupUI() {
-        btnScan = findViewById(R.id.btnScan);
+        btnScan = findViewById(R.id.btn_scan);
         btnConnect = findViewById(R.id.btnconnect);
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
 

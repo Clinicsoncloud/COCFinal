@@ -77,13 +77,13 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     private TextView tvMobile;
     private TextView tvHeight;
     private TextView tvWeight;
-    private TextView logDisplay;
-    private TextView resultText;
-    private TextView tvOximeter;
+    private TextView btnNext;
     private TextView tvBpMonitor;
+    private TextView tvResultText;
+    private TextView tvLogDisplay;
     private TextView offlineTitle;
     private TextView tvTemprature;
-    private TextView resultTextNew;
+    private TextView tvResultTextNew;
     private TextView tvConnectionLabel;
 
     private LinearLayout layoutGlucose;
@@ -189,7 +189,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     @Override
     public boolean go(String text) {
         //set the log of the go text
-        logDisplay.setText(text);
+        tvLogDisplay.setText(text);
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if(text.equals("go")){
@@ -219,7 +219,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     @Override
     public void setLog(String text) {
         Log.e("text_title", " : " + text);
-        logDisplay.setText(text);
+        tvLogDisplay.setText(text);
 
         if (text.equals("Insert Strip!")) {
             readingRecyclerView.setVisibility(View.GONE);
@@ -253,11 +253,11 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
         } else {
             if (text.contains("Result")) {
-                logDisplay.setVisibility(View.VISIBLE);
-                resultTextNew.setVisibility(View.GONE);
-                resultText.setVisibility(View.VISIBLE);
+                tvLogDisplay.setVisibility(View.VISIBLE);
+                tvResultTextNew.setVisibility(View.GONE);
+                tvResultText.setVisibility(View.VISIBLE);
 
-                logDisplay.setText("Blood Glucose Result is");
+                tvLogDisplay.setText("Blood Glucose Result is");
 
                 text = text.replace("Result is", "");
                 text = text.replace(" ", "");
@@ -268,12 +268,12 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
                 Log.e("result_sugar",""+resultOfGlucose);
 
-                resultText.setText(text);
+                tvResultText.setText(text);
 
-                resultText.setVisibility(View.GONE);
-                resultTextNew.setVisibility(View.VISIBLE);
+                tvResultText.setVisibility(View.GONE);
+                tvResultTextNew.setVisibility(View.VISIBLE);
 
-                resultTextNew.setText(resultOfGlucose);
+                tvResultTextNew.setText(resultOfGlucose);
 
 
                 Log.e("result_after_setText",""+resultOfGlucose);
@@ -295,10 +295,10 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
                         glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
                         SharedPreferences.Editor editor = glucoseData.edit();
                         editor.putString("glucosetype", radioButtonId.getText().toString());
-                        editor.putString("last", resultTextNew.getText().toString());
+                        editor.putString("last", tvResultTextNew.getText().toString());
 
                         Log.e("glucosetype", "" + radioButtonId.getText().toString());
-                        Log.e("result", "" + resultTextNew.getText().toString());
+                        Log.e("result", "" + tvResultTextNew.getText().toString());
 
                         editor.commit();
 
@@ -307,8 +307,8 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
             }
 
-            logDisplay.setVisibility(View.GONE);
-            resultText.setText(text);
+            tvLogDisplay.setVisibility(View.GONE);
+            tvResultText.setText(text);
             readingRecyclerView.setVisibility(View.GONE);
             ivSteps.setVisibility(View.GONE);
             ivGlucose.setVisibility(View.GONE);
@@ -432,12 +432,12 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     private void setupUI(){
         setContentView(R.layout.activity_home);
 
-        layoutGlucose = findViewById(R.id.ll_glucose);
+        layoutGlucose = findViewById(R.id.layout_glucose);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.layout_toolbar);
         toolbar.setNavigationIcon(null);
         toolbar.setContentInsetsAbsolute(0, 0);
         setSupportActionBar(toolbar);
@@ -447,19 +447,19 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         mActionBar.setDisplayShowCustomEnabled(true);
         mActionBar.setCustomView(mCustomView);
 
-        logDisplay = findViewById(R.id.logDisplay);
-        offlineTitle = findViewById(R.id.offlineTitle);
+        tvLogDisplay = findViewById(R.id.tv_log_display);
+        offlineTitle = findViewById(R.id.tv_offline_title);
 
-        readingRecyclerView = findViewById(R.id.readingrecycler);
+        readingRecyclerView = findViewById(R.id.rv_reading);
 
         ivSteps = findViewById(R.id.iv_steps);
         ivGlucose = findViewById(R.id.iv_glucose);
         batteryIcon = mCustomView.findViewById(R.id.batteryIcon);
         bluetoothIcon = mCustomView.findViewById(R.id.bluetoothIcon);
 
-        resultText = layoutGlucose.findViewById(R.id.tv_resultText);
+        tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
 
-        resultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
+        tvResultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
 
         rgGlucose = layoutGlucose.findViewById(R.id.rg_glucose);
         rbFasting = layoutGlucose.findViewById(R.id.rb_fasting);
@@ -469,7 +469,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
         tvTemprature = findViewById(R.id.tv_header_tempreture);
-        tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
+        btnNext = findViewById(R.id.tv_header_pulseoximeter);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
 
         menuIcon = mCustomView.findViewById(R.id.menuIcon);
@@ -479,19 +479,21 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        tvName = findViewById(R.id.tv_name);
         tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
         tvMobile = findViewById(R.id.tv_mobile_number);
-        mView = findViewById(R.id.custView);
+
+        mView = findViewById(R.id.view_custom);
+
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
         textToSpeak = "Please click on start Test";
         speakOut(textToSpeak);
 
         btnReadData = findViewById(R.id.getData);
-        btnStartTest = findViewById(R.id.startTest);
-        btnWriteData = findViewById(R.id.writeData);
+        btnWriteData = findViewById(R.id.btn_next);
+        btnStartTest = findViewById(R.id.btn_start_test);
         btnRestartTest = findViewById(R.id.restartTest);
 
         ins = getResources().openRawResource(R.raw.synclibserialize);
@@ -499,16 +501,16 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         serializeUUID = new SerializeUUID();
         serializeUUID.readFile(ins);
 
+        tvAge.setText("DOB : " + shared.getString("dob", ""));
         tvName.setText("Name : " + shared.getString("name", ""));
         tvGender.setText("Gender : " + shared.getString("gender", ""));
         tvMobile.setText("Phone : " + shared.getString("mobile_number", ""));
-        tvAge.setText("DOB : " + shared.getString("dob", ""));
     }
 
     private void setupEvents(){
         tvHeight.setOnClickListener(this);
         tvWeight.setOnClickListener(this);
-        tvOximeter.setOnClickListener(this);
+        btnNext.setOnClickListener(this);
         tvBpMonitor.setOnClickListener(this);
         tvTemprature.setOnClickListener(this);
 
