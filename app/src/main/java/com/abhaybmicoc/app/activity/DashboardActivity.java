@@ -68,7 +68,7 @@ import com.abhaybmicoc.app.view.ThermometerDisplayDataLayout;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 import com.abhaybmicoc.app.view.ActivityMonitorDisplayDataLayout;
 
-public class DashboardActivity extends Activity implements OnRefreshListener, TextToSpeech.OnInitListener, OnClickListener {
+public class DashboardActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
 
     private Context context = DashboardActivity.this;
@@ -141,16 +141,10 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
     }
 
     @Override
-    public void onRefresh() {
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 
-        dismissIndicator();
-        doStopService();
-        unregisterReceiver(mMeasudataUpdateReceiver);
+        clearDataAndServices();
     }
 
     @Override
@@ -189,334 +183,8 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
         startTextToSpeech(status);
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-
-            case R.id.tv_header_height:
-                context.startActivity(new Intent(this, HeightActivity.class));
-                break;
-
-            case R.id.tv_header_weight:
-                context.startActivity(new Intent(this, ActofitMainActivity.class));
-                break;
-
-            case R.id.tv_header_temperature:
-                context.startActivity(new Intent(this, ThermometerScreen.class));
-                break;
-
-            case R.id.tv_header_pulseoximeter:
-                context.startActivity(new Intent(this, MainActivity.class));
-                break;
-        }
-    }
-
     // endregion
 
-    private ServiceConnection mBleReceivedServiceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            doStartLeScan();
-        }
-    };
-    
-    private LeScanCallback mLeScanCallback = new LeScanCallback() {
-        @Override
-        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            if (!isScanning) {
-                return;
-            }
-            if (device.getName() != null) {
-                if (isAbleToConnectDevice(device, scanRecord) && !shouldStartConnectDevice) {
-
-                    shouldStartConnectDevice = true;
-                    if (device.getName() != null) {
-                        bluetoothDevice = device;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                doStopLeScan();
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-
-                                BleReceivedService.getInstance().connectDevice(device);
-                            }
-                        });
-                    }
-
-                } else if (device.getName().contains("UW-302")) {
-
-                    if (isAbleToConnectDeviceUW(device, scanRecord) && !shouldStartConnectDevice) {
-
-                        final ImageView syncImage = (ImageView) findViewById(R.id.dashboard_icon_display);
-                        syncImage.setVisibility(View.VISIBLE);
-                        syncImage.setImageResource(R.drawable.syncpurple);
-                        syncImage.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        shouldStartConnectDevice = true;
-                                        doStopLeScan();
-                                        try {
-                                            Thread.sleep(200);
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                        BleReceivedService.getInstance().connectDevice(device);
-
-                                        // UW-302BLE sync may takes long time, so disable Android sleep.
-                                        // When start again, reset sleep disabling.
-                                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-                                        syncImage.setImageResource(R.drawable.dashboard_walk_icon);
-                                    }
-                                });
-                            }
-                        });
-
-                    }
-                }
-            }
-        }
-    };
-
-    private final BroadcastReceiver bleServiceReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle intentBundle = intent.getExtras();
-            String type = intent.getExtras().getString(BleReceivedService.EXTRA_TYPE);
-            Log.e("onReceive_intentAction",""+intent.getExtras().getString(BleReceivedService.EXTRA_TYPE));
-            Log.e("onReceive_Type"," = "+BleReceivedService.EXTRA_TYPE);
-            if (BleReceivedService.TYPE_GATT_CONNECTED.equals(type)) {
-                linearContainer.setVisibility(View.VISIBLE);
-                Log.e("inside","onReceive_GATT_CONNECTED");
-
-                try {
-                    pd.dismiss();
-                } catch (Exception e) {
-
-                }
-                showIndicator(getResources().getString(R.string.indicator_start_receive));
-                BleReceivedService.getGatt().discoverServices();
-
-                setDateTimeDelay = Long.MIN_VALUE;
-                indicationDelay = Long.MIN_VALUE;
-            } else if (BleReceivedService.TYPE_GATT_DISCONNECTED.equals(type)) {
-                Log.e("inside","onReceive_GATT_DISCONNECTED");
-                dismissIndicator();
-                if (shouldStartConnectDevice) {
-                    linearContainer.setVisibility(View.VISIBLE);
-                    try {
-                        pd.dismiss();
-                    } catch (Exception e) {
-
-                    }
-                    BleReceivedService.getInstance().disconnectDevice();
-                    uiThreadHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            shouldStartConnectDevice = false;
-                            if (!isScanning) {
-                                doStartLeScan();
-                            }
-                        }
-                    }, 80L);
-                }
-            } else if (BleReceivedService.TYPE_GATT_ERROR.equals(type)) {
-                Log.e("inside","onReceive_GATT_ERROR");
-                int status = intent.getExtras().getInt(BleReceivedService.EXTRA_STATUS);
-                if (status == 19) {
-                    return;
-                }
-                if (shouldStartConnectDevice) {
-                    if (BleReceivedService.getInstance() != null) {
-                        if (!BleReceivedService.getInstance().isConnectedDevice()) {
-                            shouldStartConnectDevice = false;
-                            dismissIndicator();
-                            doStartLeScan();
-                            linearContainer.setVisibility(View.VISIBLE);
-                            try {
-                                pd.dismiss();
-                            } catch (Exception e) {
-
-                            }
-                        } else {
-                            BluetoothGatt gatt = BleReceivedService.getGatt();
-                            if (gatt != null) {
-                                gatt.connect();
-                            }
-                        }
-                    }
-                } else {
-                    dismissIndicator();
-                }
-            } else {
-                if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
-                    Log.e("inside","onReceive_GATT_DISCOVERED");
-                    if (shouldStartConnectDevice) {
-                        if (BleReceivedService.getInstance() != null) {
-
-                            String device_name = intent.getExtras().getString(BleReceivedService.EXTRA_DEVICE_NAME);
-                            if (device_name.contains("UW-302BLE")) {
-                                BleReceivedService.getInstance().setUW302Notfication();
-                            } else {
-                                uiThreadHandler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        BleReceivedService.getInstance().requestReadFirmRevision();
-                                        linearContainer.setVisibility(View.VISIBLE);
-                                        try {
-                                            pd.dismiss();
-                                        } catch (Exception e) {
-
-                                        }
-                                    }
-                                }, 500L);
-                            }
-
-                        }
-                    }
-                } else if (BleReceivedService.TYPE_CHARACTERISTIC_READ.equals(type)) {
-                    if (shouldStartConnectDevice) {
-                        byte[] firmRevisionBytes = intent.getByteArrayExtra(BleReceivedService.EXTRA_VALUE);
-                        String firmRevision = null;
-                        if (firmRevisionBytes == null) {
-                            return;
-                        }
-                        firmRevision = new String(firmRevisionBytes);
-                        if (firmRevision == null || firmRevision.isEmpty()) {
-                            return;
-                        }
-                        String[] firmRevisionArray = getResources().getStringArray(R.array.firm_revision_group1);
-                        boolean isGroup1 = false;
-                        for (String revision : firmRevisionArray) {
-                            if (revision.contains(firmRevision)) {
-                                isGroup1 = true;
-                                break;
-                            }
-                        }
-
-                        String[] cesFirmRevisionCesArray = getResources().getStringArray(R.array.firm_revision_ces);
-                        boolean isCesGroup = false;
-                        for (String cesRevision : cesFirmRevisionCesArray) {
-                            if (cesRevision.contains(firmRevision)) {
-                                isCesGroup = true;
-                                break;
-                            }
-                        }
-
-
-                        if (isGroup1) {
-                            setDateTimeDelay = 40L;
-                            indicationDelay = 40L;
-                        } else if (isCesGroup) {
-                            setDateTimeDelay = 0L;
-                            indicationDelay = 0L;
-                        } else {
-                            setDateTimeDelay = 100L;
-                            indicationDelay = 100L;
-                        }
-                        uiThreadHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                BluetoothGatt gatt = BleReceivedService.getGatt();
-                                boolean settingResult;
-                                if (gatt != null) {
-                                    String deviceName = gatt.getDevice().getName();
-                                    settingResult = BleReceivedService.getInstance().setupDateTime(gatt);
-                                    if (!settingResult) {
-                                        dismissIndicator();
-                                    }
-                                } else {
-                                    dismissIndicator();
-                                }
-                            }
-                        }, setDateTimeDelay);
-                    }
-                } else if (BleReceivedService.TYPE_CHARACTERISTIC_WRITE.equals(type)) {
-                    String serviceUuidString = intent.getStringExtra(BleReceivedService.EXTRA_SERVICE_UUID);
-                    String characteristicUuidString = intent.getExtras().getString(BleReceivedService.EXTRA_CHARACTERISTIC_UUID);
-                    if (serviceUuidString.equals(ADGattUUID.CurrentTimeService.toString())
-                            || characteristicUuidString.equals(ADGattUUID.DateTime.toString())) {
-                        if (shouldStartConnectDevice) {
-                            uiThreadHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    BluetoothGatt gatt = BleReceivedService.getGatt();
-                                    boolean writeResult = BleReceivedService.getInstance().setIndication(gatt, true);
-                                    if (writeResult == false) {
-                                        dismissIndicator();
-                                    }
-                                }
-                            }, indicationDelay);
-                        }
-                    }
-                } else if (BleReceivedService.TYPE_INDICATION_VALUE.equals(type)) {
-                    setIndicatorMessage(getResources().getString(R.string.indicator_during_receive));
-                    Bundle bundle = intent.getBundleExtra(BleReceivedService.EXTRA_VALUE);
-                    String uuidString = intent.getExtras().getString(BleReceivedService.EXTRA_CHARACTERISTIC_UUID);
-                    receivedData(uuidString, bundle);
-                    uiThreadHandler.removeCallbacks(disableIndicationRunnable);
-                    uiThreadHandler.postDelayed(disableIndicationRunnable, 4000L);
-                } else if (BleReceivedService.TYPE_DESCRIPTOR_WRITE.equals(type)) {
-                    //For now do this only for the UW-302
-                    String device_name = intent.getExtras().getString(BleReceivedService.EXTRA_DEVICE_NAME);
-                    if (device_name.contains("UW-302BLE")) {
-
-                    }
-                }
-            }
-        }
-    };
-
-    Runnable disableIndicationRunnable = new Runnable() {
-        @Override
-        public void run() {
-            setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
-            BluetoothGatt gatt = BleReceivedService.getGatt();
-            if (BleReceivedService.getInstance() != null) {
-                boolean writeResult = BleReceivedService.getInstance().setIndication(gatt, false);
-                if (writeResult == false) {
-                    dismissIndicator();
-                }
-                //Add disconnect from smartphone.
-                if (gatt != null) {
-                    gatt.disconnect();
-                }
-
-                dismissIndicator();
-            }
-        }
-    };
-
-    private final BroadcastReceiver mMeasudataUpdateReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
-                refreshActivityMonitorLayout();
-            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
-                Log.e("inside","broadCastReceiverBp");
-                refreshBloodPressureLayout();
-            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
-                refreshWeightScaleLayout();
-            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
-                refreshThermometerLayout();
-            }
-            refreshArrowVisible();
-        }
-    };
 
     // region Initialization methods
 
@@ -557,7 +225,7 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
         btnNext = findViewById(R.id.btn_next);
         btnStart = findViewById(R.id.btnstart);
-        btnRepeat = findViewById(R.id.btnrepeat);
+        btnRepeat = findViewById(R.id.btn_repeat);
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
@@ -577,10 +245,10 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
      *
      */
     private void setupEvents(){
-        tvHeight.setOnClickListener(this);
-        tvWeight.setOnClickListener(this);
-        tvOximeter.setOnClickListener(this);
-        tvTemperature.setOnClickListener(this);
+        tvHeight.setOnClickListener(view -> context.startActivity(new Intent(this, HeightActivity.class)));
+        tvOximeter.setOnClickListener(view -> context.startActivity(new Intent(this, MainActivity.class)));
+        tvWeight.setOnClickListener(view -> context.startActivity(new Intent(this, ActofitMainActivity.class)));
+        tvTemperature.setOnClickListener(view -> context.startActivity(new Intent(this, ThermometerScreen.class)));
 
         btnNext.setOnClickListener(v -> {
             try{
@@ -1051,6 +719,13 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
             stopScan();
         }
     }
+
+    private void clearDataAndServices(){
+        dismissIndicator();
+        doStopService();
+        unregisterReceiver(mMeasudataUpdateReceiver);
+    }
+
     private boolean isAbleToConnectDevice(BluetoothDevice device, byte[] scanRecord) {
         if (BleReceivedService.getInstance().isConnectedDevice()) {
             return false;
@@ -1357,6 +1032,315 @@ public class DashboardActivity extends Activity implements OnRefreshListener, Te
 
         }
     }
+
+    // endregion
+
+    // region Broadcasters
+
+    private ServiceConnection mBleReceivedServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            doStartLeScan();
+        }
+    };
+
+    private LeScanCallback mLeScanCallback = new LeScanCallback() {
+        @Override
+        public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
+            if (!isScanning) {
+                return;
+            }
+            if (device.getName() != null) {
+                if (isAbleToConnectDevice(device, scanRecord) && !shouldStartConnectDevice) {
+
+                    shouldStartConnectDevice = true;
+                    if (device.getName() != null) {
+                        bluetoothDevice = device;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                doStopLeScan();
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+
+                                BleReceivedService.getInstance().connectDevice(device);
+                            }
+                        });
+                    }
+
+                } else if (device.getName().contains("UW-302")) {
+
+                    if (isAbleToConnectDeviceUW(device, scanRecord) && !shouldStartConnectDevice) {
+
+                        final ImageView syncImage = (ImageView) findViewById(R.id.dashboard_icon_display);
+                        syncImage.setVisibility(View.VISIBLE);
+                        syncImage.setImageResource(R.drawable.syncpurple);
+                        syncImage.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        shouldStartConnectDevice = true;
+                                        doStopLeScan();
+                                        try {
+                                            Thread.sleep(200);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        BleReceivedService.getInstance().connectDevice(device);
+
+                                        // UW-302BLE sync may takes long time, so disable Android sleep.
+                                        // When start again, reset sleep disabling.
+                                        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+                                        syncImage.setImageResource(R.drawable.dashboard_walk_icon);
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                }
+            }
+        }
+    };
+
+    private final BroadcastReceiver bleServiceReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle intentBundle = intent.getExtras();
+            String type = intent.getExtras().getString(BleReceivedService.EXTRA_TYPE);
+            Log.e("onReceive_intentAction",""+intent.getExtras().getString(BleReceivedService.EXTRA_TYPE));
+            Log.e("onReceive_Type"," = "+BleReceivedService.EXTRA_TYPE);
+            if (BleReceivedService.TYPE_GATT_CONNECTED.equals(type)) {
+                linearContainer.setVisibility(View.VISIBLE);
+                Log.e("inside","onReceive_GATT_CONNECTED");
+
+                try {
+                    pd.dismiss();
+                } catch (Exception e) {
+
+                }
+                showIndicator(getResources().getString(R.string.indicator_start_receive));
+                BleReceivedService.getGatt().discoverServices();
+
+                setDateTimeDelay = Long.MIN_VALUE;
+                indicationDelay = Long.MIN_VALUE;
+            } else if (BleReceivedService.TYPE_GATT_DISCONNECTED.equals(type)) {
+                Log.e("inside","onReceive_GATT_DISCONNECTED");
+                dismissIndicator();
+                if (shouldStartConnectDevice) {
+                    linearContainer.setVisibility(View.VISIBLE);
+                    try {
+                        pd.dismiss();
+                    } catch (Exception e) {
+
+                    }
+                    BleReceivedService.getInstance().disconnectDevice();
+                    uiThreadHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            shouldStartConnectDevice = false;
+                            if (!isScanning) {
+                                doStartLeScan();
+                            }
+                        }
+                    }, 80L);
+                }
+            } else if (BleReceivedService.TYPE_GATT_ERROR.equals(type)) {
+                Log.e("inside","onReceive_GATT_ERROR");
+                int status = intent.getExtras().getInt(BleReceivedService.EXTRA_STATUS);
+                if (status == 19) {
+                    return;
+                }
+                if (shouldStartConnectDevice) {
+                    if (BleReceivedService.getInstance() != null) {
+                        if (!BleReceivedService.getInstance().isConnectedDevice()) {
+                            shouldStartConnectDevice = false;
+                            dismissIndicator();
+                            doStartLeScan();
+                            linearContainer.setVisibility(View.VISIBLE);
+                            try {
+                                pd.dismiss();
+                            } catch (Exception e) {
+
+                            }
+                        } else {
+                            BluetoothGatt gatt = BleReceivedService.getGatt();
+                            if (gatt != null) {
+                                gatt.connect();
+                            }
+                        }
+                    }
+                } else {
+                    dismissIndicator();
+                }
+            } else {
+                if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
+                    Log.e("inside","onReceive_GATT_DISCOVERED");
+                    if (shouldStartConnectDevice) {
+                        if (BleReceivedService.getInstance() != null) {
+
+                            String device_name = intent.getExtras().getString(BleReceivedService.EXTRA_DEVICE_NAME);
+                            if (device_name.contains("UW-302BLE")) {
+                                BleReceivedService.getInstance().setUW302Notfication();
+                            } else {
+                                uiThreadHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        BleReceivedService.getInstance().requestReadFirmRevision();
+                                        linearContainer.setVisibility(View.VISIBLE);
+                                        try {
+                                            pd.dismiss();
+                                        } catch (Exception e) {
+
+                                        }
+                                    }
+                                }, 500L);
+                            }
+
+                        }
+                    }
+                } else if (BleReceivedService.TYPE_CHARACTERISTIC_READ.equals(type)) {
+                    if (shouldStartConnectDevice) {
+                        byte[] firmRevisionBytes = intent.getByteArrayExtra(BleReceivedService.EXTRA_VALUE);
+                        String firmRevision = null;
+                        if (firmRevisionBytes == null) {
+                            return;
+                        }
+                        firmRevision = new String(firmRevisionBytes);
+                        if (firmRevision == null || firmRevision.isEmpty()) {
+                            return;
+                        }
+                        String[] firmRevisionArray = getResources().getStringArray(R.array.firm_revision_group1);
+                        boolean isGroup1 = false;
+                        for (String revision : firmRevisionArray) {
+                            if (revision.contains(firmRevision)) {
+                                isGroup1 = true;
+                                break;
+                            }
+                        }
+
+                        String[] cesFirmRevisionCesArray = getResources().getStringArray(R.array.firm_revision_ces);
+                        boolean isCesGroup = false;
+                        for (String cesRevision : cesFirmRevisionCesArray) {
+                            if (cesRevision.contains(firmRevision)) {
+                                isCesGroup = true;
+                                break;
+                            }
+                        }
+
+
+                        if (isGroup1) {
+                            setDateTimeDelay = 40L;
+                            indicationDelay = 40L;
+                        } else if (isCesGroup) {
+                            setDateTimeDelay = 0L;
+                            indicationDelay = 0L;
+                        } else {
+                            setDateTimeDelay = 100L;
+                            indicationDelay = 100L;
+                        }
+                        uiThreadHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                BluetoothGatt gatt = BleReceivedService.getGatt();
+                                boolean settingResult;
+                                if (gatt != null) {
+                                    String deviceName = gatt.getDevice().getName();
+                                    settingResult = BleReceivedService.getInstance().setupDateTime(gatt);
+                                    if (!settingResult) {
+                                        dismissIndicator();
+                                    }
+                                } else {
+                                    dismissIndicator();
+                                }
+                            }
+                        }, setDateTimeDelay);
+                    }
+                } else if (BleReceivedService.TYPE_CHARACTERISTIC_WRITE.equals(type)) {
+                    String serviceUuidString = intent.getStringExtra(BleReceivedService.EXTRA_SERVICE_UUID);
+                    String characteristicUuidString = intent.getExtras().getString(BleReceivedService.EXTRA_CHARACTERISTIC_UUID);
+                    if (serviceUuidString.equals(ADGattUUID.CurrentTimeService.toString())
+                            || characteristicUuidString.equals(ADGattUUID.DateTime.toString())) {
+                        if (shouldStartConnectDevice) {
+                            uiThreadHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    BluetoothGatt gatt = BleReceivedService.getGatt();
+                                    boolean writeResult = BleReceivedService.getInstance().setIndication(gatt, true);
+                                    if (writeResult == false) {
+                                        dismissIndicator();
+                                    }
+                                }
+                            }, indicationDelay);
+                        }
+                    }
+                } else if (BleReceivedService.TYPE_INDICATION_VALUE.equals(type)) {
+                    setIndicatorMessage(getResources().getString(R.string.indicator_during_receive));
+                    Bundle bundle = intent.getBundleExtra(BleReceivedService.EXTRA_VALUE);
+                    String uuidString = intent.getExtras().getString(BleReceivedService.EXTRA_CHARACTERISTIC_UUID);
+                    receivedData(uuidString, bundle);
+                    uiThreadHandler.removeCallbacks(disableIndicationRunnable);
+                    uiThreadHandler.postDelayed(disableIndicationRunnable, 4000L);
+                } else if (BleReceivedService.TYPE_DESCRIPTOR_WRITE.equals(type)) {
+                    //For now do this only for the UW-302
+                    String device_name = intent.getExtras().getString(BleReceivedService.EXTRA_DEVICE_NAME);
+                    if (device_name.contains("UW-302BLE")) {
+
+                    }
+                }
+            }
+        }
+    };
+
+    Runnable disableIndicationRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
+            BluetoothGatt gatt = BleReceivedService.getGatt();
+            if (BleReceivedService.getInstance() != null) {
+                boolean writeResult = BleReceivedService.getInstance().setIndication(gatt, false);
+                if (writeResult == false) {
+                    dismissIndicator();
+                }
+                //Add disconnect from smartphone.
+                if (gatt != null) {
+                    gatt.disconnect();
+                }
+
+                dismissIndicator();
+            }
+        }
+    };
+
+    private final BroadcastReceiver mMeasudataUpdateReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
+                refreshActivityMonitorLayout();
+            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
+                Log.e("inside","broadCastReceiverBp");
+                refreshBloodPressureLayout();
+            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
+                refreshWeightScaleLayout();
+            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
+                refreshThermometerLayout();
+            }
+            refreshArrowVisible();
+        }
+    };
 
     // endregion
 }
