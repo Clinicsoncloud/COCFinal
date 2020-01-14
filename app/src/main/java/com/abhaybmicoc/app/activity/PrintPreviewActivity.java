@@ -1362,24 +1362,17 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void postData() {
-//        progressDialog = Tools.progressDialog(PrintPreviewActivity.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINTPOST_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINT_POST_URL,
                 response -> {
-                    //Disimissing the progress dialog
-                    System.out.println("Login_Response" + response);
                     readFileName(response);
-//                    downloadFile();
 
                     try {
-//                        progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
-                        //  dlgEnterText();
                     } catch (Exception e) {
 
                     }
                 },
                 volleyError -> {
-//                    progressDialog.dismiss();
                 }) {
             @Override
             public Map getHeaders() {
@@ -1511,6 +1504,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     params.put("hemoglobinrange",standarHemoglobin);
                 else
                     params.put("hemoglobinrange","NA");
+
                 params.put("heightresult", "");
                 params.put("weightresult", weightResult);
                 params.put("bmiresult", bmiResult);
@@ -1532,6 +1526,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 params.put("temperatureresult", tempratureResult);
                 params.put("hemoglobinresult", hemoglobinResult);
                 params.put("sugarresult", sugarResult);
+
                 return params;
             }
         };
@@ -1555,29 +1550,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     }
 
-
-    private void setList() {
-
-        printDataList.add(new PrintData("Weight", TextUtils.isEmpty(ActofitObject.getString("weight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("weight", "")), 8, 15, "Kg"));
-        printDataList.add(new PrintData("BMI", TextUtils.isEmpty(ActofitObject.getString("bmi", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmi", "")), 18.0, 25.0, "Kg"));
-        printDataList.add(new PrintData("Body fat", TextUtils.isEmpty(ActofitObject.getString("bodyfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodyfat", "")), 11.0, 21.0, "(%)"));
-        printDataList.add(new PrintData("fat free weight", TextUtils.isEmpty(ActofitObject.getString("fatfreeweight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("fatfreeweight", "")), 0, 0, ""));
-        printDataList.add(new PrintData("subcutaneous fat", TextUtils.isEmpty(ActofitObject.getString("subfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("subfat", "")), 8.6, 16.7, "(%)"));
-        printDataList.add(new PrintData("visceral fat", TextUtils.isEmpty(ActofitObject.getString("visfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("visfat", "")), 0, 0, " < 9"));
-        printDataList.add(new PrintData("Body water", TextUtils.isEmpty(ActofitObject.getString("bodywater", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodywater", "")), 55.0, 65.0, "(%)"));
-        printDataList.add(new PrintData("skeletal muscle", TextUtils.isEmpty(ActofitObject.getString("skemus", "")) ? 0 : Double.parseDouble(ActofitObject.getString("skemus", "")), 49.0, 59.0, "(%)"));
-        printDataList.add(new PrintData("muscle mass", TextUtils.isEmpty(ActofitObject.getString("musmass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("musmass", "")), 44, 52.4, "Kg"));
-        printDataList.add(new PrintData("Bone mass", TextUtils.isEmpty(ActofitObject.getString("bonemass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bonemass", "")), 2.7, 3.1, "Kg"));
-        printDataList.add(new PrintData("protein", TextUtils.isEmpty(ActofitObject.getString("protine", "")) ? 0 : Double.parseDouble(ActofitObject.getString("protine", "")), 16.0, 18.0, "(%)"));
-        printDataList.add(new PrintData("BMR", TextUtils.isEmpty(ActofitObject.getString("bmr", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmr", "")), 0, 0, " > 1592.40(Kcal)"));
-        printDataList.add(new PrintData("Metabolic age", TextUtils.isEmpty(ActofitObject.getString("metaage", "")) ? 0 : Double.parseDouble(ActofitObject.getString("metaage", "")), 0, 0, "< Actual Age(Yrs)"));
-        printDataList.add(new PrintData("Health Score", TextUtils.isEmpty(ActofitObject.getString("helthscore", "")) ? 0 : Double.parseDouble(ActofitObject.getString("helthscore", "")), 0, 0, ""));
-        lV.setAdapter(new PrintpriviewAdapter(this, R.layout.printlist_item, printDataList));
-
-    }
-
     private void gettingDataObjects() {
-
         ActofitObject = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
         OximeterObject = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
         PersonalObject = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -1586,19 +1559,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         BiosenseObject = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
         HemoglobinObject = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         spToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
     }
 
 
     private String getCurrentTime() {
-        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm aa");
-
-        String currentTime = sdf.format(cal.getTime());
-        System.out.println(sdf.format(cal.getTime()));
-        return currentTime;
+        return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance());
     }
-
 
     @OnClick({R.id.homebtn, R.id.printbtn,R.id.iv_download})
     public void onViewClicked(View view) {
@@ -1649,22 +1615,18 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void downloadFile() {
+        downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
 
-        downloadUrl = "http://45.252.190.29/api/v1/pdf/" + fileName;
-
-        if(fileName != null) {
+        if(fileName != null)
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
-        }else{
-            Toast.makeText(PrintPreviewActivity.this, "No Pdf file Available ", Toast.LENGTH_SHORT).show();
-        }
-
+        else
+            Toast.makeText(PrintPreviewActivity.this, "No Pdf file available ", Toast.LENGTH_SHORT).show();
     }
 
     private void startDownload() {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
 
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
-                DownloadManager.Request.NETWORK_MOBILE );
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE );
 
         request.setTitle("Download");
         request.setDescription("Downloading File...");
@@ -1675,7 +1637,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
-
     }
 
     @Override
@@ -1776,47 +1737,34 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         /* This displays the status messages of EnterTextAsyc in the dialog box */
         @Override
         protected void onPostExecute(Integer result) {
-//            llprog.setVisibility(View.GONE);
-//            btnOk.setVisibility(View.VISIBLE);
-//            edtText.setText("");
-            if (iRetVal == DEVICE_NOTCONNECTED) {
-                ptrHandler.obtainMessage(1, "Device not connected")
-                        .sendToTarget();
-
-            } else if (iRetVal == Printer_GEN.SUCCESS) {
-                ptrHandler.obtainMessage(1, "Printing Successfull")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.PLATEN_OPEN) {
+            if (iRetVal == DEVICE_NOTCONNECTED)
+                ptrHandler.obtainMessage(1, "Device not connected").sendToTarget();
+            else if (iRetVal == Printer_GEN.SUCCESS)
+                ptrHandler.obtainMessage(1, "Printing Successfull").sendToTarget();
+            else if (iRetVal == Printer_GEN.PLATEN_OPEN)
                 ptrHandler.obtainMessage(1, "Platen open").sendToTarget();
-            } else if (iRetVal == Printer_GEN.PAPER_OUT) {
+            else if (iRetVal == Printer_GEN.PAPER_OUT)
                 ptrHandler.obtainMessage(1, "Paper out").sendToTarget();
-            } else if (iRetVal == Printer_GEN.IMPROPER_VOLTAGE) {
-                ptrHandler.obtainMessage(1, "Printer at improper voltage")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.FAILURE) {
+            else if (iRetVal == Printer_GEN.IMPROPER_VOLTAGE)
+                ptrHandler.obtainMessage(1, "Printer at improper voltage").sendToTarget();
+            else if (iRetVal == Printer_GEN.FAILURE) {
                 ptrHandler.obtainMessage(1, "Print failed").sendToTarget();
                 PrintPreviewActivity.this.recreate();
-            } else if (iRetVal == Printer_GEN.PARAM_ERROR) {
+            } else if (iRetVal == Printer_GEN.PARAM_ERROR)
                 ptrHandler.obtainMessage(1, "Parameter error").sendToTarget();
-            } else if (iRetVal == Printer_GEN.NO_RESPONSE) {
-                ptrHandler.obtainMessage(1, "No response from Pride device")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.DEMO_VERSION) {
-                ptrHandler.obtainMessage(1, "Library in demo version")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.INVALID_DEVICE_ID) {
-                ptrHandler.obtainMessage(1,
-                        "Connected  device is not authenticated.")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.NOT_ACTIVATED) {
-                ptrHandler.obtainMessage(1, "Library not activated")
-                        .sendToTarget();
-            } else if (iRetVal == Printer_GEN.NOT_SUPPORTED) {
+            else if (iRetVal == Printer_GEN.NO_RESPONSE)
+                ptrHandler.obtainMessage(1, "No response from Pride device").sendToTarget();
+            else if (iRetVal == Printer_GEN.DEMO_VERSION)
+                ptrHandler.obtainMessage(1, "Library in demo version").sendToTarget();
+            else if (iRetVal == Printer_GEN.INVALID_DEVICE_ID)
+                ptrHandler.obtainMessage(1, "Connected  device is not authenticated.").sendToTarget();
+            else if (iRetVal == Printer_GEN.NOT_ACTIVATED)
+                ptrHandler.obtainMessage(1, "Library not activated").sendToTarget();
+            else if (iRetVal == Printer_GEN.NOT_SUPPORTED)
                 ptrHandler.obtainMessage(1, "Not Supported").sendToTarget();
-            } else {
-                ptrHandler.obtainMessage(1, "Unknown Response from Device")
-                        .sendToTarget();
-            }
+            else
+                ptrHandler.obtainMessage(1, "Unknown Response from Device").sendToTarget();
+
             super.onPostExecute(result);
         }
     }

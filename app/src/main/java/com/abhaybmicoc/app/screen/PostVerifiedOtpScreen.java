@@ -186,7 +186,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private void verifyOtpFromAPI() {
         progressDialog = Tools.progressDialog(PostVerifiedOtpScreen.this);
 
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFYOTP_URL,
+        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFY_OTP_URL,
                 jsonObject -> {
                     System.out.println("Response is" + jsonObject);
                     progressDialog.dismiss();
