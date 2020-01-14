@@ -1625,7 +1625,7 @@ public class PrintPriviewScreen extends Activity {
 
     private void PostData() {
         pd = Tools.progressDialog(PrintPriviewScreen.this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINTPOST_URL,
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINT_POST_URL,
                 response -> {
                     //Disimissing the progress dialog
                     System.out.println("Login Response" + response);
