@@ -262,9 +262,10 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
         this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
 
+        this.btnNext = findViewById(R.id.btn_next);
+        this.btnLimpiar = findViewById(R.id.btn_clean);
         this.btnConnect = findViewById(R.id.btn_connect);
         this.btnEnviar = findViewById(R.id.btn_get_height);
-        this.btnLimpiar = findViewById(R.id.btn_clean);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
