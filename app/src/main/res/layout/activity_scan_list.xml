@@ -7,7 +7,7 @@
     tools:context=".glucose.GlucoseScanListActivity">
 
     <include
-        android:id="@+id/toolbar"
+        android:id="@+id/layout_toolbar"
         layout="@layout/toolbar"/>
 
 
@@ -16,11 +16,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/background"
-        android:layout_below="@+id/toolbar"
+        android:layout_below="@+id/layout_toolbar"
         android:padding="@dimen/pad10">
 
         <LinearLayout
-            android:id="@+id/search"
+            android:id="@+id/layout_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:weightSum="2"
@@ -28,7 +28,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/scaningtext"
+                android:id="@+id/tv_scaningtext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -42,7 +42,7 @@
                 android:textSize="24sp" />
 
             <Button
-                android:id="@+id/btnScan"
+                android:id="@+id/btn_scan"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/hgt45"
                 android:layout_gravity="end"
@@ -91,13 +91,13 @@
 
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/resultsrecycler"
+                android:id="@+id/rv_results"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_weight="1"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/search"
+                android:layout_below="@+id/layout_search"
                 tools:listitem="@layout/blelistrow"
                 android:scrollbars="vertical"/>
 
@@ -107,7 +107,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/btncontainer"
+        android:id="@+id/layout_btncontainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -119,7 +119,7 @@
         android:padding="@dimen/pad5">
 
         <Button
-            android:id="@+id/btnGo"
+            android:id="@+id/btn_next"
             android:layout_width="700dp"
             android:layout_height="@dimen/hgt45"
             android:layout_gravity="center"
@@ -146,7 +146,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="200dp"
         android:layout_marginEnd="200dp"
-        android:layout_above="@+id/btncontainer"
+        android:layout_above="@+id/layout_btncontainer"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="#E6EBEC"

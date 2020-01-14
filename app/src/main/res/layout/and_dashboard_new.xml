@@ -286,7 +286,7 @@
                                 android:src="@drawable/bloodpressure" />
 
                             <include
-                                android:id="@+id/llinear_bp"
+                                android:id="@+id/layout_bp"
                                 layout="@layout/display_data_layout_bloodpressure" />
 
                         </LinearLayout>
@@ -364,7 +364,7 @@
                                 android:textStyle="bold" />
 
                             <Button
-                                android:id="@+id/btnstart"
+                                android:id="@+id/btn_start"
                                 android:layout_width="wrap_content"
                                 android:layout_height="50dp"
                                 android:layout_gravity="center_vertical"
