@@ -51,7 +51,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     private int day, month, year;
 
-    private TextToSpeech tts;
+    private TextToSpeech textToSpeech;
 
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
@@ -60,11 +60,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private Button btnRepeat;
     private Button btnSmartScale;
 
-    private TextView txtAge;
-    private TextView txtName;
-    private TextView txtGender;
-    private TextView txtMobile;
-    private TextView txtHeight;
+    private TextView tvAge;
+    private TextView tvName;
+    private TextView tvGender;
+    private TextView tvMobile;
+    private TextView tvHeight;
     private TextView etUserDateOfBirth;
 
     public static final int REQUSET_CODE = 1001;
@@ -185,7 +185,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.US);
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
@@ -196,11 +196,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         } else {
             Log.e("TTS", "Initilization Failed!");
         }
-    }
-
-    private void speakOut(String textToSpeech) {
-        String text = textToSpeech;
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     @Override
@@ -219,7 +214,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private void setupUI(){
         setContentView(R.layout.actofit_main_activity);
 
-        tts = new TextToSpeech(getApplicationContext(), this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
@@ -235,12 +230,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         switchAthlete = findViewById(R.id.switchbtn);
 
-        txtAge = findViewById(R.id.tv_age);
-        txtName = findViewById(R.id.tv_name);
-        txtGender = findViewById(R.id.tv_gender);
-        txtMobile = findViewById(R.id.tv_mobile_number);
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobile = findViewById(R.id.tv_mobile_number);
 
-        txtHeight = findViewById(R.id.tv_header_height);
+        tvHeight = findViewById(R.id.tv_header_height);
 
         btnNext = findViewById(R.id.btn_next);
         btnRepeat = findViewById(R.id.btn_repeat);
@@ -293,10 +288,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             startActivityForResult(intent, REQUSET_CODE);
 
-            txtName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-            txtGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-            txtMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
-            txtAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
+            tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
+            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
+            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
+            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
         }
     }
 
@@ -310,10 +305,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-            txtAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
-            txtName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-            txtGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-            txtMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
+            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
+            tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
+            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
+            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
         } catch (Exception e) {
         }
     }
@@ -362,13 +357,21 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     /**
      *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
      */
     private void stopTextToSpeech(){
-        /* close the tts engine to avoide the runtime exception from it */
+        /* close the textToSpeech engine to avoide the runtime exception from it */
         try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
             }
         }catch (Exception e){
             System.out.println("onPauseException"+e.getMessage());

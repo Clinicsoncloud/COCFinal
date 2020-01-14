@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app.heightweight;
+package com.abhaybmicoc.app.screen;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.heightweight.HeightUsbService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 
 import java.util.Set;
@@ -108,7 +109,7 @@ public class HeightScreen extends AppCompatActivity implements View.OnClickListe
 
 
         display = findViewById(R.id.txtheight);
-        Button sendButton = findViewById(R.id.btnstart);
+        Button sendButton = findViewById(R.id.btn_start);
         sendButton.setOnClickListener(v -> {
             etManualheight.setText("");
             String data = "1";

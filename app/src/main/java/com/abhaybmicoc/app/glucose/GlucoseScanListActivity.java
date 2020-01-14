@@ -60,8 +60,8 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
     private TextView tvScanningText;
 
-    private Button btnGo;
-    private Button btnScanList;
+    private Button btnNext;
+    private Button btnScan;
 
     private Toolbar toolBar;
     private RecyclerView recyclerView;
@@ -194,7 +194,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         setContentView(R.layout.activity_scan_list);
 
         /* Setup toolbar */
-        toolBar = findViewById(R.id.toolbar);
+        toolBar = findViewById(R.id.layout_toolbar);
         TextView mTitle = toolBar.findViewById(R.id.title);
         mTitle.setText(getResources().getString(R.string.scandevices));
 
@@ -204,22 +204,22 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mHandler = new Handler();
-        recyclerView = findViewById(R.id.resultsrecycler);
+        recyclerView = findViewById(R.id.rv_results);
 
-        btnGo = findViewById(R.id.btnGo);
-        btnScanList = findViewById(R.id.btnScan);
+        btnNext = findViewById(R.id.btn_next);
+        btnScan = findViewById(R.id.btn_scan);
 
         ivScanImage = findViewById(R.id.imageview);
 
-        tvScanningText = findViewById(R.id.scaningtext);
+        tvScanningText = findViewById(R.id.tv_scaningtext);
     }
 
     /**
      *
      */
     private void setupEvents(){
-        btnGo.setOnClickListener(view -> handleGo());
-        btnScanList.setOnClickListener(view -> handleScanList());
+        btnNext.setOnClickListener(view -> handleGo());
+        btnScan.setOnClickListener(view -> handleScanList());
 
         recyclerView.addOnItemTouchListener(new RecyclerTouchListner(getApplicationContext(), recyclerView, new ClickListner()
         {
@@ -305,14 +305,14 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
      *
      */
     private void handleScanList(){
-        if (btnScanList.getText().toString().equals("Scan"))
+        if (btnScan.getText().toString().equals("Scan"))
         {
-            btnScanList.setText("Stop Scan");
+            btnScan.setText("Stop Scan");
             tvScanningText.setText("Scaning Started");
             scanLeDevice(true);
         } else
         {
-            btnScanList.setText("Scan");
+            btnScan.setText("Scan");
             tvScanningText.setText("Scaning Stopped");
             scanLeDevice(false);
         }
@@ -471,7 +471,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
                     {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                         tvScanningText.setText("Scaning Stopped");
-                        btnScanList.setText("Scan");
+                        btnScan.setText("Scan");
                     }
                     invalidateOptionsMenu();
                 }
@@ -481,7 +481,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
             {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
-                btnScanList.setText("Stop Scan");
+                btnScan.setText("Stop Scan");
             }
         } else {
             mScanning = false;
@@ -489,7 +489,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 tvScanningText.setText("Scaning Stopped");
-                btnScanList.setText("Scan");
+                btnScan.setText("Scan");
             }
 
         }

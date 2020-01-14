@@ -67,16 +67,16 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
     public View getView(int position, View convertView, ViewGroup parent) {
         printData = printDataList.get(position);
 
-        PrintpriviewAdapter.ViewHolder viewHolder;
+        PrintPriviewAdapter.ViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.printlist_item, null);
 
-            viewHolder = new PrintpriviewAdapter.ViewHolder(convertView);
+            viewHolder = new PrintPriviewAdapter.ViewHolder(convertView);
             convertView.setTag(viewHolder);
 
         } else {
-            viewHolder = (PrintpriviewAdapter.ViewHolder) convertView.getTag();
+            viewHolder = (PrintPriviewAdapter.ViewHolder) convertView.getTag();
         }
 
         @SuppressLint("SimpleDateFormat")

@@ -5,97 +5,68 @@
     android:versionCode="201801"
     android:versionName="201801">
 
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-feature android:name="android.hardware.bluetooth" />
+    <uses-feature android:name="android.hardware.usb.host" android:required="true" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
-    <uses-permission android:name="com.google.android.gm.permission.READ_CONTENT_PROVIDER" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS" tools:node="remove"/>
-    <uses-permission android:name="android.permission.READ_SMS" tools:node="remove"/>
-    <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove"/>
-    <uses-permission
-        android:name="android.permission.WRITE_SETTINGS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-feature android:name="android.hardware.bluetooth" />
-
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- if your targetSdkVersion >= 23, add the permissions below. -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-    <uses-feature
-        android:name="android.hardware.bluetooth_le"
-        android:required="true" />
-    <uses-feature
-        android:name="android.hardware.usb.host"
-        android:required="true" />
-
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- if your targetSdkVersion >= 23, add the permissions below. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" tools:ignore="ProtectedPermissions" />
+
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="com.google.android.gm.permission.READ_CONTENT_PROVIDER" />
 
     <application
         android:name="com.abhaybmicoc.app.entities.AndMedical_App_Global"
+        android:label="@string/app_name"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
-        android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar"
         tools:ignore="GoogleAppIndexingWarning"
-        android:networkSecurityConfig="@xml/network_security_config"
-        tools:replace="android:icon,android:theme">
+        tools:replace="android:icon,android:theme"
+        android:theme="@android:style/Theme.NoTitleBar"
+        android:networkSecurityConfig="@xml/network_security_config">
 
-        <!--for android 9-->
-        <uses-library android:name="org.apache.http.legacy" android:required="false" />
-        
         <activity
             android:name="com.abhaybmicoc.app.screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="com.abhaybmicoc.app.redirect.DashboardScreen"
-            android:label="@string/title_activity_dashboard_screen"
-            android:theme="@style/NoActionBar" />
+
         <activity
             android:name="com.abhaybmicoc.app.actofit.ActofitMainActivity"
             android:label="@string/title_activity_weight_screen"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/AppThemeAction" />
+
         <activity
             android:name="com.abhaybmicoc.app.thermometer.ThermometerScreen"
             android:label="@string/title_activity_thermometer_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
-        <activity
-            android:name="com.abhaybmicoc.app.heightweight.HeightScreen"
-            android:label="@string/title_activity_height_screen"
-            android:theme="@style/AppThemeAction"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-
-        </activity>
 
         <activity
             android:name="com.abhaybmicoc.app.activity.HeightActivity"
             android:label="@string/title_activity_height_screen"
             android:theme="@style/AppThemeAction"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-        </activity>
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity
             android:name="com.abhaybmicoc.app.screen.ActivateScreen"
@@ -148,85 +119,63 @@
             android:name="com.abhaybmicoc.app.oximeter.MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
-        <!--
- <activity
-            android:name=".DisclaimerActivity"
-            android:finishOnTaskLaunch="true"
-            android:theme="@android:style/Theme.NoTitleBar" />
-        -->
+
         <activity
             android:name="com.abhaybmicoc.app.base.ADInstructionActivity"
             android:theme="@style/Theme.TransBackground" />
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/app_id" />
-        <meta-data
-            android:name="com.crashlytics.ApiKey"
-            android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
         <activity
             android:name="com.abhaybmicoc.app.glucose.GlucoseScanListActivity"
-            android:theme="@style/AppThemeGlucose">
+            android:theme="@style/AppThemeGlucose"/>
 
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            -->
-        </activity>
         <activity
             android:name="com.abhaybmicoc.app.glucose.ActivityGlucose"
             android:theme="@style/AppThemeGlucose" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"></activity><!-- Printer -->
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /><!-- Printer -->
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_BTDiscovery"
             android:launchMode="standard"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GeneralPrinterActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscListActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscTextDataActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBMPPrintActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscPaperFeedActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscFontPropertesActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBarcodeHeightActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
+
         <activity
             android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscChangeFontActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- hemoglobin -->
+
         <activity
             android:name="com.abhaybmicoc.app.hemoglobin.MainActivity"
-            android:theme="@style/AppThemeHemoGlobin">
-
-        </activity>
-
-        <service
-            android:name="com.abhaybmicoc.app.hemoglobin.UsbService"
-            android:enabled="true" />
+            android:theme="@style/AppThemeHemoGlobin"/>
 
         <activity
             android:name="com.abhaybmicoc.app.oxygen.OxygenActivity"
@@ -236,8 +185,7 @@
         <activity
             android:name="com.abhaybmicoc.app.activity.DashboardActivity"
             android:finishOnTaskLaunch="true"
-            android:theme="@android:style/Theme.NoTitleBar">
-        </activity>
+            android:theme="@android:style/Theme.NoTitleBar"/>
 
         <activity
             android:name="com.abhaybmicoc.app.activity.InstructionActivity"
@@ -247,6 +195,7 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" />
@@ -256,50 +205,25 @@
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
-        <service android:name="com.abhaybmicoc.app.BluetoothLeService" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.DeviceSetUpActivityListDesign"
-            android:finishOnTaskLaunch="true"
-            android:theme="@android:style/Theme.NoTitleBar" />
-
         <activity
             android:name="com.abhaybmicoc.app.activity.PrintPreviewActivity"
             android:screenOrientation="landscape" >
         </activity>
 
-        <uses-library
-            android:name="com.samsung.android.sdk.bt"
-            android:required="false" />
-        <uses-library
-            android:name="com.htc.android.bluetooth.le"
-            android:required="false" />
+        <!--for android 9-->
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <uses-library android:name="com.samsung.android.sdk.bt" android:required="false" />
+        <uses-library android:name="com.htc.android.bluetooth.le" android:required="false" />
 
+        <service android:name="com.abhaybmicoc.app.BluetoothLeService" />
         <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
         <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
+        <service android:name="com.abhaybmicoc.app.hemoglobin.UsbService" android:enabled="true" />
+        <service android:name="com.abhaybmicoc.app.oxygen.ble.BluetoothLeService" android:enabled="true" />
 
-        <service
-            android:name="com.abhaybmicoc.app.oxygen.ble.BluetoothLeService"
-            android:enabled="true" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/app_id" />
+        <meta-data android:name="io.fabric.ApiKey" android:value="9009a3f13f6942069b56f1780e4e6ca704514f8e" />
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
 
-        <!--<service
-            android:name=".thermometer.ThermometerUsbService"
-            android:enabled="true" />-->
-
-     <!--   <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="9009a3f13f6942069b56f1780e4e6ca704514f8e" />-->
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="9009a3f13f6942069b56f1780e4e6ca704514f8e" />
-
-        <!--  <service
-              android:name=".heightweight.HeightUsbService"
-              android:enabled="true">
-
-          </service>-->
     </application>
-
 </manifest>

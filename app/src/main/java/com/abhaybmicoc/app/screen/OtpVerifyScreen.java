@@ -59,7 +59,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private ProgressDialog pd;
 
     private SharedPreferences sharedPreferencesToken;
-    private SharedPreferences sharedPreferencesActofit;
 
     private RadioButton rdMale;
     private RadioButton rdFemale;
@@ -139,7 +138,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         tts = new TextToSpeech(getApplicationContext(), this);
 
         try {
-            sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
             sharedPreferencesToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
             etName.setText(sharedPreferencesToken.getString("name", ""));
@@ -280,7 +278,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 params.put("name", etName.getText().toString());
                 params.put("email", etEmail.getText().toString());
                 params.put("dob", etDateOfBirth.getText().toString());
-                params.put("gender", rdGender.getText().toString());
+                params.put("gender", getSelectedGender());
                 return params;
             }
 
@@ -341,7 +339,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
      *
      */
     private void stopTextToSpeech(){
-        /* close the tts engine to avoide the runtime exception from it */
+        /* close the tts engine to avoid the runtime exception from it */
         try {
             if (tts != null) {
                 tts.stop();

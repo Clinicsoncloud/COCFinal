@@ -206,7 +206,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         weightscale = findViewById(R.id.llinear_wt);
         thermometer = findViewById(R.id.llinear_tm);
         activitymonitor = findViewById(R.id.llinear_am);
-        layoutBloodPressure = findViewById(R.id.llinear_bp);
+        layoutBloodPressure = findViewById(R.id.layout_bp);
 
         // Arrows
         rightArrow = findViewById(R.id.right_arrow);
@@ -223,7 +223,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
 
         btnNext = findViewById(R.id.btn_next);
-        btnStart = findViewById(R.id.btnstart);
+        btnStart = findViewById(R.id.btn_start);
         btnRepeat = findViewById(R.id.btn_repeat);
 
         tvAge = findViewById(R.id.tv_age);
