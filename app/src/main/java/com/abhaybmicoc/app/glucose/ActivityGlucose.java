@@ -53,7 +53,7 @@ import java.util.Collections;
 public class ActivityGlucose extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
     // region Variables
 
-    Context context = ActivityGlucose.this;
+    private Context context = ActivityGlucose.this;
 
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 

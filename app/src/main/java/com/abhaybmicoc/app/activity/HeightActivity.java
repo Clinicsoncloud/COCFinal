@@ -342,14 +342,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     /**
      *
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
      */
     private void connect(){
         if (HeightActivity.this.estadoBoton.equals("Connect")) {
@@ -424,6 +416,14 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             startActivity(objIntent);
             finish();
         }
+    }
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     /**
