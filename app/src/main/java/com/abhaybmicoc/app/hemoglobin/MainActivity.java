@@ -122,14 +122,18 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     private void connectToSavedDevice() {
+
         if (!deviceAddressFound()) {
+
             Log.e("inside", "if");
+
             disconnectGattServer();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                scan(btnScan);
+
+                btnScan.setVisibility(View.VISIBLE);
+
             }
-            btnScan.setVisibility(View.VISIBLE);
-//            buttonconnect.setVisibility(View.GONE);
+
         } else {
 
             Log.e("Log_ConnectList", ":" + sharedPreferences.getString("device", ""));
@@ -144,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             showToast(device.getName() + "");
 
             buttonconnect.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -153,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
-                scan(btnScan);
+                scan();
             }
         });
 
@@ -474,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void scan(View view) {
+    public void scan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions() || mScanning) {
                 return;
