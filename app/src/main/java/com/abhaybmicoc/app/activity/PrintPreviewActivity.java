@@ -39,7 +39,6 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.model.PrintDataNew;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.adapter.PrintpriviewAdapter;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.adapter.PrintPreviewActivityNew;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;

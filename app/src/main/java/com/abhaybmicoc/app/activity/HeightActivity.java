@@ -104,7 +104,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     private TextToSpeech textToSpeech;
 
-
     private int connectTryCount = 0;
     private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
 

@@ -94,7 +94,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     // endregion
 
-    // Events
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

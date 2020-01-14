@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class PrintpriviewAdapter extends ArrayAdapter<PrintData> {
+public class PrintPriviewAdapter extends ArrayAdapter<PrintData> {
 
 
     Context context;
@@ -31,7 +31,7 @@ public class PrintpriviewAdapter extends ArrayAdapter<PrintData> {
 
 
 
-    public PrintpriviewAdapter(Context context, int resource, List<PrintData> objects) {
+    public PrintPriviewAdapter(Context context, int resource, List<PrintData> objects) {
         super(context, resource, objects);
         shared = context.getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         this.printDataList = objects;

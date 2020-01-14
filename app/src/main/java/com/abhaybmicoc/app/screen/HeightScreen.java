@@ -1,4 +1,4 @@
-package com.abhaybmicoc.app.heightweight;
+package com.abhaybmicoc.app.screen;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.heightweight.HeightUsbService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 
 import java.util.Set;
