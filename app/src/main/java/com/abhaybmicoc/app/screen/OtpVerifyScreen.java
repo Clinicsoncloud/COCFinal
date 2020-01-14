@@ -116,7 +116,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     // region Initialization methods
 
     public void setupUI() {
-        btnLogin = findViewById(R.id.btn_verify);
+        btnLogin = findViewById(R.id.btn_login);
 
         rdMale = findViewById(R.id.rd_male);
         rdFemale = findViewById(R.id.rd_female);
