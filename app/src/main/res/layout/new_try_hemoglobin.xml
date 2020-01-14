@@ -345,13 +345,13 @@
                             android:textSize="18sp" />
 
                         <Button
+                            android:id="@+id/btn_next"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="3dp"
                             android:layout_marginRight="2dp"
                             android:layout_weight="0.5"
                             android:background="@drawable/buttonshape"
-                            android:onClick="device_off"
                             android:shadowColor="#A8A8A8"
                             android:shadowDx="0"
                             android:shadowDy="0"

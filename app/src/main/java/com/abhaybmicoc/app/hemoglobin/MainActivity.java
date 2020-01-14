@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private Context context;
 
     private Button btnScan;
+    private Button btnNext;
 
     private String hbvalue;
 
@@ -116,10 +117,17 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         requestPermission();
 
+        connectToSavedDevice();
+
+    }
+
+    private void connectToSavedDevice() {
         if (!deviceAddressFound()) {
             Log.e("inside", "if");
             disconnectGattServer();
-            scan(btnScan);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                scan(btnScan);
+            }
             btnScan.setVisibility(View.VISIBLE);
 //            buttonconnect.setVisibility(View.GONE);
         } else {
@@ -135,14 +143,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             connectionProgressDialog.show();
             showToast(device.getName() + "");
 
-
             buttonconnect.setVisibility(View.VISIBLE);
-
-
         }
-
-//        connect();
-
     }
 
     private void bindEvents() {
@@ -162,6 +164,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     connect();
                 }
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                device_off();
             }
         });
 
@@ -251,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         buttonconnect = findViewById(R.id.btnconnect);
         buttonconnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
+
+        btnNext = findViewById(R.id.btn_next);
 
         textViewdevice = findViewById(R.id.textdevice);
 
@@ -592,12 +603,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void connect() {
 
-      /*  if (!deviceAddressFound()) {
-            Log.e("inside", "if");
-            disconnectGattServer();
-//            scan(btnScan);
-            buttonconnect.setVisibility(View.VISIBLE);*/
-
         if (deviceArrayList.size() != 0) {
             String s = spinnerDevice.getSelectedItem().toString();
 
@@ -625,11 +630,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             spinnerDevice.setAdapter(adapter);
 
         }
-       /* } else {
-            // enable scan button
-            btnScan.setVisibility(View.VISIBLE);
-            Log.e("inside", "else");
-        }*/
     }
 
     private boolean deviceAddressFound() {
@@ -681,40 +681,67 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         builder.show();
     }
 
-    public void device_off(View view) {
+    public void device_off() {
 
         sendMessage("U370");
+
         disconnectGattServer();
 
         try {
+
             AndMedical_App_Global.mBTcomm = null;
+
         } catch (NullPointerException e) {
-            e.printStackTrace();
+
+           ErrorUtils.logErrors(e,"MainActivityHb","device_off","error while reconnecting printer");
+
         }
 
-        saveHemoglobinValue();
+        Log.e("saveHemoglobinValue",": "+saveHemoglobinValue());
 
-    }
-
-    private void saveHemoglobinValue() {
-        try {
+        if(saveHemoglobinValue()){
 
             startActivity(new Intent(MainActivity.this, Act_Main.class));
 
-            if (textViewdisplay.getText().toString().contains("Hb") || hbvalue.length() > 0) {
+        }else{
+            startActivity(new Intent(MainActivity.this, Act_Main.class));
+            Toast.makeText(context, "Please complete the text", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private boolean saveHemoglobinValue() {
+        try {
+
+            Log.e("insideHemoglobinValue",":");
+
+            if (textViewdisplay.getText().toString().contains("Hb = ")) {
+
+                hbvalue = textViewdisplay.getText().toString();
+                hbvalue = hbvalue.replaceAll("[^0-9.]", "");
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("hemoglobin", hbvalue);
                 editor.commit();
 
-                //when device is off we can move to next screen
-                startActivity(new Intent(MainActivity.this, Act_Main.class));
+                return true;
 
             } else {
+
+                Log.e("insideHemoglobinValue",": Else");
+
                 Toast.makeText(context, "Didn't Get the Hb value", Toast.LENGTH_SHORT).show();
+                return false;
+
             }
         } catch (Exception e) {
+
+            Log.e("insideHemoglobinValue",": Catch");
+
             ErrorUtils.logErrors(e, "MainActivity", "saveHemoglobinValue", "error saving hb value");
+
         }
+
+        return false;
 
     }
 
