@@ -35,7 +35,6 @@ import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.MeasuDataManager;
-import com.abhaybmicoc.app.slidemenu.SlideMenu;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
@@ -81,17 +80,17 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private boolean isScanning = false;
     private boolean mIsSendCancel = false;
     private boolean mIsBleReceiver = false;
-    private boolean mIsCheckBleetoothEnabled = false;
+    private boolean isBluetoothEnabled = false;
     private boolean shouldStartConnectDevice = false;
-    private boolean mIsBindBleReceivedServivce = false;
+    private boolean isBindBleReceivedService = false;
 
     private long setDateTimeDelay = Long.MIN_VALUE;
     private long indicationDelay = Long.MIN_VALUE;
 
     private ThermometerDisplayDataLayout thermometer;
     private WeightScaleDisplayDataLayout weightscale;
-    private BloodPressureDispalyDataLayout layoutBloodPressure;
     private ActivityMonitorDisplayDataLayout activitymonitor;
+    private BloodPressureDispalyDataLayout layoutBloodPressure;
 
     private FrameLayout leftArrow;
     private FrameLayout rightArrow;
@@ -494,8 +493,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 BluetoothAdapter bluetoothAdapter = bluetoothManager.getAdapter();
                 if (bluetoothAdapter != null) {
                     if (!bluetoothAdapter.isEnabled()) {
-                        if (!mIsCheckBleetoothEnabled) {
-                            mIsCheckBleetoothEnabled = true;
+                        if (!isBluetoothEnabled) {
+                            isBluetoothEnabled = true;
                             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                             startActivityForResult(intent, REQUEST_ENABLE_BLUETOOTH);
                             return;
@@ -506,21 +505,24 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 }
             }
 
-            mIsCheckBleetoothEnabled = false;
+            isBluetoothEnabled = false;
         }
     }
 
-
     private void refreshActivityMonitorLayout() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+
         Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
+
         boolean isExistData = (data != null);
+
         if (isExistData) {
             activitymonitor.setHide(false);
             activitymonitor.setData(data);
         } else {
             if ((pairedDeviceList.size() == 0) ||
                     !(pairedDeviceList.contains("activityDevice"))) {
+
                 activitymonitor.setHide(!isExistData);
             } else {
                 activitymonitor.setDataNull(); //Activity device has been paired
@@ -529,42 +531,53 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     private void refreshBloodPressureLayout() {
-        Log.e("inside","refreshBloodPressureLayout");
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+
         Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_BP);
+
         boolean isExistData = (data != null);
-        if (isExistData) {
+
+        if (isExistData)
             layoutBloodPressure.setData(data);
-            System.out.println("===============Ashok====" + data.getSystolic() + "===" + data.getDiastolic());
-        }
+
         layoutBloodPressure.setHide(!isExistData);
     }
 
     private void refreshWeightScaleLayout() {
+
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+
         Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
+
         boolean isExistData = (data != null);
+
         if (isExistData) {
             weightscale.setData(data);
             weightscale.setVisibility(View.VISIBLE);
         }
+
         weightscale.setHide(!isExistData);
     }
 
     private void refreshThermometerLayout() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
+
         Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
+
         boolean isExistData = (data != null);
+
         if (isExistData) {
             thermometer.setData(data);
         }
+
         thermometer.setHide(!isExistData);
     }
 
     private void refreshArrowVisible() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
+
         leftArrow.setVisibility((measuDataManager.isExistPastDatas()) ? View.VISIBLE : View.INVISIBLE);
+        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void refreshDisplay(int dataType) {
@@ -590,33 +603,33 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     // 対象の項目の次のデータを表示
     private void moveDatasToTheFuture(int dataType) {
         AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
+
         MeasuDataManager manager = appGlobal.getMeasuDataManager();
-        if (manager != null) {
+
+        if (manager != null)
             manager.moveDatasToTheFuture(dataType);
-        }
 
         refreshDisplay(dataType);
     }
 
 
     public BluetoothManager getBluetoothManager() {
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        return bluetoothManager;
+        return (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
     }
 
     private void doBindBleReceivedService() {
-        if (!mIsBindBleReceivedServivce) {
+        if (!isBindBleReceivedService) {
             bindService(new Intent(DashboardActivity.this,
                     BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
-            mIsBindBleReceivedServivce = true;
+            isBindBleReceivedService = true;
             Log.e("inside_condition","dobindBleReceivedService");
         }
     }
 
     private void doUnbindBleReceivedService() {
-        if (mIsBindBleReceivedServivce) {
+        if (isBindBleReceivedService) {
             unbindService(mBleReceivedServiceConnection);
-            mIsBindBleReceivedServivce = false;
+            isBindBleReceivedService = false;
         }
     }
 
@@ -640,35 +653,34 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     private void setIndicatorMessage(String message) {
-        if (progress == null) {
+        if (progress == null)
             return;
-        }
+
         TextView syncMessages = (TextView) progress.findViewById(R.id.syncMessages1);
 
-        if (message == null) {
+        if (message == null)
             message = "";
-        }
 
-        if (syncMessages != null) {
+
+        if (syncMessages != null)
             syncMessages.setText(message);
-        }
     }
 
     private void dismissIndicator() {
-        if (progress == null) {
+        if (progress == null)
             return;
-        }
-        if (progress.isShowing()) {
+
+        if (progress.isShowing())
             progress.dismiss();
-        }
+
 
         progress = null;
     }
 
     private void startScan() {
-        if (shouldStartConnectDevice) {
+        if (shouldStartConnectDevice)
             return;
-        }
+
         if (BleReceivedService.getInstance() != null) {
             if (BleReceivedService.getInstance().isConnectedDevice()) {
                 BleReceivedService.getInstance().disconnectDevice();
@@ -688,36 +700,33 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private void stopScan() {
         if (BleReceivedService.getInstance() != null) {
             isScanning = false;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (BleReceivedService.getInstance().getBluetoothManager().getAdapter() != null) {
-                        BleReceivedService.getInstance().getBluetoothManager().getAdapter().stopLeScan(mLeScanCallback);
-                    }
-                }
+
+            runOnUiThread(() -> {
+                if (BleReceivedService.getInstance().getBluetoothManager().getAdapter() != null)
+                    BleReceivedService.getInstance().getBluetoothManager().getAdapter().stopLeScan(mLeScanCallback);
             });
         }
     }
 
     private void doStartLeScan() {
         isTryingScan = true;
+
         doTryLeScan();
     }
 
     private void doTryLeScan() {
-        if (!isTryingScan) {
+        if (!isTryingScan)
             return;
-        }
-        if (!isScanning) {
+
+        if (!isScanning)
             startScan();
-        }
+
         isTryingScan = false;
     }
 
     private void doStopLeScan() {
-        if (isScanning) {
+        if (isScanning)
             stopScan();
-        }
     }
 
     private void clearDataAndServices(){
@@ -727,57 +736,54 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     private boolean isAbleToConnectDevice(BluetoothDevice device, byte[] scanRecord) {
-        if (BleReceivedService.getInstance().isConnectedDevice()) {
+        if (BleReceivedService.getInstance().isConnectedDevice())
             return false;
-        }
 
         BluetoothAdapter bluetoothAdapter = BleReceivedService.getInstance().getBluetoothManager().getAdapter();
 
         if (bluetoothAdapter != null) {
-
             Set<BluetoothDevice> pairingDevices = bluetoothAdapter.getBondedDevices();
 
-            if (device.getName() != null) {
+            if (device.getName() != null)
                 return pairingDevices.contains(device) && device.getName().contains("A&D");
-            }
         }
+
         return false;
     }
 
     private boolean isAbleToConnectDeviceUW(BluetoothDevice device, byte[] scanRecord) {
         if (device.getName().contains("UW-302BLE")) { //Add Support for UW-302
             String deviceName = "";
+
             if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
                 db = new DataBase(getApplicationContext());
                 deviceName = db.getTrackerName();
 
             }
+
             if (deviceName != null) {
                 if (deviceName.equalsIgnoreCase(device.getName())) {
                     ScanRecordParser.ScanRecordItem scanRecordItem = ScanRecordParser.getParser().parseString(scanRecord);
                     byte[] manufacturerSpecificData = scanRecordItem.getManufacturerSpecificData();
                     String print_activitydata = byte2hex(manufacturerSpecificData);
-                    if (manufacturerSpecificData != null
-                            && manufacturerSpecificData.length == 3) {
+
+                    if (manufacturerSpecificData != null && manufacturerSpecificData.length == 3) {
                         int value = manufacturerSpecificData[2];
-                        if (value == 1 || value == 3) { // 1:Paired, 3:Paired but need to set time
+
+                        // 1:Paired, 3:Paired but need to set time
+                        if (value == 1 || value == 3)
                             return true;
-                        } else {
+                        else
                             return false;
-                        }
                     } else {
                         return false;
                     }
-                } else {
+                } else
                     return false;
-                }
-            } else {
+            } else
                 return false;
-            }
-
-        } else {
+        } else
             return false;
-        }
     }
 
     private void receivedData(String characteristicUuidString, Bundle bundle) {
@@ -795,15 +801,15 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             int seconds = bundle.getInt(ADGattService.KEY_SECONDS);
 
             String weightString = String.format(Locale.getDefault(), "%.1f", weight);
-            String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-            String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
+            String finalDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
+            String finalTime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
             String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 
             Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
-            infoBeanObj.setWeight(weightString);
-            infoBeanObj.setDate(finaldate);
-            infoBeanObj.setTime(finaltime);
+            infoBeanObj.setDate(finalDate);
+            infoBeanObj.setTime(finalTime);
             infoBeanObj.setWeightUnit(units);
+            infoBeanObj.setWeight(weightString);
 
             ADSharedPreferences.putString(ADSharedPreferences.KEY_WEIGHT_SCALE_UNITS, units);
 
@@ -848,6 +854,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             infoBeanObj.setPulse(String.valueOf(pul));
             infoBeanObj.setSystolic(String.valueOf(sys));
             infoBeanObj.setDiastolic(String.valueOf(dia));
+
             sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
             // Writing data to SharedPreferences
             SharedPreferences.Editor editor = sharedPreferencesBloodPressure.edit();
@@ -855,16 +862,18 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             editor.putString("diastolic", String.valueOf(dia));
             editor.commit();
 
+            infoBeanObj.setIsSynced("no");
             infoBeanObj.setPulseUnit("bpm");
             infoBeanObj.setSystolicUnit("mmhg");
             infoBeanObj.setDiastolicUnit("mmhg");
-            infoBeanObj.setIsSynced("no");
             infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
+
             long dateValue = convertDateToMilliSeconds(finalTimeStamp);
             infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
-            String weightDeviceId = "web." + ADSharedPreferences.getString(ADSharedPreferences.KEY_USER_ID, "");
 
+            String weightDeviceId = "web." + ADSharedPreferences.getString(ADSharedPreferences.KEY_USER_ID, "");
             infoBeanObj.setDeviceId(weightDeviceId);
+
             final ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>();
 
             insertObjectList.add(infoBeanObj);
@@ -951,13 +960,13 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
 
                 //Extracting values from the hashmap
-                int sys = Integer.parseInt(bpData.get("systolic").toString());
-                int dia = Integer.parseInt(bpData.get("diastolic").toString());
+                int day = Integer.parseInt(bpData.get("day").toString());
                 int pul = Integer.parseInt(bpData.get("pulse").toString());
                 int year = Integer.parseInt(bpData.get("year").toString());
-                int month = Integer.parseInt(bpData.get("month").toString());
-                int day = Integer.parseInt(bpData.get("day").toString());
                 int hours = Integer.parseInt(bpData.get("hour").toString());
+                int month = Integer.parseInt(bpData.get("month").toString());
+                int sys = Integer.parseInt(bpData.get("systolic").toString());
+                int dia = Integer.parseInt(bpData.get("diastolic").toString());
                 int minutes = Integer.parseInt(bpData.get("minutes").toString());
                 int seconds = Integer.parseInt(bpData.get("seconds").toString());
 
@@ -1001,21 +1010,24 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 String unit = wsData.get("unit").toString();
                 //Add the weight value to the shared preference
                 ADSharedPreferences.putString(ADSharedPreferences.KEY_WEIGHT_SCALE_UNITS, unit);
+
+                int day = Integer.parseInt(wsData.get("day").toString());
                 int year = Integer.parseInt(wsData.get("year").toString());
                 int month = Integer.parseInt(wsData.get("month").toString());
-                int day = Integer.parseInt(wsData.get("day").toString());
                 int hours = Integer.parseInt(wsData.get("hour").toString());
                 int minutes = Integer.parseInt(wsData.get("minutes").toString());
                 int seconds = Integer.parseInt(wsData.get("seconds").toString());
-                String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-                String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
+
+                String finalDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
+                String finalTime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
                 String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
 
-                infoBeanObj.setWeight(weightString);
-                infoBeanObj.setDate(finaldate);
-                infoBeanObj.setTime(finaltime);
-                infoBeanObj.setWeightUnit(unit);
                 infoBeanObj.setIsSynced("no");
+                infoBeanObj.setDate(finalDate);
+                infoBeanObj.setTime(finalTime);
+                infoBeanObj.setWeightUnit(unit);
+                infoBeanObj.setWeight(weightString);
+
                 //infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
                 long dateValue = convertDateToMilliSeconds(finalTimeStamp);
                 infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
@@ -1023,13 +1035,13 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 insertObjectList.add(infoBeanObj);
 
             } //End of for loop , now add to database
+
             db.weighttrackentry(insertObjectList);
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
             insertObjectList.clear();
             wsMapList.clear();
             measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
-
         }
     }
 

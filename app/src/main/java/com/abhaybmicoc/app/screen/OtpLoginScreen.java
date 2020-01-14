@@ -47,7 +47,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
-    SharedPreferences userData, activator;
+    private SharedPreferences userData;
+    private SharedPreferences activator;
 
     // endregion
 

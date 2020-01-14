@@ -4,396 +4,279 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Lifetrack_infobean implements Comparable, Parcelable, Cloneable {
+    // region Variables
+
+    private int keyidbp = 0;
+    private int keyidweight = 0;
+    private int keyidlifetrack = 0;
+    private int thermometerkeyId = 0;
 
     private String date = "";
     private String time = "";
-    private String dateTimeStamp = "0";
-    private String deviceId = "";
-
-    private String readingType = "";
-    private String readingTakenTime = "";
-    private String isSynced = "";
-    String itemList;
-    private boolean isVisible;
-
-    private int keyidbp = 0; // DBのデータキーIDの格納場所
+    private String cal = "0";
+    private String steps = "0";
     private String pulse = "0";
+    private String sleep = "0";
+    private String weight = "";
+    private String deviceId = "";
+    private String isSynced = "";
+    private String sleepUnit = "";
+    private String distance = "0";
     private String systolic = "0";
     private String diastolic = "0";
-    private String pulseUnit = "bpm";
-    private String systolicUnit = "mmhg";
-    private String diastolicUnit = "mmhg";
-    private String irregularPulseDetection = "false";
-
-    private int keyidweight = 0; // DBのデータキーIDの格納場所
-    private String weight = "";
-    private String weightUnit = "kg";
-
-    private int keyidlifetrack = 0; // DBのデータキーIDの格納場所
-    private String steps = "0";
-    private String cal = "0";
-    private String distance = "0";
-    private String sleep = "0";
-    private String distanceUnit = "km";
     private String stepsUnits = "";
-    private String calorieUnits = "";
-    private String sleepUnit = "";
-    private String distanceInMiles = "0";
     private String heartRate = "0";
-    private String heartRateUnit = "";
-
-    private int thermometerkeyId = 0;
-    private String thermometerValue = null;
+    private String readingType = "";
+    private String weightUnit = "kg";
+    private String pulseUnit = "bpm";
+    private String calorieUnits = "";
+    private String dateTimeStamp = "0";
+    private String distanceUnit = "km";
+    private String readingTakenTime = "";
+    private String systolicUnit = "mmhg";
+    private String distanceInMiles = "0";
+    private String diastolicUnit = "mmhg";
     private String thermometerUnit = null;
     private String thermometerName = null;
+    private String thermometerValue = null;
+    private String irregularPulseDetection = "false";
+
+    // endregion
 
     public Lifetrack_infobean() {
     }
 
-    public Lifetrack_infobean(Parcel in) {
-        readFromParcel(in);
+    public Lifetrack_infobean(Parcel parcel) {
+        readFromParcel(parcel);
     }
 
-    public void setReadingType(String readingType) {
-        this.readingType = readingType;
-    }
-
-    public void setReadingTakenTime(String readingTakenTime) {
-        this.readingTakenTime = readingTakenTime;
-    }
-
-    public String getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(String deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getDateTimeStamp() {
-        return dateTimeStamp;
-    }
-
-    public void setDateTimeStamp(String dateTimeStamp) {
-        this.dateTimeStamp = dateTimeStamp;
-    }
-
-    public void setIsSynced(String isSynced) {
-        this.isSynced = isSynced;
-    }
 
     public int getKeyidbp() {
         return keyidbp;
     }
-
-    public void setKeyidbp(int keyidbp) {
-        this.keyidbp = keyidbp;
-    }
-
-    public String getPulse() {
-        return pulse;
-    }
-
-    public void setPulse(String pulse) {
-        this.pulse = pulse;
-    }
-
-    public String getPulseUnit() {
-        return pulseUnit;
-    }
-
-    public void setPulseUnit(String pulseUnit) {
-        this.pulseUnit = pulseUnit;
-    }
-
-    public String getSystolic() {
-        return systolic;
-    }
-
-    public void setSystolic(String systolic) {
-        this.systolic = systolic;
-    }
-
-    public String getSystolicUnit() {
-        return systolicUnit;
-    }
-
-    public void setSystolicUnit(String systolicUnit) {
-        this.systolicUnit = systolicUnit;
-    }
-
-    public String getDiastolic() {
-        return diastolic;
-    }
-
-    public void setDiastolic(String diastolic) {
-        this.diastolic = diastolic;
-    }
-
-    public String getDiastolicUnit() {
-        return diastolicUnit;
-    }
-
-    public void setDiastolicUnit(String diastolicUnit) {
-        this.diastolicUnit = diastolicUnit;
-    }
-
-    public String getIrregularPulseDetection() {
-        return irregularPulseDetection;
-    }
-
-    public void setIrregularPulseDetection(String irregularPulseDetection) {
-        this.irregularPulseDetection = irregularPulseDetection;
-    }
-
     public int getKeyidweight() {
         return keyidweight;
     }
 
-    public void setKeyidweight(int keyidweight) {
-        this.keyidweight = keyidweight;
-    }
-
-    public String getWeight() {
-        return weight;
-    }
-
-    public void setWeight(String weight) {
-        this.weight = weight;
-    }
-
-    public String getWeightUnit() {
-        return weightUnit;
-    }
-
-    public void setWeightUnit(String weightUnit) {
-        this.weightUnit = weightUnit;
-    }
-
-
-    public void setKeyidLifeTrack(int keyidlifetrack) {
-        this.keyidlifetrack = keyidlifetrack;
-    }
-
-
-    public String getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(String heartRate) {
-        this.heartRate = heartRate;
-    }
-
-    public String getSleep() {
-        return sleep;
-    }
-
-    public void setSleep(String sleep) {
-        this.sleep = sleep;
-    }
-
-    public void setSleepUnit(String sleepUnit) {
-        this.sleepUnit = sleepUnit;
-    }
-
-    public String getDistance() {
-        return distance;
-    }
-
-    public double getDistanceValue() {
-        String value = distance.replaceAll(",", ".");
-        return Double.valueOf(value);
-    }
-
-    public void setDistance(String distance) {
-        this.distance = distance;
-    }
-
-    public String getDistanceInMiles() {
-        return distanceInMiles;
-    }
-
-    public void setDistanceInMiles(String distanceInMiles) {
-        this.distanceInMiles = distanceInMiles;
-    }
-
-    public String getDistanceUnit() {
-        return distanceUnit;
-    }
-
-    public void setDistanceUnit(String distanceUnit) {
-        this.distanceUnit = distanceUnit;
-    }
-
-    public String getSteps() {
-        return steps;
-    }
-
-    public void setSteps(String steps) {
-        this.steps = steps;
-    }
-
-    public String getStepsUnits() {
-        return stepsUnits;
-    }
-
-    public void setStepsUnits(String stepsUnits) {
-        this.stepsUnits = stepsUnits;
-    }
+    public double getDistanceValue() { return Double.valueOf(distance.replaceAll(",", ".")); }
+    public float getThermometer() { return Float.valueOf(thermometerValue.replaceAll(",", ".")); }
 
     public String getCal() {
         return cal;
+    }
+    public String getDate() {
+        return date;
+    }
+    public String getTime() {
+        return time;
+    }
+    public String getPulse() {
+        return pulse;
+    }
+    public String getSleep() {
+        return sleep;
+    }
+    public String getSteps() {
+        return steps;
+    }
+    public String getWeight() {
+        return weight;
+    }
+    public String getDeviceId() {
+        return deviceId;
+    }
+    public String getSystolic() {
+        return systolic;
+    }
+    public String getDistance() {
+        return distance;
+    }
+    public String getPulseUnit() {
+        return pulseUnit;
+    }
+    public String getDiastolic() {
+        return diastolic;
+    }
+    public String getHeartRate() {
+        return heartRate;
+    }
+    public String getWeightUnit() {
+        return weightUnit;
+    }
+    public String getStepsUnits() {
+        return stepsUnits;
+    }
+    public String getSystolicUnit() {
+        return systolicUnit;
+    }
+    public String getDistanceUnit() {
+        return distanceUnit;
+    }
+    public String getCalorieUnits() {
+        return calorieUnits;
+    }
+    public String getDateTimeStamp() {
+        return dateTimeStamp;
+    }
+    public String getDiastolicUnit() {
+        return diastolicUnit;
+    }
+    public String getDistanceInMiles() {
+        return distanceInMiles;
+    }
+    public String getThermometerUnit() {
+        return thermometerUnit;
+    }
+    public String getThermometerValue() {
+        return thermometerValue;
+    }
+    public String getThermometerDeviceName() {
+        return thermometerName;
+    }
+    public String getIrregularPulseDetection() {
+        return irregularPulseDetection;
     }
 
     public void setCal(String cal) {
         this.cal = cal;
     }
-
-    public String getCalorieUnits() {
-        return calorieUnits;
+    public void setTime(String time) {
+        this.time = time;
     }
-
-    public void setCalorieUnits(String calorieUnits) {
-        this.calorieUnits = calorieUnits;
+    public void setDate(String date) {
+        this.date = date;
     }
-
+    public void setPulse(String pulse) {
+        this.pulse = pulse;
+    }
+    public void setSleep(String sleep) { this.sleep = sleep; }
+    public void setSteps(String steps) {
+        this.steps = steps;
+    }
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+    public void setKeyidbp(int keyidbp) { this.keyidbp = keyidbp; }
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+    public void setIsSynced(String isSynced) {
+        this.isSynced = isSynced;
+    }
+    public void setSystolic(String systolic) {
+        this.systolic = systolic;
+    }
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
     public void setThermometerKeyId(int keyId) {
         thermometerkeyId = keyId;
     }
-    public String getThermometerValue() {
-        return thermometerValue;
+    public void setPulseUnit(String pulseUnit) {
+        this.pulseUnit = pulseUnit;
     }
-
-    public float getThermometer() {
-        String value = thermometerValue.replaceAll(",", ".");
-
-        return Float.valueOf(value);
+    public void setDiastolic(String diastolic) {
+        this.diastolic = diastolic;
     }
-    public void setThermometerValue(String thermometerValue) {
-        this.thermometerValue = thermometerValue;
+    public void setSleepUnit(String sleepUnit) {
+        this.sleepUnit = sleepUnit;
     }
-
-    public String getThermometerUnit() {
-        return thermometerUnit;
+    public void setHeartRate(String heartRate) {
+        this.heartRate = heartRate;
     }
-
-    public void setThermometerUnit(String thermometerUnit) {
-        this.thermometerUnit = thermometerUnit;
+    public void setWeightUnit(String weightUnit) {
+        this.weightUnit = weightUnit;
     }
-
-    public String getThermometerDeviceName() {
-        return thermometerName;
+    public void setStepsUnits(String stepsUnits) {
+        this.stepsUnits = stepsUnits;
     }
-
-    public void setThermometerDeviceName(String thermometerName) {
-        this.thermometerName = thermometerName;
+    public void setKeyidweight(int keyidweight) { this.keyidweight = keyidweight; }
+    public void setReadingType(String readingType) {
+        this.readingType = readingType;
     }
-
-    @Override
-    public String toString() {
-        return getKeyidbp() + "" + getKeyidweight();
+    public void setSystolicUnit(String systolicUnit) {
+        this.systolicUnit = systolicUnit;
     }
-
-    @Override
-    public int compareTo(Object arg0) {
-        // TODO Auto-generated method stub
-
-        if (!(arg0 instanceof Lifetrack_infobean))
-            throw new ClassCastException();
-
-        Lifetrack_infobean e = (Lifetrack_infobean) arg0;
-
-        return date.compareTo(e.getDate());
-
+    public void setCalorieUnits(String calorieUnits) {
+        this.calorieUnits = calorieUnits;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setDistanceUnit(String distanceUnit) {
+        this.distanceUnit = distanceUnit;
     }
+    public void setDateTimeStamp(String dateTimeStamp) {
+        this.dateTimeStamp = dateTimeStamp;
+    }
+    public void setDiastolicUnit(String diastolicUnit) {
+        this.diastolicUnit = diastolicUnit;
+    }
+    public void setKeyidLifeTrack(int keyidlifetrack) {
+        this.keyidlifetrack = keyidlifetrack;
+    }
+    public void setDistanceInMiles(String distanceInMiles) { this.distanceInMiles = distanceInMiles; }
+    public void setThermometerUnit(String thermometerUnit) { this.thermometerUnit = thermometerUnit; }
+    public void setThermometerValue(String thermometerValue) { this.thermometerValue = thermometerValue; }
+    public void setReadingTakenTime(String readingTakenTime) { this.readingTakenTime = readingTakenTime; }
+    public void setThermometerDeviceName(String thermometerName) { this.thermometerName = thermometerName; }
+    public void setIrregularPulseDetection(String irregularPulseDetection) { this.irregularPulseDetection = irregularPulseDetection; }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cal);
         dest.writeString(date);
         dest.writeString(time);
-        dest.writeString(weight);
-        dest.writeString(readingType);
-        dest.writeString(readingTakenTime);
-        dest.writeString(deviceId);
-        dest.writeString(weightUnit);
-        dest.writeString(steps);
-        dest.writeString(cal);
-        dest.writeString(distance);
-
         dest.writeString(sleep);
-        dest.writeString(distanceUnit);
-        dest.writeString(stepsUnits);
-        dest.writeString(calorieUnits);
+        dest.writeString(steps);
         dest.writeString(pulse);
+        dest.writeString(weight);
+        dest.writeString(deviceId);
+        dest.writeString(distance);
         dest.writeString(systolic);
+        dest.writeString(isSynced);
         dest.writeString(diastolic);
-
         dest.writeString(pulseUnit);
+        dest.writeString(sleepUnit);
+        dest.writeString(weightUnit);
+        dest.writeString(stepsUnits);
+        dest.writeString(readingType);
+        dest.writeString(distanceUnit);
+        dest.writeString(calorieUnits);
         dest.writeString(systolicUnit);
         dest.writeString(diastolicUnit);
-        dest.writeString(sleepUnit);
-        dest.writeString(isSynced);
         dest.writeString(distanceInMiles);
-
-        dest.writeString(thermometerValue);
         dest.writeString(thermometerUnit);
         dest.writeString(thermometerName);
+        dest.writeString(thermometerValue);
+        dest.writeString(readingTakenTime);
 
     }
 
     private void readFromParcel(Parcel in) {
+        setCal(in.readString());
         setDate(in.readString());
         setTime(in.readString());
-        setWeight(in.readString());
-        setReadingType(in.readString());
-        setReadingTakenTime(in.readString());
-        setDeviceId(in.readString());
-
-        setWeightUnit(in.readString());
         setSteps(in.readString());
-        setCal(in.readString());
-        setDistance(in.readString());
-
         setSleep(in.readString());
-        setDistanceUnit(in.readString());
-        setStepsUnits(in.readString());
-        setCalorieUnits(in.readString());
         setPulse(in.readString());
+        setWeight(in.readString());
+        setIsSynced(in.readString());
+        setDistance(in.readString());
         setSystolic(in.readString());
-        setDiastolic(in.readString());
-
+        setDeviceId(in.readString());
+        setSleepUnit(in.readString());
         setPulseUnit(in.readString());
+        setDiastolic(in.readString());
+        setWeightUnit(in.readString());
+        setStepsUnits(in.readString());
+        setReadingType(in.readString());
+        setDistanceUnit(in.readString());
+        setCalorieUnits(in.readString());
         setSystolicUnit(in.readString());
         setDiastolicUnit(in.readString());
-        setSleepUnit(in.readString());
-        setIsSynced(in.readString());
         setDistanceInMiles(in.readString());
-
-        setThermometerValue(in.readString());
         setThermometerUnit(in.readString());
+        setThermometerValue(in.readString());
+        setReadingTakenTime(in.readString());
         setThermometerDeviceName(in.readString());
-
     }
 
     public static final Creator CREATOR = new Creator() {
@@ -405,4 +288,25 @@ public class Lifetrack_infobean implements Comparable, Parcelable, Cloneable {
             return new Lifetrack_infobean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return getKeyidbp() + "" + getKeyidweight();
+    }
+
+    @Override
+    public int compareTo(Object arg) {
+        if (!(arg instanceof Lifetrack_infobean))
+            throw new ClassCastException();
+
+        Lifetrack_infobean e = (Lifetrack_infobean) arg;
+
+        return date.compareTo(e.getDate());
+
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 }
