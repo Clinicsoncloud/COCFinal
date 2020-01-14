@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_try_hemoglobin);
 
         setupUI();
         setupEvents();
@@ -276,6 +275,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     private void setupUI() {
+        setContentView(R.layout.new_try_hemoglobin);
+
         btnScan = findViewById(R.id.btn_scan);
         btnConnect = findViewById(R.id.btnconnect);
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
