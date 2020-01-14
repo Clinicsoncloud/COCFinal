@@ -200,6 +200,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         etTemperature.setVisibility(View.VISIBLE);
 
+        this.mMacDispositivos = new ArrayList();
+        this.mDispositivosVinculados = new ArrayList();
+        
         spinner = findViewById(R.id.sp_temprature);
         adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, mDispositivosVinculados);
         spinner.setAdapter(adapterSpinner);
@@ -232,9 +235,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     private void initializeData(){
-        this.mMacDispositivos = new ArrayList();
-        this.mDispositivosVinculados = new ArrayList();
-
         sharedPreferencesUser = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         this.conec = (String) getText(R.string.Connectad);
