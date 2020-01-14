@@ -32,8 +32,6 @@ import java.util.Map;
 import java.util.Locale;
 import java.util.HashMap;
 
-import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
-
 public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
     // region Variables
 
@@ -207,12 +205,12 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private void clearDatabase() {
         clearSharedPreference(ApiUtils.PREFERENCE_URL);
         clearSharedPreference(ApiUtils.PREFERENCE_PULSE);
-        clearSharedPreference(PREFERENCE_THERMOMETERDATA);
         clearSharedPreference(ApiUtils.PREFERENCE_ACTOFIT);
         clearSharedPreference(ApiUtils.PREFERENCE_BIOSENSE);
         clearSharedPreference(ApiUtils.PREFERENCE_NEWRECORD);
         clearSharedPreference(ApiUtils.PREFERENCE_HEMOGLOBIN);
         clearSharedPreference(ApiUtils.PREFERENCE_BLOODPRESSURE);
+        clearSharedPreference(ApiUtils.PREFERENCE_THERMOMETERDATA);
     }
 
     private void clearSharedPreference(String preferenceName){
@@ -228,6 +226,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
      */
     private void GenerateOTP() {
         progressDialog = Tools.progressDialog(OtpLoginScreen.this);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.LOGIN_URL, response -> {
             try {
                 progressDialog.dismiss();
@@ -239,16 +238,22 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                     objIntent.putExtra("mobile", etMobileNumber.getText().toString());
                     objIntent.putExtra("kioskid", kiosk_id);
+
                     startActivity(objIntent);
+
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+
                     finish();
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+
                     objIntent.putExtra("mobile", etMobileNumber.getText().toString());
                     objIntent.putExtra("kioskid", kiosk_id);
+
                     startActivity(objIntent);
+
                     finish();
                 }
 
@@ -261,9 +266,11 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params;
+
                 params = new HashMap<>();
                 params.put("kiosk_id", kiosk_id);
                 params.put("mobile", etMobileNumber.getText().toString());
+
                 return params;
             }
         };
