@@ -484,9 +484,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 refreshDisplay();
             }
 
-            if (mIsSendCancel) {
+            if (mIsSendCancel)
                 mIsSendCancel = false;
-            }
 
             BluetoothManager bluetoothManager = getBluetoothManager();
             if (bluetoothManager != null) {
