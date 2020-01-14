@@ -1562,7 +1562,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
 
     private String getCurrentTime() {
-        return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance());
+        return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance().getTime());
     }
 
     @OnClick({R.id.homebtn, R.id.printbtn,R.id.iv_download})
