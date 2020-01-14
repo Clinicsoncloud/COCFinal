@@ -226,7 +226,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/spo"
+                    android:id="@+id/tv_spo"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
@@ -238,11 +238,11 @@
                     android:textSize="25sp" />
 
                 <TextView
-                    android:id="@+id/pr"
+                    android:id="@+id/tv_pulse_rate"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
-                    android:layout_below="@+id/spo"
-                    android:layout_alignStart="@+id/spo"
+                    android:layout_below="@+id/tv_spo"
+                    android:layout_alignStart="@+id/tv_spo"
                     android:layout_marginTop="20dp"
                     android:text="@string/pr"
                     android:gravity="center"
@@ -258,7 +258,7 @@
             android:id="@+id/layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/pr"
+            android:layout_below="@+id/tv_pulse_rate"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp">
 
@@ -293,7 +293,7 @@
                 android:text="@string/disconnect" />
 
             <Button
-                android:id="@+id/bindDevice"
+                android:id="@+id/btn_start_test"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:textColor="@color/white"
