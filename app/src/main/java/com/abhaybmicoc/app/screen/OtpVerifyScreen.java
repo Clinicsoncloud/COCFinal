@@ -28,6 +28,7 @@ import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
@@ -56,7 +57,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private EditText etDateOfBirth;
     private EditText etMobileNumber;
 
-    private ProgressDialog pd;
+    private ProgressDialog progressDialog;
 
     private SharedPreferences sharedPreferencesToken;
 
@@ -64,8 +65,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private RadioButton rdFemale;
     private RadioButton rdGender;
     private RadioGroup rdGenderGroup;
-
-    private  SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
     private TextToSpeech tts;
     private BluetoothAdapter mBluetoothAdapter;
@@ -178,7 +177,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             selectedGenderId = rdGenderGroup.getCheckedRadioButtonId();
             rdGender = findViewById(selectedGenderId);
 
-            writeToPersonalSharedPreference("gender", rdGender.getText().toString());
+            writeToPersonalSharedPreferenceKey("gender", rdGender.getText().toString());
         });
     }
 
@@ -206,21 +205,22 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                Calendar calander = Calendar.getInstance();
-                calander.setTimeInMillis(0);
-                calander.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(0);
+                calendar.set(year, monthOfYear, dayOfMonth, 0, 0, 0);
 
-                Date selectedDate = calander.getTime();
-                String dateTimeFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
-                etDateOfBirth.setText(dateTimeFormatUS);
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                String dateTimeFormatUS = simpleDateFormat.format(calendar.getTime());
+
                 etDateOfBirth.setEnabled(true);
+                etDateOfBirth.setText(dateTimeFormatUS);
             }
         };
 
         DatePickerDialog dpDialog = new DatePickerDialog(OtpVerifyScreen.this, listener, year, month + 1, day);
 
-        dpDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
         dpDialog.setCancelable(false);
+        dpDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
         dpDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -233,23 +233,17 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     }
 
     private void postData() {
-        pd = Tools.progressDialog(OtpVerifyScreen.this);
+        progressDialog = Tools.progressDialog(OtpVerifyScreen.this);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PROFILE_URL,
                 response -> {
-                    //Disimissing the progress dialog
-                    System.out.println("Login Response" + response);
                     try {
-                        pd.dismiss();
-                        JSONObject jobj = new JSONObject(response);
-                        SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-                        SharedPreferences.Editor editor = objdoctor.edit();
-                        editor.putString("name", jobj.getJSONObject("data").getJSONObject("patient").getString("name"));
-                        editor.putString("mobile_number", jobj.getJSONObject("data").getJSONObject("patient").getString("mobile"));
-                        editor.putString("email", jobj.getJSONObject("data").getJSONObject("patient").getString("email"));
-                        editor.putString("dob", jobj.getJSONObject("data").getJSONObject("patient").getString("dob"));
-                        editor.putString("token", jobj.getJSONObject("data").getJSONObject("patient").getString("token"));
-                        editor.putString("id", jobj.getJSONObject("data").getJSONObject("patient").getString("id"));
-                        editor.commit();
+                        progressDialog.dismiss();
+
+                        JSONObject jsonObject = new JSONObject(response);
+
+                        writeToPersonalSharedPreference(jsonObject);
+
                         finish();
 
                         Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
@@ -261,28 +255,31 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                     }
                 },
                 volleyError -> {
-                    pd.dismiss();
+                    progressDialog.dismiss();
                 }) {
             @Override
             public Map getHeaders() {
                 HashMap headers = new HashMap();
+
                 String bearer = "Bearer ".concat(sharedPreferencesToken.getString("token", ""));
                 headers.put("Authorization", bearer);
+
                 return headers;
             }
 
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> params;
-                params = new HashMap<>();
+                Map<String, String> params = new HashMap<>();
+
                 params.put("name", etName.getText().toString());
                 params.put("email", etEmail.getText().toString());
                 params.put("dob", etDateOfBirth.getText().toString());
                 params.put("gender", getSelectedGender());
+
                 return params;
             }
-
         };
+
         AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                 90000,
@@ -301,8 +298,27 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
     /**
      *
+     * @param jsonObject
+     * @throws JSONException
      */
-    private void writeToPersonalSharedPreference(String key, String value){
+    private void writeToPersonalSharedPreference(JSONObject jsonObject) throws JSONException {
+        SharedPreferences objdoctor = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        SharedPreferences.Editor editor = objdoctor.edit();
+
+        writeToPersonalSharedPreferenceKey("name", jsonObject.getJSONObject("data").getJSONObject("patient").getString("name"));
+        writeToPersonalSharedPreferenceKey("mobile_number", jsonObject.getJSONObject("data").getJSONObject("patient").getString("mobile"));
+        writeToPersonalSharedPreferenceKey("email", jsonObject.getJSONObject("data").getJSONObject("patient").getString("email"));
+        writeToPersonalSharedPreferenceKey("dob", jsonObject.getJSONObject("data").getJSONObject("patient").getString("dob"));
+        writeToPersonalSharedPreferenceKey("token", jsonObject.getJSONObject("data").getJSONObject("patient").getString("token"));
+        writeToPersonalSharedPreferenceKey("id", jsonObject.getJSONObject("data").getJSONObject("patient").getString("id"));
+
+        editor.commit();
+    }
+
+    /**
+     *
+     */
+    private void writeToPersonalSharedPreferenceKey(String key, String value){
         SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
@@ -367,11 +383,11 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         if (sharedPreferencesToken.getString("gender", "").equalsIgnoreCase("male")) {
             rdMale.setChecked(true);
 
-            writeToPersonalSharedPreference("gender", getSelectedGender());
+            writeToPersonalSharedPreferenceKey("gender", getSelectedGender());
         } else if (sharedPreferencesToken.getString("gender", "").equalsIgnoreCase("female")) {
             rdFemale.setChecked(true);
 
-            writeToPersonalSharedPreference("gender", getSelectedGender());
+            writeToPersonalSharedPreferenceKey("gender", getSelectedGender());
         }
     }
 
