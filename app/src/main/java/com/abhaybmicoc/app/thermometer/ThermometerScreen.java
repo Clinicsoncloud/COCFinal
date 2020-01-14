@@ -202,7 +202,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         this.mMacDispositivos = new ArrayList();
         this.mDispositivosVinculados = new ArrayList();
-        
+
         spinner = findViewById(R.id.sp_temprature);
         adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, mDispositivosVinculados);
         spinner.setAdapter(adapterSpinner);

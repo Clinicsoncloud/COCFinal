@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private TextView tvAge;
     private TextView tvName;
     private TextView tvGender;
-    private TextView tvMobile;
+    private TextView tvMobileNumber;
     private TextView tvHeight;
     private TextView tvWeight;
     private TextView tvTemperature;
@@ -115,9 +115,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onResume() {
         super.onResume();
-
-        //reinitialize the textToSpeech engine
-
     }
 
     @Override
@@ -148,9 +145,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 //        enableBlutooth();
 
         tvAge = findViewById(R.id.tv_age);
-        tvName = findViewById(R.id.txtname);
+        tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
-        tvMobile = findViewById(R.id.txtmobile);
+        tvMobileNumber = findViewById(R.id.tv_mobile_number);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
@@ -191,7 +188,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         tvAge.setText("DOB : " + shared.getString("dob", ""));
         tvName.setText("Name : " + shared.getString("name", ""));
         tvGender.setText("Gender : " + shared.getString("gender", ""));
-        tvMobile.setText("Phone : " + shared.getString("mobile_number", ""));
+        tvMobileNumber.setText("Phone : " + shared.getString("mobile_number", ""));
     }
 
     // endregion
