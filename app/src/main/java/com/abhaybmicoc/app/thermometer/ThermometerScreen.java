@@ -83,24 +83,20 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     private BluetoothAdapter mBluetoothAdapter;
 
     private Button btnNext;
+    private Button btnBaud;
     private Button btnConnect;
     private Button btnLimpiar;         // limpiar (Spanish), clean (English)
-    private Button btnBaud;
     private Button btnGetTemperature;
 
     private TextView tvAge;
     private TextView tvName;
-    private TextView display;
     private TextView tvGender;
     private TextView tvMobile;
     private TextView tvHeight;
     private TextView tvWeight;
-    private TextView tvOximeter;
 
-    private EditText  datos;
-    private EditText editText1;
-    private EditText  multitxt;
-    private EditText  etManualHeight;
+    private EditText etTemperature;
+    private EditText etManualHeight;
 
     private Spinner spinner;
 
@@ -191,14 +187,11 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     private void setupUI(){
         setContentView(R.layout.activity_main_temperature);
 
-        datos = findViewById(R.id.et_temprature);
-        editText1.setVisibility(View.VISIBLE);
-        display = findViewById(R.id.textView1);
-        editText1 = findViewById(R.id.et_temprature);
-
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        etTemperature = findViewById(R.id.et_temprature);
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
@@ -215,13 +208,14 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
-        tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
         btnBaud = findViewById(R.id.btn_next);
 
         if (estadoBoton.equals("Connect")) {
             btnConnect.setText(conec);
         }
+
+        etTemperature.setVisibility(View.VISIBLE);
 
         spinner = findViewById(R.id.sp_temprature);
         adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, mDispositivosVinculados);
@@ -307,12 +301,12 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     private void handleBaud(){
-        if(editText1.getText().length() > 0) {
-            if(editText1.getText().toString().indexOf(".") == editText1.getText().length() - 2 || editText1.getText().toString().contains(".")) {
+        if(etTemperature.getText().length() > 0) {
+            if(etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
                 SharedPreferences.Editor editor = sharedPreferencesUser.edit();
-                editor.putString("data", editText1.getText().toString().trim());
+                editor.putString("data", etTemperature.getText().toString().trim());
                 editor.commit();
 
                 try {
@@ -597,7 +591,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             strTemp += str;
 
             //Akshay Thermometer code
-            ThermometerScreen.this.editText1.setText(""+strTemp);
+            ThermometerScreen.this.etTemperature.setText(""+strTemp);
 
             strTemp = "";
 
@@ -613,7 +607,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                         if(strTemp.indexOf("0") == strTemp.length() - 5){
                             strTemp = strTemp.replaceFirst("0","");
                         }
-                        ThermometerScreen.this.editText1.setText("" + strTemp);
+                        ThermometerScreen.this.etTemperature.setText("" + strTemp);
                         strTemp = "";
                     }*/
 
