@@ -47,7 +47,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
-    private SharedPreferences userData;
     private SharedPreferences activator;
 
     // endregion
@@ -92,7 +91,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private void setupUI(){
         setContentView(R.layout.activity_otp_login_screen);
 
-        btnLogin = findViewById(R.id.btn_submit);
+        btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
     }
 
