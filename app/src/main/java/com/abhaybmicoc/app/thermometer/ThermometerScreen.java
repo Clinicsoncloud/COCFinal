@@ -120,15 +120,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     // Events
 
     @Override
-    public void onInit(int status) {
-        initializeTextToSpeech(status);
-    }
-
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -140,29 +131,20 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     @Override
+    public void onInit(int status) {
+        startTextToSpeech(status);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (resultCode == -1) {
-            Set<BluetoothDevice> dispositivos = this.mBluetoothAdapter.getBondedDevices();
-            int a = dispositivos.size();
-            this.mDispositivosVinculados = new ArrayList();
-            this.mMacDispositivos = new ArrayList();
-            if (a > 0) {
-                for (BluetoothDevice device : dispositivos) {
-                    this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
-                    this.mMacDispositivos.add(device.getAddress());
-                }
-            }
-            this.adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
-            this.spinner.setAdapter(this.adapterSpinner);
-            Toast.makeText(this, this.BluetoothEncendido, Toast.LENGTH_LONG).show();
-            return;
-        }
+        handleTemperatureResult(requestCode, resultCode, data);
         finish();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
         connectToDevice();
     }
 
@@ -177,6 +159,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     public void onStop() {
         super.onStop();
 
+        stopTextToSpeech();
         closeBluetooth();
     }
 
@@ -266,27 +249,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
 
         objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
-    }
-
-    /**
-     *
-     * @param status
-     */
-    private void initializeTextToSpeech(int status){
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            textToSpeech.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
     }
 
     // endregion
@@ -408,7 +370,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
      */
     private void storeBluetoothDevices(){
         Set<BluetoothDevice> dispositivos = this.mBluetoothAdapter.getBondedDevices();
-        if (dispositivos.size() > 0) {
+        if (dispositivos != null && dispositivos.size() > 0) {
             for (BluetoothDevice device : dispositivos) {
                 if (device.getName().contains("THERMOMETER")) {
                     this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
@@ -425,12 +387,46 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         }
     }
 
+    /**
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    private void handleTemperatureResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == -1) {
+            Set<BluetoothDevice> dispositivos = this.mBluetoothAdapter.getBondedDevices();
+
+            if(dispositivos != null && dispositivos.size() > 0) {
+                int a = dispositivos.size();
+
+                this.mMacDispositivos = new ArrayList();
+                this.mDispositivosVinculados = new ArrayList();
+
+                if (a > 0) {
+                    for (BluetoothDevice device : dispositivos) {
+                        this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
+                        this.mMacDispositivos.add(device.getAddress());
+                    }
+                }
+
+                this.adapterSpinner = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
+                this.spinner.setAdapter(this.adapterSpinner);
+
+                Toast.makeText(this, this.BluetoothEncendido, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    /**
+     *
+     */
     private void freeConnections(){
         //close the bluetooth socket of thermometer
         closeBluetooth();
 
         //close the textToSpeech engine
-        closeTextToSpeech();
+        stopTextToSpeech();
     }
 
     /**
@@ -448,10 +444,38 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         }
     }
 
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
     /**
      *
      */
-    private void closeTextToSpeech(){
+    private void stopTextToSpeech(){
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
