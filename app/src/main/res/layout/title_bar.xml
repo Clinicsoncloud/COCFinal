@@ -5,7 +5,7 @@
     android:background="@drawable/topbar"
     android:orientation="horizontal" >
 
-    <com.abhaybmicoc.app.slidemenu.SlideMenu
+    <com.abhaybmicoc_test.app.slidemenu.SlideMenu
         android:id="@+id/slideMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

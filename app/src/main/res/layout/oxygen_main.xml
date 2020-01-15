@@ -169,7 +169,7 @@
                 android:textAllCaps="false" />
         </LinearLayout>
 
-        <com.abhaybmicoc.app.oxygen.views.WaveformView
+        <com.abhaybmicoc_test.app.oxygen.views.WaveformView
             android:id="@+id/wfvPleth"
             android:layout_width="match_parent"
             android:layout_height="200dp"
