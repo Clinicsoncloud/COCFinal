@@ -41,11 +41,6 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     private PrintData printData;
 
-    private int age;
-    private int height;
-
-    private Double weight;
-
     // endregion
 
     // region Events
@@ -90,1296 +85,98 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         String parsedDate;
         String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
         if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth)) {
-            age = DateService.getAgeFromStringDate(dateOfBirth);
             parsedDate = DateService.formatDateFromString(dateOfBirth, "yyyy-MM-dd", "dd-MM-yyyy");
         }else{
-            age = 0;
             parsedDate = "N/A";
         }
 
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT))
-            weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.WEIGHT);
-
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
-            height = SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
-
         switch (position) {
-            case 0: //weight
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    double standardWeightMen = ((height - 80) * 0.7);
-                    standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
-                    double standardWeightFemale = (((height * 1.37) - 110) * 0.45);
-                    standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    SharedPreferences.Editor objectShared = sharedPreferencesPersonal.edit();
-
-                    Log.e("standardWeightMen", " : " + standardWeightMen);
-                    Log.e("standardWeightFemale", " : " + standardWeightFemale);
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        Log.e("standardWeightMenFF", " : " + (0.90 * standardWeightMen));
-                        Log.e("standardWeightFemaleFF", " : " + (1.09 * standardWeightMen));
-
-                        double standardWeighRangeFrom = (0.90 * standardWeightMen);
-                        standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
-                        double standardWeighRangeTo = (1.09 * standardWeightMen);
-                        standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
-
-                        double standarWeightHighFrom = (1.10 * standardWeightMen);
-                        standarWeightHighFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighFrom));
-                        double standarWeightHighTo = (1.20 * standardWeightMen);
-                        standarWeightHighTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighTo));
-                        double standarWeightLowFrom = (0.80 * standardWeightMen);
-                        standarWeightLowFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowFrom));
-                        double standarWeightLowTo = (0.89 * standardWeightMen);
-                        standarWeightLowTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowTo));
-
-                        viewHolder.rangeTV.setText("" + standardWeighRangeFrom + " - " + standardWeighRangeTo + "kg");
-
-
-                        objectShared.putString("standardRangeMaleFrom", "" + (0.90 * standardWeightMen));
-                        objectShared.putString("standardRangeMaleTo", "" + (1.09 * standardWeightMen));
-                        objectShared.commit();
-
-                        if (printData.getCurr_value() > standarWeightHighTo) {
-                            viewHolder.resultTV.setText("Seriously High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= standarWeightHighTo && printData.getCurr_value() >= standarWeightHighFrom) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= standardWeighRangeTo && printData.getCurr_value() >= standardWeighRangeFrom) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() <= standarWeightLowTo && printData.getCurr_value() >= standarWeightLowFrom) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        } else if (printData.getCurr_value() < standarWeightLowFrom) {
-
-                            viewHolder.resultTV.setText("Seriously Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-
-
-                    } else { //femle weight
-
-
-                        double standardWeighRangeFrom = (0.90 * standardWeightFemale);
-                        standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
-                        double standardWeighRangeTo = (1.09 * standardWeightFemale);
-                        standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
-
-                        viewHolder.rangeTV.setText("" + standardWeighRangeFrom + " - " + standardWeighRangeTo + "kg");
-                        objectShared.putString("standardRangeFemaleFrom", "" + (0.90 * standardWeightFemale));
-                        objectShared.putString("standardRangeFemaleTo", "" + (1.09 * standardWeightFemale));
-                        objectShared.commit();
-
-                        if (printData.getCurr_value() > (1.20 * standardWeightFemale)) {
-
-                            viewHolder.resultTV.setText("Seriously High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() >= (1.10 * standardWeightFemale) && printData.getCurr_value() <= (1.20 * standardWeightFemale)) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() >= (0.90 * standardWeightFemale) && printData.getCurr_value() <= (1.09 * standardWeightFemale)) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() >= (0.80 * standardWeightFemale) && printData.getCurr_value() <= (0.89 * standardWeightFemale)) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        } else if (printData.getCurr_value() < (0.80 * standardWeightFemale)) {
-
-                            viewHolder.resultTV.setText("Seriously Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-                    }
-                }
+            case 0:
+                showWeight(viewHolder);
                 break;
 
-            case 1: //bmi
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("18.5 - 25");
-
-                    if (printData.getCurr_value() > 25) {
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                    } else if (printData.getCurr_value() <= 25 && printData.getCurr_value() >= 18.5) {
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                    } else if (printData.getCurr_value() < 18.5) {
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                    }
-                }
+            case 1:
+                showBmi(viewHolder);
                 break;
 
-            case 2: //Body Fat
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (printData.getCurr_value() > 26) {
-                            viewHolder.resultTV.setText("Seriously High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 26 && printData.getCurr_value() >= 21) {
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 21 && printData.getCurr_value() >= 11) {
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                        } else if (printData.getCurr_value() < 11) {
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-                        viewHolder.rangeTV.setText("11 - 21" + "(%)");
-
-
-                    } else { //female bofy fat
-
-                        viewHolder.rangeTV.setText("21 - 30" + "(%)");
-
-                        if (printData.getCurr_value() > 36) {
-                            viewHolder.resultTV.setText("Seriously High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 36 && printData.getCurr_value() > 30) {
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                        } else if (printData.getCurr_value() <= 30 && printData.getCurr_value() >= 21) {
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                        } else if (printData.getCurr_value() < 21) {
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-                    }
-                }
+            case 2:
+                showBodyFat(viewHolder);
                 break;
 
-            case 3: //Fat Free Weight
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                }
+            case 3:
+                showFatFreeWeight(viewHolder);
                 break;
 
-            case 4: //Subcutaneous Fat (%)
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-
-                }else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText(""+printData.getCurr_value());
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        viewHolder.rangeTV.setText("8.6 - 16.7");
-
-                        if (printData.getCurr_value() > 16.7) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 16.7 && printData.getCurr_value() >= 8.6) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 8.6) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-
-
-                    } else { // female subcutaneous fat
-
-                        viewHolder.rangeTV.setText("18.5 - 26.7");
-
-                        if (printData.getCurr_value() > 26.7) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 26.7 && printData.getCurr_value() >= 18.5) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 18.5) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-                    }
-                }
+            case 4:
+                showSubcutaneousFat(viewHolder);
                 break;
 
-            case 5: //Visceral Fat
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText(" < = 9");
-
-                    if (printData.getCurr_value() > 14) {
-
-                        viewHolder.resultTV.setText("Seriously High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                    } else if (printData.getCurr_value() <= 14 && printData.getCurr_value() >= 10) {
-
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                    } else if (printData.getCurr_value() <= 9) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                    }
-                }
-
+            case 5:
+                showVisceralFat(viewHolder);
                 break;
 
-            case 6: //Body water (%)
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        viewHolder.rangeTV.setText("55 - 65 %");
-
-                        if (printData.getCurr_value() > 65) {
-
-                            viewHolder.resultTV.setText("Adequate");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() <= 65 && printData.getCurr_value() >= 55) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 55) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-
-                    } else { //female body water
-
-                        viewHolder.rangeTV.setText("45 - 60 %");
-
-                        if (printData.getCurr_value() > 60) {
-
-                            viewHolder.resultTV.setText("Adequate");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() <= 60 && printData.getCurr_value() >= 45) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 45) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-                    }
-                }
-
+            case 6:
+                showBodyWater(viewHolder);
                 break;
 
-            case 7: //Skeleton muscle (%)
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (printData.getCurr_value() > 59) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 59 && printData.getCurr_value() >= 49) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 49) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-
-                        viewHolder.rangeTV.setText("49 - 59 %");
-
-                    } else {  //female skeleton muscle
-
-                        viewHolder.rangeTV.setText("40 - 50 %");
-
-                        if (printData.getCurr_value() > 50) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 50 && printData.getCurr_value() >= 40) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 40) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-                    }
-                }
+            case 7:
+                showSkeletalMuscle(viewHolder);
                 break;
 
-
-            case 8: //Protein
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("16 - 18 %");
-
-                    if (printData.getCurr_value() > 18) {
-
-                        viewHolder.resultTV.setText("Adequate");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() <= 18 && printData.getCurr_value() > 16) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 16) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                    }
-                }
-
+            case 8:
+                showProtein(viewHolder);
                 break;
 
-            case 9: //Metabolic age
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    ///viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("<="+age+"yrs");
-                    if (printData.getCurr_value() <= age) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() > age) {
-
-                        viewHolder.resultTV.setText("Not upto Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                    }
-                }
+            case 9:
+                showMetabolicAge(viewHolder);
                 break;
 
-            case 10: //Health Score
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                }
+            case 10:
+                showHealthScore(viewHolder);
                 break;
 
-            /*case 11: //phisique
-
-                viewHolder.parameterTV.setText(""+printData.getParameter());
-                viewHolder.valueTV.setText("" +printData.getCurr_value());
-
-                break;*/
-
-            case 11:  //BMR
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-
-                    SharedPreferences.Editor bmrEditor = sharedPreferencesPersonalPreferencesActofit.edit();
-
-                    double standardMetabolism = 0.0;
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (age >= 70) {
-
-                            standardMetabolism = 21.5 * weight;
-
-                        } else if (age >= 50 && age <= 69) {
-
-                            standardMetabolism = 21.5 * weight;
-
-
-                        } else if (age >= 30 && age <= 49) {
-
-                            standardMetabolism = 22.3 * weight;
-
-
-                        } else if (age >= 18 && age <= 29) {
-
-                            standardMetabolism = 24 * weight;
-
-                        }
-
-                        if (printData.getCurr_value() >= standardMetabolism) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < standardMetabolism) {
-
-                            viewHolder.resultTV.setText("Not upto Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        }
-
-                        standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
-
-                        viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
-                        bmrEditor.putString("standardBMR", "" + standardMetabolism);
-                        bmrEditor.commit();
-
-
-                    } else {
-
-
-                        if (age >= 70) {
-
-                            standardMetabolism = 20.7 * weight;
-
-                        } else if (age >= 50 && age <= 69) {
-
-                            standardMetabolism = 20.7 * weight;
-
-
-                        } else if (age >= 30 && age <= 49) {
-
-                            standardMetabolism = 21.7 * weight;
-
-
-                        } else if (age >= 18 && age <= 29) {
-
-                            standardMetabolism = 23.6 * weight;
-
-                        }
-
-                        if (printData.getCurr_value() >= standardMetabolism) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                        } else if (printData.getCurr_value() < standardMetabolism) {
-
-                            viewHolder.resultTV.setText("Not upto Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        }
-                        standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
-                        viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
-                        bmrEditor.putString("standardBMR", "" + standardMetabolism);
-                        bmrEditor.commit();
-
-                    }
-                }
+            case 11:
+                showBmr(viewHolder);
                 break;
 
-
-            case 12://phisique
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("");
-                    viewHolder.resultTV.setText("" + sharedPreferencesPersonalPreferencesActofit.getString("physique", ""));
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                }
+            case 12:
+                showPhysique(viewHolder);
                 break;
 
-            case 13: //Muscle mass
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-
-                    SharedPreferences.Editor editor = sharedPreferencesPersonalPreferencesActofit.edit();
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (height > 170) {
-
-                            viewHolder.rangeTV.setText("49.4 - 59.5 kg");
-                            editor.putString("standardMuscleMass", "49.4-59.5 kg");
-                            editor.commit();
-
-                            if (printData.getCurr_value() > 59.4) {
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 59.4 && printData.getCurr_value() >= 49.4) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 49.4) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        } else if (height <= 170 && height >= 160) {
-
-                            viewHolder.rangeTV.setText("44 - 52.4 kg");
-                            editor.putString("standardMuscleMass", "44-52.4 kg");
-                            editor.commit();
-
-                            if (printData.getCurr_value() > 52.4) {
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 52.4 && printData.getCurr_value() >= 44) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 44) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        } else if (height < 160) {
-
-                            viewHolder.rangeTV.setText("38.5 - 46.5 kg");
-                            editor.putString("standardMuscleMass", "38.5-46.5 kg");
-                            editor.commit();
-
-                            if (printData.getCurr_value() > 46.5) {
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 46.5 && printData.getCurr_value() >= 38.5) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 38.5) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        }
-                    } else { // female muscle mass
-
-                        if (height > 160) {
-
-                            viewHolder.rangeTV.setText("36.5 - 42.5 kg");
-                            editor.putString("standardMuscleMass", "36.4-42.5 kg");
-                            editor.commit();
-
-                            if (printData.getCurr_value() > 42.5) {
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 42.5 && printData.getCurr_value() >= 36.5) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 36.5) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-                        } else if (height <= 160 && height >= 150) {
-
-                            viewHolder.rangeTV.setText("32.9 - 37.5 kg");
-                            editor.putString("standardMuscleMass", "32.9-37.5 kg");
-                            editor.commit();
-
-                            if (printData.getCurr_value() > 37.5) {
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 37.5 && printData.getCurr_value() >= 32.9) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 32.9) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        } else if (height < 150) {
-
-                            if (printData.getCurr_value() > 34.7) {
-
-                                viewHolder.rangeTV.setText("29.1 - 34.7 kg");
-                                editor.putString("standardMuscleMass", "29.1-34.7 kg");
-                                editor.commit();
-
-                                viewHolder.resultTV.setText("Adequate");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() <= 34.7 && printData.getCurr_value() >= 29.1) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 29.1) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        }
-                    }
-                }
+            case 13:
+                showMuscleMass(viewHolder);
                 break;
 
-            case 14: // Bone mass
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-
-                    SharedPreferences.Editor editor1 = sharedPreferencesPersonalPreferencesActofit.edit();
-
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (weight > 75) {
-
-                            viewHolder.rangeTV.setText("3.0 - 3.4 kg");
-                            editor1.putString("standardBoneMass", "3.0-3.4 kg");
-                            editor1.commit();
-
-                            if (printData.getCurr_value() > 3.4) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                            } else if (printData.getCurr_value() <= 3.4 && printData.getCurr_value() >= 3.0) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 3.0) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        } else if (weight <= 75 && weight >= 60) {
-
-                            viewHolder.rangeTV.setText("2.7 - 3.1 kg");
-                            editor1.putString("standardBoneMass", "2.7-3.1 kg");
-                            editor1.commit();
-
-                            if (printData.getCurr_value() > 3.1) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                            } else if (printData.getCurr_value() >= 2.7 && printData.getCurr_value() <= 3.1) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 2.7) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-
-                        } else if (weight < 60) {
-
-                            if (printData.getCurr_value() > 2.7) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                            } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 2.3) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-                            viewHolder.rangeTV.setText("2.3 - 2.7 kg");
-                            editor1.putString("standardBoneMass", "2.3-2.7 kg");
-                            editor1.commit();
-
-
-                        }
-                    } else { // female bone mass
-
-                        if (weight > 60) {
-
-                            viewHolder.rangeTV.setText("2.3 - 2.7 kg");
-                            editor1.putString("standardBoneMass", "2.3-2.7 kg");
-                            editor1.commit();
-
-                            if (printData.getCurr_value() > 2.7) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                            } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 2.3) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-
-                            }
-
-
-                        } else if (weight >= 45 && weight <= 60) {
-
-                            viewHolder.rangeTV.setText("2.0- 2.4 kg");
-                            editor1.putString("standardBoneMass", "2.0-2.4 kg");
-                            editor1.commit();
-
-                            if (printData.getCurr_value() > 2.4) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-
-                            } else if (printData.getCurr_value() >= 2.0 && printData.getCurr_value() <= 2.4) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                            } else if (printData.getCurr_value() < 2.0) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-
-                        } else if (weight < 45) {
-
-                            viewHolder.rangeTV.setText("1.6 - 2.0 kg");
-                            editor1.putString("standardBoneMass", "1.6-2.0 kg");
-                            editor1.commit();
-
-                            if (printData.getCurr_value() > 2.0) {
-
-                                viewHolder.resultTV.setText("High");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                            } else if (printData.getCurr_value() >= 1.6 && printData.getCurr_value() <= 2.0) {
-
-                                viewHolder.resultTV.setText("Standard");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                            } else if (printData.getCurr_value() < 1.6) {
-
-                                viewHolder.resultTV.setText("Low");
-                                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                            }
-                        }
-                    }
-                }
-                break;
-            case 15: //Body temp
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-                    if (printData.getCurr_value() > 99) {
-
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                    } else if (printData.getCurr_value() <= 99 && printData.getCurr_value() >= 97) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 97) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                    }
-
-                    viewHolder.rangeTV.setText("97-99F");
-                }
-
-                break;
-            case 16: // Blood Pressure systolic
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-                    if (printData.getCurr_value() > 139) {
-
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                    } else if (printData.getCurr_value() <= 139 && printData.getCurr_value() >= 90) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 90) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                    }
-
-                    viewHolder.rangeTV.setText("90 - 139 mmHg");
-                }
+            case 14:
+                showBoneMass(viewHolder);
                 break;
 
-            case 17: //Blood pressure diastolic
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-                    if (printData.getCurr_value() > 89) {
-
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                    } else if (printData.getCurr_value() <= 89 && printData.getCurr_value() >= 60) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 60) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                    }
-
-                    viewHolder.rangeTV.setText("60 - 89 mmHg");
-
-                }
-
+            case 15:
+                showBodyTemperature(viewHolder);
                 break;
 
-            case 18:// pulse oximeter
-
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-                    if (printData.getCurr_value() >= 94) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 94) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                    }
-
-                    viewHolder.rangeTV.setText(" > = 94 %");
-
-                }
+            case 16:
+                showSystolicBloodPressure(viewHolder);
                 break;
 
-            case 19: //pulse
-
-                if (printData.getCurr_value() == 0.0) {
-
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.parameterTV.setText(""+printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-
-                } else {
-
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-
-                    if (printData.getCurr_value() > 100) {
-
-                        viewHolder.resultTV.setText("High");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                    } else if (printData.getCurr_value() <= 100 && printData.getCurr_value() >= 60) {
-
-                        viewHolder.resultTV.setText("Standard");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                    } else if (printData.getCurr_value() < 60) {
-
-                        viewHolder.resultTV.setText("Low");
-                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                    }
-
-                    viewHolder.rangeTV.setText("60 - 100 bpm");
-                }
+            case 17:
+                showDiastolicBloodPressure(viewHolder);
                 break;
-            case 20: // blood glucose
 
-                if (printData.getCurr_value() == 0.0) {
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
-                } else {
-
-                    viewHolder.valueTV.setText("" +printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" +printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-
-                    SharedPreferences.Editor glucoseEditor = sharedPreferencesPersonalPreferencesGlucose.edit();
-
-                    if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
-
-                        if (printData.getCurr_value() > 100) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-
-                        } else if (printData.getCurr_value() <= 100 && printData.getCurr_value() >= 70) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                        } else if (printData.getCurr_value() < 70) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-
-                        }
-
-                        viewHolder.rangeTV.setText("70 - 100 mg/dl");
-                        glucoseEditor.putString("standardGlucose", "70-100 mg/dl");
-                        glucoseEditor.commit();
-
-
-                    } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
-
-                        if (printData.getCurr_value() > 140) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 140 && printData.getCurr_value() >= 70) {
-
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 70) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-
-                        }
-
-                        viewHolder.rangeTV.setText("70 - 140 mg/dl");
-                        glucoseEditor.putString("standardGlucose", "70-140 mg/dl");
-                        glucoseEditor.commit();
-
-                    } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Random (Not Sure)")) {
-
-                        if (printData.getCurr_value() > 160) {
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-
-                        } else if (printData.getCurr_value() <= 160 && printData.getCurr_value() >= 79) {
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
-                        } else if (printData.getCurr_value() < 79) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-
-                        viewHolder.rangeTV.setText("79 - 160 mg/dl");
-                        glucoseEditor.putString("standardGlucose", "79-160 mg/dl");
-                        glucoseEditor.commit();
-                    }
-                }
+            case 18:
+                showBodyOxygen(viewHolder);
                 break;
-            case 21: // hemoglobin
 
-                if (printData.getCurr_value() == 0.0) {
+            case 19:
+                showPulseRate(viewHolder);
+                break;
 
-                    viewHolder.valueTV.setText("NA");
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-                    viewHolder.rangeTV.setText("");
+            case 20:
+                showBloodGlucose(viewHolder);
+                break;
 
-
-                } else {
-                    viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    viewHolder.parameterTV.setText("" + printData.getParameter());
-                    viewHolder.resultTV.setText("");
-                    viewHolder.rangeTV.setText("");
-
-                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                        if (printData.getCurr_value() > 17.2) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 17.2 && printData.getCurr_value() >= 13.8) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 13.8) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-                        }
-
-                        viewHolder.rangeTV.setText("13.8 - 17.2 g/dl");
-
-
-                    } else {
-
-                        if (printData.getCurr_value() > 15.1) {
-
-                            viewHolder.resultTV.setText("High");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
-                        } else if (printData.getCurr_value() <= 15.1 && printData.getCurr_value() >= 12.1) {
-
-                            viewHolder.resultTV.setText("Standard");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-                        } else if (printData.getCurr_value() < 12.1) {
-
-                            viewHolder.resultTV.setText("Low");
-                            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
-                        }
-                        viewHolder.rangeTV.setText("12.1 - 15.1 g/dl");
-                    }
-                }
+            case 21:
+                showHemoglobin(viewHolder);
                 break;
         }
     }
@@ -1411,6 +208,1300 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
+    }
+
+    // endregion
+
+    // region Data display methods
+
+    private void showWeight(ViewHolder viewHolder){
+        double height = getHeight();
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            double standardWeightMen = ((height - 80) * 0.7);
+            standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
+            double standardWeightFemale = (((height * 1.37) - 110) * 0.45);
+            standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            SharedPreferences.Editor objectShared = sharedPreferencesPersonal.edit();
+
+            Log.e("standardWeightMen", " : " + standardWeightMen);
+            Log.e("standardWeightFemale", " : " + standardWeightFemale);
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                Log.e("standardWeightMenFF", " : " + (0.90 * standardWeightMen));
+                Log.e("standardWeightFemaleFF", " : " + (1.09 * standardWeightMen));
+
+                double standardWeighRangeFrom = (0.90 * standardWeightMen);
+                standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+                double standardWeighRangeTo = (1.09 * standardWeightMen);
+                standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
+
+                double standarWeightHighFrom = (1.10 * standardWeightMen);
+                standarWeightHighFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighFrom));
+                double standarWeightHighTo = (1.20 * standardWeightMen);
+                standarWeightHighTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighTo));
+                double standarWeightLowFrom = (0.80 * standardWeightMen);
+                standarWeightLowFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowFrom));
+                double standarWeightLowTo = (0.89 * standardWeightMen);
+                standarWeightLowTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowTo));
+
+                viewHolder.rangeTV.setText("" + standardWeighRangeFrom + " - " + standardWeighRangeTo + "kg");
+
+
+                objectShared.putString("standardRangeMaleFrom", "" + (0.90 * standardWeightMen));
+                objectShared.putString("standardRangeMaleTo", "" + (1.09 * standardWeightMen));
+                objectShared.commit();
+
+                if (printData.getCurr_value() > standarWeightHighTo) {
+                    viewHolder.resultTV.setText("Seriously High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= standarWeightHighTo && printData.getCurr_value() >= standarWeightHighFrom) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= standardWeighRangeTo && printData.getCurr_value() >= standardWeighRangeFrom) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() <= standarWeightLowTo && printData.getCurr_value() >= standarWeightLowFrom) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                } else if (printData.getCurr_value() < standarWeightLowFrom) {
+
+                    viewHolder.resultTV.setText("Seriously Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+
+
+            } else { //femle weight
+
+
+                double standardWeighRangeFrom = (0.90 * standardWeightFemale);
+                standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+                double standardWeighRangeTo = (1.09 * standardWeightFemale);
+                standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
+
+                viewHolder.rangeTV.setText("" + standardWeighRangeFrom + " - " + standardWeighRangeTo + "kg");
+                objectShared.putString("standardRangeFemaleFrom", "" + (0.90 * standardWeightFemale));
+                objectShared.putString("standardRangeFemaleTo", "" + (1.09 * standardWeightFemale));
+                objectShared.commit();
+
+                if (printData.getCurr_value() > (1.20 * standardWeightFemale)) {
+
+                    viewHolder.resultTV.setText("Seriously High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() >= (1.10 * standardWeightFemale) && printData.getCurr_value() <= (1.20 * standardWeightFemale)) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() >= (0.90 * standardWeightFemale) && printData.getCurr_value() <= (1.09 * standardWeightFemale)) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() >= (0.80 * standardWeightFemale) && printData.getCurr_value() <= (0.89 * standardWeightFemale)) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                } else if (printData.getCurr_value() < (0.80 * standardWeightFemale)) {
+
+                    viewHolder.resultTV.setText("Seriously Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+            }
+        }
+    }
+
+    private void showBmi(ViewHolder viewHolder) {
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("18.5 - 25");
+
+            if (printData.getCurr_value() > 25) {
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            } else if (printData.getCurr_value() <= 25 && printData.getCurr_value() >= 18.5) {
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+            } else if (printData.getCurr_value() < 18.5) {
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            }
+        }
+    }
+
+    private void showBodyFat(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (printData.getCurr_value() > 26) {
+                    viewHolder.resultTV.setText("Seriously High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= 26 && printData.getCurr_value() >= 21) {
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= 21 && printData.getCurr_value() >= 11) {
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+                } else if (printData.getCurr_value() < 11) {
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+                viewHolder.rangeTV.setText("11 - 21" + "(%)");
+
+
+            } else { //female bofy fat
+
+                viewHolder.rangeTV.setText("21 - 30" + "(%)");
+
+                if (printData.getCurr_value() > 36) {
+                    viewHolder.resultTV.setText("Seriously High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= 36 && printData.getCurr_value() > 30) {
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= 30 && printData.getCurr_value() >= 21) {
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+                } else if (printData.getCurr_value() < 21) {
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+            }
+        }
+    }
+
+    private void showFatFreeWeight(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        }
+    }
+
+    private void showSubcutaneousFat(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+        }else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText(""+printData.getCurr_value());
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+                viewHolder.rangeTV.setText("8.6 - 16.7");
+
+                if (printData.getCurr_value() > 16.7) {
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+                } else if (printData.getCurr_value() <= 16.7 && printData.getCurr_value() >= 8.6) {
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+                } else if (printData.getCurr_value() < 8.6) {
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+
+            } else { // female subcutaneous fat
+
+                viewHolder.rangeTV.setText("18.5 - 26.7");
+
+                if (printData.getCurr_value() > 26.7) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 26.7 && printData.getCurr_value() >= 18.5) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 18.5) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+            }
+        }
+    }
+
+    private void showVisceralFat(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText(" < = 9");
+
+            if (printData.getCurr_value() > 14) {
+
+                viewHolder.resultTV.setText("Seriously High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+            } else if (printData.getCurr_value() <= 14 && printData.getCurr_value() >= 10) {
+
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            } else if (printData.getCurr_value() <= 9) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+            }
+        }
+    }
+
+    private void showBodyWater(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                viewHolder.rangeTV.setText("55 - 65 %");
+
+                if (printData.getCurr_value() > 65) {
+
+                    viewHolder.resultTV.setText("Adequate");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() <= 65 && printData.getCurr_value() >= 55) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 55) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+
+            } else { //female body water
+
+                viewHolder.rangeTV.setText("45 - 60 %");
+
+                if (printData.getCurr_value() > 60) {
+
+                    viewHolder.resultTV.setText("Adequate");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() <= 60 && printData.getCurr_value() >= 45) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 45) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+            }
+        }
+    }
+
+    private void showHemoglobin(ViewHolder viewHolder){
+
+        if (printData.getCurr_value() == 0.0) {
+
+            viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+
+        } else {
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (printData.getCurr_value() > 17.2) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 17.2 && printData.getCurr_value() >= 13.8) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 13.8) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+
+                viewHolder.rangeTV.setText("13.8 - 17.2 g/dl");
+
+
+            } else {
+
+                if (printData.getCurr_value() > 15.1) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 15.1 && printData.getCurr_value() >= 12.1) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 12.1) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+                viewHolder.rangeTV.setText("12.1 - 15.1 g/dl");
+            }
+        }
+    }
+
+    private void showBloodGlucose(ViewHolder viewHolder){
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.valueTV.setText("" +printData.getCurr_value());
+            viewHolder.parameterTV.setText("" +printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+
+            SharedPreferences.Editor glucoseEditor = sharedPreferencesPersonalPreferencesGlucose.edit();
+
+            if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
+
+                if (printData.getCurr_value() > 100) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+
+                } else if (printData.getCurr_value() <= 100 && printData.getCurr_value() >= 70) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                } else if (printData.getCurr_value() < 70) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+
+                }
+
+                viewHolder.rangeTV.setText("70 - 100 mg/dl");
+                glucoseEditor.putString("standardGlucose", "70-100 mg/dl");
+                glucoseEditor.commit();
+
+
+            } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
+
+                if (printData.getCurr_value() > 140) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 140 && printData.getCurr_value() >= 70) {
+
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 70) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+
+                }
+
+                viewHolder.rangeTV.setText("70 - 140 mg/dl");
+                glucoseEditor.putString("standardGlucose", "70-140 mg/dl");
+                glucoseEditor.commit();
+
+            } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Random (Not Sure)")) {
+
+                if (printData.getCurr_value() > 160) {
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+
+                } else if (printData.getCurr_value() <= 160 && printData.getCurr_value() >= 79) {
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                } else if (printData.getCurr_value() < 79) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+                }
+
+                viewHolder.rangeTV.setText("79 - 160 mg/dl");
+                glucoseEditor.putString("standardGlucose", "79-160 mg/dl");
+                glucoseEditor.commit();
+            }
+        }
+    }
+
+    private void showPulseRate(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+
+            viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText(""+printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+        } else {
+
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+
+            if (printData.getCurr_value() > 100) {
+
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+            } else if (printData.getCurr_value() <= 100 && printData.getCurr_value() >= 60) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 60) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+            }
+
+            viewHolder.rangeTV.setText("60 - 100 bpm");
+        }
+    }
+
+    private void showBodyOxygen(ViewHolder viewHolder){
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+            if (printData.getCurr_value() >= 94) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 94) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+            }
+
+            viewHolder.rangeTV.setText(" > = 94 %");
+
+        }
+    }
+
+    private void showDiastolicBloodPressure(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+            if (printData.getCurr_value() > 89) {
+
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+            } else if (printData.getCurr_value() <= 89 && printData.getCurr_value() >= 60) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 60) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+            }
+
+            viewHolder.rangeTV.setText("60 - 89 mmHg");
+
+        }
+    }
+
+    private void showSystolicBloodPressure(ViewHolder viewHolder){
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+            if (printData.getCurr_value() > 139) {
+
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+            } else if (printData.getCurr_value() <= 139 && printData.getCurr_value() >= 90) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 90) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+            }
+
+            viewHolder.rangeTV.setText("90 - 139 mmHg");
+        }
+    }
+
+    private void showBodyTemperature(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.rangeTV.setText("");
+            if (printData.getCurr_value() > 99) {
+
+                viewHolder.resultTV.setText("High");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+            } else if (printData.getCurr_value() <= 99 && printData.getCurr_value() >= 97) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 97) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+            }
+
+            viewHolder.rangeTV.setText("97-99F");
+        }
+    }
+
+    private void showBoneMass(ViewHolder viewHolder){
+        double weight = getWeight();
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+            SharedPreferences.Editor editor1 = sharedPreferencesPersonalPreferencesActofit.edit();
+
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (weight > 75) {
+
+                    viewHolder.rangeTV.setText("3.0 - 3.4 kg");
+                    editor1.putString("standardBoneMass", "3.0-3.4 kg");
+                    editor1.commit();
+
+                    if (printData.getCurr_value() > 3.4) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                    } else if (printData.getCurr_value() <= 3.4 && printData.getCurr_value() >= 3.0) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 3.0) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                } else if (weight <= 75 && weight >= 60) {
+
+                    viewHolder.rangeTV.setText("2.7 - 3.1 kg");
+                    editor1.putString("standardBoneMass", "2.7-3.1 kg");
+                    editor1.commit();
+
+                    if (printData.getCurr_value() > 3.1) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                    } else if (printData.getCurr_value() >= 2.7 && printData.getCurr_value() <= 3.1) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 2.7) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                } else if (weight < 60) {
+
+                    if (printData.getCurr_value() > 2.7) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                    } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 2.3) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+                    viewHolder.rangeTV.setText("2.3 - 2.7 kg");
+                    editor1.putString("standardBoneMass", "2.3-2.7 kg");
+                    editor1.commit();
+
+
+                }
+            } else { // female bone mass
+
+                if (weight > 60) {
+
+                    viewHolder.rangeTV.setText("2.3 - 2.7 kg");
+                    editor1.putString("standardBoneMass", "2.3-2.7 kg");
+                    editor1.commit();
+
+                    if (printData.getCurr_value() > 2.7) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                    } else if (printData.getCurr_value() >= 2.3 && printData.getCurr_value() <= 2.7) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 2.3) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+
+                    }
+
+
+                } else if (weight >= 45 && weight <= 60) {
+
+                    viewHolder.rangeTV.setText("2.0- 2.4 kg");
+                    editor1.putString("standardBoneMass", "2.0-2.4 kg");
+                    editor1.commit();
+
+                    if (printData.getCurr_value() > 2.4) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+
+                    } else if (printData.getCurr_value() >= 2.0 && printData.getCurr_value() <= 2.4) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() < 2.0) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+                } else if (weight < 45) {
+
+                    viewHolder.rangeTV.setText("1.6 - 2.0 kg");
+                    editor1.putString("standardBoneMass", "1.6-2.0 kg");
+                    editor1.commit();
+
+                    if (printData.getCurr_value() > 2.0) {
+
+                        viewHolder.resultTV.setText("High");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                    } else if (printData.getCurr_value() >= 1.6 && printData.getCurr_value() <= 2.0) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 1.6) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+                }
+            }
+        }
+    }
+
+    private void showMuscleMass(ViewHolder viewHolder){
+        double height = getHeight();
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+            SharedPreferences.Editor editor = sharedPreferencesPersonalPreferencesActofit.edit();
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (height > 170) {
+
+                    viewHolder.rangeTV.setText("49.4 - 59.5 kg");
+                    editor.putString("standardMuscleMass", "49.4-59.5 kg");
+                    editor.commit();
+
+                    if (printData.getCurr_value() > 59.4) {
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 59.4 && printData.getCurr_value() >= 49.4) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 49.4) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                } else if (height <= 170 && height >= 160) {
+
+                    viewHolder.rangeTV.setText("44 - 52.4 kg");
+                    editor.putString("standardMuscleMass", "44-52.4 kg");
+                    editor.commit();
+
+                    if (printData.getCurr_value() > 52.4) {
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 52.4 && printData.getCurr_value() >= 44) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 44) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                } else if (height < 160) {
+
+                    viewHolder.rangeTV.setText("38.5 - 46.5 kg");
+                    editor.putString("standardMuscleMass", "38.5-46.5 kg");
+                    editor.commit();
+
+                    if (printData.getCurr_value() > 46.5) {
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 46.5 && printData.getCurr_value() >= 38.5) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 38.5) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                }
+            } else { // female muscle mass
+
+                if (height > 160) {
+
+                    viewHolder.rangeTV.setText("36.5 - 42.5 kg");
+                    editor.putString("standardMuscleMass", "36.4-42.5 kg");
+                    editor.commit();
+
+                    if (printData.getCurr_value() > 42.5) {
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 42.5 && printData.getCurr_value() >= 36.5) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 36.5) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+                } else if (height <= 160 && height >= 150) {
+
+                    viewHolder.rangeTV.setText("32.9 - 37.5 kg");
+                    editor.putString("standardMuscleMass", "32.9-37.5 kg");
+                    editor.commit();
+
+                    if (printData.getCurr_value() > 37.5) {
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 37.5 && printData.getCurr_value() >= 32.9) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 32.9) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                } else if (height < 150) {
+
+                    if (printData.getCurr_value() > 34.7) {
+
+                        viewHolder.rangeTV.setText("29.1 - 34.7 kg");
+                        editor.putString("standardMuscleMass", "29.1-34.7 kg");
+                        editor.commit();
+
+                        viewHolder.resultTV.setText("Adequate");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                    } else if (printData.getCurr_value() <= 34.7 && printData.getCurr_value() >= 29.1) {
+
+                        viewHolder.resultTV.setText("Standard");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+
+                    } else if (printData.getCurr_value() < 29.1) {
+
+                        viewHolder.resultTV.setText("Low");
+                        viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                    }
+
+
+                }
+            }
+        }
+    }
+
+    private void showPhysique(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("");
+            viewHolder.resultTV.setText("" + sharedPreferencesPersonalPreferencesActofit.getString("physique", ""));
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        }
+    }
+
+    private void showBmr(ViewHolder viewHolder){
+        int age = getAge();
+        double weight = getWeight();
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+
+            SharedPreferences.Editor bmrEditor = sharedPreferencesPersonalPreferencesActofit.edit();
+
+            double standardMetabolism = 0.0;
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (age >= 70) {
+
+                    standardMetabolism = 21.5 * weight;
+
+                } else if (age >= 50 && age <= 69) {
+
+                    standardMetabolism = 21.5 * weight;
+
+
+                } else if (age >= 30 && age <= 49) {
+
+                    standardMetabolism = 22.3 * weight;
+
+
+                } else if (age >= 18 && age <= 29) {
+
+                    standardMetabolism = 24 * weight;
+
+                }
+
+                if (printData.getCurr_value() >= standardMetabolism) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < standardMetabolism) {
+
+                    viewHolder.resultTV.setText("Not upto Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                }
+
+                standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
+
+                viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+                bmrEditor.putString("standardBMR", "" + standardMetabolism);
+                bmrEditor.commit();
+
+
+            } else {
+
+
+                if (age >= 70) {
+
+                    standardMetabolism = 20.7 * weight;
+
+                } else if (age >= 50 && age <= 69) {
+
+                    standardMetabolism = 20.7 * weight;
+
+
+                } else if (age >= 30 && age <= 49) {
+
+                    standardMetabolism = 21.7 * weight;
+
+
+                } else if (age >= 18 && age <= 29) {
+
+                    standardMetabolism = 23.6 * weight;
+
+                }
+
+                if (printData.getCurr_value() >= standardMetabolism) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+                } else if (printData.getCurr_value() < standardMetabolism) {
+
+                    viewHolder.resultTV.setText("Not upto Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                }
+                standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
+                viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+                bmrEditor.putString("standardBMR", "" + standardMetabolism);
+                bmrEditor.commit();
+
+            }
+        }
+    }
+
+    private void showMetabolicAge(ViewHolder viewHolder){
+        int age = getAge();
+
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.rangeTV.setText("<="+age+"yrs");
+
+            if (printData.getCurr_value() <= age) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() > age) {
+
+                viewHolder.resultTV.setText("Not upto Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            }
+        }
+    }
+
+    private void showHealthScore(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        }
+    }
+
+    private void showProtein(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("16 - 18 %");
+
+            if (printData.getCurr_value() > 18) {
+
+                viewHolder.resultTV.setText("Adequate");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() <= 18 && printData.getCurr_value() > 16) {
+
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+            } else if (printData.getCurr_value() < 16) {
+
+                viewHolder.resultTV.setText("Low");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+            }
+        }
+    }
+
+    private void showSkeletalMuscle(ViewHolder viewHolder){
+        if (printData.getCurr_value() == 0.0) {
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.valueTV.setText("NA");
+            viewHolder.resultTV.setText("");
+            viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+            viewHolder.rangeTV.setText("");
+        } else {
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+
+            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+
+                if (printData.getCurr_value() > 59) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 59 && printData.getCurr_value() >= 49) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 49) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+
+                viewHolder.rangeTV.setText("49 - 59 %");
+
+            } else {  //female skeleton muscle
+
+                viewHolder.rangeTV.setText("40 - 50 %");
+
+                if (printData.getCurr_value() > 50) {
+
+                    viewHolder.resultTV.setText("High");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+
+                } else if (printData.getCurr_value() <= 50 && printData.getCurr_value() >= 40) {
+
+                    viewHolder.resultTV.setText("Standard");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+
+                } else if (printData.getCurr_value() < 40) {
+
+                    viewHolder.resultTV.setText("Low");
+                    viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
+
+                }
+            }
+        }
+    }
+
+    private double getWeight(){
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT))
+            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.WEIGHT);
+        else
+            return 0;
+    }
+
+    private double getHeight(){
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
+            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
+        else
+            return 0;
+    }
+
+    private int getAge(){
+        String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
+
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth))
+            return DateService.getAgeFromStringDate(dateOfBirth);
+        else
+            return 0;
     }
 
     // endregion
