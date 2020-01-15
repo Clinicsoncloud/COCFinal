@@ -1,114 +1,109 @@
 package com.abhaybmicoc.app.adapter;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.content.Context;
 import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.widget.ArrayAdapter;
+import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.model.PrintDataNew;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.model.PrintData;
+import com.abhaybmicoc.app.services.DateService;
+import com.abhaybmicoc.app.services.SharedPerferenceService;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
+public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
+    // region Variables
 
+    private Context context;
 
-    Context context;
-    List<PrintDataNew> printDataList = new ArrayList<>();
-    SharedPreferences shared;
-    SharedPreferences actofitData;
-    SharedPreferences bpObject;
-    SharedPreferences glucoseData;
-    SharedPreferences HemoglobinObject;
-    PrintDataNew printData;
+    private List<PrintData> listData = new ArrayList<>();
 
-    int age;
+    private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferencesPersonalPreferencesActofit;
+    private SharedPreferences sharedPreferencesPersonalPreferencesGlucose;
+    private SharedPreferences sharedPreferencesPersonalPreferencesHemoglobin;
+    private SharedPreferences sharedPreferencesPersonalPreferencesBloodPressure;
 
-    Double weight;
+    private PrintData printData;
 
-    int height;
+    private int age;
+    private int height;
 
-    String parsedDate;
+    private Double weight;
 
-    public PrintPreviewActivityNew(Context context, int resource, List<PrintDataNew> objects) {
+    // endregion
+
+    // region Events
+
+    public PrintPreviewAdapter(Context context, int resource, List<PrintData> objects) {
         super(context, resource, objects);
-        shared = context.getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        actofitData = context.getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-        bpObject = context.getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
-        glucoseData = context.getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-        HemoglobinObject = context.getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-        this.printDataList = objects;
+
         this.context = context;
+
+        initializeData(objects);
     }
 
     @Override
     public int getCount() {
-        return printDataList.size();
+        return listData.size();
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        printData = printDataList.get(position);
+        printData = listData.get(position);
 
-        PrintPriviewAdapter.ViewHolder viewHolder;
+        ViewHolder viewHolder;
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.printlist_item, null);
 
-            viewHolder = new PrintPriviewAdapter.ViewHolder(convertView);
+            viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
 
         } else {
-            viewHolder = (PrintPriviewAdapter.ViewHolder) convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String inputText = shared.getString("dob", "");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            Date date = inputDateFormat.parse(inputText);
-            parsedDate = formatter.format(date);
-            System.out.println("Date---------" + parsedDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        calculatePrintData(convertView, viewHolder, position);
+
+        return convertView;
+    }
+
+    // endregion
+
+    private void calculatePrintData(View convertView, ViewHolder viewHolder, int position) {
+        String parsedDate;
+        String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth)) {
+            age = DateService.getAgeFromStringDate(dateOfBirth);
+            parsedDate = DateService.formatDateFromString(dateOfBirth, "yyyy-MM-dd", "dd-MM-yyyy");
+        }else{
+            age = 0;
+            parsedDate = "N/A";
         }
 
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT))
+            weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.WEIGHT);
 
-        age = getAge(parsedDate);
-
-        if (!actofitData.getString("weight", "").isEmpty())
-            weight = Double.valueOf(actofitData.getString("weight", ""));
-            height = Integer.parseInt(actofitData.getString("height", ""));
-
-        String isGender = shared.getString("gender", "");
-
-
-        Log.e("height", "" + height);
-        Log.e("age", "" + age);
-        Log.e("gender", "" + isGender);
-        Log.e("subcutaneous fat", "" + actofitData.getString("subfat", ""));
-
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
+            height = SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
 
         switch (position) {
-
             case 0: //weight
 
                 if (printData.getCurr_value() == 0.0) {
@@ -124,12 +119,12 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
                     viewHolder.parameterTV.setText("" + printData.getParameter());
                     viewHolder.valueTV.setText("" + printData.getCurr_value());
-                    SharedPreferences.Editor objectShared = shared.edit();
+                    SharedPreferences.Editor objectShared = sharedPreferencesPersonal.edit();
 
                     Log.e("standardWeightMen", " : " + standardWeightMen);
                     Log.e("standardWeightFemale", " : " + standardWeightFemale);
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         Log.e("standardWeightMenFF", " : " + (0.90 * standardWeightMen));
                         Log.e("standardWeightFemaleFF", " : " + (1.09 * standardWeightMen));
@@ -260,7 +255,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.parameterTV.setText("" + printData.getParameter());
                     viewHolder.valueTV.setText("" + printData.getCurr_value());
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (printData.getCurr_value() > 26) {
                             viewHolder.resultTV.setText("Seriously High");
@@ -326,7 +321,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                 }else {
                     viewHolder.parameterTV.setText("" + printData.getParameter());
                     viewHolder.valueTV.setText(""+printData.getCurr_value());
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         viewHolder.rangeTV.setText("8.6 - 16.7");
 
@@ -415,7 +410,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.parameterTV.setText("" + printData.getParameter());
                     viewHolder.valueTV.setText("" + printData.getCurr_value());
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         viewHolder.rangeTV.setText("55 - 65 %");
 
@@ -472,7 +467,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.valueTV.setText("" + printData.getCurr_value());
                     viewHolder.parameterTV.setText("" + printData.getParameter());
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (printData.getCurr_value() > 59) {
 
@@ -616,11 +611,11 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
                     viewHolder.rangeTV.setText("");
 
-                    SharedPreferences.Editor bmrEditor = actofitData.edit();
+                    SharedPreferences.Editor bmrEditor = sharedPreferencesPersonalPreferencesActofit.edit();
 
                     double standardMetabolism = 0.0;
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (age >= 70) {
 
@@ -708,7 +703,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                 if (printData.getCurr_value() == 0.0) {
                     viewHolder.parameterTV.setText("" + printData.getParameter());
                     viewHolder.valueTV.setText("");
-                    viewHolder.resultTV.setText("" + actofitData.getString("physique", ""));
+                    viewHolder.resultTV.setText("" + sharedPreferencesPersonalPreferencesActofit.getString("physique", ""));
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
                     viewHolder.rangeTV.setText("");
                 }
@@ -728,9 +723,9 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
                     viewHolder.rangeTV.setText("");
 
-                    SharedPreferences.Editor editor = actofitData.edit();
+                    SharedPreferences.Editor editor = sharedPreferencesPersonalPreferencesActofit.edit();
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (height > 170) {
 
@@ -903,10 +898,10 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
                     viewHolder.rangeTV.setText("");
 
-                    SharedPreferences.Editor editor1 = actofitData.edit();
+                    SharedPreferences.Editor editor1 = sharedPreferencesPersonalPreferencesActofit.edit();
 
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (weight > 75) {
 
@@ -1248,9 +1243,9 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.resultTV.setText("");
                     viewHolder.rangeTV.setText("");
 
-                    SharedPreferences.Editor glucoseEditor = glucoseData.edit();
+                    SharedPreferences.Editor glucoseEditor = sharedPreferencesPersonalPreferencesGlucose.edit();
 
-                    if (glucoseData.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
+                    if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
 
                         if (printData.getCurr_value() > 100) {
 
@@ -1277,7 +1272,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         glucoseEditor.commit();
 
 
-                    } else if (glucoseData.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
+                    } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
 
                         if (printData.getCurr_value() > 140) {
 
@@ -1302,7 +1297,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                         glucoseEditor.putString("standardGlucose", "70-140 mg/dl");
                         glucoseEditor.commit();
 
-                    } else if (glucoseData.getString("glucosetype", "").equals("Random (Not Sure)")) {
+                    } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Random (Not Sure)")) {
 
                         if (printData.getCurr_value() > 160) {
                             viewHolder.resultTV.setText("High");
@@ -1343,7 +1338,7 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                     viewHolder.resultTV.setText("");
                     viewHolder.rangeTV.setText("");
 
-                    if (shared.getString("gender", "").equals("male")) {
+                    if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
                         if (printData.getCurr_value() > 17.2) {
 
@@ -1387,62 +1382,36 @@ public class PrintPreviewActivityNew extends ArrayAdapter<PrintDataNew> {
                 }
                 break;
         }
-
-        return convertView;
     }
 
+    // endregion
 
-    private int getAge(String dobString) {
+    // region Initialization methods
 
-        Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            date = sdf.parse(dobString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    private void initializeData(List<PrintData> objects) {
+        this.listData = objects;
 
-        if (date == null)
-            return 0;
-
-        Calendar dob = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
-
-        dob.setTime(date);
-
-        int year = dob.get(Calendar.YEAR);
-        int month = dob.get(Calendar.MONTH);
-        int day = dob.get(Calendar.DAY_OF_MONTH);
-
-        dob.set(year, month + 1, day);
-
-        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-
-        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
-            age--;
-        }
-
-
-        return age;
+        sharedPreferencesPersonal = context.getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesPersonalPreferencesActofit = context.getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+        sharedPreferencesPersonalPreferencesGlucose = context.getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        sharedPreferencesPersonalPreferencesHemoglobin = context.getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
+        sharedPreferencesPersonalPreferencesBloodPressure = context.getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
     }
 
+    // endregion
+
+    // region Nested classes
 
     static class ViewHolder {
-        @BindView(R.id.parameterTV)
-        TextView parameterTV;
-        @BindView(R.id.resultTV)
-        TextView resultTV;
-        @BindView(R.id.valueTV)
-        TextView valueTV;
-        @BindView(R.id.rangeTV)
-        TextView rangeTV;
-
+        @BindView(R.id.rangeTV) TextView rangeTV;
+        @BindView(R.id.valueTV) TextView valueTV;
+        @BindView(R.id.resultTV) TextView resultTV;
+        @BindView(R.id.parameterTV) TextView parameterTV;
 
         ViewHolder(View view) {
-
             ButterKnife.bind(this, view);
         }
     }
 
-
+    // endregion
 }

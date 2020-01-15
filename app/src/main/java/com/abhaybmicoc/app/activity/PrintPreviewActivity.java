@@ -36,11 +36,11 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.model.PrintDataOld;
 import com.abhaybmicoc.app.model.PrintData;
-import com.abhaybmicoc.app.model.PrintDataNew;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.adapter.PrintPreviewActivityNew;
+import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
@@ -173,8 +173,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     public static BluetoothDevice mBDevice = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
 
-    List<PrintData> printDataList = new ArrayList<>();
-    List<PrintDataNew> printDataListNew = new ArrayList<>();
+    List<PrintDataOld> printDataList = new ArrayList<>();
+    List<PrintData> printDataListNew = new ArrayList<>();
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
 
     @Override
@@ -1333,30 +1333,30 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void setNewList() {
 
-        printDataListNew.add(new PrintDataNew("Weight", TextUtils.isEmpty(ActofitObject.getString("weight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("weight", ""))));
-        printDataListNew.add(new PrintDataNew("BMI", TextUtils.isEmpty(ActofitObject.getString("bmi", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmi", ""))));
-        printDataListNew.add(new PrintDataNew("Body fat", TextUtils.isEmpty(ActofitObject.getString("bodyfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodyfat", ""))));
-        printDataListNew.add(new PrintDataNew("Fat Free weight", TextUtils.isEmpty(ActofitObject.getString("fatfreeweight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("fatfreeweight", ""))));
-        printDataListNew.add(new PrintDataNew("Subcutaneous Fat", TextUtils.isEmpty(ActofitObject.getString("subfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("subfat", ""))));
-        printDataListNew.add(new PrintDataNew("Visceral Fat", TextUtils.isEmpty(ActofitObject.getString("visfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("visfat", ""))));
-        printDataListNew.add(new PrintDataNew("Body water", TextUtils.isEmpty(ActofitObject.getString("bodywater", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodywater", ""))));
-        printDataListNew.add(new PrintDataNew("Skeleton muscle", TextUtils.isEmpty(ActofitObject.getString("skemus", "")) ? 0 : Double.parseDouble(ActofitObject.getString("skemus", ""))));
-        printDataListNew.add(new PrintDataNew("Protein", TextUtils.isEmpty(ActofitObject.getString("protine", "")) ? 0 : Double.parseDouble(ActofitObject.getString("protine", ""))));
-        printDataListNew.add(new PrintDataNew("Metabolic Age", TextUtils.isEmpty(ActofitObject.getString("metaage", "")) ? 0 : Double.parseDouble(ActofitObject.getString("metaage", ""))));
-        printDataListNew.add(new PrintDataNew("Health Score", TextUtils.isEmpty(ActofitObject.getString("helthscore", "")) ? 0 : Double.parseDouble(ActofitObject.getString("helthscore", ""))));
-        printDataListNew.add(new PrintDataNew("BMR", TextUtils.isEmpty(ActofitObject.getString("bmr", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmr", ""))));
-        printDataListNew.add(new PrintDataNew("Physique", 0.0));
-        printDataListNew.add(new PrintDataNew("Muscle Mass", TextUtils.isEmpty(ActofitObject.getString("musmass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("musmass", ""))));
-        printDataListNew.add(new PrintDataNew("Bone Mass", TextUtils.isEmpty(ActofitObject.getString("bonemass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bonemass", ""))));
-        printDataListNew.add(new PrintDataNew("Body Temp", TextUtils.isEmpty(ThermometerObject.getString("data", "")) ? 0 : Double.parseDouble(ThermometerObject.getString("data", ""))));
-        printDataListNew.add(new PrintDataNew("Systolic", TextUtils.isEmpty(BPObject.getString("systolic", "")) ? 0 : Double.parseDouble(BPObject.getString("systolic", ""))));
-        printDataListNew.add(new PrintDataNew("Diastolic", TextUtils.isEmpty(BPObject.getString("diastolic", "")) ? 0 : Double.parseDouble(BPObject.getString("diastolic", ""))));
-        printDataListNew.add(new PrintDataNew("Pulse Oximeter", TextUtils.isEmpty(OximeterObject.getString("body_oxygen", "")) ? 0 : Double.parseDouble(OximeterObject.getString("body_oxygen", ""))));
-        printDataListNew.add(new PrintDataNew("Pulse ", TextUtils.isEmpty(OximeterObject.getString("pulse_rate", "")) ? 0 : Double.parseDouble(OximeterObject.getString("pulse_rate", ""))));
-        printDataListNew.add(new PrintDataNew("Blood Glucose", TextUtils.isEmpty(BiosenseObject.getString("last", "")) ? 0 : Double.parseDouble(BiosenseObject.getString("last", ""))));
-        printDataListNew.add(new PrintDataNew("Hemoglobin", TextUtils.isEmpty(HemoglobinObject.getString("hemoglobin", "")) ? 0 : Double.parseDouble(HemoglobinObject.getString("hemoglobin", ""))));
+        printDataListNew.add(new PrintData("Weight", TextUtils.isEmpty(ActofitObject.getString("weight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("weight", ""))));
+        printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(ActofitObject.getString("bmi", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmi", ""))));
+        printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(ActofitObject.getString("bodyfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodyfat", ""))));
+        printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(ActofitObject.getString("fatfreeweight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("fatfreeweight", ""))));
+        printDataListNew.add(new PrintData("Subcutaneous Fat", TextUtils.isEmpty(ActofitObject.getString("subfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("subfat", ""))));
+        printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(ActofitObject.getString("visfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("visfat", ""))));
+        printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(ActofitObject.getString("bodywater", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodywater", ""))));
+        printDataListNew.add(new PrintData("Skeleton muscle", TextUtils.isEmpty(ActofitObject.getString("skemus", "")) ? 0 : Double.parseDouble(ActofitObject.getString("skemus", ""))));
+        printDataListNew.add(new PrintData("Protein", TextUtils.isEmpty(ActofitObject.getString("protine", "")) ? 0 : Double.parseDouble(ActofitObject.getString("protine", ""))));
+        printDataListNew.add(new PrintData("Metabolic Age", TextUtils.isEmpty(ActofitObject.getString("metaage", "")) ? 0 : Double.parseDouble(ActofitObject.getString("metaage", ""))));
+        printDataListNew.add(new PrintData("Health Score", TextUtils.isEmpty(ActofitObject.getString("helthscore", "")) ? 0 : Double.parseDouble(ActofitObject.getString("helthscore", ""))));
+        printDataListNew.add(new PrintData("BMR", TextUtils.isEmpty(ActofitObject.getString("bmr", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmr", ""))));
+        printDataListNew.add(new PrintData("Physique", 0.0));
+        printDataListNew.add(new PrintData("Muscle Mass", TextUtils.isEmpty(ActofitObject.getString("musmass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("musmass", ""))));
+        printDataListNew.add(new PrintData("Bone Mass", TextUtils.isEmpty(ActofitObject.getString("bonemass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bonemass", ""))));
+        printDataListNew.add(new PrintData("Body Temp", TextUtils.isEmpty(ThermometerObject.getString("data", "")) ? 0 : Double.parseDouble(ThermometerObject.getString("data", ""))));
+        printDataListNew.add(new PrintData("Systolic", TextUtils.isEmpty(BPObject.getString("systolic", "")) ? 0 : Double.parseDouble(BPObject.getString("systolic", ""))));
+        printDataListNew.add(new PrintData("Diastolic", TextUtils.isEmpty(BPObject.getString("diastolic", "")) ? 0 : Double.parseDouble(BPObject.getString("diastolic", ""))));
+        printDataListNew.add(new PrintData("Pulse Oximeter", TextUtils.isEmpty(OximeterObject.getString("body_oxygen", "")) ? 0 : Double.parseDouble(OximeterObject.getString("body_oxygen", ""))));
+        printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(OximeterObject.getString("pulse_rate", "")) ? 0 : Double.parseDouble(OximeterObject.getString("pulse_rate", ""))));
+        printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(BiosenseObject.getString("last", "")) ? 0 : Double.parseDouble(BiosenseObject.getString("last", ""))));
+        printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(HemoglobinObject.getString("hemoglobin", "")) ? 0 : Double.parseDouble(HemoglobinObject.getString("hemoglobin", ""))));
 
-        lV.setAdapter(new PrintPreviewActivityNew(this, R.layout.printlist_item, printDataListNew));
+        lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
 
     }
 
