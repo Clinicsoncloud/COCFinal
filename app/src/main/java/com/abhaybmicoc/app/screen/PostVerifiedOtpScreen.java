@@ -39,7 +39,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
     private EditText etOTP;
     private Button btnVerify;
-    private TextToSpeech textToSpeech; //CHANGE IT
+    private TextToSpeech textToSpeech;
     private ProgressDialog progressDialog;
 
     // endregion
@@ -213,8 +213,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
                 params = new HashMap<>();
                 params.put(Constant.Fields.KIOSK_ID, kioskId);
-                params.put(Constant.Fields.MOBILE_NUMBER, mobileNumber);
-                params.put(Constant.Fields.OTP, etOTP.getText().toString());
+                params.put("mobile", mobileNumber);
+                params.put("otp", etOTP.getText().toString());
 
                 return params;
             }

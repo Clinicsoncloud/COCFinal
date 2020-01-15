@@ -269,10 +269,10 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
-                params.put(Constant.Fields.NAME, etName.getText().toString());
-                params.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-                params.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
-                params.put(Constant.Fields.GENDER, getSelectedGender());
+                params.put("name", etName.getText().toString());
+                params.put("email", etEmail.getText().toString());
+                params.put("dob", etDateOfBirth.getText().toString());
+                params.put("gender", getSelectedGender());
 
                 return params;
             }
