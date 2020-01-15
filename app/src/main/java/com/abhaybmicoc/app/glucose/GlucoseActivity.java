@@ -102,8 +102,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private int selectedId;
 
-    public static boolean mConnected = false;
     public static boolean devTestStarted;
+    public static boolean mConnected = false;
 
     private Button btnReadData;
     private Button btnStartTest;
@@ -114,14 +114,10 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private InputStream ins;
     private SerializeUUID serializeUUID;
-
-    private SharedPreferences sharedPreferencesPersonal;
-
     private SyncLib syncLib;
-
     private TextToSpeech textToSpeech;
-
     private Communicator communicator = this;
+    private SharedPreferences sharedPreferencesPersonal;
 
     private String textToSpeak = "";
     private String resultOfGlucose;
@@ -220,35 +216,39 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     @Override
     public void setLog(String text) {
-        Log.e("text_title", " : " + text);
         tvLogDisplay.setText(text);
 
         if (text.equals("Insert Strip!")) {
-            readingRecyclerView.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            readingRecyclerView.setVisibility(View.GONE);
+
             textToSpeak = "Please Insert Strip";
             speakOut(textToSpeak);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
             }
-
         } else if (text.equals("Add Blood")) {
-            readingRecyclerView.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            readingRecyclerView.setVisibility(View.GONE);
+
             textToSpeak = "Please Add Blood";
             speakOut(textToSpeak);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
             }
 
         } else if (text.equals("Used Strip\n" + "Please remove the used strip and insert a new strip")) {
-            readingRecyclerView.setVisibility(View.GONE);
             ivSteps.setVisibility(View.VISIBLE);
             ivGlucose.setVisibility(View.VISIBLE);
+            readingRecyclerView.setVisibility(View.GONE);
+
             textToSpeak = "Please insert the new strip";
             speakOut(textToSpeak);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
             }
@@ -266,26 +266,18 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
                 resultOfGlucose = text;
 
-                Log.e("text_result",""+text);
-
-                Log.e("result_sugar",""+resultOfGlucose);
-
                 tvResultText.setText(text);
-
                 tvResultText.setVisibility(View.GONE);
                 tvResultTextNew.setVisibility(View.VISIBLE);
 
                 tvResultTextNew.setText(resultOfGlucose);
 
-
-                Log.e("result_after_setText",""+resultOfGlucose);
-
-                readingRecyclerView.setVisibility(View.GONE);
+                mView.setVisibility(View.GONE);
                 ivSteps.setVisibility(View.GONE);
                 ivGlucose.setVisibility(View.GONE);
-                layoutGlucose.setVisibility(View.VISIBLE);
-                mView.setVisibility(View.GONE);
                 layoutGlucose.setGravity(Gravity.CENTER);
+                layoutGlucose.setVisibility(View.VISIBLE);
+                readingRecyclerView.setVisibility(View.GONE);
 
                 rgGlucose.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
                     @Override
@@ -297,16 +289,16 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                         writeSugarSharedPreference();
                     }
                 });
-
             }
 
-            tvLogDisplay.setVisibility(View.GONE);
             tvResultText.setText(text);
-            readingRecyclerView.setVisibility(View.GONE);
+
             ivSteps.setVisibility(View.GONE);
             ivGlucose.setVisibility(View.GONE);
-            layoutGlucose.setVisibility(View.VISIBLE);
+            tvLogDisplay.setVisibility(View.GONE);
             layoutGlucose.setGravity(Gravity.CENTER);
+            layoutGlucose.setVisibility(View.VISIBLE);
+            readingRecyclerView.setVisibility(View.GONE);
         }
     }
 

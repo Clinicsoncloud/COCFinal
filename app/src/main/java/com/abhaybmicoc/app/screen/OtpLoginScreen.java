@@ -269,8 +269,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 Map<String, String> params;
 
                 params = new HashMap<>();
-                params.put(Constant.Fields.KIOSK_ID, kiosk_id);
-                params.put(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
+                params.put("kiosk_id", kiosk_id);
+                params.put("mobile", etMobileNumber.getText().toString());
 
                 return params;
             }
@@ -289,13 +289,13 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
+        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("id"));
         editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("name"));
-        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
         editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("email"));
-        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("dob"));
         editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("token"));
         editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("gender"));
-        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("id"));
+        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("dob"));
+        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
 
         editor.commit();
     }

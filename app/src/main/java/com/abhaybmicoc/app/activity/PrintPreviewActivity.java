@@ -431,10 +431,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getBodWaterResult() {
-        if(!ActofitObject.getString("bodywater","").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bodywater", "")) > 60) {
+        if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
+            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 60) {
                 bodywaterResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodywater", "")) <= 60 && Double.parseDouble(ActofitObject.getString("bodywater", "")) >= 45) {
+            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 60 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 45) {
                 bodywaterResult = "standard";
             } else {
                 bodywaterResult = "Low";
@@ -517,7 +517,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         if(!BiosenseObject.getString("last","").equalsIgnoreCase("")) {
 
-            if (BiosenseObject.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
+            if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
                 standardGlucose = "70-100mg/dl(Fasting)";
                 if (Double.parseDouble(BiosenseObject.getString("last", "")) > 100) {
                     sugarResult = "High";
@@ -526,7 +526,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 } else {
                     sugarResult = "Low";
                 }
-            } else if (BiosenseObject.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
+            } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
                 standardGlucose = "70-140 mg/dl(Post Meal)";
                 if (Double.parseDouble(BiosenseObject.getString("last", "")) > 140) {
                     sugarResult = "High";
@@ -535,7 +535,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 } else {
                     sugarResult = "Low";
                 }
-            } else if (BiosenseObject.getString("glucosetype", "").equals("Random (Not Sure)")) {
+            } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
                 standardGlucose = "79-160 mg/dl(Random)";
                 if (Double.parseDouble(BiosenseObject.getString("last", "")) > 160) {
                     sugarResult = "High";
@@ -664,10 +664,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBodyWaterResult() {
-        if(!ActofitObject.getString("bodywater","").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bodywater", "")) > 65) {
+        if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
+            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 65) {
                 bodywaterResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodywater", "")) <= 65 && Double.parseDouble(ActofitObject.getString("bodywater", "")) >= 55) {
+            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 65 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 55) {
                 bodywaterResult = "standard";
             } else {
                 bodywaterResult = "Low";
@@ -678,12 +678,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleVisceralFatResult() {
-        if(!ActofitObject.getString("visfat","").equalsIgnoreCase("")) {
-            if(Double.parseDouble(ActofitObject.getString("visfat", "")) > 14){
+        if(!ActofitObject.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase("")) {
+            if(Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 14){
                 visceralfatResult = "Seriously High";
-            }else if (Double.parseDouble(ActofitObject.getString("visfat", "")) > 9) {
+            }else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 9) {
                 visceralfatResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("visfat", "")) <= 9) {
+            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) <= 9) {
                 visceralfatResult = "standard";
             }
         }else {
@@ -795,34 +795,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void setupUI() {
-        Log.e("weightresult", ""+weightResult);
-        Log.e("bmiresult", ""+bmiResult);
-        Log.e("bmrresult", ""+bmrResult);
-        Log.e("metaageresult", ""+metaageResult);
-        Log.e("subcutaneousresult", ""+subcutaneousResult);
-        Log.e("visceralfatresult", ""+visceralfatResult);
-        Log.e("skeletonmuscleresult", ""+skeletonmuscleResult);
-        Log.e("bodywaterresult", ""+bodywaterResult);
-        Log.e("musclemassresult", ""+musclemassResult);
-        Log.e("fatfreeweightresult", ""+fatfreeweightResult);
-        Log.e("proteinresult", ""+proteinResult);
-        Log.e("bodyfatresult", ""+bodyfatResult);
-        Log.e("bonemassresult", ""+bonemassResult);
-        Log.e("bloodpressureresult", ""+bloodpressureResult);
-        Log.e("oxygenresult", ""+oxygenResult);
-        Log.e("pulseresult", ""+pulseResult);
-        Log.e("temperatureresult", ""+tempratureResult);
-        Log.e("hemoglobinresult", ""+hemoglobinResult);
-        Log.e("sugarresult", ""+sugarResult);
     }
 
     private void printerBond() {
-
         try {
-
             SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-            if (data.getString("NAME", "").length() > 0) {
 
+            if (data.getString("NAME", "").length() > 0) {
                 this.mhtDeviceInfo.put("NAME", data.getString("NAME", ""));
                 this.mhtDeviceInfo.put("MAC", data.getString("MAC", ""));
                 this.mhtDeviceInfo.put("COD", data.getString("COD", ""));
@@ -890,11 +869,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     //creating region on glucoseRange
     private void glucoseRange() {
 
-        if (BiosenseObject.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
+        if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
             standardGlucose = "70-100mg/dl(Fasting)";
-        } else if (BiosenseObject.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
+        } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
             standardGlucose = "70-140 mg/dl(Post Meal)";
-        } else if (BiosenseObject.getString("glucosetype", "").equals("Random (Not Sure)")) {
+        } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
             standardGlucose = "79-160 mg/dl(Random)";
         }else{
             standardGlucose = "";
@@ -1073,9 +1052,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
                     "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
                     "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString("visfat", "") + "\n" +
+                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
                     "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString("bodywater", "") + "\n" +
+                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
                     "[Normal Range]:" +
                     standardBodyWater + "\n\n" +
                     "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
@@ -1143,9 +1122,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
                     "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
                     "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString("visfat", "") + "\n" +
+                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
                     "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString("bodywater", "") + "\n" +
+                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
                     "[Normal Range]:" +
                     standardBodyWater + "\n\n" +
                     "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
@@ -1210,9 +1189,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
                     "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
                     "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString("visfat", "") + "\n" +
+                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
                     "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString("bodywater", "") + "\n" +
+                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
                     "[Normal Range]:" +
                     standardBodyWater + "\n\n" +
                     "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
@@ -1278,9 +1257,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
                     "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
                     "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString("visfat", "") + "\n" +
+                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
                     "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString("bodywater", "") + "\n" +
+                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
                     "[Normal Range]:" +
                     standardBodyWater + "\n\n" +
                     "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
@@ -1339,8 +1318,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(ActofitObject.getString("bodyfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodyfat", ""))));
         printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(ActofitObject.getString("fatfreeweight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("fatfreeweight", ""))));
         printDataListNew.add(new PrintData("Subcutaneous Fat", TextUtils.isEmpty(ActofitObject.getString("subfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("subfat", ""))));
-        printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(ActofitObject.getString("visfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("visfat", ""))));
-        printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(ActofitObject.getString("bodywater", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodywater", ""))));
+        printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) ? 0 : Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""))));
+        printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) ? 0 : Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, ""))));
         printDataListNew.add(new PrintData("Skeleton muscle", TextUtils.isEmpty(ActofitObject.getString("skemus", "")) ? 0 : Double.parseDouble(ActofitObject.getString("skemus", ""))));
         printDataListNew.add(new PrintData("Protein", TextUtils.isEmpty(ActofitObject.getString("protine", "")) ? 0 : Double.parseDouble(ActofitObject.getString("protine", ""))));
         printDataListNew.add(new PrintData("Metabolic Age", TextUtils.isEmpty(ActofitObject.getString("metaage", "")) ? 0 : Double.parseDouble(ActofitObject.getString("metaage", ""))));
@@ -1386,30 +1365,30 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             protected Map<String, String> getParams() {
                 Map<String, String> params;
                 params = new HashMap<>();
+                params.put("bmi", ActofitObject.getString(Constant.Fields.BMI, ""));
+                params.put("bmr", ActofitObject.getString(Constant.Fields.BMR, ""));
+                params.put("sugar", BiosenseObject.getString(Constant.Fields.SUGAR, ""));
                 params.put("height", ActofitObject.getString(Constant.Fields.HEIGHT, ""));
                 params.put("weight", ActofitObject.getString(Constant.Fields.WEIGHT, ""));
                 params.put("gender", PersonalObject.getString(Constant.Fields.GENDER, ""));
-                params.put("bmi", ActofitObject.getString(Constant.Fields.BMI, ""));
-                params.put("bmr", ActofitObject.getString(Constant.Fields.BMR, ""));
+                params.put("protein", ActofitObject.getString(Constant.Fields.PROTEIN, ""));
                 params.put("meta_age", ActofitObject.getString(Constant.Fields.META_AGE, ""));
-                params.put("health_score", ActofitObject.getString(Constant.Fields.HEALTH_SCORE, ""));
+                params.put("pulse", OximeterObject.getString(Constant.Fields.PULSE_RATE, ""));
+                params.put("body_fat", ActofitObject.getString(Constant.Fields.BODY_FAT, ""));
                 params.put("physique", ActofitObject.getString(Constant.Fields.PHYSIQUE, ""));
-                params.put("subcutaneous", ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
-                params.put("visceral_fat", ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""));
-                params.put("skeleton_muscle", ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, ""));
+                params.put("bone_mass", ActofitObject.getString(Constant.Fields.BONE_MASS, ""));
+                params.put("oxygen", OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, ""));
                 params.put("body_water", ActofitObject.getString(Constant.Fields.BODY_WATER, ""));
                 params.put("muscle_mass", ActofitObject.getString(Constant.Fields.MUSCLE_MASS, ""));
-                params.put("fat_free_weight", ActofitObject.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
-                params.put("protein", ActofitObject.getString(Constant.Fields.PROTEIN, ""));
-                params.put("body_fat", ActofitObject.getString(Constant.Fields.BODY_FAT, ""));
-                params.put("bone_mass", ActofitObject.getString(Constant.Fields.BONE_MASS, ""));
-                params.put("blood_pressure", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
-                params.put("dialostic", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
-                params.put("oxygen", OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, ""));
-                params.put("pulse", OximeterObject.getString(Constant.Fields.PULSE_RATE, ""));
-                params.put("temperature", ThermometerObject.getString(Constant.Fields.TEMPERATURE, ""));
                 params.put("hemoglobin", HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, ""));
-                params.put("sugar", BiosenseObject.getString(Constant.Fields.SUGAR, ""));
+                params.put("health_score", ActofitObject.getString(Constant.Fields.HEALTH_SCORE, ""));
+                params.put("visceral_fat", ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""));
+                params.put("temperature", ThermometerObject.getString(Constant.Fields.TEMPERATURE, ""));
+                params.put("subcutaneous", ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
+                params.put("dialostic", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
+                params.put("skeleton_muscle", ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, ""));
+                params.put("fat_free_weight", ActofitObject.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
+                params.put("blood_pressure", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
 
                 if(!ActofitObject.getString("weight","").equalsIgnoreCase("")) {
                     params.put("weightrange", "" + standardWeightRange+"kg");
@@ -1433,13 +1412,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 }else{
                     params.put("subfatrange", "NA");
                 }
-                if(!ActofitObject.getString("visfat","").equalsIgnoreCase("")) {
+                if(!ActofitObject.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase("")) {
                     params.put("visceralfatrange",standardVisceralFat);
                     Log.e("viscerialFatRange",""+standardVisceralFat);
                 }else{
                     params.put("visceralfatrange","NA");
                 }
-                if(!ActofitObject.getString("bodywater","").equalsIgnoreCase("")) {
+                if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
                     params.put("bodywaterrange", standardBodyWater);
                 }else{
                     params.put("bodywaterrange", "NA");
