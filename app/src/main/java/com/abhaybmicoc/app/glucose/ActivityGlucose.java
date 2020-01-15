@@ -293,6 +293,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
                         radioButtonId = findViewById(selectedId);
 
                         glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+
                         SharedPreferences.Editor editor = glucoseData.edit();
                         editor.putString("glucosetype", radioButtonId.getText().toString());
                         editor.putString("last", tvResultTextNew.getText().toString());
