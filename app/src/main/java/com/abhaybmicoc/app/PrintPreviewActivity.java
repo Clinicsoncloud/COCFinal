@@ -1649,12 +1649,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 break;
 
             case R.id.iv_download:
-                downloadFile();
+                downloadFile(fileName);
                 break;
         }
     }
 
-    private void downloadFile() {
+    private void downloadFile(String fileName) {
 
         downloadUrl = "http://45.252.190.29/api/v1/pdf/" + fileName;
 

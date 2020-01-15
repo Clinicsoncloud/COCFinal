@@ -107,9 +107,6 @@ public class MainActivity extends Activity implements View.OnClickListener,TextT
     @Override
     protected void onResume() {
         super.onResume();
-
-        //reinitialize the tts engine
-
     }
 
     @Override
