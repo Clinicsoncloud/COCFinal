@@ -105,18 +105,18 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float bmr = intent.getFloatExtra("bmr", 0f);
         float bmi = intent.getFloatExtra("bmi", 0f);
         float weight = intent.getFloatExtra("weight", 0f);
-        float subFat = intent.getFloatExtra("subFat", 0f);
+        float subFat = intent.getFloatExtra("subfat", 0f);
         float protein = intent.getFloatExtra("protein", 0f);
-        float bodyFat = intent.getFloatExtra("bodyFat", 0f);
-        float metaAge = intent.getFloatExtra("metaAge", 0f);
-        float boneMass = intent.getFloatExtra("boneMass", 0f);
+        float bodyFat = intent.getFloatExtra("bodyfat", 0f);
+        float metaAge = intent.getFloatExtra("metaage", 0f);
+        float boneMass = intent.getFloatExtra("bonemass", 0f);
         float physique = intent.getFloatExtra("physique", 0f);
-        float bodyWater = intent.getFloatExtra("bodyWater", 0f);
-        float muscleMass = intent.getFloatExtra("muscleMass", 0f);
-        float visceralFat = intent.getFloatExtra("visceralFat", 0f);
-        float healthScore = intent.getFloatExtra("healthScore", 0f);
-        float fatFreeWeight = intent.getFloatExtra("fatFreeWeight", 0f);
-        float skeletalMuscle = intent.getFloatExtra("skeletalMuscle", 0f);
+        float bodyWater = intent.getFloatExtra("bodywater", 0f);
+        float muscleMass = intent.getFloatExtra("musmass", 0f);
+        float visceralFat = intent.getFloatExtra("visfat", 0f);
+        float healthScore = intent.getFloatExtra("healthscore", 0f);
+        float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
+        float skeletalMuscle = intent.getFloatExtra("skemus", 0f);
 
         float height = Float.parseFloat(getIntent().getStringExtra("height"));
 
@@ -125,21 +125,21 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
-            editor.putString("bmr", String.valueOf(bmr));
-            editor.putString("bmi", String.valueOf(bmi));
-            editor.putString("height", String.valueOf(height));
-            editor.putString("weight", String.valueOf(weight));
-            editor.putString("subFat", String.valueOf(subFat));
-            editor.putString("bodyFat", String.valueOf(bodyFat));
-            editor.putString("protein", String.valueOf(protein));
-            editor.putString("physique", String.valueOf(physique));
-            editor.putString("boneMass", String.valueOf(boneMass));
-            editor.putString("bodyWater", String.valueOf(bodyWater));
-            editor.putString("muscleMass", String.valueOf(muscleMass));
-            editor.putString("visceralFat", String.valueOf(visceralFat));
-            editor.putString("healthScore", String.valueOf(healthScore));
-            editor.putString("fatFreeWeight", String.valueOf(fatFreeWeight));
-            editor.putString("skeletalMuscle", String.valueOf(skeletalMuscle));
+            editor.putString(Constant.Fields.BMR, String.valueOf(bmr));
+            editor.putString(Constant.Fields.BMI, String.valueOf(bmi));
+            editor.putString(Constant.Fields.HEIGHT, String.valueOf(height));
+            editor.putString(Constant.Fields.WEIGHT, String.valueOf(weight));
+            editor.putString(Constant.Fields.SUBCUTANEOUS_FAT, String.valueOf(subFat));
+            editor.putString(Constant.Fields.BODY_FAT, String.valueOf(bodyFat));
+            editor.putString(Constant.Fields.PROTEIN, String.valueOf(protein));
+            editor.putString(Constant.Fields.PHYSIQUE, String.valueOf(physique));
+            editor.putString(Constant.Fields.BONE_MASS, String.valueOf(boneMass));
+            editor.putString(Constant.Fields.BODY_WATER, String.valueOf(bodyWater));
+            editor.putString(Constant.Fields.MUSCLE_MASS, String.valueOf(muscleMass));
+            editor.putString(Constant.Fields.VISCERAL_FAT, String.valueOf(visceralFat));
+            editor.putString(Constant.Fields.HEALTH_SCORE, String.valueOf(healthScore));
+            editor.putString(Constant.Fields.FAT_FREE_WEIGHT, String.valueOf(fatFreeWeight));
+            editor.putString(Constant.Fields.SKELETAL_MUSCLE, String.valueOf(skeletalMuscle));
 
             editor.commit();
         } catch (Exception e) {
@@ -148,21 +148,21 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         Intent intent1 = new Intent(ActofitMainActivity.this, DisplayRecordScreen.class);
 
-        intent1.putExtra("bmr", bmr);
-        intent1.putExtra("bmi", bmi);
-        intent1.putExtra("subFat", subFat);
-        intent1.putExtra("weight", weight);
-        intent1.putExtra("bodyFat", bodyFat);
-        intent1.putExtra("protein", protein);
-        intent1.putExtra("metaAge", metaAge);
-        intent1.putExtra("physique", physique);
-        intent1.putExtra("boneMass", boneMass);
-        intent1.putExtra("bodyWater", bodyWater);
-        intent1.putExtra("muscleMass", muscleMass);
-        intent1.putExtra("healthScore", healthScore);
-        intent1.putExtra("visceralFat", visceralFat);
-        intent1.putExtra("fatFreeWeight", fatFreeWeight);
-        intent1.putExtra("skeletalMuscle", skeletalMuscle);
+        intent1.putExtra(Constant.Fields.BMR, bmr);
+        intent1.putExtra(Constant.Fields.BMI, bmi);
+        intent1.putExtra(Constant.Fields.SUBCUTANEOUS_FAT, subFat);
+        intent1.putExtra(Constant.Fields.WEIGHT, weight);
+        intent1.putExtra(Constant.Fields.BODY_FAT, bodyFat);
+        intent1.putExtra(Constant.Fields.PROTEIN, protein);
+        intent1.putExtra(Constant.Fields.META_AGE, metaAge);
+        intent1.putExtra(Constant.Fields.PHYSIQUE, physique);
+        intent1.putExtra(Constant.Fields.BONE_MASS, boneMass);
+        intent1.putExtra(Constant.Fields.BODY_WATER, bodyWater);
+        intent1.putExtra(Constant.Fields.MUSCLE_MASS, muscleMass);
+        intent1.putExtra(Constant.Fields.HEALTH_SCORE, healthScore);
+        intent1.putExtra(Constant.Fields.VISCERAL_FAT, visceralFat);
+        intent1.putExtra(Constant.Fields.FAT_FREE_WEIGHT, fatFreeWeight);
+        intent1.putExtra(Constant.Fields.SKELETAL_MUSCLE, skeletalMuscle);
 
         startActivity(intent1);
     }
@@ -170,7 +170,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     protected void onPause() {
         super.onPause();
-
         stopTextToSpeech();
     }
 
@@ -308,7 +307,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String parsedDate = formatter.format(initDate);
 
-            String height = getIntent().getStringExtra("height");
+            String height = getIntent().getStringExtra(Constant.Fields.HEIGHT);
 
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));
             intent.putExtra(Constant.Fields.NAME, sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));

@@ -237,7 +237,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
@@ -250,7 +250,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
@@ -269,8 +269,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 Map<String, String> params;
 
                 params = new HashMap<>();
-                params.put("kiosk_id", kiosk_id);
-                params.put("mobile", etMobileNumber.getText().toString());
+                params.put(Constant.Fields.KIOSK_ID, kiosk_id);
+                params.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
 
                 return params;
             }
@@ -298,6 +298,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
 
         editor.commit();
+
     }
 
     // endregion

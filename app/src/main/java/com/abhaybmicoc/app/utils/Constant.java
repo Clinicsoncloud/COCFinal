@@ -8,9 +8,9 @@ public class Constant {
     }
 
     public static class Fields{
-        public final static String ID = "ID";
-        public final static String OTP = "OTP";
-        public final static String TOKEN = "TOKEN";
+        public final static String ID = "id";
+        public final static String OTP = "otp";
+        public final static String TOKEN = "token";
         public final static String KIOSK_ID = "kiosk_id";
 
         public final static String NAME = "name";
@@ -40,12 +40,13 @@ public class Constant {
         public final static String VISCERAL_FAT = "visceral_fat";
         public final static String HEALTH_SCORE = "health_score";
         public final static String BLOOD_GLUCOSE = "BLOOD_GLUCOSE";
+        public final static String TEMPRATURE_DATA = "data";
         public final static String SUBCUTANEOUS_FAT = "subcutaneous";
         public final static String FAT_FREE_WEIGHT = "fat_free_weight";
         public final static String SKELETAL_MUSCLE = "skeleton_muscle";
         public final static String BLOOD_PRESSURE_DIASTOLIC = "dialostic";
         public final static String BLOOD_PRESSURE_SYSTOLIC = "blood_pressure";
 
-        public static final String MOBILE_LOGIN = "mobile";
+
     }
 }

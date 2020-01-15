@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+
     // region Variables
 
     private Context context = PostVerifiedOtpScreen.this;
@@ -213,8 +214,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
                 params = new HashMap<>();
                 params.put(Constant.Fields.KIOSK_ID, kioskId);
-                params.put("mobile", mobileNumber);
-                params.put("otp", etOTP.getText().toString());
+                params.put(Constant.Fields.MOBILE_NUMBER, mobileNumber);
+                params.put(Constant.Fields.OTP, etOTP.getText().toString());
 
                 return params;
             }

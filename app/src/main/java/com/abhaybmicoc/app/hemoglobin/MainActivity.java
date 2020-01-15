@@ -580,7 +580,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         dialogConnectionProgress.show();
 
-        BluetoothDevice device = getDevice(getStoredDeviceName());
+        BluetoothDevice device = getDevice(getStoredDeviceAddress());
         connectDevice(device);
     }
 
@@ -589,10 +589,15 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     private void storeDeviceAndConnect(){
 
+        dialogConnectionProgress.show();
+
         String deviceName = spinnerDevice.getSelectedItem().toString();
         String deviceAddress = deviceName.substring(deviceName.length() - 17);
+        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
 
         saveDeviceInformation(deviceName, deviceAddress);
+
+        connect();
 
         deviceArrayList.clear();
 
@@ -604,6 +609,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private String getStoredDeviceName(){
         return sharedPreferencesDevice.getString("deviceName", "");
+    }
+
+    private String getStoredDeviceAddress(){
+        return sharedPreferencesDevice.getString("deviceAddress","");
     }
 
     /**

@@ -427,7 +427,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void setupUI(){
         setContentView(R.layout.activity_home);
 
-        layoutGlucose = findViewById(R.id.layout_glucose);
+        layoutGlucose = findViewById(R.id.layout_glucose_result);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);

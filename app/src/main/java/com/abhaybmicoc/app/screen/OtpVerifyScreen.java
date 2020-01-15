@@ -147,8 +147,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             if (sharedPreferencesToken.getString(Constant.Fields.EMAIL, "").equalsIgnoreCase("null"))
                 etEmail.setText("");
             else
-                etEmail.setText(sharedPreferencesToken.getString("email", ""));
-
+                etEmail.setText(sharedPreferencesToken.getString(Constant.Fields.EMAIL, ""));
             initializeGender();
         } catch (Exception e) {
 
@@ -269,10 +268,10 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
-                params.put("name", etName.getText().toString());
-                params.put("email", etEmail.getText().toString());
-                params.put("dob", etDateOfBirth.getText().toString());
-                params.put("gender", getSelectedGender());
+                params.put(Constant.Fields.NAME, etName.getText().toString());
+                params.put(Constant.Fields.EMAIL, etEmail.getText().toString());
+                params.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+                params.put(Constant.Fields.GENDER, getSelectedGender());
 
                 return params;
             }

@@ -269,7 +269,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
                 SharedPreferences.Editor editor = sharedPreferencesUser.edit();
-                editor.putString("data", etTemperature.getText().toString().trim());
+                editor.putString(Constant.Fields.TEMPRATURE_DATA, etTemperature.getText().toString().trim());
                 editor.commit();
 
                 try {
