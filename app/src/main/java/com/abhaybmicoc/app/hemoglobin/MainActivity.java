@@ -40,6 +40,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.DashboardActivity;
@@ -50,6 +51,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
+import com.abhaybmicoc.app.utils.Constant;
 
 import java.util.Map;
 import java.util.List;
@@ -94,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private TextView tvMainOximeter;
     private TextView textDateOfBirth;
     private TextView tvMainBpMonitor;
-    private TextView tvMainTemprature;
+    private TextView tvMainTemperature;
 
     private SharedPreferences sharedPreferencesDevice;
-    private SharedPreferences sharedPreferencesDevicePersonal;
+    private SharedPreferences sharedPreferencesPersonal;
     private SharedPreferences sharedPreferencesDeviceHemoglobin;
 
     private Button btnScan;
@@ -292,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         tvMainWeight = findViewById(R.id.tv_header_weight);
         tvMobileNumber = findViewById(R.id.tv_mobile_number);
         tvMainSugar = findViewById(R.id.tv_header_bloodsugar);
-        tvMainTemprature = findViewById(R.id.tv_header_tempreture);
+        tvMainTemperature = findViewById(R.id.tv_header_tempreture);
         tvMainOximeter = findViewById(R.id.tv_header_pulseoximeter);
         tvMainBpMonitor = findViewById(R.id.tv_header_bloodpressure);
 
@@ -316,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             context.startActivity(new Intent(MainActivity.this, ActofitMainActivity.class));
         });
 
-        tvMainTemprature.setOnClickListener(view -> {
+        tvMainTemperature.setOnClickListener(view -> {
             context.startActivity(new Intent(MainActivity.this, ThermometerScreen.class));
         });
 
@@ -345,7 +347,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         sharedPreferencesDevice = getSharedPreferences("device_data", MODE_PRIVATE);
         sharedPreferencesDeviceHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-        sharedPreferencesDevicePersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         txt = "Please press the power button of device and click on scan button";
         speakOut(txt);
@@ -360,10 +362,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     private void setUserInfo() {
-        tvName.setText("Name : " + sharedPreferencesDevicePersonal.getString("name", ""));
-        tvGender.setText("Gender : " + sharedPreferencesDevicePersonal.getString("gender", ""));
-        textDateOfBirth.setText("DOB : " + sharedPreferencesDevicePersonal.getString("dob", ""));
-        tvMobileNumber.setText("Phone : " + sharedPreferencesDevicePersonal.getString("mobile_number", ""));
+        tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+        textDateOfBirth.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobileNumber.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
     }
 
     // endregion

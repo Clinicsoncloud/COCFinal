@@ -17,6 +17,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -185,10 +186,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private void initializeData(){
-        tvAge.setText("DOB : " + shared.getString("dob", ""));
-        tvName.setText("Name : " + shared.getString("name", ""));
-        tvGender.setText("Gender : " + shared.getString("gender", ""));
-        tvMobileNumber.setText("Phone : " + shared.getString("mobile_number", ""));
+        tvName.setText("Name : " + shared.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + shared.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobileNumber.setText("Phone : " + shared.getString(Constant.Fields.MOBILE_NUMBER, ""));
     }
 
     // endregion
@@ -274,37 +275,36 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         c208Invoker.bindDevice(new C208BindDeviceListener() {
             @Override
             public void onDataResponse(int spo, int pr) {
-                LogUtils.d(TAG, "bindDevice---->" + "spo:" + spo + "pr:" + pr);
                 progressDialog.dismiss();
+
                 flag = false;
+
                 Message message = new Message();
                 message.arg1 = spo;
                 message.arg2 = pr;
                 message.what = RECEIVE_SPO_PR;
+
                 handler.sendMessage(message);
             }
 
             @Override
             public void onError(String message) {
-                LogUtils.d(TAG, "Bind device error message--->" + message);
                 progressDialog.dismiss();
             }
 
             @Override
             public void onStateChanged(int oldState, int newState) {
-                LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
             }
 
             @Override
             public void onBindDeviceSuccess(C208Device c208Device) {
-                LogUtils.d(TAG, "deviceInfo-->" + c208Device.toString());
                 macAddress = c208Device.getDeviceMacAddress();
+
                 SharePreferenceUtil.put(MainActivity.this, MAC_ADDRESS_KEY, macAddress);
             }
 
             @Override
             public void onBindDeviceFail(String failMessage) {
-                LogUtils.d(TAG, "Bind device failure information--->" + failMessage);
                 progressDialog.dismiss();
             }
         });
@@ -322,7 +322,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      */
     private void connectDevice(){
         if ("".equals(macAddress)) {
-            LogUtils.d(TAG, "macAddress是空");
             Toast.makeText(this, "Please bind the device first！！", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -333,22 +332,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         c208Invoker.connectDevice(device, new C208ConnectDeviceListener() {
             @Override
             public void onDataResponse(int spo, int pr) {
-                LogUtils.d(TAG, "connectDevice---->" + "spo:" + spo + "pr:" + pr);
                 Message message = new Message();
                 message.arg1 = spo;
                 message.arg2 = pr;
                 message.what = RECEIVE_SPO_PR;
+
                 handler.sendMessage(message);
             }
 
             @Override
             public void onError(String message) {
-                LogUtils.d(TAG, "Connection device error message--->" + message);
             }
 
             @Override
             public void onStateChanged(int oldState, int newState) {
-                LogUtils.d(TAG, "oldState:" + oldState + "---->newState:" + newState);
             }
 
             @Override
@@ -358,7 +355,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onConnectedDeviceFail(String failMessage) {
-                LogUtils.d(TAG, "Connection device failure message--->" + failMessage);
             }
         });
     }
@@ -368,13 +364,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      */
     private void disconnectDevice(){
         c208Invoker.disconnectDevice(() -> {
-            LogUtils.d(TAG, "Disconnect device！！！");
         });
     }
 
     private void writeToSharedPreference(String preferenceName, String key, String value){
         SharedPreferences sharedPreference = getSharedPreferences(preferenceName, MODE_PRIVATE);
-        // Writing data to SharedPreferences
         SharedPreferences.Editor editor = sharedPreference.edit();
         editor.putString(key, value);
         editor.commit();

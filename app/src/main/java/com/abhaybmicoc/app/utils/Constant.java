@@ -8,16 +8,28 @@ public class Constant {
     }
 
     public static class Fields{
-        public final static String BMI = "BMI";
-        public final static String BMR = "BMR";
+        public final static String ID = "ID";
+        public final static String OTP = "OTP";
+        public final static String TOKEN = "TOKEN";
+        public final static String KIOSK_ID = "kiosk_id";
+
+
+        public final static String NAME = "NAME";
+        public final static String EMAIL = "EMAIL";
         public final static String GENDER = "GENDER";
         public final static String HEIGHT = "HEIGHT";
         public final static String WEIGHT = "WEIGHT";
+        public final static String DATE_OF_BIRTH = "DATE_OF_BIRTH";
+        public static final String MOBILE_NUMBER = "MOBILE_NUMBER";
+
+        public final static String BMI = "BMI";
+        public final static String BMR = "BMR";
         public final static String PROTEIN = "PROTEIN";
         public final static String BODY_FAT = "BODY_FAT";
         public final static String PHYSIQUE = "PHYSIQUE";
         public final static String META_AGE = "META_AGE";
         public final static String BONE_MASS = "BONE_MASS";
+        public static final String IS_ATHLETE = "IS_ATHLETE";
         public final static String HEMOGLOBIN = "HEMOGLOBIN";
         public final static String BODY_WATER = "BODY_WATER";
         public final static String PULSE_RATE = "PULSE_RATE";
@@ -26,7 +38,6 @@ public class Constant {
         public final static String VISCERAL_FAT = "VISCERAL_FAT";
         public final static String HEALTH_SCORE = "HEALTH_SCORE";
         public final static String BLOOD_OXYGEN = "BLOOD_OXYGEN";
-        public final static String DATE_OF_BIRTH = "DATE_OF_BIRTH";
         public final static String BLOOD_GLUCOSE = "BLOOD_GLUCOSE";
         public final static String FAT_FREE_WEIGHT = "FAT_FREE_WEIGHT";
         public final static String SKELETAL_MUSCLE = "SKELETAL_MUSCLE";

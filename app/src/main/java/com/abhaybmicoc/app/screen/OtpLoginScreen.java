@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -166,7 +167,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
             }
 
         } else {
-            Log.e("textTopSpeech", "Initilization Failed!");
+            Log.e("textTopSpeech", "Initialization Failed!");
         }
     }
 
@@ -236,8 +237,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra("mobile", etMobileNumber.getText().toString());
-                    objIntent.putExtra("kioskid", kiosk_id);
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
 
@@ -249,8 +250,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra("mobile", etMobileNumber.getText().toString());
-                    objIntent.putExtra("kioskid", kiosk_id);
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
 
@@ -268,8 +269,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 Map<String, String> params;
 
                 params = new HashMap<>();
-                params.put("kiosk_id", kiosk_id);
-                params.put("mobile", etMobileNumber.getText().toString());
+                params.put(Constant.Fields.KIOSK_ID, kiosk_id);
+                params.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
 
                 return params;
             }
@@ -288,13 +289,13 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        editor.putString("name", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("name"));
-        editor.putString("mobile_number", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
-        editor.putString("email", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("email"));
-        editor.putString("dob", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("dob"));
-        editor.putString("token", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("token"));
-        editor.putString("gender", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("gender"));
-        editor.putString("id", jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("id"));
+        editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("name"));
+        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
+        editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("email"));
+        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("dob"));
+        editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("token"));
+        editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("gender"));
+        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("id"));
 
         editor.commit();
     }

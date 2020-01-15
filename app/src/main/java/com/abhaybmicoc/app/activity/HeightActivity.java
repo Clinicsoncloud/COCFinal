@@ -25,6 +25,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
 
@@ -189,8 +190,8 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     public void onResume() {
         super.onResume();
 
-        if(!sharedPreferenceActofit.getString("height","").equals("")) {
-            Log.e("onResume : ", "Height :" + sharedPreferenceActofit.getString("height", ""));
+        if(!sharedPreferenceActofit.getString(Constant.Fields.HEIGHT,"").equals("")) {
+            Log.e("onResume : ", "Height :" + sharedPreferenceActofit.getString(Constant.Fields.HEIGHT, ""));
         }
         connectToDevice();
     }
@@ -405,13 +406,13 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
-            objIntent.putExtra("id", shared.getString("id", ""));
-            objIntent.putExtra("name", shared.getString("name", ""));
-            objIntent.putExtra("gender", shared.getString("gender", ""));
-            objIntent.putExtra("dob", shared.getString("dob", ""));
-            objIntent.putExtra("height", etManualHeight.getText().toString());
+            objIntent.putExtra(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
+            objIntent.putExtra(Constant.Fields.ID, shared.getString(Constant.Fields.ID, ""));
+            objIntent.putExtra(Constant.Fields.NAME, shared.getString(Constant.Fields.NAME, ""));
+            objIntent.putExtra(Constant.Fields.GENDER, shared.getString(Constant.Fields.GENDER, ""));
+            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
-            writeToActofitSharedPreference("height", etManualHeight.getText().toString());
+            writeToActofitSharedPreference(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
 
             startActivity(objIntent);
             finish();
@@ -540,8 +541,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             str = str.replace("�", "");
 
             strHeight += str;
-            System.out.println("=======Str2 :==="+ HeightActivity.this.etManualHeight.getText());
-            System.out.println("=======strHeight :==="+strHeight);
 
             try {
                 if (!strHeight.equalsIgnoreCase("")) {

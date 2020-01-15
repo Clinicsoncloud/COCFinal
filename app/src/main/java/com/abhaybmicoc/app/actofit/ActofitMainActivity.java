@@ -25,6 +25,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
+import com.abhaybmicoc.app.utils.Constant;
 
 import java.util.Date;
 import java.util.Locale;
@@ -33,6 +34,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
+    // region Variables
+
     private Context context = ActofitMainActivity.this;
 
     public SimpleDateFormat EEEddMMMyyyyFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
@@ -82,6 +85,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     RESULT_CANCELED = 102;
     RESULT_CANCELED = 100;
     */
+
+    // endregion
+
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +215,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
     }
 
+    // endregion
+
+    // region Initialization methods
+
     /**
      *
      */
@@ -255,6 +266,29 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         btnSmartScale.setOnClickListener(view -> startSmartScale());
     }
 
+    /**
+     *
+     */
+    private void initializeData(){
+        txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
+        speakOut(txt);
+
+        try {
+            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+            tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
+        } catch (Exception e) {
+        }
+    }
+
+    // endregion
+
+    /**
+     *
+     */
     private void startSmartScale(){
         boolean appInstalled = isAppInstalled("com.actofitSmartScale");
 
@@ -266,7 +300,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             @SuppressLint("SimpleDateFormat") Date initDate = null;
             try {
-                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra("dob"));
+                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra(Constant.Fields.DATE_OF_BIRTH));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -276,40 +310,22 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             String height = getIntent().getStringExtra("height");
 
-            intent.putExtra("id", sharedPreferencesPersonal.getString("id", ""));
-            intent.putExtra("name", sharedPreferencesPersonal.getString("name", ""));
-            intent.putExtra("gender", sharedPreferencesPersonal.getString("gender", ""));
-            intent.putExtra("dob", parsedDate);
-            intent.putExtra("height", Integer.parseInt(height));
-            intent.putExtra("isAthlete", isAthlete);
+            intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));
+            intent.putExtra(Constant.Fields.NAME, sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+            intent.putExtra(Constant.Fields.GENDER, sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+            intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
+            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(height));
+            intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
 
             intent.setType("text/plain");
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             startActivityForResult(intent, REQUSET_CODE);
 
-            tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
-            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
-        }
-    }
-
-    /**
-     *
-     */
-    private void initializeData(){
-        txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
-        speakOut(txt);
-
-        try {
-            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
-            tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
-        } catch (Exception e) {
+            tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+            tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+            tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+            tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         }
     }
 
@@ -367,7 +383,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
      *
      */
     private void stopTextToSpeech(){
-        /* close the textToSpeech engine to avoide the runtime exception from it */
+        /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();

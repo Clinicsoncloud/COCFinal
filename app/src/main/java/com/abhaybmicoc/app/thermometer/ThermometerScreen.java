@@ -28,6 +28,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.utils.Constant;
 
 import java.util.Set;
 import java.util.UUID;
@@ -117,7 +118,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     // endregion
 
-    // Events
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -184,10 +185,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         btnConnect = findViewById(R.id.btn_connect_temperature);
         btnGetTemperature = findViewById(R.id.btn_get_temperature);
 
-        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
-        tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobile_number", ""));
+        tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
@@ -240,13 +241,13 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         this.conec = (String) getText(R.string.Connectad);
         this.Connectad = (String) getText(R.string.Connectad);
         this.ConectadO = (String) getText(R.string.ConectadO);
-        this.Nosepuede = (String) getText(R.string.Nosepuede);
-        this.Conectese = (String) getText(R.string.Conectese);
         this.disconec = (String) getText(R.string.Desconectad);
+        this.Nosepuede = (String) getText(R.string.Nosepuede);
         this.Desconectad = (String) getText(R.string.Desconectad);
         this.Seleccionado = (String) getText(R.string.Seleccionado);
-        this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
+        this.Conectese = (String) getText(R.string.Conectese);
         this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
+        this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
 
         objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
     }
@@ -581,59 +582,34 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         /* access modifiers changed from: protected */
         public String doInBackground(String... params) {
-            Log.e("doInBackground","in");
-            String str = params[0];
+            message = "";
             byte[] buffer = new byte[128];
-            ThermometerScreen.this.message = "";
+
             while (ThermometerScreen.this.enable.equals("true")) {
                 try {
                     int bytes = ThermometerScreen.this.ins.read(buffer);
                     ThermometerScreen.this.message = new String(buffer, 0, bytes);
                 } catch (IOException e) {
-                    ThermometerScreen.this.enable = "false";
-                    ThermometerScreen.this.message = "";
+                    message = "";
+                    enable = "false";
                 }
                 publishProgress(new String[]{ThermometerScreen.this.message, ThermometerScreen.this.enable});
             }
+
             return ThermometerScreen.this.message;
         }
 
         /* access modifiers changed from: protected */
         public void onProgressUpdate(String... recib) {
-
-            Log.e("onProgressUpdate","in");
-
-
             str = recib[0];
-
-            Log.e("recib[0]", "" + recib[0]);
-
-            Log.e("str", "" + str);
 
             str = str.replace("�", "");
 
             strTemp += str;
 
-            //Akshay Thermometer code
             ThermometerScreen.this.etTemperature.setText(""+strTemp);
 
             strTemp = "";
-
-
-            Log.e("strTemp", "" + strTemp);
-
-            String length = strTemp.trim();
-
-            Log.e("length", "" +length.length());
-
-            //  Ajit Thermometer code
-                 /*   if(strTemp.indexOf(".") == strTemp.length() - 2) {
-                        if(strTemp.indexOf("0") == strTemp.length() - 5){
-                            strTemp = strTemp.replaceFirst("0","");
-                        }
-                        ThermometerScreen.this.etTemperature.setText("" + strTemp);
-                        strTemp = "";
-                    }*/
 
             if (recib[1].equals("false")) {
                 ThermometerScreen.this.estadoBoton = "Connect";
@@ -644,13 +620,13 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 ThermometerScreen.this.estadoBoton2 = ThermometerScreen.this.disconec;
                 ThermometerScreen.this.enable = "true";
             }
-            ThermometerScreen.this.btnConnect.setText(ThermometerScreen.this.estadoBoton2);
+
+            btnConnect.setText(ThermometerScreen.this.estadoBoton2);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            Log.e("onPostExecute","in");
         }
     }
 

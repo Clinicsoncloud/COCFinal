@@ -16,6 +16,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
+import com.abhaybmicoc.app.utils.Constant;
 
 public class DisplayRecordScreen extends AppCompatActivity implements View.OnClickListener {
     // region Variables
@@ -171,27 +172,27 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     private void showData(Intent intent){
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        physique = getPhysique((intent.getFloatExtra("physique", 0f)));
+        physique = getPhysique((intent.getFloatExtra(Constant.Fields.PHYSIQUE, 0f)));
 
         tvPhysique.setText("" + physique);
-        tvBmi.setText("" + intent.getFloatExtra("bmi", 0f));
-        tvWeight.setText(intent.getFloatExtra("weight", 0f) + "Kg");
-        tvMetaAge.setText("" + intent.getFloatExtra("metaage", 0f));
-        tvBmr.setText("" + intent.getFloatExtra("bmr", 0f) + "kcal");
-        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString("dob", ""));
-        tvVisceralFat.setText("" + intent.getFloatExtra("visfat", 0f));
-        tvSubFat.setText("" + intent.getFloatExtra("subfat", 0f) + "%");
-        tvName.setText("Name : " + sharedPreferencesPersonal.getString("name", ""));
-        tvBodyFat.setText("" + intent.getFloatExtra("bodyFat", 0f) + "%");
-        tvProtein.setText("" + intent.getFloatExtra("protein", 0f) + "%");
-        tvHealthScore.setText("" + intent.getFloatExtra("healthScore", 0f));
-        tvBoneMass.setText("" + intent.getFloatExtra("boneMass", 0f) + "kg");
-        tvMusMass.setText("" + intent.getFloatExtra("muscleMass", 0f) + "kg");
-        tvBodyWater.setText("" + intent.getFloatExtra("bodyWater", 0f) + "%");
-        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString("gender", ""));
-        tvSkeletalMuscle.setText("" + intent.getFloatExtra("skemus", 0f) + "%");
-        tvFatFreeWeight.setText("" + intent.getFloatExtra("fatFreeWeight", 0f));
-        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString("mobileNumber", ""));
+        tvBmi.setText("" + intent.getFloatExtra(Constant.Fields.BMI, 0f));
+        tvWeight.setText(intent.getFloatExtra(Constant.Fields.WEIGHT, 0f) + "Kg");
+        tvMetaAge.setText("" + intent.getFloatExtra(Constant.Fields.META_AGE, 0f));
+        tvBmr.setText("" + intent.getFloatExtra(Constant.Fields.BMR, 0f) + "kcal");
+        tvProtein.setText("" + intent.getFloatExtra(Constant.Fields.PROTEIN, 0f) + "%");
+        tvBodyFat.setText("" + intent.getFloatExtra(Constant.Fields.BODY_FAT, 0f) + "%");
+        tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+        tvVisceralFat.setText("" + intent.getFloatExtra(Constant.Fields.VISCERAL_FAT, 0f));
+        tvHealthScore.setText("" + intent.getFloatExtra(Constant.Fields.HEALTH_SCORE, 0f));
+        tvBoneMass.setText("" + intent.getFloatExtra(Constant.Fields.BONE_MASS, 0f) + "kg");
+        tvMusMass.setText("" + intent.getFloatExtra(Constant.Fields.MUSCLE_MASS, 0f) + "kg");
+        tvBodyWater.setText("" + intent.getFloatExtra(Constant.Fields.BODY_WATER, 0f) + "%");
+        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+        tvFatFreeWeight.setText("" + intent.getFloatExtra(Constant.Fields.FAT_FREE_WEIGHT, 0f));
+        tvSubFat.setText("" + intent.getFloatExtra(Constant.Fields.SUBCUTANEOUS_FAT, 0f) + "%");
+        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
+        tvSkeletalMuscle.setText("" + intent.getFloatExtra(Constant.Fields.SKELETAL_MUSCLE, 0f) + "%");
     }
 
     /**
@@ -232,21 +233,21 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         
         SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
-        editor.putString("physique", physique);
-        editor.putString("bmi", String.valueOf(intent.getFloatExtra("bmi",0f)));
-        editor.putString("bmr", String.valueOf(intent.getFloatExtra("bmr",0f)));
-        editor.putString("subfat", String.valueOf(intent.getFloatExtra("subfat",0f)));
-        editor.putString("visfat", String.valueOf(intent.getFloatExtra("visfat",0f)));
-        editor.putString("weight", String.valueOf(intent.getFloatExtra("weight",0f)));
-        editor.putString("skemus", String.valueOf(intent.getFloatExtra("skemus",0f)));
-        editor.putString("metaage", String.valueOf(intent.getFloatExtra("metaage",0f)));
-        editor.putString("bodyfat", String.valueOf(intent.getFloatExtra("bodyfat",0f)));
-        editor.putString("musmass", String.valueOf(intent.getFloatExtra("musmass",0f)));
-        editor.putString("protine", String.valueOf(intent.getFloatExtra("protine",0f)));
-        editor.putString("bonemass", String.valueOf(intent.getFloatExtra("bonemass",0f)));
-        editor.putString("bodywater", String.valueOf(intent.getFloatExtra("bodywater",0f)));
-        editor.putString("helthscore", String.valueOf(intent.getFloatExtra("helthscore",0f)));
-        editor.putString("fatfreeweight", String.valueOf(intent.getFloatExtra("fatfreeweight",0f)));
+        editor.putString(Constant.Fields.PHYSIQUE, physique);
+        editor.putString(Constant.Fields.BMI, String.valueOf(intent.getFloatExtra(Constant.Fields.BMI,0f)));
+        editor.putString(Constant.Fields.BMR, String.valueOf(intent.getFloatExtra(Constant.Fields.BMR,0f)));
+        editor.putString(Constant.Fields.WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.WEIGHT,0f)));
+        editor.putString(Constant.Fields.PROTEIN, String.valueOf(intent.getFloatExtra(Constant.Fields.PROTEIN,0f)));
+        editor.putString(Constant.Fields.META_AGE, String.valueOf(intent.getFloatExtra(Constant.Fields.META_AGE,0f)));
+        editor.putString(Constant.Fields.BODY_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_FAT,0f)));
+        editor.putString(Constant.Fields.BONE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.BONE_MASS,0f)));
+        editor.putString(Constant.Fields.BODY_WATER, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_WATER,0f)));
+        editor.putString(Constant.Fields.MUSCLE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.MUSCLE_MASS,0f)));
+        editor.putString(Constant.Fields.VISCERAL_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.VISCERAL_FAT,0f)));
+        editor.putString(Constant.Fields.HEALTH_SCORE, String.valueOf(intent.getFloatExtra(Constant.Fields.HEALTH_SCORE,0f)));
+        editor.putString(Constant.Fields.SKELETAL_MUSCLE, String.valueOf(intent.getFloatExtra(Constant.Fields.SKELETAL_MUSCLE,0f)));
+        editor.putString(Constant.Fields.FAT_FREE_WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.FAT_FREE_WEIGHT,0f)));
+        editor.putString(Constant.Fields.SUBCUTANEOUS_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.SUBCUTANEOUS_FAT,0f)));
 
         editor.commit();
     }

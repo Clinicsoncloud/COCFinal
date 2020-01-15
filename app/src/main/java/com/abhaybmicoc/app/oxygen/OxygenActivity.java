@@ -1,26 +1,26 @@
 package com.abhaybmicoc.app.oxygen;
 
-import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
+import android.content.Intent;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.bluetooth.BluetoothDevice;
+import android.support.v7.app.AppCompatActivity;
 
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.hemoglobin.MainActivity;
-import com.abhaybmicoc.app.oxygen.ble.BleController;
 import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.oxygen.data.DataParser;
+import com.abhaybmicoc.app.hemoglobin.MainActivity;
+import com.abhaybmicoc.app.oxygen.ble.BleController;
+import com.abhaybmicoc.app.oxygen.views.WaveformView;
 import com.abhaybmicoc.app.oxygen.dialog.DeviceListAdapter;
 import com.abhaybmicoc.app.oxygen.dialog.SearchDevicesDialog;
-import com.abhaybmicoc.app.oxygen.views.WaveformView;
 
 import java.util.ArrayList;
 
@@ -31,13 +31,15 @@ public class OxygenActivity extends AppCompatActivity implements BleController.S
 
     private final static String TAG = MainActivity.class.getSimpleName();
 
+    private Button btnnext;
     @BindView(R.id.btnSearch) Button btnSearch;
+
     @BindView(R.id.tvStatus)  TextView tvStatus;
     @BindView(R.id.tvParams)  TextView tvResult;
-    @BindView(R.id.wfvPleth)
-    WaveformView wfvPleth;
     @BindView(R.id.etNewBtName) EditText etNewBtName;
     @BindView(R.id.llChangeName) LinearLayout llChangeName;
+
+    @BindView(R.id.wfvPleth) WaveformView wfvPleth;
 
     private DataParser mDataParser;
     private BleController mBleControl;
@@ -45,7 +47,6 @@ public class OxygenActivity extends AppCompatActivity implements BleController.S
     private SearchDevicesDialog mSearchDialog;
     private DeviceListAdapter mBtDevicesAdapter;
     private ArrayList<BluetoothDevice> mBtDevices = new ArrayList<>();
-    private Button btnnext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

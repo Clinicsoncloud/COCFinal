@@ -49,6 +49,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
@@ -296,10 +297,10 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
         speakOut(txt);
 
-        tvAge.setText("DOB : " + sharedPreferencesPersonalData.getString("dob", ""));
-        tvName.setText("Name : " + sharedPreferencesPersonalData.getString("name", ""));
-        tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString("gender", ""));
-        tvMobileNumber.setText("Phone : " + sharedPreferencesPersonalData.getString("mobile_number", ""));
+        tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + sharedPreferencesPersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobileNumber.setText("Phone : " + sharedPreferencesPersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -855,10 +856,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             infoBeanObj.setDiastolic(String.valueOf(dia));
 
             sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
-            // Writing data to SharedPreferences
             SharedPreferences.Editor editor = sharedPreferencesBloodPressure.edit();
-            editor.putString("systolic", String.valueOf(sys));
-            editor.putString("diastolic", String.valueOf(dia));
+            editor.putString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, String.valueOf(sys));
+            editor.putString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, String.valueOf(dia));
             editor.commit();
 
             infoBeanObj.setIsSynced("no");
@@ -1339,16 +1339,17 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+
             if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
                 refreshActivityMonitorLayout();
             } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
-                Log.e("inside","broadCastReceiverBp");
                 refreshBloodPressureLayout();
             } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
                 refreshWeightScaleLayout();
             } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
                 refreshThermometerLayout();
             }
+
             refreshArrowVisible();
         }
     };

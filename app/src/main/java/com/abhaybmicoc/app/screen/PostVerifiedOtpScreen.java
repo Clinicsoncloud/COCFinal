@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.Request;
 
 import com.abhaybmicoc.app.utils.Tools;
@@ -38,7 +39,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
     private EditText etOTP;
     private Button btnVerify;
-    private TextToSpeech tts; //CHANGE IT
+    private TextToSpeech textToSpeech; //CHANGE IT
     private ProgressDialog progressDialog;
 
     // endregion
@@ -89,8 +90,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
         etOTP = findViewById(R.id.et_otp);
         btnVerify = findViewById(R.id.btn_verify);
-        kioskId = getIntent().getStringExtra("kioskid");
-        mobileNumber = getIntent().getStringExtra("mobile");
+        kioskId = getIntent().getStringExtra(Constant.Fields.KIOSK_ID);
+        mobileNumber = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
     }
 
     /**
@@ -103,7 +104,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     }
 
     private void initializeLogic(){
-        tts = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
         speakOut(OTP_MESSAGE);
     }
 
@@ -115,7 +116,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      *
      */
     private void speakOut(String text) {
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     /**
@@ -130,18 +131,18 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      */
     private void stopTextToSpeech(){
         try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
             }
         }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     private void startTextToSpeech(int status){
         if (status == TextToSpeech.SUCCESS) {
-            int result = tts.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.US);
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
@@ -150,7 +151,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
             }
 
         } else {
-            Log.e("TTS", "Initilization Failed!");
+            Log.e("TTS", "Initialization Failed!");
         }
     }
 
@@ -188,16 +189,15 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
         StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFY_OTP_URL,
                 jsonObject -> {
-                    System.out.println("Response is" + jsonObject);
                     progressDialog.dismiss();
 
                     try {
                         JSONObject jobj = new JSONObject(jsonObject);
 
-                        writeToPersonalSharedPreference("token", jobj.getJSONObject("data").getString("token"));
+                        writeToPersonalSharedPreference(Constant.Fields.TOKEN, jobj.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
                         Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
-                        objIntent.putExtra("mobile", mobileNumber);
+                        objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, mobileNumber);
                         startActivity(objIntent);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -212,9 +212,9 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
                 Map<String, String> params;
 
                 params = new HashMap<>();
-                params.put("kiosk_id", kioskId);
-                params.put("mobile", mobileNumber);
-                params.put("otp", etOTP.getText().toString());
+                params.put(Constant.Fields.KIOSK_ID, kioskId);
+                params.put(Constant.Fields.MOBILE_NUMBER, mobileNumber);
+                params.put(Constant.Fields.OTP, etOTP.getText().toString());
 
                 return params;
             }

@@ -35,6 +35,7 @@ import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
+import com.abhaybmicoc.app.utils.Constant;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -114,7 +115,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     private InputStream ins;
     private SerializeUUID serializeUUID;
 
-    private SharedPreferences shared;
+    private SharedPreferences sharedPreferencesPersonal;
 
     private SyncLib syncLib;
 
@@ -458,32 +459,28 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         batteryIcon = mCustomView.findViewById(R.id.batteryIcon);
         bluetoothIcon = mCustomView.findViewById(R.id.bluetoothIcon);
 
-        tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
-
-        tvResultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
-
         rgGlucose = layoutGlucose.findViewById(R.id.rg_glucose);
         rbFasting = layoutGlucose.findViewById(R.id.rb_fasting);
         rbPostMeal = layoutGlucose.findViewById(R.id.rb_post);
         rbRandom = layoutGlucose.findViewById(R.id.rb_random);
 
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvGender = findViewById(R.id.tv_gender);
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
-        tvTemprature = findViewById(R.id.tv_header_tempreture);
+        tvMobile = findViewById(R.id.tv_mobile_number);
         btnNext = findViewById(R.id.tv_header_pulseoximeter);
+        tvTemprature = findViewById(R.id.tv_header_tempreture);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
+        tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
+        tvResultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
+        tvConnectionLabel = mCustomView.findViewById(R.id.connectionLabel);
 
         menuIcon = mCustomView.findViewById(R.id.menuIcon);
         menuIcon.setVisibility(View.GONE);
 
-        tvConnectionLabel = mCustomView.findViewById(R.id.connectionLabel);
-
-        shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-        tvAge = findViewById(R.id.tv_age);
-        tvName = findViewById(R.id.tv_name);
-        tvGender = findViewById(R.id.tv_gender);
-        tvMobile = findViewById(R.id.tv_mobile_number);
+        sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         mView = findViewById(R.id.view_custom);
 
@@ -502,10 +499,10 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
         serializeUUID = new SerializeUUID();
         serializeUUID.readFile(ins);
 
-        tvAge.setText("DOB : " + shared.getString("dob", ""));
-        tvName.setText("Name : " + shared.getString("name", ""));
-        tvGender.setText("Gender : " + shared.getString("gender", ""));
-        tvMobile.setText("Phone : " + shared.getString("mobile_number", ""));
+        tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
     }
 
     private void setupEvents(){
