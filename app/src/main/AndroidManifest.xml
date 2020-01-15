@@ -129,7 +129,7 @@
             android:theme="@style/AppThemeGlucose"/>
 
         <activity
-            android:name="com.abhaybmicoc.app.glucose.ActivityGlucose"
+            android:name="com.abhaybmicoc.app.glucose.GlucoseActivity"
             android:theme="@style/AppThemeGlucose" />
 
         <activity

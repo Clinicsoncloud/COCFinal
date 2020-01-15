@@ -237,7 +237,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
@@ -250,7 +250,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
-                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
@@ -270,7 +270,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                 params = new HashMap<>();
                 params.put(Constant.Fields.KIOSK_ID, kiosk_id);
-                params.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                params.put(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
 
                 return params;
             }

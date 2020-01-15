@@ -44,6 +44,7 @@ import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
+import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
@@ -1385,40 +1386,43 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             protected Map<String, String> getParams() {
                 Map<String, String> params;
                 params = new HashMap<>();
-                params.put("height", ActofitObject.getString("height", ""));
-                params.put("weight", ActofitObject.getString("weight", ""));
-                params.put("gender", PersonalObject.getString("gender", ""));
-                params.put("bmi", ActofitObject.getString("bmi", ""));
-                params.put("bmr", ActofitObject.getString("bmr", ""));
-                params.put("meta_age", ActofitObject.getString("metaage", ""));
-                params.put("health_score", ActofitObject.getString("helthscore", ""));
-                params.put("physique", ActofitObject.getString("physique", ""));
-                params.put("subcutaneous", ActofitObject.getString("subfat", ""));
-                params.put("visceral_fat", ActofitObject.getString("visfat", ""));
-                params.put("skeleton_muscle", ActofitObject.getString("skemus", ""));
-                params.put("body_water", ActofitObject.getString("bodywater", ""));
-                params.put("muscle_mass", ActofitObject.getString("musmass", ""));
-                params.put("fat_free_weight", ActofitObject.getString("fatfreeweight", ""));
-                params.put("protein", ActofitObject.getString("protine", ""));
-                params.put("body_fat", ActofitObject.getString("bodyfat", ""));
-                params.put("bone_mass", ActofitObject.getString("bonemass", ""));
-                params.put("blood_pressure", BPObject.getString("systolic", ""));
-                params.put("dialostic", BPObject.getString("diastolic", ""));
-                params.put("oxygen", OximeterObject.getString("body_oxygen", ""));
-                params.put("pulse", OximeterObject.getString("pulse_rate", ""));
-                params.put("temperature", ThermometerObject.getString("data", ""));
-                params.put("hemoglobin", HemoglobinObject.getString("hemoglobin", ""));
-                params.put("sugar", BiosenseObject.getString("last", ""));
+                params.put("height", ActofitObject.getString(Constant.Fields.HEIGHT, ""));
+                params.put("weight", ActofitObject.getString(Constant.Fields.WEIGHT, ""));
+                params.put("gender", PersonalObject.getString(Constant.Fields.GENDER, ""));
+                params.put("bmi", ActofitObject.getString(Constant.Fields.BMI, ""));
+                params.put("bmr", ActofitObject.getString(Constant.Fields.BMR, ""));
+                params.put("meta_age", ActofitObject.getString(Constant.Fields.META_AGE, ""));
+                params.put("health_score", ActofitObject.getString(Constant.Fields.HEALTH_SCORE, ""));
+                params.put("physique", ActofitObject.getString(Constant.Fields.PHYSIQUE, ""));
+                params.put("subcutaneous", ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
+                params.put("visceral_fat", ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""));
+                params.put("skeleton_muscle", ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, ""));
+                params.put("body_water", ActofitObject.getString(Constant.Fields.BODY_WATER, ""));
+                params.put("muscle_mass", ActofitObject.getString(Constant.Fields.MUSCLE_MASS, ""));
+                params.put("fat_free_weight", ActofitObject.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
+                params.put("protein", ActofitObject.getString(Constant.Fields.PROTEIN, ""));
+                params.put("body_fat", ActofitObject.getString(Constant.Fields.BODY_FAT, ""));
+                params.put("bone_mass", ActofitObject.getString(Constant.Fields.BONE_MASS, ""));
+                params.put("blood_pressure", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
+                params.put("dialostic", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
+                params.put("oxygen", OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, ""));
+                params.put("pulse", OximeterObject.getString(Constant.Fields.PULSE_RATE, ""));
+                params.put("temperature", ThermometerObject.getString(Constant.Fields.TEMPERATURE, ""));
+                params.put("hemoglobin", HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, ""));
+                params.put("sugar", BiosenseObject.getString(Constant.Fields.SUGAR, ""));
+
                 if(!ActofitObject.getString("weight","").equalsIgnoreCase("")) {
                     params.put("weightrange", "" + standardWeightRange+"kg");
                 }else{
                     params.put("weightrange", "NA");
                 }
+
                 if(!ActofitObject.getString("bmi","").equalsIgnoreCase("")) {
                     params.put("bmirange", "18.5-25");
                 }else{
                     params.put("bmirange", "NA");
                 }
+
                 if(!ActofitObject.getString("bodyfat","").equalsIgnoreCase("")) {
                     params.put("bodyfatrange", standardBodyFat);
                 }else{

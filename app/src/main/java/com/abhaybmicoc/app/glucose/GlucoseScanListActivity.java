@@ -164,7 +164,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
                     {
                         if (flag != 2)
                         {
-                            final Intent intent = new Intent(getApplicationContext(), ActivityGlucose.class);
+                            final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
                             intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, device.getName());
                             intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
 
@@ -338,7 +338,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             util.putString(HelperC.key_autoconnectaddress, device.getAddress());
             util.putBoolean(HelperC.key_autoconnectflag, true);
 
-            final Intent intent = new Intent(getApplicationContext(), ActivityGlucose.class);
+            final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
             intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, name.getText().toString());
             intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
 

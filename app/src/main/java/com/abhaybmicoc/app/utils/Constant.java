@@ -13,7 +13,6 @@ public class Constant {
         public final static String TOKEN = "TOKEN";
         public final static String KIOSK_ID = "kiosk_id";
 
-
         public final static String NAME = "NAME";
         public final static String EMAIL = "EMAIL";
         public final static String GENDER = "GENDER";
@@ -24,6 +23,7 @@ public class Constant {
 
         public final static String BMI = "BMI";
         public final static String BMR = "BMR";
+        public final static String SUGAR = "SUGAR";
         public final static String PROTEIN = "PROTEIN";
         public final static String BODY_FAT = "BODY_FAT";
         public final static String PHYSIQUE = "PHYSIQUE";
@@ -35,6 +35,7 @@ public class Constant {
         public final static String PULSE_RATE = "PULSE_RATE";
         public final static String MUSCLE_MASS = "MUSCLE_MASS";
         public final static String TEMPERATURE = "TEMPERATURE";
+        public final static String GLUCOSE_TYPE = "GLUCOSE_TYPE";
         public final static String VISCERAL_FAT = "VISCERAL_FAT";
         public final static String HEALTH_SCORE = "HEALTH_SCORE";
         public final static String BLOOD_OXYGEN = "BLOOD_OXYGEN";
@@ -44,5 +45,7 @@ public class Constant {
         public final static String SUBCUTANEOUS_FAT = "SUBCUTANEOUS_FAT";
         public final static String BLOOD_PRESSURE_SYSTOLIC = "BLOOD_PRESSURE_SYSTOLIC";
         public final static String BLOOD_PRESSURE_DIASTOLIC = "BLOOD_PRESSURE_DIASTOLIC";
+
+        public static final String MOBILE_LOGIN = "mobile";
     }
 }

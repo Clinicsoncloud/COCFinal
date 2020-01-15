@@ -51,10 +51,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class ActivityGlucose extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
     // region Variables
 
-    private Context context = ActivityGlucose.this;
+    private Context context = GlucoseActivity.this;
 
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
 
@@ -122,6 +122,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
     private TextToSpeech textToSpeech;
 
     private Communicator communicator = this;
+
     private String textToSpeak = "";
     private String resultOfGlucose;
 
@@ -293,17 +294,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
                         selectedId = rgGlucose.getCheckedRadioButtonId();
                         radioButtonId = findViewById(selectedId);
 
-                        glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-
-                        SharedPreferences.Editor editor = glucoseData.edit();
-                        editor.putString("glucosetype", radioButtonId.getText().toString());
-                        editor.putString("last", tvResultTextNew.getText().toString());
-
-                        Log.e("glucosetype", "" + radioButtonId.getText().toString());
-                        Log.e("result", "" + tvResultTextNew.getText().toString());
-
-                        editor.commit();
-
+                        writeSugarSharedPreference();
                     }
                 });
 
@@ -317,6 +308,16 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
             layoutGlucose.setVisibility(View.VISIBLE);
             layoutGlucose.setGravity(Gravity.CENTER);
         }
+    }
+
+    private void writeSugarSharedPreference() {
+        glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = glucoseData.edit();
+
+        editor.putString(Constant.Fields.SUGAR, tvResultTextNew.getText().toString());
+        editor.putString(Constant.Fields.GLUCOSE_TYPE, radioButtonId.getText().toString());
+
+        editor.commit();
     }
 
     @Override
@@ -394,7 +395,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
             }
 
         } else {
-            Log.e("TTS", "Initilization Failed!");
+            Log.e("TTS", "Initialization Failed!");
         }
     }
 
@@ -535,7 +536,7 @@ public class ActivityGlucose extends AppCompatActivity implements Communicator, 
             mDeviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         }
 
-        syncLib = new SyncLib(communicator, this, ActivityGlucose.this, serializeUUID, mDeviceAddress);
+        syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
 
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
     }
