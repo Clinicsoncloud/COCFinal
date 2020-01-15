@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.abhaybmicoc.app"
+    package="com.abhaybmicoctest.app"
     android:versionCode="201801"
     android:versionName="201801">
 
@@ -52,7 +52,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name="com.abhaybmicoc.app.entities.AndMedical_App_Global"
+        android:name="com.abhaybmicoctest.app.entities.AndMedical_App_Global"
         android:allowBackup="true"
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
@@ -65,29 +65,29 @@
         <uses-library android:name="org.apache.http.legacy" android:required="false" />
         
         <activity
-            android:name="com.abhaybmicoc.app.PostVerifiedOtpScreen"
+            android:name="com.abhaybmicoctest.app.PostVerifiedOtpScreen"
             android:label="Verify OTP"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.BpLoginScreen"
+            android:name="com.abhaybmicoctest.app.BpLoginScreen"
             android:label="@string/title_activity_bp_login_screen"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name="com.abhaybmicoc.app.redirect.DashboardScreen"
+            android:name="com.abhaybmicoctest.app.redirect.DashboardScreen"
             android:label="@string/title_activity_dashboard_screen"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name="com.abhaybmicoc.app.weight.WeightScreen"
+            android:name="com.abhaybmicoctest.app.weight.WeightScreen"
             android:label="@string/title_activity_weight_screen"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name="com.abhaybmicoc.app.thermometer.ThermometerScreen"
+            android:name="com.abhaybmicoctest.app.thermometer.ThermometerScreen"
             android:label="@string/title_activity_thermometer_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden"/>
         <activity
-            android:name="com.abhaybmicoc.app.heightweight.HeightScreen"
+            android:name="com.abhaybmicoctest.app.heightweight.HeightScreen"
             android:label="@string/title_activity_height_screen"
             android:theme="@style/AppThemeAction"
             android:windowSoftInputMode="stateHidden|adjustResize">
@@ -95,7 +95,7 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.heightweight.Principal"
+            android:name="com.abhaybmicoctest.app.heightweight.Principal"
             android:label="@string/title_activity_height_screen"
             android:theme="@style/AppThemeAction"
             android:windowSoftInputMode="stateHidden|adjustResize">
@@ -103,7 +103,7 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.ActivateScreen"
+            android:name="com.abhaybmicoctest.app.ActivateScreen"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan">
@@ -122,16 +122,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.PrintPriviewScreen"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.PrintPriviewScreen"
             android:label="@string/title_activity_print_priview_screen"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name="com.abhaybmicoc.app.OtpVerifyScreen"
+            android:name="com.abhaybmicoctest.app.OtpVerifyScreen"
             android:label="@string/title_activity_otp_verify_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="com.abhaybmicoc.app.OtpLoginScreen"
+            android:name="com.abhaybmicoctest.app.OtpLoginScreen"
             android:label="@string/title_activity_otp_login_screen"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
@@ -143,26 +143,26 @@
             android:name="com.htc.android.bluetooth.le"
             android:required="false" />
 
-        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
+        <service android:name="com.abhaybmicoctest.app.gatt.BleConnectService" />
+        <service android:name="com.abhaybmicoctest.app.gatt.BleReceivedService" />
 
         <activity
-            android:name="com.abhaybmicoc.app.SplashActivity"
+            android:name="com.abhaybmicoctest.app.SplashActivity"
             android:label="@string/app_name">
 
 
         </activity>
         <activity
-            android:name="com.abhaybmicoc.app.actofitheight.ActofitMainActivity"
+            android:name="com.abhaybmicoctest.app.actofitheight.ActofitMainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
         <activity
-            android:name="com.abhaybmicoc.app.actofitheight.DisplayRecord"
+            android:name="com.abhaybmicoctest.app.actofitheight.DisplayRecord"
             android:label="Weight Details"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
         <activity
-            android:name="com.abhaybmicoc.app.oximeter.MainActivity"
+            android:name="com.abhaybmicoctest.app.oximeter.MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
         <!--
@@ -172,10 +172,10 @@
             android:theme="@android:style/Theme.NoTitleBar" />
         -->
         <activity
-            android:name="com.abhaybmicoc.app.base.ADInstructionActivity"
+            android:name="com.abhaybmicoctest.app.base.ADInstructionActivity"
             android:theme="@style/Theme.TransBackground" />
         <activity
-            android:name="com.abhaybmicoc.app.LanucherLoginActivity"
+            android:name="com.abhaybmicoctest.app.LanucherLoginActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar">
 
@@ -195,7 +195,7 @@
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
         <activity
-            android:name="com.abhaybmicoc.app.glucose.Activity_ScanList"
+            android:name="com.abhaybmicoctest.app.glucose.Activity_ScanList"
             android:theme="@style/AppThemeGlucose">
 
             <!--
@@ -207,63 +207,63 @@
             -->
         </activity>
         <activity
-            android:name="com.abhaybmicoc.app.glucose.Activity_Home"
+            android:name="com.abhaybmicoctest.app.glucose.Activity_Home"
             android:theme="@style/AppThemeGlucose" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_Main"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"></activity><!-- Printer -->
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_BTDiscovery"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_BTDiscovery"
             android:launchMode="standard"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GeneralPrinterActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_GeneralPrinterActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscListActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscListActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscTextDataActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscTextDataActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBMPPrintActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscBMPPrintActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscPaperFeedActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscPaperFeedActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscFontPropertesActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscFontPropertesActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBarcodeHeightActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscBarcodeHeightActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscChangeFontActivity"
+            android:name="com.abhaybmicoctest.app.printer.esys.pridedemoapp.Act_EscChangeFontActivity"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- hemoglobin -->
         <activity
-            android:name="com.abhaybmicoc.app.hemoglobin.MainActivity"
+            android:name="com.abhaybmicoctest.app.hemoglobin.MainActivity"
             android:theme="@style/AppThemeHemoGlobin">
 
         </activity>
 
         <service
-            android:name="com.abhaybmicoc.app.hemoglobin.UsbService"
+            android:name="com.abhaybmicoctest.app.hemoglobin.UsbService"
             android:enabled="true" />
 
         <activity
-            android:name="com.abhaybmicoc.app.oxygen.OxygenActivity"
+            android:name="com.abhaybmicoctest.app.oxygen.OxygenActivity"
             android:label="@string/app_name"
             android:theme="@style/AppThemeGlucose" />
 
 
         <service
-            android:name="com.abhaybmicoc.app.oxygen.ble.BluetoothLeService"
+            android:name="com.abhaybmicoctest.app.oxygen.ble.BluetoothLeService"
             android:enabled="true" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleConnectService" />
-        <service android:name="com.abhaybmicoc.app.gatt.BleReceivedService" />
+        <service android:name="com.abhaybmicoctest.app.gatt.BleConnectService" />
+        <service android:name="com.abhaybmicoctest.app.gatt.BleReceivedService" />
 
         <activity
-            android:name="com.abhaybmicoc.app.DashboardActivity"
+            android:name="com.abhaybmicoctest.app.DashboardActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar">
             <!--<intent-filter>
@@ -279,10 +279,10 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.LoginActivity"
+            android:name="com.abhaybmicoctest.app.LoginActivity"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name="com.abhaybmicoc.app.InstructionActivity"
+            android:name="com.abhaybmicoctest.app.InstructionActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
@@ -294,18 +294,18 @@
             android:value="be3553252fe706b37ebb6102a8414776371c942d" />
 
         <activity
-            android:name="com.abhaybmicoc.app.DialogActivity"
+            android:name="com.abhaybmicoctest.app.DialogActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@style/Theme.TransBackground" />
 
-        <service android:name="com.abhaybmicoc.app.BluetoothLeService" />
+        <service android:name="com.abhaybmicoctest.app.BluetoothLeService" />
 
         <activity
-            android:name="com.abhaybmicoc.app.DeviceSetUpActivityListDesign"
+            android:name="com.abhaybmicoctest.app.DeviceSetUpActivityListDesign"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
-            android:name="com.abhaybmicoc.app.PrintPreviewActivity"
+            android:name="com.abhaybmicoctest.app.PrintPreviewActivity"
             android:screenOrientation="landscape" >
 
 

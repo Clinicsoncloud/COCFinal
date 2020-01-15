@@ -166,7 +166,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             }
         });
 
-
         btn = (Button) findViewById(R.id.btnsave);
         btnrepeat = (Button) findViewById(R.id.btnrepeat);
 
@@ -323,8 +322,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 tts.stop();
                 tts.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
@@ -354,16 +353,17 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 */
         } else if (requestCode == RESULT_CANCELED) {
             String key_error = data.getStringExtra("KEY_ERROR");
-            if(key_error.equals("101")){
+            if (key_error.equals("101")) {
                 Toast.makeText(context, "Subscription over", Toast.LENGTH_SHORT).show();
-            }else if(key_error.equals("102")){
+            } else if (key_error.equals("102")) {
                 Toast.makeText(context, "No saved Device", Toast.LENGTH_SHORT).show();
-            }else if(key_error.equals("100")){
+            } else if (key_error.equals("100")) {
                 Toast.makeText(context, " Impedance Measurement Error From SmartScale", Toast.LENGTH_SHORT).show();
             }
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
+
     private boolean appInstalledOrNot(String uri) {
         PackageManager pm = getPackageManager();
         try {
