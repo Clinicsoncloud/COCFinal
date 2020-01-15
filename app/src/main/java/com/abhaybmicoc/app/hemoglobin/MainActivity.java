@@ -547,7 +547,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      * @param view
      */
     public void test(View view) {
-        //sendMessage("ON");
+        Log.e("startTest","cmd send");
+        sendMessage("ON");
         sendMessage("U401");
         sendMessage("U401");
     }
@@ -611,6 +612,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         return sharedPreferencesDevice.getString("deviceName", "");
     }
 
+    /**
+     *
+     *
+     * @return
+     */
     private String getStoredDeviceAddress(){
         return sharedPreferencesDevice.getString("deviceAddress","");
     }
