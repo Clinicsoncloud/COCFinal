@@ -69,8 +69,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private int COUNT_CONNECTION_TRY = 0;
     private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
+    private int DEVICE_CONNECTION_WAITING_TIME = 10000;
+
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
+
 
     private BluetoothGatt mGatt;
     private ScanCallback mScanCallback;
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private Map<String, BluetoothDevice> mScanResults;
     
     private Handler mHandler;
+    private Handler deviceConnectionTimeoutHandler;
 
     private boolean mScanning;
     private boolean mConnected;
@@ -246,24 +250,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void disconnectGattServer() {
-        if (dialogProgress != null)
-            dialogProgress.dismiss();
-
-        mConnected = false;
-        mEchoInitialized = false;
-
-        tvViewDevice.setText("NA");
-        btnConnect.setText("Connect");
-        btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
-
-        if (mGatt != null) {
-            try {
-                mGatt.disconnect();
-                mGatt.close();
-            }
-            catch(RuntimeException ex){
-            }
-        }
+        stopBluetoothConnection();
     }
 
     @Override
@@ -359,6 +346,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         speakOut(txt);
 
         setUserInfo();
+
+        setDeviceConnectionTimeoutHandler();
 
         showProgressDialog();
 
@@ -622,23 +611,60 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          * Connect to device
          */
 
-        dialogConnectionProgress.show();
-        btnConnect.setVisibility(View.GONE);
+        if(savedDeviceAlreadyExists()) {
+            connect();
+        }else {
+            dialogConnectionProgress.show();
+            btnConnect.setVisibility(View.GONE);
 
-        String deviceName = spinnerDevice.getSelectedItem().toString();
-        String deviceAddress = deviceName.substring(deviceName.length() - 17);
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
+            String deviceName = spinnerDevice.getSelectedItem().toString();
+            String deviceAddress = deviceName.substring(deviceName.length() - 17);
+            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
 
-        saveDeviceInformation(device.getName(), device.getAddress());
+            saveDeviceInformation(device.getName(), device.getAddress());
 
-        deviceArrayList.clear();
+            deviceArrayList.clear();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
-        adapter.notifyDataSetChanged();
+            ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
+            adapter.notifyDataSetChanged();
 
-        spinnerDevice.setAdapter(adapter);
+            spinnerDevice.setAdapter(adapter);
 
-        connect();
+            connect();
+        }
+    }
+
+    private void setDeviceConnectionTimeoutHandler(){
+        deviceConnectionTimeoutHandler = new Handler();
+        
+        deviceConnectionTimeoutHandler.postDelayed(()->{
+           if(dialogConnectionProgress != null && dialogConnectionProgress.isShowing()){
+               dialogConnectionProgress.dismiss();
+
+               stopBluetoothConnection();
+           }
+
+        }, DEVICE_CONNECTION_WAITING_TIME);
+    }
+
+    private void stopBluetoothConnection(){
+        if (dialogProgress != null)
+            dialogProgress.dismiss();
+
+        mConnected = false;
+        mEchoInitialized = false;
+
+        tvViewDevice.setText("Please check device and try again");
+        btnConnect.setVisibility(View.VISIBLE);
+
+        if (mGatt != null) {
+            try {
+                mGatt.disconnect();
+                mGatt.close();
+            }
+            catch(RuntimeException ex){
+            }
+        }
     }
 
     private String getStoredDeviceName(){
