@@ -629,7 +629,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          * Clear spinner
          * Connect to device
          */
-        
+
         dialogConnectionProgress.show();
         btnConnect.setVisibility(View.GONE);
 
