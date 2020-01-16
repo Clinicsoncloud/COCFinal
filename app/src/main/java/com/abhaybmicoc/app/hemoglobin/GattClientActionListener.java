@@ -13,5 +13,6 @@ public interface GattClientActionListener {
     void initializeEcho();
 
     void disconnectGattServer();
+
     void showToast(String msg);
 }

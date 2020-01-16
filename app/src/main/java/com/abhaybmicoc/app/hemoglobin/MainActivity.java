@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private Context context = MainActivity.this;
 
+    private int COUNT_CONNECTION_TRY = 0;
+    private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
 
@@ -215,14 +217,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void setConnected(boolean connected) {
-        dialogConnectionProgress.dismiss();
-
-        mConnected = connected;
-
-        btnConnect.setText("Connected");
-        btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
-
-        tvViewDevice.setText(getStoredDeviceName());
+        updateConnectionStatus(connected);
     }
 
     @Override
@@ -308,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void setupEvents() {
         btnScan.setOnClickListener(view -> scanDevices());
 
-        btnConnect.setOnClickListener(view -> storeDeviceAndConnect());
+        btnConnect.setOnClickListener(view -> connectToScannedDevice());
 
         tvMainHeight.setOnClickListener(view -> {
             context.startActivity(new Intent(MainActivity.this, HeightActivity.class));
@@ -358,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         requestPermission();
 
-        connectToDevice();
+        connectOrShowScanDevice();
     }
 
     private void setUserInfo() {
@@ -507,13 +502,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         startActivity(new Intent(MainActivity.this, Act_Main.class));
     }
 
-    // Gatt connection
-    private void connectDevice(BluetoothDevice device) {
-        GattClientCallback gattClientCallback = new GattClientCallback(this);
-        mGatt = device.connectGatt(this, true, gattClientCallback);
-
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean hasPermissions() {
         if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
@@ -564,7 +552,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     /**
      *
      */
-    private void connectToDevice(){
+    private void connectOrShowScanDevice(){
+        /**
+         * On load, check if device is stored in local storage
+         * If yes, connect
+         * If no, show scan button
+         */
+
         if(savedDeviceAlreadyExists()) {
             btnScan.setVisibility(View.GONE);
             connect();
@@ -573,32 +567,77 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
     }
 
-    /**
-     *
-     */
-    public void connect() {
-        disconnectGattServer();
+    private void updateConnectionStatus(boolean connected){
+        /**
+         * Store connection status in a variable
+         * If connected, hide connect button, show connection message
+         * If not connected
+         *   - If we have tried maximum times, show scan button
+         *   - Else try to connect again
+         */
 
-        dialogConnectionProgress.show();
+        mConnected = connected;
 
-        BluetoothDevice device = getDevice(getStoredDeviceAddress());
-        connectDevice(device);
+        if(connected) {
+            COUNT_CONNECTION_TRY = 0;
+
+            dialogConnectionProgress.dismiss();
+
+            btnConnect.setVisibility(View.GONE);
+
+            tvViewDevice.setText("Connected to : " + getStoredDeviceName());
+        }else{
+            COUNT_CONNECTION_TRY++;
+
+            if(COUNT_CONNECTION_TRY == COUNT_CONNECTION_MAXIMUM_TRY){
+                tvViewDevice.setText("Cannot connect to device, scan the device again");
+
+                btnScan.setVisibility(View.VISIBLE);
+            }else{
+                tvViewDevice.setText("Cannot connect to device, trying again");
+
+                connect();
+            }
+        }
     }
 
     /**
      *
      */
-    private void storeDeviceAndConnect(){
+    private void connect() {
+        disconnectGattServer();
 
         dialogConnectionProgress.show();
+
+        BluetoothDevice device = getDevice(getStoredDeviceAddress());
+
+        GattClientCallback gattClientCallback = new GattClientCallback(this);
+
+        mGatt = device.connectGatt(this, true, gattClientCallback);
+
+        // TODO: Check state of connection
+    }
+
+    /**
+     *
+     */
+    private void connectToScannedDevice(){
+        /**
+         * Show progress dialog for connecting
+         * Hide connect button
+         * Save device information to local storage
+         * Clear spinner
+         * Connect to device
+         */
+        
+        dialogConnectionProgress.show();
+        btnConnect.setVisibility(View.GONE);
 
         String deviceName = spinnerDevice.getSelectedItem().toString();
         String deviceAddress = deviceName.substring(deviceName.length() - 17);
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
 
-        saveDeviceInformation(deviceName, deviceAddress);
-
-        connect();
+        saveDeviceInformation(device.getName(), device.getAddress());
 
         deviceArrayList.clear();
 
@@ -606,6 +645,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         adapter.notifyDataSetChanged();
 
         spinnerDevice.setAdapter(adapter);
+
+        connect();
     }
 
     private String getStoredDeviceName(){
@@ -669,7 +710,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     void requestPermission() {
-        requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+        try {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+        }
+        catch(RuntimeException ex){
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -761,6 +807,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         adapter.notifyDataSetChanged();
         
         spinnerDevice.setAdapter(adapter);
+
+        btnConnect.setVisibility(View.VISIBLE);
     }
 
     /**
