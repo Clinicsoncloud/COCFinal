@@ -236,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void initializeTime() {
-
+        mEchoInitialized = true;
     }
 
     @Override
@@ -257,8 +257,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
 
         if (mGatt != null) {
-            mGatt.disconnect();
-            mGatt.close();
+            try {
+                mGatt.disconnect();
+                mGatt.close();
+            }
+            catch(RuntimeException ex){
+            }
         }
     }
 
@@ -526,8 +530,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     public void test() {
-        Log.e("startTest","cmd send");
-        sendMessage("ON");
         sendMessage("U401");
         sendMessage("U401");
     }
@@ -552,6 +554,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         if(savedDeviceAlreadyExists()) {
             btnScan.setVisibility(View.GONE);
+            btnConnect.setVisibility(View.GONE);
             connect();
         } else{
             btnScan.setVisibility(View.VISIBLE);
@@ -573,8 +576,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             COUNT_CONNECTION_TRY = 0;
 
             dialogConnectionProgress.dismiss();
-
-            btnConnect.setVisibility(View.GONE);
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
         }else{
