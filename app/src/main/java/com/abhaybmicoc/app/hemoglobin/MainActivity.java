@@ -104,7 +104,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private SharedPreferences sharedPreferencesPersonal;
     private SharedPreferences sharedPreferencesDeviceHemoglobin;
 
+    private Button btnNext;
     private Button btnScan;
+    private Button btnTest;
     private Button btnConnect;
     private Spinner spinnerDevice;
 
@@ -217,6 +219,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void setConnected(boolean connected) {
+        mScanning = false;
+
         updateConnectionStatus(connected);
     }
 
@@ -274,11 +278,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void setupUI() {
         setContentView(R.layout.new_try_hemoglobin);
 
+        btnNext = findViewById(R.id.btn_next);
         btnScan = findViewById(R.id.btn_scan);
-        btnConnect = findViewById(R.id.btnconnect);
+        btnTest = findViewById(R.id.btn_test);
+        btnConnect = findViewById(R.id.btn_connect);
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
 
-        spinnerDevice = findViewById(R.id.spindevice);
+        spinnerDevice = findViewById(R.id.sp_device_list);
 
         tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
@@ -301,9 +307,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupEvents() {
+        btnTest.setOnClickListener(view -> test());
         btnScan.setOnClickListener(view -> scanDevices());
-
         btnConnect.setOnClickListener(view -> connectToScannedDevice());
+        btnNext.setOnClickListener(view -> switchOffDeviceAndMoveNext());
 
         tvMainHeight.setOnClickListener(view -> {
             context.startActivity(new Intent(MainActivity.this, HeightActivity.class));
@@ -486,11 +493,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         builder.show();
     }
 
-    /**
-     *
-     * @param view
-     */
-    public void device_off(View view) {
+    public void switchOffDeviceAndMoveNext() {
         sendMessage("U370");
 
         disconnectGattServer();
@@ -522,19 +525,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
     }
 
-    /**
-     *
-     * @param view
-     */
-    public void start(View view) {
-        sendMessage("U371");
-    }
-
-    /**
-     *
-     * @param view
-     */
-    public void test(View view) {
+    public void test() {
         Log.e("startTest","cmd send");
         sendMessage("ON");
         sendMessage("U401");
