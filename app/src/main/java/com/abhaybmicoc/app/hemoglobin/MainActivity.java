@@ -636,7 +636,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private void setDeviceConnectionTimeoutHandler(){
         deviceConnectionTimeoutHandler = new Handler();
-        
+
         deviceConnectionTimeoutHandler.postDelayed(()->{
            if(dialogConnectionProgress != null && dialogConnectionProgress.isShowing()){
                dialogConnectionProgress.dismiss();
