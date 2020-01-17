@@ -302,7 +302,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getResults() {
-        if(isMalePatient()){
+        if(SharedPerferenceService.isMalePatient(context)){
             /* Calculate result as per male gender */
 
             getMaleWeightResult();
@@ -350,10 +350,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getPulseResult();
             getTemperatureResult();
         }
-    }
-
-    private boolean isMalePatient(){
-        return SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.GENDER).equalsIgnoreCase("male");
     }
 
     // endregion
@@ -923,7 +919,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         glucoseRange();
 
-        if (isMalePatient())
+        if(SharedPerferenceService.isMalePatient(context))
             maleRange(standardWeightMen);
         else
             femaleRange(standardWeightFemale);

@@ -3,6 +3,9 @@ package com.abhaybmicoc.app.services;
 import android.content.Context;
 import android.util.Log;
 
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class SharedPerferenceService {
@@ -52,5 +55,9 @@ public class SharedPerferenceService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public static boolean isMalePatient(Context context){
+        return SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.GENDER).equalsIgnoreCase("male");
     }
 }

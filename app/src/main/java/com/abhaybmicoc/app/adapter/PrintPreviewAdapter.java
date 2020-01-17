@@ -1345,15 +1345,16 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         int age = getAge();
 
         if (printData.getCurr_value() == 0.0) {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.rangeTV.setText("");
             viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-            viewHolder.rangeTV.setText("");
         } else {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
-            viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.rangeTV.setText("<= "+ age + " yrs");
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (printData.getCurr_value() <= age) {
                 viewHolder.resultTV.setText("Standard");
@@ -1416,55 +1417,45 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     private void showSkeletalMuscle(ViewHolder viewHolder){
         if (printData.getCurr_value() == 0.0) {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
-            viewHolder.valueTV.setText("NA");
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+
             viewHolder.rangeTV.setText("");
+            viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
         } else {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
-            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+            if(SharedPerferenceService.isMalePatient(context)){
+                /* Male skeleton muscle */
 
                 if (printData.getCurr_value() > 59) {
-
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 } else if (printData.getCurr_value() <= 59 && printData.getCurr_value() >= 49) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < 49) {
-
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                 }
 
                 viewHolder.rangeTV.setText("49 - 59 %");
-
-            } else {  //female skeleton muscle
+            } else {
+                /* Female skeleton muscle */
 
                 viewHolder.rangeTV.setText("40 - 50 %");
 
                 if (printData.getCurr_value() > 50) {
-
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 } else if (printData.getCurr_value() <= 50 && printData.getCurr_value() >= 40) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < 40) {
-
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                 }
             }
         }
