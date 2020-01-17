@@ -302,8 +302,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getResults() {
-        if(sharedPreferencesPersonalData.getString("gender","").equalsIgnoreCase("male")){
-            //Calculate result as per male gender
+        if(isMalePatient()){
+            /* Calculate result as per male gender */
+
             getMaleWeightResult();
             getMaleBMIResult();
             getMaleBodyFatResult();
@@ -326,7 +327,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getTemperatureResult();
 
         }else {
-            //calculate result as per female gender
+            /* Calculate result as per female gender */
+
             getFemaleWeightResult();
             getFemaleBMIResult();
             getFemaleBodyFatResult();
@@ -348,6 +350,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getPulseResult();
             getTemperatureResult();
         }
+    }
+
+    private boolean isMalePatient(){
+        return SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.GENDER).equalsIgnoreCase("male");
     }
 
     // endregion
@@ -906,15 +912,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // region Range methods
 
     private void getStandardRange() {
-        if(SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
-            weight = getWeight();
-        else
-            weight = 0;
-
-        if(SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
-            height = getHeight();
-        else
-            height = 0;
+        height = getHeight();
+        weight = getWeight();
 
         double standardWeightMen = ((height - 80) * 0.7);
         standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
@@ -924,7 +923,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         glucoseRange();
 
-        if (sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "").equals("male"))
+        if (isMalePatient())
             maleRange(standardWeightMen);
         else
             femaleRange(standardWeightFemale);
@@ -1079,15 +1078,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getHeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
-            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
         else
             return 0;
     }
 
     private double getWeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT))
-            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT))
+            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         else
             return 0;
     }
