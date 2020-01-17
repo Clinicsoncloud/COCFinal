@@ -19,11 +19,8 @@ public class DateService {
         try {
             date = sdf.parse(dateOfBirth);
         } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (date == null)
             return 0;
+        }
 
         Calendar calDateOfBirth = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
