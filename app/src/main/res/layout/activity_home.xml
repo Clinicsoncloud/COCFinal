@@ -13,8 +13,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:weightSum="3"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -96,8 +96,8 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/pad10"
-                    android:gravity="center"
                     android:background="@color/orange4"
+                    android:gravity="center"
                     android:padding="@dimen/pad5"
                     android:text="Blood Sugar"
                     android:textColor="@color/white"
@@ -109,8 +109,8 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:layout_margin="@dimen/pad10"
-                    android:gravity="center"
                     android:background="@drawable/repeat"
+                    android:gravity="center"
                     android:padding="@dimen/pad5"
                     android:text="Hemoglobin"
                     android:textColor="@color/white"
@@ -229,22 +229,22 @@
                         android:textStyle="bold" />
 
                     <LinearLayout
+                        android:id="@+id/layout_glucose"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center"
                         android:layout_below="@id/tv_offline_title"
-                        android:id="@+id/layout_glucose"
+                        android:gravity="center"
+                        android:orientation="horizontal"
                         android:weightSum="2">
 
                         <ImageView
                             android:id="@+id/iv_glucose"
                             android:layout_width="200dp"
-                            android:layout_weight=".6"
-                            android:visibility="visible"
-                            android:src="@drawable/glucoseicon"
+                            android:layout_height="200dp"
                             android:layout_margin="@dimen/pad10"
-                            android:layout_height="200dp" />
+                            android:layout_weight=".6"
+                            android:src="@drawable/glucoseicon"
+                            android:visibility="visible" />
 
                         <ImageView
                             android:id="@+id/iv_steps"
@@ -257,16 +257,16 @@
                         <include
                             android:id="@+id/layout_glucose_result"
                             layout="@layout/glucose_layout"
-                            android:visibility="gone"/>
+                            android:visibility="gone" />
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/rv_reading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:visibility="visible"
-                            android:background="@drawable/background"
                             android:layout_weight="1"
-                            android:scrollbars="vertical" />
+                            android:background="@drawable/background"
+                            android:scrollbars="vertical"
+                            android:visibility="visible" />
 
                     </LinearLayout>
 
@@ -290,8 +290,8 @@
                                 android:id="@+id/btn_start_test"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:layout_weight="1"
                                 android:layout_margin="10dp"
+                                android:layout_weight="1"
                                 android:background="@drawable/greenback"
                                 android:text="@string/starttest"
                                 android:textColor="@color/white"
@@ -303,8 +303,8 @@
                                 android:id="@+id/btn_next"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
-                                android:layout_weight="1"
                                 android:layout_margin="10dp"
+                                android:layout_weight="1"
                                 android:background="@drawable/greenback"
                                 android:text="Next"
                                 android:textColor="@color/white"
@@ -318,8 +318,8 @@
                             android:layout_centerInParent="true"
                             android:layout_marginTop="@dimen/margin20"
                             android:layout_marginBottom="50dp"
-                            android:orientation="horizontal"
                             android:gravity="center"
+                            android:orientation="horizontal"
                             android:weightSum="2">
 
 
@@ -332,21 +332,21 @@
                                 android:text="@string/restartTest"
                                 android:textColor="@color/white"
                                 android:textSize="30sp"
-                                android:visibility="gone"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:visibility="gone" />
 
                             <Button
                                 android:id="@+id/getData"
                                 android:layout_width="match_parent"
                                 android:layout_height="60dp"
+                                android:layout_marginStart="@dimen/pad10"
                                 android:layout_weight="1"
                                 android:background="@drawable/greenback"
                                 android:text="@string/getdata"
-                                android:layout_marginStart="@dimen/pad10"
                                 android:textColor="@color/white"
-                                android:visibility="gone"
                                 android:textSize="30sp"
-                                android:textStyle="bold" />
+                                android:textStyle="bold"
+                                android:visibility="gone" />
 
                         </LinearLayout>
                     </LinearLayout>
@@ -358,7 +358,6 @@
         </LinearLayout>
 
     </ScrollView>
-
 
 
 </LinearLayout>

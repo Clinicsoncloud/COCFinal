@@ -79,28 +79,43 @@ import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
 
-    @BindView(R.id.dobTV) TextView dobTV;
-    @BindView(R.id.nameTV) TextView nameTV;
-    @BindView(R.id.valueTV) TextView valueTV;
-    @BindView(R.id.rangeTV) TextView rangeTV;
-    @BindView(R.id.txtWish) TextView txtWish;
-    @BindView(R.id.heightTV) TextView heightTV;
-    @BindView(R.id.resultTV) TextView resultTV;
-    @BindView(R.id.genderTV) TextView genderTV;
-    @BindView(R.id.parameterTV) TextView parameterTV;
+    @BindView(R.id.dobTV)
+    TextView dobTV;
+    @BindView(R.id.nameTV)
+    TextView nameTV;
+    @BindView(R.id.valueTV)
+    TextView valueTV;
+    @BindView(R.id.rangeTV)
+    TextView rangeTV;
+    @BindView(R.id.txtWish)
+    TextView txtWish;
+    @BindView(R.id.heightTV)
+    TextView heightTV;
+    @BindView(R.id.resultTV)
+    TextView resultTV;
+    @BindView(R.id.genderTV)
+    TextView genderTV;
+    @BindView(R.id.parameterTV)
+    TextView parameterTV;
 
-    @BindView(R.id.lV) ListView lV;
-    @BindView(R.id.topLL) LinearLayout topLL;
+    @BindView(R.id.lV)
+    ListView lV;
+    @BindView(R.id.topLL)
+    LinearLayout topLL;
 
     private Button btnOk;
     private Button btnConfirm;
     private Button btnUnicode11;
-    @BindView(R.id.homebtn) Button homebtn;
-    @BindView(R.id.printbtn) Button printbtn;
+    @BindView(R.id.homebtn)
+    Button homebtn;
+    @BindView(R.id.printbtn)
+    Button printbtn;
 
     private LinearLayout llprog;
-    @BindView(R.id.buttonLL) LinearLayout buttonLL;
-    @BindView(R.id.headerLL) LinearLayout headerLL;
+    @BindView(R.id.buttonLL)
+    LinearLayout buttonLL;
+    @BindView(R.id.headerLL)
+    LinearLayout headerLL;
 
     SharedPreferences ActofitObject, OximeterObject, PersonalObject, ThermometerObject, BPObject, BiosenseObject, HemoglobinObject, spToken;
 
@@ -111,7 +126,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private int iRetVal;
     public static int iWidth;
     public static final int DEVICE_NOTCONNECTED = -100;
-    private static final int  PERMISSION_STORAGE_CODE = 1000;
+    private static final int PERMISSION_STORAGE_CODE = 1000;
 
     private Dialog dlgBarcode;
     public Dialog dlgCustomdialog;
@@ -184,7 +199,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
-        textToSpeech = new TextToSpeech(this,this);
+        textToSpeech = new TextToSpeech(this, this);
 
         ivDownload = findViewById(R.id.iv_download);
 
@@ -220,7 +235,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         super.onResume();
 
         //reinitialization of the textToSpeech engine for voice command
-        textToSpeech = new TextToSpeech(this,this);
+        textToSpeech = new TextToSpeech(this, this);
 
     }
 
@@ -234,15 +249,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
 
     }
 
     private void getResults() {
 
-        if(PersonalObject.getString("gender","").equalsIgnoreCase("male")){
+        if (PersonalObject.getString("gender", "").equalsIgnoreCase("male")) {
             //Calculate result as per male gender
             getMaleWeightResult();
             getMaleBMIResult();
@@ -264,7 +279,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getPulseResult();
             getTEMPERATUREResult();
 
-        }else {
+        } else {
             //calculate result as per female gender
             getWeightResult();
             getBMIResult();
@@ -290,7 +305,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getDiastolicResult() {
-        if(!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC,"").equalsIgnoreCase("")){
+        if (!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) > 89) {
                 diastolicResult = "High";
             } else if (Double.parseDouble(BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) <= 89 && Double.parseDouble(BPObject.getString("diastolic", "")) >= 60) {
@@ -298,25 +313,25 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 diastolicResult = "Low";
             }
-        }else{
+        } else {
             diastolicResult = "NA";
         }
     }
 
     private void getMetaAgeResult() {
-        if(!ActofitObject.getString(Constant.Fields.META_AGE, "").equalsIgnoreCase("")){
-            if(Double.parseDouble(ActofitObject.getString(Constant.Fields.META_AGE,"")) <= age){
+        if (!ActofitObject.getString(Constant.Fields.META_AGE, "").equalsIgnoreCase("")) {
+            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.META_AGE, "")) <= age) {
                 metaageResult = "Standard";
-            }else{
+            } else {
                 metaageResult = "Not upto standard";
             }
-        }else{
+        } else {
             metaageResult = "NA";
         }
     }
 
     private void getSubcutaneousResult() {
-        if(!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) > 26.7) {
                 subcutaneousResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) <= 26.7 && Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) >= 18.5) {
@@ -324,13 +339,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 subcutaneousResult = "Low";
             }
-        }else {
+        } else {
             subcutaneousResult = "NA";
         }
     }
 
     private void getHemoglobinResult() {
-        if(!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
+        if (!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) > 15.1) {
                 hemoglobinResult = "High";
             } else if (Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) <= 15.1 && Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) >= 12.1) {
@@ -338,14 +353,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 hemoglobinResult = "Low";
             }
-        }else{
+        } else {
             hemoglobinResult = "NA";
         }
     }
 
     private void getBoneMassResult() {
 
-        if(!ActofitObject.getString(Constant.Fields.BONE_MASS,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BONE_MASS, "").equalsIgnoreCase("")) {
             if (weight > 60) {
                 standardBoneMass = "2.3 - 2.7kg";
                 if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BONE_MASS, "")) > 2.7) {
@@ -374,14 +389,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     bonemassResult = "Low";
                 }
             }
-        }else{
+        } else {
             bonemassResult = "NA";
         }
 
     }
 
     private void getMuscleMassResult() {
-        if(!ActofitObject.getString(Constant.Fields.MUSCLE_MASS,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.MUSCLE_MASS, "").equalsIgnoreCase("")) {
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
@@ -411,13 +426,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     musclemassResult = "Low";
                 }
             }
-        }else{
+        } else {
             musclemassResult = "NA";
         }
     }
 
     private void getSkeletalMuscle() {
-        if(!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) > 50) {
                 skeletonmuscleResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) <= 50 && Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) >= 40) {
@@ -425,13 +440,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 skeletonmuscleResult = "Low";
             }
-        }else{
+        } else {
             skeletonmuscleResult = "NA";
         }
     }
 
     private void getBodWaterResult() {
-        if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 60) {
                 bodywaterResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 60 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 45) {
@@ -439,13 +454,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 bodywaterResult = "Low";
             }
-        }else {
+        } else {
             bodywaterResult = "NA";
         }
     }
 
     private void getTEMPERATUREResult() {
-        if(!ThermometerObject.getString(Constant.Fields.TEMPERATURE,"").equalsIgnoreCase("")){
+        if (!ThermometerObject.getString(Constant.Fields.TEMPERATURE, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ThermometerObject.getString(Constant.Fields.TEMPERATURE, "")) > 99) {
                 TEMPERATUREResult = "High";
             } else if (Double.parseDouble(ThermometerObject.getString(Constant.Fields.TEMPERATURE, "")) <= 99 && Double.parseDouble(ThermometerObject.getString(Constant.Fields.TEMPERATURE, "")) >= 97) {
@@ -453,13 +468,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 TEMPERATUREResult = "Low";
             }
-        }else{
+        } else {
             TEMPERATUREResult = "NA";
         }
     }
 
     private void getPulseResult() {
-        if(!OximeterObject.getString(Constant.Fields.PULSE_RATE,"").equalsIgnoreCase("")){
+        if (!OximeterObject.getString(Constant.Fields.PULSE_RATE, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(OximeterObject.getString(Constant.Fields.PULSE_RATE, "")) > 100) {
                 pulseResult = "High";
             } else if (Double.parseDouble(OximeterObject.getString(Constant.Fields.PULSE_RATE, "")) <= 100 && Double.parseDouble(OximeterObject.getString(Constant.Fields.PULSE_RATE, "")) >= 60) {
@@ -467,25 +482,25 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 pulseResult = "Low";
             }
-        }else{
+        } else {
             pulseResult = "NA";
         }
     }
 
     private void getOximeterResult() {
-        if(!OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN,"").equalsIgnoreCase("")){
+        if (!OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(OximeterObject.getString("body_oxygen", "")) >= 94) {
                 oxygenResult = "Standard";
-            } else if (Double.parseDouble(OximeterObject.getString("body_oxygen", "")) < 94 ) {
+            } else if (Double.parseDouble(OximeterObject.getString("body_oxygen", "")) < 94) {
                 oxygenResult = "Low";
             }
-        }else{
+        } else {
             oxygenResult = "NA";
         }
     }
 
     private void getBloodPressureResult() {
-        if(!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC,"").equalsIgnoreCase("")){
+        if (!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) > 139) {
                 bloodpressureResult = "High";
             } else if (Double.parseDouble(BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) <= 139 && Double.parseDouble(BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) >= 90) {
@@ -493,14 +508,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 bloodpressureResult = "Low";
             }
-        }else{
+        } else {
             bloodpressureResult = "NA";
         }
     }
 
 
     private void getMaleHemoglobinResult() {
-        if(!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
+        if (!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) > 17.2) {
                 hemoglobinResult = "High";
             } else if (Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) <= 17.2 && Double.parseDouble(HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "")) >= 13.8) {
@@ -508,64 +523,64 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 hemoglobinResult = "Low";
             }
-        }else{
+        } else {
             hemoglobinResult = "NA";
         }
     }
 
     private void getMaleGlucoseResult() {
 
-        if(!BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE,"").equalsIgnoreCase("")) {
+        if (!BiosenseObject.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase("")) {
 
             if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
                 standardGlucose = "70-100mg/dl(Fasting)";
-                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) > 100) {
+                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) > 100) {
                     sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) <= 100 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) >= 70) {
+                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) <= 100 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) >= 70) {
                     sugarResult = "standard";
                 } else {
                     sugarResult = "Low";
                 }
             } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
                 standardGlucose = "70-140 mg/dl(Post Meal)";
-                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) > 140) {
+                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) > 140) {
                     sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) <= 140 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) >= 70) {
+                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) <= 140 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) >= 70) {
                     sugarResult = "standard";
                 } else {
                     sugarResult = "Low";
                 }
             } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
                 standardGlucose = "79-160 mg/dl(Random)";
-                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) > 160) {
+                if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) > 160) {
                     sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) <= 160 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "")) >= 79) {
+                } else if (Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) <= 160 && Double.parseDouble(BiosenseObject.getString(Constant.Fields.SUGAR, "")) >= 79) {
                     sugarResult = "standard";
                 } else {
                     sugarResult = "Low";
                 }
             }
-        }else{
+        } else {
             sugarResult = "NA";
         }
 
     }
 
     private void getMaleBMRResult() {
-        if(!ActofitObject.getString(Constant.Fields.BMR,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BMR, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BMR, "")) >= standardMetabolism) {
                 bmrResult = "High";
             } else {
                 bmrResult = "Not upto Standard";
             }
-        }else{
+        } else {
             bmrResult = "NA";
         }
 
     }
 
     private void getMaleProteinResult() {
-        if(!ActofitObject.getString(Constant.Fields.PROTEIN,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.PROTEIN, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.PROTEIN, "")) > 18) {
                 proteinResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.PROTEIN, "")) <= 18 && Double.parseDouble(ActofitObject.getString(Constant.Fields.PROTEIN, "")) >= 16) {
@@ -573,14 +588,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 proteinResult = "Low";
             }
-        }else{
+        } else {
             proteinResult = "NA";
         }
 
     }
 
     private void getMaleBoneMassResult() {
-        if(!ActofitObject.getString(Constant.Fields.BONE_MASS,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BONE_MASS, "").equalsIgnoreCase("")) {
             if (weight > 75) {
                 if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BONE_MASS, "")) > 3.4) {
                     bonemassResult = "High";
@@ -606,7 +621,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     bonemassResult = "Low";
                 }
             }
-        }else{
+        } else {
             bonemassResult = "NA";
         }
 
@@ -614,7 +629,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
 
     private void getMaleMuscleMassResult() {
-        if(!ActofitObject.getString(Constant.Fields.MUSCLE_MASS,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.MUSCLE_MASS, "").equalsIgnoreCase("")) {
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
@@ -644,13 +659,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     musclemassResult = "Low";
                 }
             }
-        }else{
+        } else {
             musclemassResult = "NA";
         }
     }
 
     private void getMaleSkeletalMuscle() {
-        if(!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) > 59) {
                 skeletonmuscleResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) <= 59 && Double.parseDouble(ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "")) >= 49) {
@@ -658,13 +673,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 skeletonmuscleResult = "Low";
             }
-        }else{
+        } else {
             skeletonmuscleResult = "NA";
         }
     }
 
     private void getMaleBodyWaterResult() {
-        if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 65) {
                 bodywaterResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 65 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 55) {
@@ -672,27 +687,27 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 bodywaterResult = "Low";
             }
-        }else {
+        } else {
             bodywaterResult = "NA";
         }
     }
 
     private void getMaleVisceralFatResult() {
-        if(!ActofitObject.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase("")) {
-            if(Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 14){
+        if (!ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "").equalsIgnoreCase("")) {
+            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 14) {
                 visceralfatResult = "Seriously High";
-            }else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 9) {
+            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 9) {
                 visceralfatResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) <= 9) {
                 visceralfatResult = "standard";
             }
-        }else {
+        } else {
             visceralfatResult = "NA";
         }
     }
 
     private void getMaleSubcutaneousResult() {
-        if(!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) > 16.7) {
                 subcutaneousResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) <= 16.7 && Double.parseDouble(ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) >= 8.6) {
@@ -700,29 +715,29 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 subcutaneousResult = "Low";
             }
-        }else {
+        } else {
             subcutaneousResult = "NA";
         }
     }
 
     private void getMaleBodyFatResult() {
-        if(!ActofitObject.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BODY_FAT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) > 26) {
                 bodyfatResult = "Seriously High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) <= 26 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) >= 22) {
                 bodyfatResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) <= 21 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) >= 11) {
                 bodyfatResult = "Standard";
-            }else{
+            } else {
                 bodyfatResult = "Low";
             }
-        }else {
+        } else {
             bodyfatResult = "NA";
         }
     }
 
     private void getMaleBMIResult() {
-        if(!ActofitObject.getString(Constant.Fields.BMI,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BMI, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) > 25) {
                 bmiResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) <= 25 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) >= 18.5) {
@@ -730,13 +745,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 bmiResult = "Low";
             }
-        }else {
+        } else {
             bmiResult = "NA";
         }
     }
 
     private void getMaleWeightResult() {
-        if(!ActofitObject.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) > standardWeighRangeTo) {
                 weightResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) <= standardWeighRangeTo && Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) >= standardWeighRangeFrom) {
@@ -744,29 +759,29 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 weightResult = "Low";
             }
-        }else{
+        } else {
             weightResult = "NA";
         }
     }
 
     private void getBodyFatResult() {
-        if(!ActofitObject.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BODY_FAT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) > 36) {
                 bodyfatResult = "Seriously High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) <= 36 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) >= 31) {
                 bodyfatResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) <= 30 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_FAT, "")) >= 21) {
                 bodyfatResult = "Standard";
-            }else{
+            } else {
                 bodyfatResult = "Low";
             }
-        }else{
+        } else {
             bodyfatResult = "NA";
         }
     }
 
     private void getBMIResult() {
-        if(!ActofitObject.getString(Constant.Fields.BMI,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.BMI, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) > 25) {
                 bmiResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) <= 25 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BMI, "")) >= 18.5) {
@@ -774,13 +789,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 bmiResult = "Low";
             }
-        }else{
+        } else {
             bmiResult = "NA";
         }
     }
 
     private void getWeightResult() {
-        if(!ActofitObject.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase("")) {
+        if (!ActofitObject.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase("")) {
             if (Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) > standardWeighRangeTo) {
                 weightResult = "High";
             } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) <= standardWeighRangeTo && Double.parseDouble(ActofitObject.getString(Constant.Fields.WEIGHT, "")) >= standardWeighRangeFrom) {
@@ -788,7 +803,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else {
                 weightResult = "Low";
             }
-        }else{
+        } else {
             weightResult = "NA";
         }
 
@@ -842,9 +857,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
 
 
-        if(!ActofitObject.getString(Constant.Fields.HEIGHT,"").equalsIgnoreCase("")){
+        if (!ActofitObject.getString(Constant.Fields.HEIGHT, "").equalsIgnoreCase("")) {
             height = Integer.parseInt(ActofitObject.getString(Constant.Fields.HEIGHT, ""));
-        }else {
+        } else {
             height = 0;
         }
 
@@ -853,7 +868,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
         double standardWeightFemale = (((height * 1.37) - 110) * 0.45);
         standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
-
 
 
         glucoseRange();
@@ -875,7 +889,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardGlucose = "70-140 mg/dl(Post Meal)";
         } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
             standardGlucose = "79-160 mg/dl(Random)";
-        }else{
+        } else {
             standardGlucose = "";
         }
 
@@ -887,8 +901,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardWeighRangeTo = (1.09 * standardWeightFemale);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
-        standardWeightRange = String.valueOf(standardWeighRangeFrom)+"-"+String.valueOf(standardWeighRangeTo);
-        Log.e("standardWeightRange",""+standardWeightRange);
+        standardWeightRange = String.valueOf(standardWeighRangeFrom) + "-" + String.valueOf(standardWeighRangeTo);
+        Log.e("standardWeightRange", "" + standardWeightRange);
 
         if (height > 160) {
             standardMuscleMass = "36.4-42.5kg";
@@ -896,7 +910,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardMuscleMass = "32.9-37.5kg";
         } else if (height < 150) {
             standardMuscleMass = "29.1-34.7kg";
-        }else{
+        } else {
             standardMuscleMass = "";
         }
 
@@ -906,7 +920,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardBoneMass = "2.0-2.4kg";
         } else if (weight < 45) {
             standardBoneMass = "1.6 - 2.0kg";
-        }else{
+        } else {
             standardBoneMass = "";
         }
 
@@ -931,7 +945,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardSkeltonMuscle = "40-50(%)";
         subcutaneousFat = "18.5-26.7(%)";
         standardVisceralFat = "<=9";
-        standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
+        standardBMR = " > =" + String.valueOf(standardMetabolism) + "kcal";
         Log.e("standardWeightFrom", "" + standardWeightFrom);
         Log.e("standardWeightTo", "" + standardWeightTo);
 
@@ -948,8 +962,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardWeighRangeTo = (1.09 * standardWeightMen);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
-        standardWeightRange = String.valueOf(standardWeighRangeFrom)+"-"+String.valueOf(standardWeighRangeTo);;
-        Log.e("standardWeightRange",""+standardWeightRange);
+        standardWeightRange = String.valueOf(standardWeighRangeFrom) + "-" + String.valueOf(standardWeighRangeTo);
+        ;
+        Log.e("standardWeightRange", "" + standardWeightRange);
 
         if (height > 170) {
             standardMuscleMass = "49.4-59.5kg";
@@ -957,7 +972,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardMuscleMass = "44-52.4kg";
         } else if (height < 160) {
             standardMuscleMass = "38.5-46.5kg";
-        }else{
+        } else {
             standardMuscleMass = "";
         }
 
@@ -967,7 +982,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardBoneMass = "2.7-3.1kg";
         } else if (weight < 60) {
             standardBoneMass = "2.3-2.7kg";
-        }else{
+        } else {
             standardBoneMass = "";
         }
 
@@ -986,7 +1001,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
         standardBodyFat = "11-21(%)";
         subcutaneousFat = "8.6-16.7(%)";
-        standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
+        standardBMR = " > =" + String.valueOf(standardMetabolism) + "kcal";
         standardVisceralFat = "< = 9";
     }
 
@@ -1032,7 +1047,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void getPrintData() {
 
-        if(!BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE,"").equalsIgnoreCase("") && !HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")) {
+        if (!BiosenseObject.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase("") && !HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase("")) {
 
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                     "" + "-----------------------" + "\n" +
@@ -1073,7 +1088,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Meta Age :" + ActofitObject.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
                     "Health Score :" + ActofitObject.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
                     "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "") + "mg/dl" + "\n" +
+                    "Blood Glucose :" + BiosenseObject.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
                     "[Normal Range]:" + "\n" +
                     standardGlucose + "\n" +
                     "" + "-----------------------" + "\n" +
@@ -1093,17 +1108,17 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Pulse Rate: " + OximeterObject.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") + "F" + "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
+                    "   " + "Above results are" + "\n" +
+                    "      " + " indicative" + "\n" +
+                    "  " + "figure,don't follow it" + "\n" +
+                    "   " + "without consulting a" + "\n" +
                     "        " + "doctor" + "\n\n\n\n\n\n\n";
 
-        }else if(!BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE,"").equalsIgnoreCase("") && HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
+        } else if (!BiosenseObject.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase("") && HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase("")) {
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                     "" + "-----------------------" + "\n" +
                     "Name :" + PersonalObject.getString("name", "") + "\n" +
@@ -1143,11 +1158,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Meta Age :" + ActofitObject.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
                     "Health Score :" + ActofitObject.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
                     "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "") + "mg/dl" + "\n" +
+                    "Blood Glucose :" + BiosenseObject.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
                     "[Normal Range]:" + "\n" +
                     standardGlucose + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" +"NA" + "\n" +
+                    "Hemoglobin :" + "NA" + "\n" +
                     "" + "-----------------------" + "\n" +
                     "Blood Pressure :" + "\n" +
                     "Systolic :" + BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
@@ -1161,16 +1176,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Pulse Rate: " + OximeterObject.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") + "F" + "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
+                    "   " + "Above results are" + "\n" +
+                    "      " + " indicative" + "\n" +
+                    "  " + "figure,don't follow it" + "\n" +
+                    "   " + "without consulting a" + "\n" +
                     "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }else if(BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE,"").equalsIgnoreCase("") && !HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
+        } else if (BiosenseObject.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase("") && !HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase("")) {
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                     "" + "-----------------------" + "\n" +
                     "Name :" + PersonalObject.getString("name", "") + "\n" +
@@ -1210,7 +1225,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Meta Age :" + ActofitObject.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
                     "Health Score :" + ActofitObject.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
                     "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA"+ "\n" +
+                    "Blood Glucose :" + "NA" + "\n" +
                     "" + "-----------------------" + "\n" +
                     "Hemoglobin :" + HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "") + " g/dl" + "\n" +
                     "[Normal Range]:" + "\n" +
@@ -1228,16 +1243,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Pulse Rate: " + OximeterObject.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") + "F" + "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
+                    "   " + "Above results are" + "\n" +
+                    "      " + " indicative" + "\n" +
+                    "  " + "figure,don't follow it" + "\n" +
+                    "   " + "without consulting a" + "\n" +
                     "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }else{
+        } else {
 
             printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                     "" + "-----------------------" + "\n" +
@@ -1278,9 +1293,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Meta Age :" + ActofitObject.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
                     "Health Score :" + ActofitObject.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
                     "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA"+ "\n" +
+                    "Blood Glucose :" + "NA" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" +"NA" + "\n" +
+                    "Hemoglobin :" + "NA" + "\n" +
                     "" + "-----------------------" + "\n" +
                     "Blood Pressure :" + "\n" +
                     "Systolic :" + BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
@@ -1294,14 +1309,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     "Pulse Rate: " + OximeterObject.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
                     "[Normal Range]:" + "60-100bpm" + "\n" +
                     "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                    "Temperature :" + ThermometerObject.getString(Constant.Fields.TEMPERATURE, "") + "F" + "\n" +
                     "[Normal Range]:" + "97-99F " + "\n" +
                     "" + "-----------------------" + "\n" +
                     "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
+                    "   " + "Above results are" + "\n" +
+                    "      " + " indicative" + "\n" +
+                    "  " + "figure,don't follow it" + "\n" +
+                    "   " + "without consulting a" + "\n" +
                     "        " + "doctor" + "\n\n\n\n\n\n\n";
         }
     }
@@ -1390,102 +1405,103 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 params.put(Constant.Fields.FAT_FREE_WEIGHT, ActofitObject.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
                 params.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
 
-                if(!ActofitObject.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase("")) {
-                    params.put("weightrange", "" + standardWeightRange+"kg");
-                }else{
+                if (!ActofitObject.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase("")) {
+                    params.put("weightrange", "" + standardWeightRange + "kg");
+                } else {
                     params.put("weightrange", "NA");
                 }
 
-                if(!ActofitObject.getString(Constant.Fields.BMI,"").equalsIgnoreCase("")) {
+                if (!ActofitObject.getString(Constant.Fields.BMI, "").equalsIgnoreCase("")) {
                     params.put("bmirange", "18.5-25");
-                }else{
+                } else {
                     params.put("bmirange", "NA");
                 }
 
-                if(!ActofitObject.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase("")) {
+                if (!ActofitObject.getString(Constant.Fields.BODY_FAT, "").equalsIgnoreCase("")) {
                     params.put("bodyfatrange", standardBodyFat);
-                }else{
+                } else {
                     params.put("bodyfatrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT,"").equalsIgnoreCase("")) {
+
+                if (!ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, "").equalsIgnoreCase("")) {
                     params.put("subfatrange", subcutaneousFat);
-                }else{
+                } else {
                     params.put("subfatrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase("")) {
-                    params.put("visceralfatrange",standardVisceralFat);
-                    Log.e("viscerialFatRange",""+standardVisceralFat);
-                }else{
-                    params.put("visceralfatrange","NA");
+                if (!ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "").equalsIgnoreCase("")) {
+                    params.put("visceralfatrange", standardVisceralFat);
+                    Log.e("viscerialFatRange", "" + standardVisceralFat);
+                } else {
+                    params.put("visceralfatrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
+                if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
                     params.put("bodywaterrange", standardBodyWater);
-                }else{
+                } else {
                     params.put("bodywaterrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase("")) {
+                if (!ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, "").equalsIgnoreCase("")) {
                     params.put("skeletanmusclerange", standardSkeltonMuscle);
-                }else{
+                } else {
                     params.put("skeletanmusclerange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.PROTEIN,"").equalsIgnoreCase("")) {
-                    params.put("proteinrange","16-18 %");
-                }else{
-                    params.put("proteinrange","NA");
+                if (!ActofitObject.getString(Constant.Fields.PROTEIN, "").equalsIgnoreCase("")) {
+                    params.put("proteinrange", "16-18 %");
+                } else {
+                    params.put("proteinrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.META_AGE,"").equalsIgnoreCase("")) {
-                    params.put("metaagerange", "<="+age);
-                    Log.e("metaage_range","<="+age);
-                }else{
-                    params.put("metaagerange","NA");
+                if (!ActofitObject.getString(Constant.Fields.META_AGE, "").equalsIgnoreCase("")) {
+                    params.put("metaagerange", "<=" + age);
+                    Log.e("metaage_range", "<=" + age);
+                } else {
+                    params.put("metaagerange", "NA");
                 }
-                params.put("healthscorerange","");
-                if(!ActofitObject.getString(Constant.Fields.BMR,"").equalsIgnoreCase("")) {
+                params.put("healthscorerange", "");
+                if (!ActofitObject.getString(Constant.Fields.BMR, "").equalsIgnoreCase("")) {
                     params.put("bmrrange", standardBMR);
-                }else{
+                } else {
                     params.put("bmrrange", "NA");
                 }
                 params.put("physiquerange", "");
-                if(!ActofitObject.getString(Constant.Fields.MUSCLE_MASS,"").equalsIgnoreCase("")) {
-                    params.put("musclemassrange",standardMuscleMass);
-                }else{
-                    params.put("musclemassrange","NA");
+                if (!ActofitObject.getString(Constant.Fields.MUSCLE_MASS, "").equalsIgnoreCase("")) {
+                    params.put("musclemassrange", standardMuscleMass);
+                } else {
+                    params.put("musclemassrange", "NA");
                 }
-                if(!ActofitObject.getString(Constant.Fields.BONE_MASS,"").equalsIgnoreCase("")) {
+                if (!ActofitObject.getString(Constant.Fields.BONE_MASS, "").equalsIgnoreCase("")) {
                     params.put("bonemassrange", standardBoneMass);
-                }else{
+                } else {
                     params.put("bonemassrange", "NA");
                 }
-                if(!ThermometerObject.getString(Constant.Fields.TEMPERATURE, "").equalsIgnoreCase("")) {
+                if (!ThermometerObject.getString(Constant.Fields.TEMPERATURE, "").equalsIgnoreCase("")) {
                     params.put("bodytemprange", "97 - 99 F");
-                }else{
+                } else {
                     params.put("bodytemprange", "NA");
                 }
 
-                if(!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC,"").equalsIgnoreCase(""))
-                    params.put("systolicrange","90-139 mmHg");
+                if (!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "").equalsIgnoreCase(""))
+                    params.put("systolicrange", "90-139 mmHg");
                 else
-                    params.put("systolicrange","NA");
-                if(!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC,"").equalsIgnoreCase(""))
+                    params.put("systolicrange", "NA");
+                if (!BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "").equalsIgnoreCase(""))
                     params.put("dialosticrange", "60-89 mmHg");
                 else
                     params.put("dialosticrange", "NA");
-                if(!OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, "").equalsIgnoreCase(""))
-                    params.put("pulseoximeterrange",">94%");
+                if (!OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, "").equalsIgnoreCase(""))
+                    params.put("pulseoximeterrange", ">94%");
                 else
-                    params.put("pulseoximeterrange","NA");
-                if(!OximeterObject.getString(Constant.Fields.PULSE_RATE,"").equalsIgnoreCase(""))
+                    params.put("pulseoximeterrange", "NA");
+                if (!OximeterObject.getString(Constant.Fields.PULSE_RATE, "").equalsIgnoreCase(""))
                     params.put("pulserange", "60-100 bpm");
                 else
                     params.put("pulserange", "NA");
-                if(!BiosenseObject.getString(Constant.Fields.BLOOD_GLUCOSE, "").equalsIgnoreCase(""))
+                if (!BiosenseObject.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase(""))
                     params.put("bloodsugarrange", standardGlucose);
                 else
                     params.put("bloodsugarrange", "NA");
-                if(!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase(""))
-                    params.put("hemoglobinrange",standarHemoglobin);
+                if (!HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase(""))
+                    params.put("hemoglobinrange", standarHemoglobin);
                 else
-                    params.put("hemoglobinrange","NA");
+                    params.put("hemoglobinrange", "NA");
 
                 params.put("heightresult", "");
                 params.put("weightresult", weightResult);
@@ -1521,15 +1537,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     /**
-     * 
      * @param response
      */
     private void readFileName(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
-            JSONObject dataObject  = jsonObject.getJSONObject("data");
+            JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");
-            System.out.println("fileName = " +fileName);
+            System.out.println("fileName = " + fileName);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -1552,7 +1567,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance().getTime());
     }
 
-    @OnClick({R.id.homebtn, R.id.printbtn,R.id.iv_download})
+    @OnClick({R.id.homebtn, R.id.printbtn, R.id.iv_download})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.homebtn:
@@ -1603,7 +1618,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private void downloadFile(String fileName) {
         downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
 
-        if(fileName != null)
+        if (fileName != null)
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
         else
             Toast.makeText(PrintPreviewActivity.this, "No Pdf file available ", Toast.LENGTH_SHORT).show();
@@ -1612,14 +1627,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private void startDownload() {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
 
-        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE );
+        request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
 
         request.setTitle("Download");
         request.setDescription("Downloading File...");
 
         request.allowScanningByMediaScanner();
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS,""+System.currentTimeMillis());
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "" + System.currentTimeMillis());
 
         DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
         manager.enqueue(request);
@@ -1627,11 +1642,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode){
-            case PERMISSION_STORAGE_CODE:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        switch (requestCode) {
+            case PERMISSION_STORAGE_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startDownload();
-                }else{
+                } else {
                     Toast.makeText(this, "Permission Denied..!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -1639,7 +1654,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getAge(String dobString) {
-        
+
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {

@@ -1,5 +1,9 @@
 package com.abhaybmicoc.app.glucose;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.os.Handler;
 import android.util.Log;
 import android.os.Build;
 import android.os.Bundle;
@@ -57,9 +61,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private Context context = GlucoseActivity.this;
 
     public static final String EXTRAS_DEVICE_ADDRESS = "DEVICE_ADDRESS";
+    public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
 
     private Util util;
     private String mDeviceAddress;
+    private String mDeviceName;
     private Animation animation;
 
     private ActionBar mActionBar;
@@ -118,6 +124,12 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private TextToSpeech textToSpeech;
     private Communicator communicator = this;
     private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferencesDevice;
+
+    private Handler deviceConnectionTimeoutHandler;
+    private ProgressDialog dialogConnectionProgress;
+
+    private int DEVICE_CONNECTION_WAITING_TIME = 10000;
 
     private String textToSpeak = "";
     private String resultOfGlucose;
@@ -130,8 +142,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setupUI();
+
+        showProgressDialog();
+
         setupEvents();
+
         initializeData();
     }
 
@@ -149,7 +166,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
-        };
+        }
+        ;
     }
 
     @Override
@@ -162,7 +180,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         super.onResume();
         if (!mConnected) {
             syncLib.startReceiver();
-        }else if(mConnected){
+        } else if (mConnected) {
             syncLib.startReceiver();
         }
     }
@@ -190,7 +208,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         tvLogDisplay.setText(text);
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
-        if(text.equals("go")){
+        if (text.equals("go")) {
             textToSpeak = "Click on start Test";
             speakOut(textToSpeak);
         }
@@ -209,8 +227,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
@@ -267,8 +285,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 resultOfGlucose = text;
 
                 tvResultText.setText(text);
-                tvResultText.setVisibility(View.GONE);
-                tvResultTextNew.setVisibility(View.VISIBLE);
+                tvResultText.setVisibility(View.VISIBLE);
+                tvResultTextNew.setVisibility(View.GONE);
 
                 tvResultTextNew.setText(resultOfGlucose);
 
@@ -306,10 +324,16 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
         SharedPreferences.Editor editor = glucoseData.edit();
 
-        editor.putString(Constant.Fields.SUGAR, tvResultTextNew.getText().toString());
+        editor.putString(Constant.Fields.SUGAR, tvResultText.getText().toString());
         editor.putString(Constant.Fields.GLUCOSE_TYPE, radioButtonId.getText().toString());
 
+        Log.e("sdhslkjskdshdsa", ":" + radioButtonId.getText().toString());
+
         editor.commit();
+
+        Log.e("sugar_saved", ":" + glucoseData.getString(Constant.Fields.SUGAR, ""));
+        Log.e("glucose_type_saved", ":" + glucoseData.getString(Constant.Fields.GLUCOSE_TYPE, ""));
+
     }
 
     @Override
@@ -323,10 +347,21 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     @Override
     public void setConnectionStatus(String s, boolean connectionStatus) {
+
         mConnected = connectionStatus;
+        Log.e("mConnected_Log", ":" + mConnected);
         if (mConnected) {
             bluetoothIcon.setBackgroundResource(R.drawable.connect);
             batteryIcon.setVisibility(View.VISIBLE);
+
+            saveDeviceInformation(mDeviceAddress, mDeviceName);
+
+            textToSpeak = "Please click on start Test";
+            speakOut(textToSpeak);
+
+            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
+                dialogConnectionProgress.dismiss();
+            }
         } else {
             batteryIcon.setVisibility(View.INVISIBLE);
             bluetoothIcon.setBackgroundResource(R.drawable.disconnect);
@@ -397,7 +432,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
                 break;
@@ -424,7 +459,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     // region Initialization methods
 
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_home);
 
         layoutGlucose = findViewById(R.id.layout_glucose_result);
@@ -477,10 +512,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         mView = findViewById(R.id.view_custom);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
-
-        textToSpeak = "Please click on start Test";
-        speakOut(textToSpeak);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         btnReadData = findViewById(R.id.getData);
         btnWriteData = findViewById(R.id.btn_next);
@@ -498,7 +530,15 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
     }
 
-    private void setupEvents(){
+
+    private void showProgressDialog() {
+
+        dialogConnectionProgress = new ProgressDialog(GlucoseActivity.this);
+        dialogConnectionProgress.setMessage("Connecting...");
+        dialogConnectionProgress.setCancelable(false);
+    }
+
+    private void setupEvents() {
         tvHeight.setOnClickListener(this);
         tvWeight.setOnClickListener(this);
         btnNext.setOnClickListener(this);
@@ -510,27 +550,94 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         btnWriteData.setOnClickListener(view -> writeData());
         btnRestartTest.setOnClickListener(view -> restartTest());
         bluetoothIcon.setOnClickListener(view -> toggleBluetooth());
-        toolbar.setOnTouchListener((v, event) -> { hideSoftInput(); return false; });
+
+        toolbar.setOnTouchListener((v, event) -> {
+            hideSoftInput();
+            return false;
+        });
+
+
+        rgGlucose.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                selectedId = rgGlucose.getCheckedRadioButtonId();
+                radioButtonId = findViewById(selectedId);
+
+                writeSugarSharedPreference();
+            }
+        });
+
     }
 
     /**
      *
      */
-    private void initializeData(){
+    private void initializeData() {
         util = new Util(this, this);
+
+        sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
 
         final Intent intent = getIntent();
 
         if (intent.getStringExtra(EXTRAS_DEVICE_ADDRESS) != null) {
             mDeviceAddress = intent.getStringExtra(EXTRAS_DEVICE_ADDRESS);
+            mDeviceName = intent.getStringExtra(EXTRAS_DEVICE_NAME);
+
             util.putString(HelperC.key_mybluetoothaddress, mDeviceAddress);
         } else {
             mDeviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         }
 
+        connectDevice();
+    }
+
+    private void connectDevice() {
+        dialogConnectionProgress.show();
+
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
+        syncLib.startReceiver();
 
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
+
+        setDeviceConnectionTimeoutHandler();
+    }
+
+    private void setDeviceConnectionTimeoutHandler() {
+        deviceConnectionTimeoutHandler = new Handler();
+
+        deviceConnectionTimeoutHandler.postDelayed(() -> {
+            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
+                dialogConnectionProgress.dismiss();
+
+                if (!mConnected) {
+
+                    syncLib.stopReceiver();
+
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                            context);
+                    alertDialogBuilder.setTitle("Connectivity Lost!");
+                    alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    connectDevice();
+                                }
+                            });
+                    /* create alert dialog */
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    /* show alert dialog */
+                    alertDialog.show();
+                    alertDialogBuilder.setCancelable(false);
+                }
+            }
+        }, DEVICE_CONNECTION_WAITING_TIME);
+    }
+
+    private void saveDeviceInformation(String deviceAddress, String deviceName) {
+        SharedPreferences.Editor editor = sharedPreferencesDevice.edit();
+        editor.putString("glucoseDeviceAddress", deviceAddress);
+        editor.putString("glucoseDeviceName", deviceName);
+        editor.commit();
     }
 
     // endregion
@@ -540,7 +647,10 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void startTest(){
+    private void startTest() {
+
+        Log.e("mConnected_Test_Log", ":" + mConnected);
+
         if (mConnected) {
             syncLib.startTest();
         } else {
@@ -551,7 +661,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void restartTest(){
+    private void restartTest() {
         if (mConnected) {
             if (devTestStarted) {
                 try {
@@ -570,15 +680,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void writeData(){
+    private void writeData() {
         if (mConnected) {
             syncLib.notifyGetData();
         }
         if (rgGlucose.getCheckedRadioButtonId() == -1) {
             // no radio buttons are checked
             Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             // one of the radio buttons is checked
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
@@ -589,7 +698,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void readData(){
+    private void readData() {
         if (mConnected) {
             syncLib.notifyGetData();
         } else {
@@ -600,7 +709,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void toggleBluetooth(){
+    private void toggleBluetooth() {
         syncLib.setmDeviceAddress(mDeviceAddress);
         syncLib.connectOrDisconnect();
     }
@@ -608,7 +717,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void hideSoftInput(){
+    private void hideSoftInput() {
         try {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
@@ -621,7 +730,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     /**
      *
      */
-    private void setBatteryLevelValue(int value){
+    private void setBatteryLevelValue(int value) {
         if (value > 25 && value < 33) {
             if (animation != null)
                 animation.cancel();

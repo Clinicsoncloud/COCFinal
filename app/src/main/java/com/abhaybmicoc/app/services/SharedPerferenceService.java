@@ -35,7 +35,12 @@ public class SharedPerferenceService {
      * @return
      */
     public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
-        return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        try {
+
+            return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        }catch (Exception e){
+            return 0;
+        }
     }
 
     /**
@@ -46,6 +51,10 @@ public class SharedPerferenceService {
      * @return
      */
     public static double getDouble(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
-        return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        try {
+            return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        }catch (Exception e){
+            return 0;
+        }
     }
 }

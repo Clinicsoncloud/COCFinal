@@ -224,7 +224,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         encenderBluetooth();
         super.onRestart();
     }
-    
+
     /* access modifiers changed from: protected */
     public void onDestroy() {
         super.onDestroy();
@@ -486,7 +486,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             socket = null;
         }
     }
-    
+
     /**
      *
      */
