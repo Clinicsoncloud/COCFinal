@@ -1353,16 +1353,13 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         } else {
             viewHolder.parameterTV.setText("" + printData.getParameter());
             viewHolder.valueTV.setText("" + printData.getCurr_value());
-            viewHolder.rangeTV.setText("<="+age+"yrs");
+            viewHolder.rangeTV.setText("<= "+ age + " yrs");
 
             if (printData.getCurr_value() <= age) {
-
                 viewHolder.resultTV.setText("Standard");
                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
             } else if (printData.getCurr_value() > age) {
-
-                viewHolder.resultTV.setText("Not upto Standard");
+                viewHolder.resultTV.setText("Not up to Standard");
                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
             }
         }
