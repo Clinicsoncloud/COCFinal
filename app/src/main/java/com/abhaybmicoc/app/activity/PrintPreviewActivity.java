@@ -35,6 +35,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.services.SharedPerferenceService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintDataOld;
 import com.abhaybmicoc.app.model.PrintData;
@@ -78,6 +79,8 @@ import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
+    private Context context = PrintPreviewActivity.this;
+
 
     @BindView(R.id.dobTV) TextView dobTV;
     @BindView(R.id.nameTV) TextView nameTV;
@@ -834,17 +837,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getStandardRange() {
-
-
         if (sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase("")) {
             weight = 0.0;
         } else {
-            weight = Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""));
+            weight = getWeight();
         }
 
-
         if(!sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,"").equalsIgnoreCase("")){
-            height = Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, ""));
+            height = getHeight();
         }else {
             height = 0;
         }
@@ -1029,6 +1029,21 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         currentDate = formatterCurrent.format(date);
         currentTime = getCurrentTime();
 
+    }
+
+    private int getHeight(){
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
+            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
+        else
+            return 0;
+    }
+
+    private double getWeight(){
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT)) {
+            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT);
+        }else{
+            return 0;
+        }
     }
 
     private void getPrintData() {
@@ -1523,7 +1538,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     /**
-     * 
+     *
      * @param response
      */
     private void readFileName(String response) {
@@ -1641,7 +1656,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getAge(String dobString) {
-        
+
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {

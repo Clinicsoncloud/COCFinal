@@ -25,7 +25,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.utils.CoutputStreamHeightReceivertant;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
 
@@ -354,7 +354,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     private void connect(){
         if (estadoBoton.equals("Connect")) {
             encenderBluetooth();
-            new Connect(HeightActivity.this, null).execute(new String[]{dispositivoSeleccionado});
+            new Connect().execute(new String[]{dispositivoSeleccionado});
             enable = "false";
             return;
         }
@@ -412,13 +412,13 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
-            objIntent.putExtra(CoutputStreamHeightReceivertant.Fields.HEIGHT, etManualHeight.getText().toString());
-            objIntent.putExtra(CoutputStreamHeightReceivertant.Fields.ID, sharedPreferencePersonalData.getString(CoutputStreamHeightReceivertant.Fields.ID, ""));
-            objIntent.putExtra(CoutputStreamHeightReceivertant.Fields.NAME, sharedPreferencePersonalData.getString(CoutputStreamHeightReceivertant.Fields.NAME, ""));
-            objIntent.putExtra(CoutputStreamHeightReceivertant.Fields.GENDER, sharedPreferencePersonalData.getString(CoutputStreamHeightReceivertant.Fields.GENDER, ""));
-            objIntent.putExtra(CoutputStreamHeightReceivertant.Fields.DATE_OF_BIRTH, sharedPreferencePersonalData.getString(CoutputStreamHeightReceivertant.Fields.DATE_OF_BIRTH, ""));
+            objIntent.putExtra(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
+            objIntent.putExtra(Constant.Fields.ID, sharedPreferencePersonalData.getString(Constant.Fields.ID, ""));
+            objIntent.putExtra(Constant.Fields.NAME, sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
+            objIntent.putExtra(Constant.Fields.GENDER, sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
+            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
-            writeToActofitSharedPreference(CoutputStreamHeightReceivertant.Fields.HEIGHT, etManualHeight.getText().toString());
+            writeToActofitSharedPreference(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
 
             startActivity(objIntent);
             finish();
@@ -593,7 +593,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                 return "";
             }
 
-            dispositivo = mBluetoothAdapter.getRemoteDevice(d);
+            dispositivo = mBluetoothAdapter.getRemoteDevice(deviceAddress);
 
             try {
                 socket = dispositivo.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));

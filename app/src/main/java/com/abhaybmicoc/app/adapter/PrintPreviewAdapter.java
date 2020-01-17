@@ -215,7 +215,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // region Data display methods
 
     private void showWeight(ViewHolder viewHolder){
-        double height = getHeight();
+        int height = getHeight();
 
         if (printData.getCurr_value() == 0.0) {
             viewHolder.parameterTV.setText("" + printData.getParameter());
@@ -1489,7 +1489,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private double getHeight(){
+    private int getHeight(){
         if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
             return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
         else
