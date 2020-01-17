@@ -1471,16 +1471,16 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     }
 
     private double getWeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT)) {
-            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         }else{
             return 0;
         }
     }
 
     private int getHeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
-            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
         else
             return 0;
     }
