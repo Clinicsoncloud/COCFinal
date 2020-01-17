@@ -135,7 +135,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String fileName = "";
     private String bmrResult;
     private String bmiResult;
-    private String parsedate1 = null;
     private String printerText = "";
     private String downloadUrl = "";
     private String currentDate;
@@ -188,35 +187,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
-        textToSpeech = new TextToSpeech(this,this);
-
-        ivDownload = findViewById(R.id.iv_download);
-
-        txt = "Please click on the print button to get your printout";
-        speakOut(txt);
-
-        printerBond();
-
-        gettingDataObjects();
-
-        calculations();
-
-        setNewList();
-
-        getStandardRange();
-
-        setStaticData();
-
-        getPrintData();
-
-        getResults();
-
         setupUI();
-
-        postData();
-
-        printerActivation();
-
+        setupEvents();
+        initializeData();
     }
 
     @Override
@@ -225,7 +198,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         //reinitialization of the textToSpeech engine for voice command
         textToSpeech = new TextToSpeech(this,this);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
@@ -242,6 +224,79 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             System.out.println("onPauseException"+e.getMessage());
         }
 
+    }
+
+    // region Initialization methods
+
+    private void setupUI(){
+        ivDownload = findViewById(R.id.iv_download);
+    }
+
+    private void setupEvents(){
+
+    }
+
+    private void initializeData(){
+        textToSpeech = new TextToSpeech(this,this);
+
+
+        txt = "Please click on the print button to get your printout";
+        speakOut(txt);
+
+        printerBond();
+        gettingDataObjects();
+        calculations();
+        setNewList();
+        getStandardRange();
+        setStaticData();
+        getPrintData();
+        getResults();
+        postData();
+        printerActivation();
+
+    }
+
+    // endregion
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txt);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
+        try {
+            if (textToSpeech != null) {
+                textToSpeech.stop();
+                textToSpeech.shutdown();
+            }
+        }catch (Exception e){
+            System.out.println("onPauseException"+e.getMessage());
+        }
     }
 
     private void getResults() {
@@ -270,9 +325,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         }else {
             //calculate result as per female gender
-            getWeightResult();
-            getBMIResult();
-            getBodyFatResult();
+            getFemaleWeightResult();
+            getFemaleBMIResult();
+            getFemaleBodyFatResult();
             getMetaAgeResult();
             getSubcutaneousResult();
             getMaleVisceralFatResult();
@@ -749,53 +804,51 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             weightResult = "NA";
     }
 
-    private void getBodyFatResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) > 36) {
+    private void getFemaleBodyFatResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+
+            if (bodyFat > 36)
                 bodyfatResult = "Seriously High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) <= 36 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) >= 31) {
+            else if (bodyFat > 30 && weight <= 36)
                 bodyfatResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) <= 30 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) >= 21) {
+            else if (bodyFat > 21 && weight <= 30)
                 bodyfatResult = "Standard";
-            }else{
+            else
                 bodyfatResult = "Low";
-            }
-        }else{
+        }else
             bodyfatResult = "NA";
-        }
     }
 
-    private void getBMIResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BMI,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) > 25) {
+    private void getFemaleBMIResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+
+            if (bmi > 25)
+                bmiResult = "Seriously High";
+            else if (bmi > 18.5 && weight <= 25)
                 bmiResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) <= 25 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) >= 18.5) {
-                bmiResult = "standard";
-            } else {
+            else
                 bmiResult = "Low";
-            }
-        }else{
+        }else
             bmiResult = "NA";
-        }
     }
 
-    private void getWeightResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) > standardWeighRangeTo) {
+    private void getFemaleWeightResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+
+            if (weight > standardWeighRangeTo)
                 weightResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) <= standardWeighRangeTo && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) >= standardWeighRangeFrom) {
-                weightResult = "standard";
-            } else {
+            else if (weight > standardWeighRangeTo && weight <= standardWeighRangeTo)
+                weightResult = "Standard";
+            else
                 weightResult = "Low";
-            }
-        }else{
+        }else
             weightResult = "NA";
-        }
-
     }
 
-    private void setupUI() {
-    }
+    // region Printer methods
 
     private void printerBond() {
         try {
@@ -832,26 +885,26 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
+    // endregion
+
+    // region Range methods
+
     private void getStandardRange() {
-        if (sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase("")) {
-            weight = 0.0;
-        } else {
-            weight = getWeight();
-        }
+        if(SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            weight = getHeight();
+        else
+            weight = 0;
 
-        if(!sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,"").equalsIgnoreCase("")){
+        if(SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
             height = getHeight();
-        }else {
+        else
             height = 0;
-        }
-
 
         double standardWeightMen = ((height - 80) * 0.7);
         standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
+
         double standardWeightFemale = (((height * 1.37) - 110) * 0.45);
         standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
-
-
 
         glucoseRange();
 
@@ -929,44 +982,39 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         subcutaneousFat = "18.5-26.7(%)";
         standardVisceralFat = "<=9";
         standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
-        Log.e("standardWeightFrom", "" + standardWeightFrom);
-        Log.e("standardWeightTo", "" + standardWeightTo);
-
     }
 
     private void maleRange(double standardWeightMen) {
-
-        standarHemoglobin = "13.8-17.2gm/dl";
         standardBodyFat = "11-21(%)";
         standardBodyWater = "55-65(%)";
         standardSkeltonMuscle = "49-59(%)";
+        standarHemoglobin = "13.8-17.2gm/dl";
+
         standardWeighRangeFrom = (0.90 * standardWeightMen);
         standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+
         standardWeighRangeTo = (1.09 * standardWeightMen);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
-        standardWeightRange = String.valueOf(standardWeighRangeFrom)+"-"+String.valueOf(standardWeighRangeTo);;
-        Log.e("standardWeightRange",""+standardWeightRange);
+        standardWeightRange = standardWeighRangeFrom + "-" + standardWeighRangeTo;
 
-        if (height > 170) {
+        if (height > 170)
             standardMuscleMass = "49.4-59.5kg";
-        } else if (height <= 170 && height >= 160) {
+        else if (height <= 170 && height >= 160)
             standardMuscleMass = "44-52.4kg";
-        } else if (height < 160) {
+        else if (height < 160)
             standardMuscleMass = "38.5-46.5kg";
-        }else{
+        else
             standardMuscleMass = "";
-        }
 
-        if (weight > 75) {
+        if (weight > 75)
             standardBoneMass = "3.0-3.4kg";
-        } else if (weight <= 75 && weight >= 60) {
+        else if (weight <= 75 && weight >= 60)
             standardBoneMass = "2.7-3.1kg";
-        } else if (weight < 60) {
+        else if (weight < 60)
             standardBoneMass = "2.3-2.7kg";
-        }else{
+        else
             standardBoneMass = "";
-        }
 
         if (age >= 70) {
             standardMetabolism = 21.5 * weight;
@@ -981,50 +1029,46 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardMetabolism = 24 * weight;
             standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
         }
+
         standardBodyFat = "11-21(%)";
         subcutaneousFat = "8.6-16.7(%)";
         standardBMR = " > ="+String.valueOf(standardMetabolism)+"kcal";
         standardVisceralFat = "< = 9";
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+    // endregion
 
     private void setStaticData() {
-
-        nameTV.setText("Name :" + sharedPreferencesPersonalData.getString("name", ""));
-        dobTV.setText("DOB :" + sharedPreferencesPersonalData.getString("dob", ""));
-        heightTV.setText("Height :" + sharedPreferencesActofit.getString("height", ""));
-        genderTV.setText("Gender :" + sharedPreferencesPersonalData.getString("gender", ""));
+        nameTV.setText("Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
+        heightTV.setText("Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, ""));
+        genderTV.setText("Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
+        dobTV.setText("DOB :" + sharedPreferencesPersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
     }
 
+    @SuppressLint("SimpleDateFormat")
     private void calculations() {
         String parsedDate = null;
-        @SuppressLint("SimpleDateFormat")
+
         SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String inputText = sharedPreferencesPersonalData.getString("dob", "");
+
+        String inputText = sharedPreferencesPersonalData.getString(Constant.Fields.DATE_OF_BIRTH, "");
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd-MM-yy");
+
         try {
             Date date = inputDateFormat.parse(inputText);
             parsedDate = formatter.format(date);
-            parsedate1 = formatter1.format(date);
-            System.out.println("Date---------" + parsedDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        age = getAge(parsedDate);
 
-        Log.e("age", "" + age);
+        age = getAge(parsedDate);
 
         SimpleDateFormat formatterCurrent = new SimpleDateFormat("dd/MM/yy");
         Date date = new Date();
+
         currentDate = formatterCurrent.format(date);
         currentTime = getCurrentTime();
-
     }
 
     private int getHeight(){
@@ -1318,13 +1362,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
     private void setNewList() {
-
         try {
             printDataListNew.add(new PrintData("Height", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""))));
             printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, ""))));
@@ -1546,7 +1584,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     private void gettingDataObjects() {
@@ -1701,10 +1738,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         } else {
             Log.e("TTS", "Initilization Failed!");
         }
-    }
-
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
