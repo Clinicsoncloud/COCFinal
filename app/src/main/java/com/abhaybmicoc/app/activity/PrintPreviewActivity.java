@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.ListView;
 import android.widget.ImageView;
-import android.app.ProgressDialog;
 import android.widget.ProgressBar;
 import android.widget.LinearLayout;
 import android.app.DownloadManager;
@@ -35,7 +34,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.services.SharedPerferenceService;
+import com.abhaybmicoc.app.services.SharedPreferenceService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintDataOld;
 import com.abhaybmicoc.app.model.PrintData;
@@ -302,7 +301,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getResults() {
-        if(SharedPerferenceService.isMalePatient(context)){
+        if(SharedPreferenceService.isMalePatient(context)){
             /* Calculate result as per male gender */
 
             getMaleWeightResult();
@@ -357,8 +356,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // region Gender common calculation methods
 
     private void getMetaAgeResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE)) {
-            double metaAge = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE)) {
+            double metaAge = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE);
 
             if (metaAge <= age)
                 metaageResult = "Standard";
@@ -369,8 +368,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getTemperatureResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE)) {
-            double temperature = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE)) {
+            double temperature = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE);
 
             if (temperature > 99)
                 tempratureResult = "High";
@@ -383,8 +382,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getPulseResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE)) {
-            double pulseRate = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE)) {
+            double pulseRate = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE);
 
             if (pulseRate > 100)
                 pulseResult = "High";
@@ -397,8 +396,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getOximeterResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN)) {
-            double bloodOxygen = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN)) {
+            double bloodOxygen = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN);
 
             if (bloodOxygen >= 94)
                 oxygenResult = "Standard";
@@ -409,8 +408,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getSystolicBloodPressureResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC)) {
-            double bloodPressureSystolic = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC)) {
+            double bloodPressureSystolic = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC);
 
             if (bloodPressureSystolic > 139)
                 bloodpressureResult = "High";
@@ -423,8 +422,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getDiastolicBloodPressureResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
-            double bloodPressureDiastolic = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
+            double bloodPressureDiastolic = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
 
             if (bloodPressureDiastolic > 89) {
                 diastolicResult = "High";
@@ -442,8 +441,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // region Female calculation methods
 
     private void getFemaleSubcutaneousResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
-            double subcutaneousFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double subcutaneousFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
 
             if (subcutaneousFat > 26.7)
                 subcutaneousResult = "High";
@@ -456,8 +455,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleHemoglobinResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT)) {
-            double hemoglobin = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double hemoglobin = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT);
 
             if (hemoglobin > 15.1)
                 hemoglobinResult = "High";
@@ -470,8 +469,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleBoneMassResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
-            double boneMass = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
+            double boneMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
 
             if(weight > 60) {
                 standardBoneMass = "2.3 - 2.7kg";
@@ -506,8 +505,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleMuscleMassResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
-            double muscleMass = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
+            double muscleMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
@@ -542,8 +541,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleSkeletalMuscle() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
-            double skeletalMuscle = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
 
             if (skeletalMuscle > 50)
                 skeletonmuscleResult = "High";
@@ -556,8 +555,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleBodyWaterResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
-            double bodyWater = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
 
             if (bodyWater > 60)
                 bodywaterResult = "High";
@@ -570,8 +569,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleBodyFatResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
-            double bodyFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
 
             if (bodyFat > 36)
                 bodyfatResult = "Seriously High";
@@ -586,8 +585,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleBMIResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
-            double bmi = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
 
             if (bmi > 25)
                 bmiResult = "Seriously High";
@@ -600,8 +599,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getFemaleWeightResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
-            double weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
 
             if (weight > standardWeighRangeTo)
                 weightResult = "High";
@@ -618,8 +617,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // region Male calculation methods
 
     private void getMaleHemoglobinResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN)) {
-            double hemoglobin = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN)) {
+            double hemoglobin = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN);
 
             if (hemoglobin > 17.2) {
                 hemoglobinResult = "High";
@@ -633,9 +632,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleGlucoseResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.GLUCOSE_TYPE)) {
-            double sugar = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.SUGAR);
-            String glucoseType = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.GLUCOSE_TYPE)) {
+            double sugar = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.SUGAR);
+            String glucoseType = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE);
 
             if (glucoseType.equals("Fasting (Before Meal)")) {
                 standardGlucose = "70-100mg/dl(Fasting)";
@@ -675,8 +674,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBMRResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR)) {
-            double bmr = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR)) {
+            double bmr = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR);
 
             if (bmr >= standardMetabolism)
                 bmrResult = "High";
@@ -687,8 +686,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleProteinResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN)) {
-            double protein = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN)) {
+            double protein = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
 
             if (protein >= 18)
                 proteinResult = "Standard";
@@ -699,8 +698,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBoneMassResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
-            double boneMass = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
+            double boneMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
 
             if (weight > 75) {
                 if (boneMass > 3.4) {
@@ -732,8 +731,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleMuscleMassResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
-            double muscleMass = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
+            double muscleMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
@@ -768,8 +767,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleSkeletalMuscle() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
-            double skeletalMuscle = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
 
             if (skeletalMuscle > 59)
                 skeletonmuscleResult = "Standard";
@@ -780,8 +779,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBodyWaterResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
-            double bodyWater = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
 
             if (bodyWater > 65)
                 bodywaterResult = "Standard";
@@ -792,8 +791,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleVisceralFatResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT)) {
-            double visceralFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT)) {
+            double visceralFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT);
 
             if (visceralFat > 14)
                 visceralfatResult = "Seriously High";
@@ -806,8 +805,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleSubcutaneousResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
-            double subcutaneousFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double subcutaneousFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
 
             // TODO: Check these values
             if (subcutaneousFat > 16.7)
@@ -821,8 +820,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBodyFatResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
-            double bodyFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
 
             if (bodyFat > 26)
                 bodyfatResult = "Seriously High";
@@ -837,8 +836,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleBMIResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
-            double bmi = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
 
             if (bmi > 25)
                 bmiResult = "High";
@@ -851,8 +850,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleWeightResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
-            double weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
 
             if (weight > standardWeighRangeTo)
                 weightResult = "High";
@@ -919,7 +918,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         glucoseRange();
 
-        if(SharedPerferenceService.isMalePatient(context))
+        if(SharedPreferenceService.isMalePatient(context))
             maleRange(standardWeightMen);
         else
             femaleRange(standardWeightFemale);
@@ -1074,15 +1073,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getHeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
-            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
         else
             return 0;
     }
 
     private double getWeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT))
-            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT))
+            return SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         else
             return 0;
     }

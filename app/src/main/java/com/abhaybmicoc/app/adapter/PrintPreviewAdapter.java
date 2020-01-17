@@ -14,7 +14,7 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.services.DateService;
-import com.abhaybmicoc.app.services.SharedPerferenceService;
+import com.abhaybmicoc.app.services.SharedPreferenceService;
 
 import java.text.DecimalFormat;
 
@@ -72,7 +72,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
         } else
             viewHolder = (ViewHolder) convertView.getTag();
-        
+
         calculatePrintData(convertView, viewHolder, position);
 
         return convertView;
@@ -1345,7 +1345,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
-            if(SharedPerferenceService.isMalePatient(context)){
+            if(SharedPreferenceService.isMalePatient(context)){
                 /* Male skeleton muscle */
 
                 if (printData.getCurr_value() > 59) {
@@ -1384,23 +1384,23 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // region Logical methods
 
     private double getWeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
-            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            return SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         }else{
             return 0;
         }
     }
 
     private int getHeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
-            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
         else
             return 0;
     }
 
     private int getAge() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH)){
-            String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH)){
+            String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH);
             return DateService.getAgeFromStringDate(dateOfBirth);
         }else
             return 0;
