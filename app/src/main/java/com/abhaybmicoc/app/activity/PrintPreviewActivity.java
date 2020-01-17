@@ -79,8 +79,8 @@ import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
-    private Context context = PrintPreviewActivity.this;
 
+    private Context context = PrintPreviewActivity.this;
 
     @BindView(R.id.dobTV) TextView dobTV;
     @BindView(R.id.nameTV) TextView nameTV;
@@ -181,6 +181,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     List<PrintData> printDataListNew = new ArrayList<>();
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
 
+    // endregion
+
+    // region Events
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -201,6 +205,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     @Override
+    public void onInit(int status) {
+        startTextToSpeech(status);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
     }
@@ -214,17 +223,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     protected void onPause() {
         super.onPause();
 
-        //close the textToSpeech engine to avoide runtime exception
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
-        }
-
+        stopTextToSpeech();
     }
+
+    // endregion
 
     // region Initialization methods
 
@@ -239,7 +241,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private void initializeData(){
         textToSpeech = new TextToSpeech(this,this);
 
-
         txt = "Please click on the print button to get your printout";
         speakOut(txt);
 
@@ -253,10 +254,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         getResults();
         postData();
         printerActivation();
-
     }
 
     // endregion
+
+    // region Logical methods
 
     /**
      *
@@ -300,7 +302,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getResults() {
-
         if(sharedPreferencesPersonalData.getString("gender","").equalsIgnoreCase("male")){
             //Calculate result as per male gender
             getMaleWeightResult();
@@ -348,6 +349,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getTemperatureResult();
         }
     }
+
+    // endregion
 
     // region Gender common calculation methods
 
@@ -1089,281 +1092,296 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             return 0;
     }
 
+    // region Print helper methods
+
     private void getPrintData() {
-
-        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")) {
-
-            printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
-                    "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
-                    "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
-                    "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standardGlucose + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "") + " g/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standarHemoglobin + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
-                    "Diastolic :" + sharedPreferencesBloodPressure.getString("diastolic", "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + sharedPreferencesOximeter.getString("body_oxygen", "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-
-        }else if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
-            printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + sharedPreferencesPersonalData.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
-                    "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
-                    "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
-                    "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standardGlucose + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" +"NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
-                    "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }else if(sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
-            printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + sharedPreferencesPersonalData.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString("gender", "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + sharedPreferencesActofit.getString("height", "") + "CM" + "\n" +
-                    "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
-                    "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
-                    "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA"+ "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "") + " g/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standarHemoglobin + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
-                    "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }else{
-
-            printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
-                    "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
-                    "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
-                    "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA"+ "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" +"NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
-                    "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   "  + "Above results are"+ "\n" +
-                    "      "+" indicative"+"\n"+
-                    "  "+"figure,don't follow it"+"\n"+
-                    "   "+"without consulting a"+ "\n"+
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }
+        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+            preparePrintForSugarAndHemoglobin();
+        else if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+            preparePrintForSugar();
+        else if(sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+            preparePrintForHemoglobin();
+        else
+            preparePrintWithoutSugarAndHemoglobin();
     }
+
+    private void preparePrintForSugarAndHemoglobin(){
+        printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, "") + "\n" +
+                "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
+                "" + currentDate + "  " + "" + currentTime + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
+                "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
+                "[Normal Range]:" + "\n"
+                + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
+                "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
+                "[Normal Range]:" + "18.5 - 25" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
+                "[Normal Range] :" + standardBodyFat + "\n\n" +
+                "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
+                "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
+                "[Normal Range]:" + subcutaneousFat + "\n\n" +
+                "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
+                "[Normal Range]:" + "<=9" + "\n\n" +
+                "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
+                "[Normal Range]:" +
+                standardBodyWater + "\n\n" +
+                "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
+                "[Normal Range]:" +
+                standardSkeltonMuscle + "\n\n" +
+                "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardMuscleMass + "\n\n" +
+                "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardBoneMass + "\n\n" +
+                "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
+                "[Normal Range]:" + "16-18(%)" + "\n\n" +
+                "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
+                "[Normal Range]:" + "\n"
+                + "> = " + standardMetabolism + "Kcal" + "\n\n" +
+                "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
+                "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
+                "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Glucose :" + sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
+                "[Normal Range]:" + "\n" +
+                standardGlucose + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Hemoglobin :" + sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "") + " g/dl" + "\n" +
+                "[Normal Range]:" + "\n" +
+                standarHemoglobin + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Pressure :" + "\n" +
+                "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
+                "Diastolic :" + sharedPreferencesBloodPressure.getString("diastolic", "") + "mmHg" + "\n" +
+                "[Normal Range]:" + "\n" +
+                "systolic :" + "90-139mmHg" + "\n" +
+                "Diastolic :" + "60-89mmHg" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Oxygen :" + sharedPreferencesOximeter.getString("body_oxygen", "") + " %" + "\n" +
+                "[Normal Range]:" + ">94%" + "\n" +
+                "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
+                "[Normal Range]:" + "60-100bpm" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                "[Normal Range]:" + "97-99F " + "\n" +
+                "" + "-----------------------" + "\n" +
+                "       " + "Thank You" + "\n" +
+                "   "  + "Above results are"+ "\n" +
+                "      "+" indicative"+"\n"+
+                "  "+"figure,don't follow it"+"\n"+
+                "   "+"without consulting a"+ "\n"+
+                "        " + "doctor" + "\n\n\n\n\n\n\n";
+    }
+
+    private void preparePrintForSugar(){
+        printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Name :" + sharedPreferencesPersonalData.getString("name", "") + "\n" +
+                "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
+                "" + currentDate + "  " + "" + currentTime + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
+                "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
+                "[Normal Range]:" + "\n"
+                + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
+                "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
+                "[Normal Range]:" + "18.5 - 25" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
+                "[Normal Range] :" + standardBodyFat + "\n\n" +
+                "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
+                "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
+                "[Normal Range]:" + subcutaneousFat + "\n\n" +
+                "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
+                "[Normal Range]:" + "<=9" + "\n\n" +
+                "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
+                "[Normal Range]:" +
+                standardBodyWater + "\n\n" +
+                "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
+                "[Normal Range]:" +
+                standardSkeltonMuscle + "\n\n" +
+                "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardMuscleMass + "\n\n" +
+                "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardBoneMass + "\n\n" +
+                "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
+                "[Normal Range]:" + "16-18(%)" + "\n\n" +
+                "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
+                "[Normal Range]:" + "\n"
+                + "> = " + standardMetabolism + "Kcal" + "\n\n" +
+                "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
+                "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
+                "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Glucose :" + sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "") + "mg/dl" + "\n" +
+                "[Normal Range]:" + "\n" +
+                standardGlucose + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Hemoglobin :" +"NA" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Pressure :" + "\n" +
+                "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
+                "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
+                "[Normal Range]:" + "\n" +
+                "systolic :" + "90-139mmHg" + "\n" +
+                "Diastolic :" + "60-89mmHg" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
+                "[Normal Range]:" + ">94%" + "\n" +
+                "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
+                "[Normal Range]:" + "60-100bpm" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                "[Normal Range]:" + "97-99F " + "\n" +
+                "" + "-----------------------" + "\n" +
+                "       " + "Thank You" + "\n" +
+                "   "  + "Above results are"+ "\n" +
+                "      "+" indicative"+"\n"+
+                "  "+"figure,don't follow it"+"\n"+
+                "   "+"without consulting a"+ "\n"+
+                "        " + "doctor" + "\n\n\n\n\n\n\n";
+    }
+
+    private void preparePrintForHemoglobin(){
+        printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Name :" + sharedPreferencesPersonalData.getString("name", "") + "\n" +
+                "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString("gender", "") + "\n" +
+                "" + currentDate + "  " + "" + currentTime + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Height :" + sharedPreferencesActofit.getString("height", "") + "CM" + "\n" +
+                "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
+                "[Normal Range]:" + "\n"
+                + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
+                "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
+                "[Normal Range]:" + "18.5 - 25" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
+                "[Normal Range] :" + standardBodyFat + "\n\n" +
+                "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
+                "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
+                "[Normal Range]:" + subcutaneousFat + "\n\n" +
+                "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
+                "[Normal Range]:" + "<=9" + "\n\n" +
+                "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
+                "[Normal Range]:" +
+                standardBodyWater + "\n\n" +
+                "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
+                "[Normal Range]:" +
+                standardSkeltonMuscle + "\n\n" +
+                "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardMuscleMass + "\n\n" +
+                "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardBoneMass + "\n\n" +
+                "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
+                "[Normal Range]:" + "16-18(%)" + "\n\n" +
+                "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
+                "[Normal Range]:" + "\n"
+                + "> = " + standardMetabolism + "Kcal" + "\n\n" +
+                "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
+                "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
+                "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Glucose :" + "NA"+ "\n" +
+                "" + "-----------------------" + "\n" +
+                "Hemoglobin :" + sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "") + " g/dl" + "\n" +
+                "[Normal Range]:" + "\n" +
+                standarHemoglobin + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Pressure :" + "\n" +
+                "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
+                "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
+                "[Normal Range]:" + "\n" +
+                "systolic :" + "90-139mmHg" + "\n" +
+                "Diastolic :" + "60-89mmHg" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
+                "[Normal Range]:" + ">94%" + "\n" +
+                "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
+                "[Normal Range]:" + "60-100bpm" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                "[Normal Range]:" + "97-99F " + "\n" +
+                "" + "-----------------------" + "\n" +
+                "       " + "Thank You" + "\n" +
+                "   "  + "Above results are"+ "\n" +
+                "      "+" indicative"+"\n"+
+                "  "+"figure,don't follow it"+"\n"+
+                "   "+"without consulting a"+ "\n"+
+                "        " + "doctor" + "\n\n\n\n\n\n\n";
+    }
+
+    private void preparePrintWithoutSugarAndHemoglobin(){
+        printerText = "" + "  " + "Clinics On Cloud" + "" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, "") + "\n" +
+                "Age :" + age + "   " + "Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "") + "\n" +
+                "" + currentDate + "  " + "" + currentTime + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "") + "CM" + "\n" +
+                "Weight :" + sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "") + "Kg" + "\n" +
+                "[Normal Range]:" + "\n"
+                + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
+                "BMI :" + "" + sharedPreferencesActofit.getString(Constant.Fields.BMI, "") + "\n" +
+                "[Normal Range]:" + "18.5 - 25" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Body Fat :" + sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "") + "%" + "\n" +
+                "[Normal Range] :" + standardBodyFat + "\n\n" +
+                "Fat Free Weight :" + sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "") + "Kg" + "\n\n" +
+                "Subcutaneous Fat :" + sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "") + "%" + "\n" +
+                "[Normal Range]:" + subcutaneousFat + "\n\n" +
+                "Visceral Fat :" + sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
+                "[Normal Range]:" + "<=9" + "\n\n" +
+                "Body Water : " + sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "") + "\n" +
+                "[Normal Range]:" +
+                standardBodyWater + "\n\n" +
+                "Skeletal Muscle :" + sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "") + "\n" +
+                "[Normal Range]:" +
+                standardSkeltonMuscle + "\n\n" +
+                "Muscle Mass :" + sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardMuscleMass + "\n\n" +
+                "Bone Mass :" + sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "") + "\n" +
+                "[Normal Range]:" + standardBoneMass + "\n\n" +
+                "Protein :" + sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "") + "\n" +
+                "[Normal Range]:" + "16-18(%)" + "\n\n" +
+                "BMR :" + sharedPreferencesActofit.getString(Constant.Fields.BMR, "") + "\n" +
+                "[Normal Range]:" + "\n"
+                + "> = " + standardMetabolism + "Kcal" + "\n\n" +
+                "Physique:" + sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, "") + "\n\n" +
+                "Meta Age :" + sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "") + "yrs" + "\n\n" +
+                "Health Score :" + sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "") + "\n\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Glucose :" + "NA"+ "\n" +
+                "" + "-----------------------" + "\n" +
+                "Hemoglobin :" +"NA" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Pressure :" + "\n" +
+                "Systolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "") + "mmHg" + "\n" +
+                "Diastolic :" + sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "") + "mmHg" + "\n" +
+                "[Normal Range]:" + "\n" +
+                "systolic :" + "90-139mmHg" + "\n" +
+                "Diastolic :" + "60-89mmHg" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Blood Oxygen :" + sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "") + " %" + "\n" +
+                "[Normal Range]:" + ">94%" + "\n" +
+                "Pulse Rate: " + sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "") + " bpm" + "\n" +
+                "[Normal Range]:" + "60-100bpm" + "\n" +
+                "" + "-----------------------" + "\n" +
+                "Temperature :" + sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "") +"F"+ "\n" +
+                "[Normal Range]:" + "97-99F " + "\n" +
+                "" + "-----------------------" + "\n" +
+                "       " + "Thank You" + "\n" +
+                "   "  + "Above results are"+ "\n" +
+                "      "+" indicative"+"\n"+
+                "  "+"figure,don't follow it"+"\n"+
+                "   "+"without consulting a"+ "\n"+
+                "        " + "doctor" + "\n\n\n\n\n\n\n";
+    }
+
+    // endregion
 
     private void setNewList() {
         try {
@@ -1691,7 +1709,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private int getAge(String dobString) {
-
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {
@@ -1716,30 +1733,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
-        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
+        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR))
             age--;
-        }
+
         return age;
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            textToSpeech.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
     }
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
