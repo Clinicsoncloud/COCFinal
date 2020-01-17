@@ -262,11 +262,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getMaleBMRResult();
             getMaleGlucoseResult();
             getMaleHemoglobinResult();
-            getBloodPressureResult();
-            getDiastolicResult();
+            getSystolicBloodPressureResult();
+            getDiastolicBloodPressureResult();
             getOximeterResult();
             getPulseResult();
-            gettempratureResult();
+            getTemperatureResult();
 
         }else {
             //calculate result as per female gender
@@ -276,35 +276,20 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getMetaAgeResult();
             getSubcutaneousResult();
             getMaleVisceralFatResult();
-            getBodWaterResult();
+            getFemaleBodyWaterResult();
             getSkeletalMuscle();
             getMuscleMassResult();
             getBoneMassResult();
             getMaleProteinResult();
             getMaleBMRResult();
             getMaleGlucoseResult();
-            getHemoglobinResult();
-            getBloodPressureResult();
-            getDiastolicResult();
+            getFemaleHemoglobinResult();
+            getSystolicBloodPressureResult();
+            getDiastolicBloodPressureResult();
             getOximeterResult();
             getPulseResult();
-            gettempratureResult();
+            getTemperatureResult();
         }
-    }
-
-    private void getDiastolicResult() {
-         if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
-             double bloodPressureDiastolic = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
-
-             if (bloodPressureDiastolic > 89) {
-                 diastolicResult = "High";
-             } else if (bloodPressureDiastolic <= 89 && bloodPressureDiastolic >= 60) {
-                 diastolicResult = "standard";
-             } else {
-                 diastolicResult = "Low";
-             }
-         }else
-            return "NA";
     }
 
     private void getMetaAgeResult() {
@@ -334,9 +319,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             subcutaneousResult = "NA";
     }
 
-    private void getHemoglobinResult() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
-            double hemoglobin = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+    private void getFemaleHemoglobinResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double hemoglobin = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT);
 
             if (hemoglobin > 15.1)
                 hemoglobinResult = "High";
@@ -344,6 +329,21 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 hemoglobinResult = "Standard";
             else
                 hemoglobinResult = "Low";
+        }else
+            hemoglobinResult = "NA";
+    }
+
+    private void getMaleHemoglobinResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN)) {
+            double hemoglobin = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN);
+
+            if (hemoglobin > 17.2) {
+                hemoglobinResult = "High";
+            } else if (hemoglobin >= 13.8 && hemoglobin <= 17.2) {
+                hemoglobinResult = "standard";
+            } else {
+                hemoglobinResult = "Low";
+            }
         }else
             hemoglobinResult = "NA";
     }
@@ -361,7 +361,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     bonemassResult = "Standard";
                 else
                     bonemassResult = "Low";
-            }else if (weight <= 60 && weight >= 45) {
+            }else if (weight >= 45 && weight <= 60) {
                 standardBoneMass = "2.0-2.4kg";
 
                 if (boneMass > 2.4)
@@ -385,201 +385,202 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMuscleMassResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS,"").equalsIgnoreCase("")) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
+            double muscleMass = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
-                if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 59.5) {
+
+                if (muscleMass > 59.5)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 59.5 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 49.4) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 49.4 && muscleMass <= 59.5)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
-            } else if (height <= 170 && height >= 160) {
+            } else if (height >= 170 && height >= 160) {
                 standardMuscleMass = "44-52.4kg";
-                if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 52.4) {
+
+                if (muscleMass > 52.4)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 52.4 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 44) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 44 && muscleMass <= 52.4)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
             } else if (height < 160) {
-                standardMuscleMass = "38.5-46.5kg";
-                if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 46.5) {
+                musclemassResult = "38.5-46.5kg";
+
+                if (muscleMass > 46.5)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 46.5 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 38.5) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 38.5 && muscleMass <= 46.5)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
             }
-        }else{
+        }else
             musclemassResult = "NA";
-        }
     }
 
     private void getSkeletalMuscle() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) > 50) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+
+            if (skeletalMuscle > 50)
                 skeletonmuscleResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) <= 50 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) >= 40) {
-                skeletonmuscleResult = "standard";
-            } else {
+            else if (skeletalMuscle >= 40 && skeletalMuscle <= 50)
+                skeletonmuscleResult = "Standard";
+            else
                 skeletonmuscleResult = "Low";
-            }
-        }else{
+        }else
             skeletonmuscleResult = "NA";
-        }
     }
 
-    private void getBodWaterResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) > 60) {
+    private void getFemaleBodyWaterResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+
+            if (bodyWater > 60)
                 bodywaterResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) <= 60 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) >= 45) {
-                bodywaterResult = "standard";
-            } else {
+            else if (bodyWater >= 45 && bodyWater <= 60)
+                bodywaterResult = "Standard";
+            else
                 bodywaterResult = "Low";
-            }
-        }else {
+        }else
             bodywaterResult = "NA";
-        }
     }
 
-    private void gettempratureResult() {
-        if(!sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE,"").equalsIgnoreCase("")){
-            if (Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) > 99) {
+    private void getTemperatureResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE)) {
+            double temperature = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE);
+
+            if (temperature > 99)
                 tempratureResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) <= 99 && Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) >= 97) {
-                tempratureResult = "standard";
-            } else {
+            else if (temperature >= 97 && temperature <= 99)
+                tempratureResult = "Standard";
+            else
                 tempratureResult = "Low";
-            }
-        }else{
+        }else
             tempratureResult = "NA";
-        }
     }
 
     private void getPulseResult() {
-        if(!sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE,"").equalsIgnoreCase("")){
-            if (Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "")) > 100) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE)) {
+            double pulseRate = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE);
+
+            if (pulseRate > 100)
                 pulseResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "")) <= 100 && Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "")) >= 60) {
-                pulseResult = "standard";
-            } else {
+            else if (pulseRate >= 60 && pulseRate <= 100)
+                pulseResult = "Standard";
+            else
                 pulseResult = "Low";
-            }
-        }else{
+        }else
             pulseResult = "NA";
-        }
     }
 
     private void getOximeterResult() {
-        if(!sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN,"").equalsIgnoreCase("")){
-            if (Double.parseDouble(sharedPreferencesOximeter.getString("body_oxygen", "")) >= 94) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN)) {
+            double bloodOxygen = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN);
+
+            if (bloodOxygen >= 94)
                 oxygenResult = "Standard";
-            } else if (Double.parseDouble(sharedPreferencesOximeter.getString("body_oxygen", "")) < 94 ) {
+            else if (bloodOxygen < 94)
                 oxygenResult = "Low";
-            }
-        }else{
+        }else
             oxygenResult = "NA";
-        }
     }
 
-    private void getBloodPressureResult() {
-        if(!sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC,"").equalsIgnoreCase("")){
-            if (Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) > 139) {
+    private void getSystolicBloodPressureResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC)) {
+            double bloodPressureSystolic = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC);
+
+            if (bloodPressureSystolic > 139)
                 bloodpressureResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) <= 139 && Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) >= 90) {
-                bloodpressureResult = "standard";
-            } else {
+            else if (bloodPressureSystolic >= 90 && bloodPressureSystolic <= 139)
+                bloodpressureResult = "Standard";
+            else
                 bloodpressureResult = "Low";
-            }
-        }else{
+        }else
             bloodpressureResult = "NA";
-        }
     }
 
-    private void getMaleHemoglobinResult() {
-        if(!sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase("")){
-            if (Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) > 17.2) {
-                hemoglobinResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) <= 17.2 && Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) >= 13.8) {
-                hemoglobinResult = "standard";
+    private void getDiastolicBloodPressureResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
+            double bloodPressureDiastolic = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
+
+            if (bloodPressureDiastolic > 89) {
+                diastolicResult = "High";
+            } else if (bloodPressureDiastolic >= 60 && bloodPressureDiastolic <= 89) {
+                diastolicResult = "standard";
             } else {
-                hemoglobinResult = "Low";
+                diastolicResult = "Low";
             }
-        }else{
-            hemoglobinResult = "NA";
-        }
+        }else
+            diastolicResult = "NA";
     }
 
     private void getMaleGlucoseResult() {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.GLUCOSE_TYPE)) {
+            double sugar = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.SUGAR);
+            String glucoseType = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE);
 
-        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("")) {
-
-            if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
+            if (glucoseType.equals("Fasting (Before Meal)")) {
                 standardGlucose = "70-100mg/dl(Fasting)";
-                if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) > 100) {
+
+                if (sugar > 100) {
                     sugarResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) <= 100 && Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) >= 70) {
-                    sugarResult = "standard";
-                } else {
-                    sugarResult = "Low";
-                }
-            } else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
-                standardGlucose = "70-140 mg/dl(Post Meal)";
-                if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) > 140) {
-                    sugarResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) <= 140 && Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) >= 70) {
-                    sugarResult = "standard";
-                } else {
-                    sugarResult = "Low";
-                }
-            } else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
-                standardGlucose = "79-160 mg/dl(Random)";
-                if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) > 160) {
-                    sugarResult = "High";
-                } else if (Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) <= 160 && Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) >= 79) {
+                } else if (sugar >= 70 && sugar <= 100) {
                     sugarResult = "standard";
                 } else {
                     sugarResult = "Low";
                 }
             }
-        }else{
-            sugarResult = "NA";
-        }
+            else if (glucoseType.equals("Post Prandial (After Meal)")) {
+                standardGlucose = "70-140 mg/dl(Post Meal)";
 
+                if (sugar > 140) {
+                    sugarResult = "High";
+                } else if (sugar >= 70 && sugar <= 140) {
+                    sugarResult = "Standard";
+                } else {
+                    sugarResult = "Low";
+                }
+            }
+            else if (glucoseType.equals("Random (Not Sure)")) {
+                standardGlucose = "79-160 mg/dl(Random)";
+
+                if (sugar > 160) {
+                    sugarResult = "High";
+                } else if (sugar >= 79 && sugar <= 160) {
+                    sugarResult = "Standard";
+                } else {
+                    sugarResult = "Low";
+                }
+            }
+        }else
+            sugarResult = "NA";
     }
 
     private void getMaleBMRResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BMR,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMR, "")) >= standardMetabolism) {
-                bmrResult = "High";
-            } else {
-                bmrResult = "Not upto Standard";
-            }
-        }else{
-            bmrResult = "NA";
-        }
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR)) {
+            double bmr = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR);
 
+            if (bmr >= standardMetabolism)
+                bmrResult = "High";
+            else
+                bmrResult = "Not up to mark";
+        }else
+            bmrResult = "NA";
     }
 
     private void getMaleProteinResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.PROTEIN,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) > 18) {
-                proteinResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) <= 18 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) >= 16) {
-                proteinResult = "standard";
-            } else {
-                proteinResult = "Low";
-            }
-        }else{
-            proteinResult = "NA";
-        }
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN)) {
+            double protein = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
 
+            if (protein >= 18)
+                proteinResult = "Standard";
+            else if (protein >= 16 && protein <= 18)
+                proteinResult = "Low";
+        }else
+            proteinResult = "NA";
     }
 
     private void getMaleBoneMassResult() {
@@ -652,103 +653,100 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getMaleSkeletalMuscle() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) > 59) {
-                skeletonmuscleResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) <= 59 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) >= 49) {
-                skeletonmuscleResult = "standard";
-            } else {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+
+            if (skeletalMuscle > 59)
+                skeletonmuscleResult = "Standard";
+            else if (skeletalMuscle >= 49 && skeletalMuscle <= 59)
                 skeletonmuscleResult = "Low";
-            }
-        }else{
+        }else
             skeletonmuscleResult = "NA";
-        }
     }
 
     private void getMaleBodyWaterResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) > 65) {
-                bodywaterResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) <= 65 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) >= 55) {
-                bodywaterResult = "standard";
-            } else {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+
+            if (bodyWater > 65)
+                bodywaterResult = "Standard";
+            else if (bodyWater >= 55 && bodyWater <= 65)
                 bodywaterResult = "Low";
-            }
-        }else {
+        }else
             bodywaterResult = "NA";
-        }
     }
 
     private void getMaleVisceralFatResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase("")) {
-            if(Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) > 14){
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT)) {
+            double visceralFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT);
+
+            if (visceralFat > 14)
                 visceralfatResult = "Seriously High";
-            }else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) > 9) {
+            else if (visceralFat > 9)
                 visceralfatResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) <= 9) {
-                visceralfatResult = "standard";
-            }
-        }else {
+            else
+                visceralfatResult = "Standard";
+        }else
             visceralfatResult = "NA";
-        }
     }
 
     private void getMaleSubcutaneousResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) > 16.7) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double subcutaneousFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+
+            // TODO: Check these values
+            if (subcutaneousFat > 16.7)
                 subcutaneousResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) <= 16.7 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) >= 8.6) {
-                subcutaneousResult = "standard";
-            } else {
+            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 16.7)
+                subcutaneousResult = "Standard";
+            else
                 subcutaneousResult = "Low";
-            }
-        }else {
+        }else
             subcutaneousResult = "NA";
-        }
     }
 
     private void getMaleBodyFatResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) > 26) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+
+            if (bodyFat > 26)
                 bodyfatResult = "Seriously High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) <= 26 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) >= 22) {
+            else if (bodyFat > 22 && bodyFat <= 26)
                 bodyfatResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) <= 21 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) >= 11) {
+            else if (bodyFat > 11 && bodyFat <= 21)
                 bodyfatResult = "Standard";
-            }else{
+            else
                 bodyfatResult = "Low";
-            }
-        }else {
+        }else
             bodyfatResult = "NA";
-        }
     }
 
     private void getMaleBMIResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.BMI,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) > 25) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+
+            if (bmi > 25)
                 bmiResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) <= 25 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) >= 18.5) {
-                bmiResult = "standard";
-            } else {
+            else if (bmi > 18.5 && bmi <= 25)
+                bmiResult = "Standard";
+            else
                 bmiResult = "Low";
-            }
-        }else {
+        }else
             bmiResult = "NA";
-        }
     }
 
     private void getMaleWeightResult() {
-        if(!sharedPreferencesActofit.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase("")) {
-            if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) > standardWeighRangeTo) {
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+
+            if (weight > standardWeighRangeTo)
                 weightResult = "High";
-            } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) <= standardWeighRangeTo && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) >= standardWeighRangeFrom) {
-                weightResult = "standard";
-            } else {
+            else if (weight > standardWeighRangeFrom && weight <= standardWeighRangeTo)
+                weightResult = "Standard";
+            else
                 weightResult = "Low";
-            }
-        }else{
+        }else
             weightResult = "NA";
-        }
     }
 
     private void getBodyFatResult() {
