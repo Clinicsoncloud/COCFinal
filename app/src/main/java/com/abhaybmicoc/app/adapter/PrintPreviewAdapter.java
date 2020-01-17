@@ -1260,80 +1260,51 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
-                if (age >= 70) {
-
+                if (age >= 70)
                     standardMetabolism = 21.5 * weight;
-
-                } else if (age >= 50 && age <= 69) {
-
+                else if (age >= 50 && age <= 69)
                     standardMetabolism = 21.5 * weight;
-
-
-                } else if (age >= 30 && age <= 49) {
-
+                else if (age >= 30 && age <= 49)
                     standardMetabolism = 22.3 * weight;
-
-
-                } else if (age >= 18 && age <= 29) {
-
+                else if (age >= 18 && age <= 29)
                     standardMetabolism = 24 * weight;
 
-                }
-
                 if (printData.getCurr_value() >= standardMetabolism) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < standardMetabolism) {
-
                     viewHolder.resultTV.setText("Not upto Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 }
 
                 standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
 
                 viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+
                 bmrEditor.putString("standardBMR", "" + standardMetabolism);
                 bmrEditor.commit();
-
-
             } else {
-
-
-                if (age >= 70) {
-
+                if (age >= 70)
                     standardMetabolism = 20.7 * weight;
-
-                } else if (age >= 50 && age <= 69) {
-
+                else if (age >= 50 && age <= 69)
                     standardMetabolism = 20.7 * weight;
-
-
-                } else if (age >= 30 && age <= 49) {
-
+                else if (age >= 30 && age <= 49)
                     standardMetabolism = 21.7 * weight;
-
-
-                } else if (age >= 18 && age <= 29) {
-
+                else if (age >= 18 && age <= 29)
                     standardMetabolism = 23.6 * weight;
 
-                }
-
                 if (printData.getCurr_value() >= standardMetabolism) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
                 } else if (printData.getCurr_value() < standardMetabolism) {
-
                     viewHolder.resultTV.setText("Not upto Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 }
+
                 standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
+
                 viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+
                 bmrEditor.putString("standardBMR", "" + standardMetabolism);
                 bmrEditor.commit();
 
