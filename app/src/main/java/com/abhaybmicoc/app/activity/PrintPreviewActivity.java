@@ -352,7 +352,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             double metaAge = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE);
 
             if (metaAge <= age)
-                metaageResult = "standard";
+                metaageResult = "Standard";
             else
                 metaageResult = "Not up to standard";
         }else
@@ -366,7 +366,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             if (subcutaneousFat > 26.7)
                 subcutaneousResult = "High";
             else if (subcutaneousFat >= 18.5 && subcutaneousFat <= 26.7)
-                subcutaneousResult = "standard";
+                subcutaneousResult = "Standard";
             else
                 subcutaneousResult = "Low";
         }else
@@ -394,7 +394,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             if (hemoglobin > 17.2) {
                 hemoglobinResult = "High";
             } else if (hemoglobin >= 13.8 && hemoglobin <= 17.2) {
-                hemoglobinResult = "standard";
+                hemoglobinResult = "Standard";
             } else {
                 hemoglobinResult = "Low";
             }
@@ -563,7 +563,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             if (bloodPressureDiastolic > 89) {
                 diastolicResult = "High";
             } else if (bloodPressureDiastolic >= 60 && bloodPressureDiastolic <= 89) {
-                diastolicResult = "standard";
+                diastolicResult = "Standard";
             } else {
                 diastolicResult = "Low";
             }
@@ -582,7 +582,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (sugar > 100) {
                     sugarResult = "High";
                 } else if (sugar >= 70 && sugar <= 100) {
-                    sugarResult = "standard";
+                    sugarResult = "Standard";
                 } else {
                     sugarResult = "Low";
                 }
@@ -643,7 +643,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) > 3.4) {
                     bonemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) <= 3.4 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) >= 3.0) {
-                    bonemassResult = "standard";
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
@@ -651,7 +651,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) > 3.1) {
                     bonemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) <= 3.1 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) >= 2.7) {
-                    bonemassResult = "standard";
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
@@ -659,7 +659,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) > 2.7) {
                     bonemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) <= 2.7 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) >= 2.3) {
-                    bonemassResult = "standard";
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
@@ -678,7 +678,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 59.5) {
                     musclemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 59.5 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 49.4) {
-                    musclemassResult = "standard";
+                    musclemassResult = "Standard";
                 } else {
                     musclemassResult = "Low";
                 }
@@ -687,7 +687,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 52.4) {
                     musclemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 52.4 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 44) {
-                    musclemassResult = "standard";
+                    musclemassResult = "Standard";
                 } else {
                     musclemassResult = "Low";
                 }
@@ -696,7 +696,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) > 46.5) {
                     musclemassResult = "High";
                 } else if (Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) <= 46.5 && Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) >= 38.5) {
-                    musclemassResult = "standard";
+                    musclemassResult = "Standard";
                 } else {
                     musclemassResult = "Low";
                 }
