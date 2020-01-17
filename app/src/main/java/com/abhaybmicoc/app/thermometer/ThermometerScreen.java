@@ -106,9 +106,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     private DataInputStream dins;
     private ProgressDialog progressDialog;
 
-    private SharedPreferences objBluetoothAddress;
-    private SharedPreferences sharedPreferencesUser;
-    private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferenceBluetoothAddress;
+    private SharedPreferences sharePreferenceThermometer;
+    private SharedPreferences sharedPreferencePersonalData;
 
     private TextToSpeech textToSpeech;
 
@@ -173,7 +173,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
-        sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         etTemperature = findViewById(R.id.et_temprature);
 
@@ -185,10 +185,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         btnConnect = findViewById(R.id.btn_connect_temperature);
         btnGetTemperature = findViewById(R.id.btn_get_temperature);
 
-        tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
-        tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
-        tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
-        tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
+        tvName.setText("Name : " + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobile.setText("Phone : " + sharedPreferencePersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
@@ -226,7 +226,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View arg1, int position, long arg3) {
                 ThermometerScreen.this.dispositivoSeleccionado = (String) ((CharSequence) ThermometerScreen.this.mMacDispositivos.get(position));
-                Log.e(TAG, "address_thermo : " + objBluetoothAddress.getString("hcthermometer", ""));
+                Log.e(TAG, "address_thermo : " + sharedPreferenceBluetoothAddress.getString("hcthermometer", ""));
             }
 
             public void onNothingSelected(AdapterView<?> adapterView) {
@@ -236,7 +236,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     private void initializeData(){
-        sharedPreferencesUser = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
+        sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         this.conec = (String) getText(R.string.Connectad);
         this.Connectad = (String) getText(R.string.Connectad);
@@ -249,7 +249,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
         this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
 
-        objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
     }
 
     // endregion
@@ -268,7 +268,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             if(etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
-                SharedPreferences.Editor editor = sharedPreferencesUser.edit();
+                SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
                 editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());
                 editor.commit();
 
@@ -298,7 +298,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (ThermometerScreen.this.estadoBoton.equals("Connect")) {
             ThermometerScreen.this.encenderBluetooth();
 
-            new ThermometerScreen.Connect(ThermometerScreen.this, null).execute(new String[]{objBluetoothAddress.getString("hcthermometer", "")});
+            new ThermometerScreen.Connect(ThermometerScreen.this, null).execute(new String[]{sharedPreferenceBluetoothAddress.getString("hcthermometer", "")});
             ThermometerScreen.this.enable = "false";
             return;
         }
@@ -377,9 +377,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                     this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
                     this.mMacDispositivos.add(device.getAddress());
 
-                    objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = objBluetoothAddress.edit();
-                    if(objBluetoothAddress.getString("hcthermometer","").equalsIgnoreCase("")){
+                    sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
+                    if(sharedPreferenceBluetoothAddress.getString("hcthermometer","").equalsIgnoreCase("")){
                         editor.putString("hcthermometer", device.getAddress());
                         editor.commit();
                     }
@@ -566,7 +566,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                     }catch(Exception ex){
 
                         ThermometerScreen.this.showCannotConnectToDevice();
-
                     }
                 }
             }

@@ -106,7 +106,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float bmi = intent.getFloatExtra("bmi", 0f);
         float weight = intent.getFloatExtra("weight", 0f);
         float subFat = intent.getFloatExtra("subfat", 0f);
-        float protein = intent.getFloatExtra("protein", 0f);
+        float protein = intent.getFloatExtra("protine", 0f);
         float bodyFat = intent.getFloatExtra("bodyfat", 0f);
         float metaAge = intent.getFloatExtra("metaage", 0f);
         float boneMass = intent.getFloatExtra("bonemass", 0f);
@@ -114,7 +114,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float bodyWater = intent.getFloatExtra("bodywater", 0f);
         float muscleMass = intent.getFloatExtra("musmass", 0f);
         float visceralFat = intent.getFloatExtra("visfat", 0f);
-        float healthScore = intent.getFloatExtra("healthscore", 0f);
+        float healthScore = intent.getFloatExtra("helthscore", 0f);
         float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
         float skeletalMuscle = intent.getFloatExtra("skemus", 0f);
 

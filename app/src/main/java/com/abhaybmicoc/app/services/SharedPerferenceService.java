@@ -1,12 +1,12 @@
 package com.abhaybmicoc.app.services;
 
 import android.content.Context;
+import android.util.Log;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class SharedPerferenceService {
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
@@ -17,7 +17,6 @@ public class SharedPerferenceService {
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
@@ -28,24 +27,30 @@ public class SharedPerferenceService {
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
      * @return
      */
-    public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
-        return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+    public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException {
+        try {
+            return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
      * @return
      */
-    public static double getDouble(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
-        return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+    public static double getDouble(Context context, String sharedPreferenceName, String key) throws NumberFormatException {
+        try {
+            return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+        } catch (Exception e) {
+            return 0;
+        }
     }
 }
