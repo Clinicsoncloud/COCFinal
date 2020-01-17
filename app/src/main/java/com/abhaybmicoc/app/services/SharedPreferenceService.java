@@ -1,11 +1,13 @@
 package com.abhaybmicoc.app.services;
 
 import android.content.Context;
-import android.util.Log;
+
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class SharedPerferenceService {
+public class SharedPreferenceService {
     /**
      * @param context
      * @param sharedPreferenceName
@@ -13,7 +15,8 @@ public class SharedPerferenceService {
      * @return
      */
     public static boolean isAvailable(Context context, String sharedPreferenceName, String key) {
-        return context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "").isEmpty();
+        String value = context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "");
+        return value != null && value.trim().length() > 0;
     }
 
     /**
@@ -52,5 +55,9 @@ public class SharedPerferenceService {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public static boolean isMalePatient(Context context){
+        return SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.GENDER).equalsIgnoreCase("male");
     }
 }

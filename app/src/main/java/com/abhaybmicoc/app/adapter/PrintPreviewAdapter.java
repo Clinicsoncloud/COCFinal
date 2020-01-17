@@ -14,7 +14,7 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.services.DateService;
-import com.abhaybmicoc.app.services.SharedPerferenceService;
+import com.abhaybmicoc.app.services.SharedPreferenceService;
 
 import java.text.DecimalFormat;
 
@@ -70,9 +70,8 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder = new ViewHolder(convertView);
             convertView.setTag(viewHolder);
 
-        } else {
+        } else
             viewHolder = (ViewHolder) convertView.getTag();
-        }
 
         calculatePrintData(convertView, viewHolder, position);
 
@@ -82,14 +81,6 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // endregion
 
     private void calculatePrintData(View convertView, ViewHolder viewHolder, int position) {
-        String parsedDate;
-        String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth)) {
-            parsedDate = DateService.formatDateFromString(dateOfBirth, "yyyy-MM-dd", "dd-MM-yyyy");
-        }else{
-            parsedDate = "N/A";
-        }
-
         switch (position) {
             case 0:
                 showWeight(viewHolder);
@@ -1063,172 +1054,119 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.parameterTV.setText("" + printData.getParameter());
             viewHolder.valueTV.setText("NA");
+            viewHolder.rangeTV.setText("");
+
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-            viewHolder.rangeTV.setText("");
         } else {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.rangeTV.setText("");
             viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-            viewHolder.rangeTV.setText("");
 
             SharedPreferences.Editor editor = sharedPreferencesPersonalPreferencesActofit.edit();
 
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
                 if (height > 170) {
-
                     viewHolder.rangeTV.setText("49.4 - 59.5 kg");
+
                     editor.putString("standardMuscleMass", "49.4-59.5 kg");
                     editor.commit();
 
                     if (printData.getCurr_value() > 59.4) {
-
                         viewHolder.resultTV.setText("Adequate");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 59.4 && printData.getCurr_value() >= 49.4) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 49.4) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
-
                 } else if (height <= 170 && height >= 160) {
-
                     viewHolder.rangeTV.setText("44 - 52.4 kg");
+
                     editor.putString("standardMuscleMass", "44-52.4 kg");
                     editor.commit();
 
                     if (printData.getCurr_value() > 52.4) {
-
                         viewHolder.resultTV.setText("Adequate");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 52.4 && printData.getCurr_value() >= 44) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 44) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
-
                 } else if (height < 160) {
-
                     viewHolder.rangeTV.setText("38.5 - 46.5 kg");
+
                     editor.putString("standardMuscleMass", "38.5-46.5 kg");
                     editor.commit();
 
                     if (printData.getCurr_value() > 46.5) {
-
                         viewHolder.resultTV.setText("Adequate");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 46.5 && printData.getCurr_value() >= 38.5) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 38.5) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
-
                 }
-            } else { // female muscle mass
+            } else {
+                /* Female muscle mass */
 
                 if (height > 160) {
-
                     viewHolder.rangeTV.setText("36.5 - 42.5 kg");
+
                     editor.putString("standardMuscleMass", "36.4-42.5 kg");
                     editor.commit();
 
                     if (printData.getCurr_value() > 42.5) {
-
                         viewHolder.resultTV.setText("Adequate");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 42.5 && printData.getCurr_value() >= 36.5) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 36.5) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
                 } else if (height <= 160 && height >= 150) {
-
                     viewHolder.rangeTV.setText("32.9 - 37.5 kg");
                     editor.putString("standardMuscleMass", "32.9-37.5 kg");
                     editor.commit();
 
                     if (printData.getCurr_value() > 37.5) {
-
                         viewHolder.resultTV.setText("Adequate");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 37.5 && printData.getCurr_value() >= 32.9) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 32.9) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
-
                 } else if (height < 150) {
-
                     if (printData.getCurr_value() > 34.7) {
-
-                        viewHolder.rangeTV.setText("29.1 - 34.7 kg");
                         editor.putString("standardMuscleMass", "29.1-34.7 kg");
                         editor.commit();
 
                         viewHolder.resultTV.setText("Adequate");
+                        viewHolder.rangeTV.setText("29.1 - 34.7 kg");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                     } else if (printData.getCurr_value() <= 34.7 && printData.getCurr_value() >= 29.1) {
-
                         viewHolder.resultTV.setText("Standard");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
-
                     } else if (printData.getCurr_value() < 29.1) {
-
                         viewHolder.resultTV.setText("Low");
                         viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                     }
-
-
                 }
             }
         }
@@ -1236,11 +1174,12 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     private void showPhysique(ViewHolder viewHolder){
         if (printData.getCurr_value() == 0.0) {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.rangeTV.setText("");
             viewHolder.valueTV.setText("");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+
             viewHolder.resultTV.setText("" + sharedPreferencesPersonalPreferencesActofit.getString("physique", ""));
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-            viewHolder.rangeTV.setText("");
         }
     }
 
@@ -1268,80 +1207,51 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
 
-                if (age >= 70) {
-
+                if (age >= 70)
                     standardMetabolism = 21.5 * weight;
-
-                } else if (age >= 50 && age <= 69) {
-
+                else if (age >= 50 && age <= 69)
                     standardMetabolism = 21.5 * weight;
-
-
-                } else if (age >= 30 && age <= 49) {
-
+                else if (age >= 30 && age <= 49)
                     standardMetabolism = 22.3 * weight;
-
-
-                } else if (age >= 18 && age <= 29) {
-
+                else if (age >= 18 && age <= 29)
                     standardMetabolism = 24 * weight;
 
-                }
-
                 if (printData.getCurr_value() >= standardMetabolism) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < standardMetabolism) {
-
                     viewHolder.resultTV.setText("Not upto Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 }
 
                 standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
 
                 viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+
                 bmrEditor.putString("standardBMR", "" + standardMetabolism);
                 bmrEditor.commit();
-
-
             } else {
-
-
-                if (age >= 70) {
-
+                if (age >= 70)
                     standardMetabolism = 20.7 * weight;
-
-                } else if (age >= 50 && age <= 69) {
-
+                else if (age >= 50 && age <= 69)
                     standardMetabolism = 20.7 * weight;
-
-
-                } else if (age >= 30 && age <= 49) {
-
+                else if (age >= 30 && age <= 49)
                     standardMetabolism = 21.7 * weight;
-
-
-                } else if (age >= 18 && age <= 29) {
-
+                else if (age >= 18 && age <= 29)
                     standardMetabolism = 23.6 * weight;
 
-                }
-
                 if (printData.getCurr_value() >= standardMetabolism) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
                 } else if (printData.getCurr_value() < standardMetabolism) {
-
                     viewHolder.resultTV.setText("Not upto Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 }
+
                 standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
+
                 viewHolder.rangeTV.setText(" > = " + standardMetabolism + "Kcal");
+
                 bmrEditor.putString("standardBMR", "" + standardMetabolism);
                 bmrEditor.commit();
 
@@ -1353,24 +1263,22 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         int age = getAge();
 
         if (printData.getCurr_value() == 0.0) {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.rangeTV.setText("");
             viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
+
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
-            viewHolder.rangeTV.setText("");
         } else {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
+            viewHolder.rangeTV.setText("<= "+ age + " yrs");
             viewHolder.valueTV.setText("" + printData.getCurr_value());
-            viewHolder.rangeTV.setText("<="+age+"yrs");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (printData.getCurr_value() <= age) {
-
                 viewHolder.resultTV.setText("Standard");
                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
             } else if (printData.getCurr_value() > age) {
-
-                viewHolder.resultTV.setText("Not upto Standard");
+                viewHolder.resultTV.setText("Not up to Standard");
                 viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
             }
         }
@@ -1427,81 +1335,74 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     private void showSkeletalMuscle(ViewHolder viewHolder){
         if (printData.getCurr_value() == 0.0) {
-            viewHolder.parameterTV.setText("" + printData.getParameter());
-            viewHolder.valueTV.setText("NA");
             viewHolder.resultTV.setText("");
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
+
             viewHolder.rangeTV.setText("");
+            viewHolder.valueTV.setText("NA");
+            viewHolder.parameterTV.setText("" + printData.getParameter());
         } else {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
-            if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
+            if(SharedPreferenceService.isMalePatient(context)){
+                /* Male skeleton muscle */
 
                 if (printData.getCurr_value() > 59) {
-
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 } else if (printData.getCurr_value() <= 59 && printData.getCurr_value() >= 49) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < 49) {
-
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                 }
 
                 viewHolder.rangeTV.setText("49 - 59 %");
-
-            } else {  //female skeleton muscle
+            } else {
+                /* Female skeleton muscle */
 
                 viewHolder.rangeTV.setText("40 - 50 %");
 
                 if (printData.getCurr_value() > 50) {
-
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-
                 } else if (printData.getCurr_value() <= 50 && printData.getCurr_value() >= 40) {
-
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-
                 } else if (printData.getCurr_value() < 40) {
-
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
-
                 }
             }
         }
     }
 
+    // endregion
+
+    // region Logical methods
+
     private double getWeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT)) {
-            return SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.WEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            return SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         }else{
             return 0;
         }
     }
 
     private int getHeight(){
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.HEIGHT))
-            return SharedPerferenceService.getInteger(context, ApiUtils.PREFERENCE_PERSONALDATA,Constant.Fields.HEIGHT);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
         else
             return 0;
     }
 
-    private int getAge(){
-        String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth))
+    private int getAge() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH)){
+            String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH);
             return DateService.getAgeFromStringDate(dateOfBirth);
-        else
+        }else
             return 0;
     }
 
