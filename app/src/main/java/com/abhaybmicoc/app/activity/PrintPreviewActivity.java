@@ -351,11 +351,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE)) {
             double metaAge = SharedPerferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE);
 
-            if (metaAge <= age) {
+            if (metaAge <= age)
                 metaageResult = "standard";
-            } else {
+            else
                 metaageResult = "Not up to standard";
-            }
         }else
             metaageResult = "NA";
     }
@@ -908,27 +907,21 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
         glucoseRange();
 
-        if (sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "").equals("male")) {
+        if (sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, "").equals("male"))
             maleRange(standardWeightMen);
-        } else {
+        else
             femaleRange(standardWeightFemale);
-        }
-
     }
 
-    //creating region on glucoseRange
     private void glucoseRange() {
-
-        if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
+        if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)"))
             standardGlucose = "70-100mg/dl(Fasting)";
-        } else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
+        else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)"))
             standardGlucose = "70-140 mg/dl(Post Meal)";
-        } else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
+        else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)"))
             standardGlucose = "79-160 mg/dl(Random)";
-        }else{
+        else
             standardGlucose = "";
-        }
-
     }
 
     private void femaleRange(double standardWeightFemale) {
@@ -938,7 +931,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
         standardWeightRange = String.valueOf(standardWeighRangeFrom)+"-"+String.valueOf(standardWeighRangeTo);
-        Log.e("standardWeightRange",""+standardWeightRange);
 
         if (height > 160) {
             standardMuscleMass = "36.4-42.5kg";

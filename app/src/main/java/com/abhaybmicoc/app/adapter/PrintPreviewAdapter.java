@@ -82,14 +82,6 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // endregion
 
     private void calculatePrintData(View convertView, ViewHolder viewHolder, int position) {
-        String parsedDate;
-        String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, dateOfBirth)) {
-            parsedDate = DateService.formatDateFromString(dateOfBirth, "yyyy-MM-dd", "dd-MM-yyyy");
-        }else{
-            parsedDate = "N/A";
-        }
-
         switch (position) {
             case 0:
                 showWeight(viewHolder);
@@ -1497,8 +1489,8 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     }
 
     private int getAge() {
-        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)){
-            String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
+        if (SharedPerferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH)){
+            String dateOfBirth = SharedPerferenceService.getString(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH);
             return DateService.getAgeFromStringDate(dateOfBirth);
         }else
             return 0;
