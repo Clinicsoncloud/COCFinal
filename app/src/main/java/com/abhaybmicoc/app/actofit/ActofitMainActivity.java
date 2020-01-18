@@ -170,6 +170,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     protected void onPause() {
         super.onPause();
+
         stopTextToSpeech();
     }
 
@@ -209,8 +210,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         actionBar.setTitle("Weight Measurement");
 
         etUserId = findViewById(R.id.txtuid);
-        etUserName = findViewById(R.id.txtuname);
         etHeight = findViewById(R.id.txtuheight);
+        etUserName = findViewById(R.id.txtuname);
         etUserDateOfBirth = findViewById(R.id.txt_sdob);
 
         radioMale = findViewById(R.id.radioMale);
@@ -260,6 +261,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
             tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         } catch (Exception e) {
+            // TODO: Handle exception here
         }
     }
 

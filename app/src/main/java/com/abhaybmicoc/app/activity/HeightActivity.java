@@ -98,8 +98,8 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
 
     //milliseconds declaration
-    //It will take break of 5ms while trying to reconnect
-    private int CONNECT_TRY_PAUSE_MILLISECONDS = 500;
+    //It will take break of 5s while trying to reconnect
+    private int CONNECT_TRY_PAUSE_MILLISECONDS = 5000;
 
     // endregion
 
@@ -437,7 +437,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             } else {
                 speakOut(txtSpeak);
             }
-
         } else {
             Log.e("TTS", "Initialization Failed!");
             // TODO: Handle this instead of logging
@@ -539,8 +538,8 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         }
 
         /* access modifiers changed from: protected */
-        public void onProgressUpdate(String... recib) {
-            str = recib[0];
+        public void onProgressUpdate(String... params) {
+            str = params[0];
             str = str.replace("�", "");
 
             strHeight += str;
@@ -554,7 +553,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                 ErrorUtils.logErrors(e,"HeightActivity.java","onProgressUpdate()","Failed to adjust height");
             }
 
-            if (recib[1].equals("false")) {
+            if (params[1].equals("false")) {
                 state = strConnect;
                 state2 = strConnect;
                 strEnabled = "false";
