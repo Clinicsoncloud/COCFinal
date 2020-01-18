@@ -188,6 +188,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     @Override
     protected void onStop() {
         super.onStop();
+        syncLib.stopReceiver();
     }
 
     @Override
@@ -375,7 +376,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         startActivity(intent);
         finish();
     }
-
 
     @Override
     public void setBatteryLevel(int value) {
@@ -598,6 +598,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
         syncLib.startReceiver();
 
+        Log.e("mConnected_Connect", ":" + mConnected);
+
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
 
         setDeviceConnectionTimeoutHandler();
@@ -610,6 +612,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
                 dialogConnectionProgress.dismiss();
 
+                Log.e("mConnected_Handler", ":" + mConnected);
                 if (!mConnected) {
 
                     syncLib.stopReceiver();
