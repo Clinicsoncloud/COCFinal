@@ -15,7 +15,7 @@ public class DateService {
      */
     public static int getAgeFromStringDate(String dateOfBirth) {
         Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             date = sdf.parse(dateOfBirth);
         } catch (ParseException e) {
