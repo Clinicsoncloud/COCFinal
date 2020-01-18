@@ -5,9 +5,10 @@ public class ApiUtils {
     private static String SERVER_URL = "45.252.190.29";
 
     public static String LOGIN_URL = PROTOCOL + SERVER_URL + "/api/v1/login";
+    public static String VERIFY_OTP_URL = PROTOCOL + SERVER_URL + "/api/v1/login/verify";
+
     public static String PROFILE_URL = PROTOCOL + SERVER_URL + "/api/v1/profile";
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";
-    public static String VERIFY_OTP_URL = PROTOCOL + SERVER_URL + "/api/v1/login/verify";
 
     /* api for downloading pdf */
     public static String DOWNLOAD_PDF_URL = PROTOCOL + SERVER_URL + "/api/v1/file/pdf/";

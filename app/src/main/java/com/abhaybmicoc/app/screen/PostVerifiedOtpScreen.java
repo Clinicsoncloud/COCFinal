@@ -10,20 +10,25 @@ import android.app.ProgressDialog;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.interfaces.VolleyResponse;
+import com.abhaybmicoc.app.services.AccessWebServices;
 import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.Request;
 
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import java.util.Map;
 import java.util.Locale;
 import java.util.HashMap;
+
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -85,7 +90,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_post_verified_otp_screen);
 
         etOTP = findViewById(R.id.et_otp);
@@ -97,14 +102,14 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         btnVerify.setOnClickListener(v -> {
             verifyOtp();
         });
     }
 
-    private void initializeLogic(){
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+    private void initializeLogic() {
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
         speakOut(OTP_MESSAGE);
     }
 
@@ -122,25 +127,25 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void goBack(){
-        context.startActivity(new Intent(this,OtpLoginScreen.class));
+    private void goBack() {
+        context.startActivity(new Intent(this, OtpLoginScreen.class));
     }
 
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("onPauseException" + e.getMessage());
         }
     }
 
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -158,7 +163,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void verifyOtp(){
+    private void verifyOtp() {
         if (etOTP.getText().toString().equals("")) {
             etOTP.setError("Please Enter OTP");
         } else {
@@ -169,7 +174,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void writeToPersonalSharedPreference(String key, String value){
+    private void writeToPersonalSharedPreference(String key, String value) {
         SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
@@ -185,44 +190,39 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      *
      */
     private void verifyOtpFromAPI() {
-        progressDialog = Tools.progressDialog(PostVerifiedOtpScreen.this);
+        Map<String, String> params;
 
-        StringRequest jsonObjectRequest = new StringRequest(Request.Method.POST, ApiUtils.VERIFY_OTP_URL,
-                jsonObject -> {
-                    progressDialog.dismiss();
+        params = new HashMap<>();
 
+        params.put(Constant.Fields.KIOSK_ID, kioskId);
+        params.put("mobile", mobileNumber);
+        params.put("otp", etOTP.getText().toString());
+
+        Map<String, String> headerParams;
+        headerParams = new HashMap<>();
+
+        AccessWebServices.accessWebServices(context, ApiUtils.VERIFY_OTP_URL, params, headerParams, new VolleyResponse() {
+
+            @Override
+            public void onProcessFinish(String response, VolleyError error, String status) {
+                if (status.equals("response")) {
                     try {
-                        JSONObject jobj = new JSONObject(jsonObject);
 
-                        writeToPersonalSharedPreference(Constant.Fields.TOKEN, jobj.getJSONObject("data").getString(Constant.Fields.TOKEN));
+                        JSONObject responseObject = new JSONObject(response);
+
+                        writeToPersonalSharedPreference(Constant.Fields.TOKEN, responseObject.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
                         Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                         objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, mobileNumber);
                         startActivity(objIntent);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                },
-                volleyError -> {
-                    Log.d("", "onErrorResponse: " + volleyError.toString());
-                    progressDialog.dismiss();
-                }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params;
-
-                params = new HashMap<>();
-                params.put(Constant.Fields.KIOSK_ID, kioskId);
-                params.put("mobile", mobileNumber);
-                params.put("otp", etOTP.getText().toString());
-
-                return params;
+                } else if (status.equals("error")) {
+                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
-        };
-
-        AndMedical_App_Global.getInstance().addToRequestQueue(jsonObjectRequest);
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(90000, 2, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        });
     }
-
     // endregion
 }

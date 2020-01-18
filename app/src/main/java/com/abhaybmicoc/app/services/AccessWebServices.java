@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.abhaybmicoc.app.interfaces.VolleyResponse;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 public class AccessWebServices {
 
-    public static void accessWebServices(final Context context, String url, final Map param, final VolleyResponse responseListner) {
+    public static void accessWebServices(final Context context, String url, final Map param, final Map headerParam, final VolleyResponse responseListner) {
         final ProgressDialog loading = ProgressDialog.show(context, "Loading.....", "Please wait...", true);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
@@ -53,6 +54,11 @@ public class AccessWebServices {
             @Override
             protected Map<String, String> getParams() {
                 return param;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return headerParam;
             }
         };
         stringRequest.setRetryPolicy(new RetryPolicy() {

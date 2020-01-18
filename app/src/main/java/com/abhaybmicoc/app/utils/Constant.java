@@ -10,7 +10,7 @@ public class Constant {
     public static class Fields{
         public final static String ID = "ID";
         public final static String OTP = "OTP";
-        public final static String TOKEN = "TOKEN";
+        public final static String TOKEN = "token";
         public final static String KIOSK_ID = "kiosk_id";
 
         public final static String NAME = "name";

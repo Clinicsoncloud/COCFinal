@@ -203,13 +203,34 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
-//                GenerateOTP();
-                GenerateOTPNew();
+                GenerateOTP();
             }
         }
     }
 
-    private void GenerateOTPNew() {
+
+    /**
+     *
+     */
+    private void clearDatabase() {
+        clearSharedPreference(ApiUtils.PREFERENCE_URL);
+        clearSharedPreference(ApiUtils.PREFERENCE_PULSE);
+        clearSharedPreference(ApiUtils.PREFERENCE_ACTOFIT);
+        clearSharedPreference(ApiUtils.PREFERENCE_BIOSENSE);
+        clearSharedPreference(ApiUtils.PREFERENCE_NEWRECORD);
+        clearSharedPreference(ApiUtils.PREFERENCE_HEMOGLOBIN);
+        clearSharedPreference(ApiUtils.PREFERENCE_BLOODPRESSURE);
+        clearSharedPreference(ApiUtils.PREFERENCE_THERMOMETERDATA);
+    }
+
+    private void clearSharedPreference(String preferenceName) {
+        getSharedPreferences(preferenceName, MODE_PRIVATE).edit().clear().commit();
+    }
+
+    // endregion
+
+    // region API methods
+    private void GenerateOTP() {
 
         Map<String, String> params;
 
@@ -217,15 +238,16 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         params.put("kiosk_id", kiosk_id);
         params.put("mobile", etMobileNumber.getText().toString());
 
-        AccessWebServices.accessWebServices(mContext, ApiUtils.LOGIN_URL, params, new VolleyResponse() {
+
+        Map<String, String> headerParams;
+        headerParams = new HashMap<>();
+
+
+        AccessWebServices.accessWebServices(mContext, ApiUtils.LOGIN_URL, params, headerParams, new VolleyResponse() {
 
             @Override
             public void onProcessFinish(String response, VolleyError error, String status) {
-                Log.e("res_login_url", ":" + response);
-                Log.e("status_login_url", ":" + status);
-
                 if (status.equals("response")) {
-
                     try {
 
                         JSONObject jsonResponse = new JSONObject(response);
@@ -253,105 +275,14 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                             finish();
                         }
-
-
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 } else if (status.equals("error")) {
-
                     Toast.makeText(mContext, error.toString(), Toast.LENGTH_SHORT).show();
                 }
-
-
             }
-
-
         });
-
-
-    }
-
-    /**
-     *
-     */
-    private void clearDatabase() {
-        clearSharedPreference(ApiUtils.PREFERENCE_URL);
-        clearSharedPreference(ApiUtils.PREFERENCE_PULSE);
-        clearSharedPreference(ApiUtils.PREFERENCE_ACTOFIT);
-        clearSharedPreference(ApiUtils.PREFERENCE_BIOSENSE);
-        clearSharedPreference(ApiUtils.PREFERENCE_NEWRECORD);
-        clearSharedPreference(ApiUtils.PREFERENCE_HEMOGLOBIN);
-        clearSharedPreference(ApiUtils.PREFERENCE_BLOODPRESSURE);
-        clearSharedPreference(ApiUtils.PREFERENCE_THERMOMETERDATA);
-    }
-
-    private void clearSharedPreference(String preferenceName) {
-        getSharedPreferences(preferenceName, MODE_PRIVATE).edit().clear().commit();
-    }
-
-    // endregion
-
-    // region API methods
-
-    /**
-     *
-     */
-    private void GenerateOTP() {
-        progressDialog = Tools.progressDialog(OtpLoginScreen.this);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.LOGIN_URL, response -> {
-            try {
-                progressDialog.dismiss();
-
-                JSONObject jsonResponse = new JSONObject(response);
-
-                if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
-
-                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
-                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
-
-                    startActivity(objIntent);
-
-                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-
-                    finish();
-                } else {
-                    writePersonalSharedPreferences(jsonResponse);
-
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
-
-                    objIntent.putExtra(Constant.Fields.MOBILE_LOGIN, etMobileNumber.getText().toString());
-                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
-
-                    startActivity(objIntent);
-
-                    finish();
-                }
-
-            } catch (JSONException e) {
-
-            }
-        }, volleyError -> {
-            progressDialog.dismiss();
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params;
-
-                params = new HashMap<>();
-                params.put("kiosk_id", kiosk_id);
-                params.put("mobile", etMobileNumber.getText().toString());
-
-                return params;
-            }
-        };
-
-        AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(90000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
     /**

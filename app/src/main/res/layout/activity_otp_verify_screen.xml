@@ -6,7 +6,7 @@
     android:background="@drawable/bgapp"
     android:paddingStart="300dp"
     android:paddingEnd="300dp"
-    tools:context=".OtpLoginScreen">
+    tools:context=".screen.OtpVerifyScreen">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,13 +61,13 @@
             android:layout_height="45dp"
             android:layout_margin="5dp"
             android:layout_weight="1"
-            android:textColorHint="@color/white"
             android:background="@drawable/rectangle"
             android:gravity="center"
-            android:imeOptions="actionNext"
             android:hint="Enter Mobile Number"
+            android:imeOptions="actionNext"
             android:inputType="number"
             android:textColor="@color/white_1000"
+            android:textColorHint="@color/white"
             android:textSize="25sp" />
 
         <EditText
@@ -78,11 +78,11 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle"
             android:gravity="center"
-            android:imeOptions="actionNext"
             android:hint="Enter Name"
-            android:textColorHint="@color/white"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName"
             android:textColor="@color/white_1000"
+            android:textColorHint="@color/white"
             android:textSize="25sp" />
 
         <EditText
@@ -92,15 +92,15 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:background="@drawable/rectangle"
-            android:gravity="center"
             android:drawableRight="@drawable/ic_calender_one"
-            android:hint="Enter DOB"
-            android:paddingStart="@dimen/pad5"
-            android:imeOptions="actionNext"
             android:focusable="false"
-            android:textColorHint="@color/white"
+            android:gravity="center"
+            android:hint="Enter DOB"
+            android:imeOptions="actionNext"
             android:inputType="textPersonName"
+            android:paddingStart="@dimen/pad5"
             android:textColor="@color/white_1000"
+            android:textColorHint="@color/white"
             android:textSize="25sp" />
 
         <EditText
@@ -111,46 +111,46 @@
             android:layout_weight="1"
             android:background="@drawable/rectangle"
             android:gravity="center"
-            android:imeOptions="actionDone"
             android:hint="Enter EmailId (Optional)"
-            android:textColorHint="@color/white"
+            android:imeOptions="actionDone"
             android:inputType="textEmailAddress"
             android:textColor="@color/white_1000"
+            android:textColorHint="@color/white"
             android:textSize="25sp" />
 
         <RadioGroup
-            android:layout_width="match_parent"
-            android:weightSum="2"
-            android:orientation="horizontal"
-            android:layout_weight="2"
             android:id="@+id/rd_gender"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:orientation="horizontal"
+            android:weightSum="2">
 
             <RadioButton
-                android:layout_width="match_parent"
-                android:text="male"
-                android:layout_margin="5dp"
-                android:textColor="@color/white"
-                android:textStyle="bold"
                 android:id="@+id/rd_male"
-                android:textSize="25sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/custom_radiobutton"
                 android:gravity="center"
-                android:layout_height="wrap_content" />
+                android:text="male"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
 
             <RadioButton
-                android:layout_width="match_parent"
-                android:text="female"
-                android:layout_margin="5dp"
-                android:background="@drawable/custom_radiobutton"
-                android:textColor="@color/white"
-                android:textStyle="bold"
                 android:id="@+id/rd_female"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/custom_radiobutton"
                 android:gravity="center"
+                android:text="female"
+                android:textColor="@color/white"
                 android:textSize="25sp"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
 
         </RadioGroup>
 

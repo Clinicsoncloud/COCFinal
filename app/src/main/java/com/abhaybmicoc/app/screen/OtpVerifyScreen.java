@@ -17,8 +17,11 @@ import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.interfaces.VolleyResponse;
+import com.abhaybmicoc.app.services.AccessWebServices;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -27,6 +30,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -94,7 +98,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     protected void onResume() {
         super.onResume();
 
-        tts = new TextToSpeech(this,this);
+        tts = new TextToSpeech(this, this);
 
         speakOut(FILL_REGISTRATION_MESSAGE);
     }
@@ -155,7 +159,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         }
     }
 
-    private void setupEvents(){
+    private void setupEvents() {
         etDateOfBirth.setOnClickListener(v -> {
             showDateOfBirthPicker();
         });
@@ -182,7 +186,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         });
     }
 
-    private void initializeData(){
+    private void initializeData() {
         speakOut(FILL_REGISTRATION_MESSAGE);
     }
 
@@ -202,7 +206,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void showDatePickerDialog(){
+    private void showDatePickerDialog() {
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -223,7 +227,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         dpDialog.setCancelable(false);
         dpDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
 
-        dpDialog.setOnDismissListener(dialogInterface ->  {
+        dpDialog.setOnDismissListener(dialogInterface -> {
             etDateOfBirth.setEnabled(true);
         });
 
@@ -231,58 +235,40 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     }
 
     private void postData() {
-        progressDialog = Tools.progressDialog(OtpVerifyScreen.this);
+        Map<String, String> params;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PROFILE_URL,
-                response -> {
+        params = new HashMap<>();
+        params.put("name", etName.getText().toString());
+        params.put("email", etEmail.getText().toString());
+        params.put("dob", etDateOfBirth.getText().toString());
+        params.put("gender", getSelectedGender());
+
+        HashMap headersParams = new HashMap();
+
+        String bearer = "Bearer ".concat(sharedPreferencesToken.getString("token", ""));
+        headersParams.put("Authorization", bearer);
+
+        AccessWebServices.accessWebServices(context, ApiUtils.PROFILE_URL, params, headersParams, new VolleyResponse() {
+
+            @Override
+            public void onProcessFinish(String response, VolleyError error, String status) {
+                if (status.equals("response")) {
                     try {
-                        progressDialog.dismiss();
-
                         JSONObject jsonObject = new JSONObject(response);
 
                         writeToPersonalSharedPreference(jsonObject);
 
-                        finish();
-
                         Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                         startActivity(objIntent);
                         finish();
-
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
-                },
-                volleyError -> {
-                    progressDialog.dismiss();
-                }) {
-            @Override
-            public Map getHeaders() {
-                HashMap headers = new HashMap();
-
-                String bearer = "Bearer ".concat(sharedPreferencesToken.getString("token", ""));
-                headers.put("Authorization", bearer);
-
-                return headers;
+                } else if (status.equals("error")) {
+                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+                }
             }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("name", etName.getText().toString());
-                params.put("email", etEmail.getText().toString());
-                params.put("dob", etDateOfBirth.getText().toString());
-                params.put("gender", getSelectedGender());
-
-                return params;
-            }
-        };
-
-        AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                90000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        });
     }
 
     // region Logical methods
@@ -295,7 +281,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     }
 
     /**
-     *
      * @param jsonObject
      * @throws JSONException
      */
@@ -316,7 +301,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void writeToPersonalSharedPreferenceKey(String key, String value){
+    private void writeToPersonalSharedPreferenceKey(String key, String value) {
         SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
@@ -334,7 +319,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = tts.setLanguage(Locale.US);
 
@@ -352,15 +337,15 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         /* close the tts engine to avoid the runtime exception from it */
         try {
             if (tts != null) {
                 tts.stop();
                 tts.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
@@ -377,7 +362,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
-    private void initializeGender(){
+    private void initializeGender() {
         if (sharedPreferencesToken.getString(Constant.Fields.GENDER, "").equalsIgnoreCase("male")) {
             rdMale.setChecked(true);
 
@@ -389,7 +374,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         }
     }
 
-    private String getSelectedGender(){
+    private String getSelectedGender() {
         int radioButtonID = rdGenderGroup.getCheckedRadioButtonId();
 
         RadioButton radioButton = rdGenderGroup.findViewById(radioButtonID);
