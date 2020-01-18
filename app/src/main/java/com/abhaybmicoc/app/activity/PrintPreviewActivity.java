@@ -1076,11 +1076,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // region Print helper methods
 
     private void getPrintData() {
-        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equals(""))
             preparePrintForSugarAndHemoglobin();
-        else if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+        else if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equals(""))
             preparePrintForSugar();
-        else if(sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equalsIgnoreCase(""))
+        else if(sharedPreferencesSugar.getString(Constant.Fields.SUGAR,"").equalsIgnoreCase("") && !sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN,"").equals(""))
             preparePrintForHemoglobin();
         else
             preparePrintWithoutSugarAndHemoglobin();
