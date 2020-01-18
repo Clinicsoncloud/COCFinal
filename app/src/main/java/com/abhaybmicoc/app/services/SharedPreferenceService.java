@@ -39,7 +39,7 @@ public class SharedPreferenceService {
         String value = context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "");
 
         try {
-            return Integer.parseInt(value);
+            return (int)Double.parseDouble(value);
         } catch (Exception e) {
             return 0;
         }
