@@ -408,7 +408,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             objIntent.putExtra(Constant.Fields.GENDER, sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
             objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
-            writeToActofitSharedPreference(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
+            writeToSharedPreferences(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
 
             startActivity(objIntent);
             finish();
@@ -496,7 +496,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     /**
      *
      */
-    private void writeToActofitSharedPreference(String key, String value){
+    private void writeToSharedPreferences(String key, String value){
         SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
