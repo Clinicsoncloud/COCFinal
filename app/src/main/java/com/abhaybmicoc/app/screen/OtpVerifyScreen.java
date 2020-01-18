@@ -238,7 +238,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                         finish();
 
                     } catch (Exception e) {
-
+                        // TODO: Handle exception here
                     }
                 },
                 volleyError -> {
@@ -248,7 +248,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             public Map getHeaders() {
                 HashMap headers = new HashMap();
 
-                String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString("token", ""));
+                String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, ""));
                 headers.put("Authorization", bearer);
 
                 return headers;
@@ -271,7 +271,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(
                 90000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        ));
     }
 
     // region Logical methods

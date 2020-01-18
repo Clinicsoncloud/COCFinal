@@ -587,23 +587,22 @@
     <string name="connectDevice">Connecting device</string>
     <string name="readSN">Get SN</string>
     <string name="readID">Get ID</string>
-    <string name="disconnect">Disconnect Bluetooth</string>
+    <string name="disconnectBluetooth">Disconnect Bluetooth</string>
 
     <string name="spo">Blood oxygen</string>
     <string name="pr">Pulse rate</string>
     <string name="ID">Device ID</string>
     <string name="SN">Device SN</string>
 
-    <string name="Connectad">Connect</string>
-    <string name="Desconectad">Disconnect</string>
-    <string name="ConexionPerdida">Missed Connection</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="missedConnection">Missed Connection</string>
     <string name="Enviar">Send</string>
     <string name="Limpiar">Clean</string>
-    <string name="ConectadO">Connected</string>
     <string name="Conectese">Connect to a device</string>
     <string name="connecting">Connecting to a device..</string>
-    <string name="Nosepuede">Can not Send</string>
-    <string name="Seleccionado">Selected:</string>
-    <string name="BluetoothEncendido">Bluetooth on</string>
+    <string name="cannotSend">Can not Send</string>
+    <string name="selected">Selected:</string>
+    <string name="bluetoothTurnedOn">Bluetooth on</string>
     <string name="device">Select device</string>
 </resources>

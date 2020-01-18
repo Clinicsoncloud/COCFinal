@@ -238,16 +238,16 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     private void initializeData(){
         sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
-        this.conec = (String) getText(R.string.Connectad);
-        this.Connectad = (String) getText(R.string.Connectad);
-        this.ConectadO = (String) getText(R.string.ConectadO);
-        this.disconec = (String) getText(R.string.Desconectad);
-        this.Nosepuede = (String) getText(R.string.Nosepuede);
-        this.Desconectad = (String) getText(R.string.Desconectad);
-        this.Seleccionado = (String) getText(R.string.Seleccionado);
+        this.conec = (String) getText(R.string.connect);
+        this.Connectad = (String) getText(R.string.connect);
+        this.ConectadO = (String) getText(R.string.connected);
+        this.disconec = (String) getText(R.string.disconnect);
         this.Conectese = (String) getText(R.string.Conectese);
-        this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
-        this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
+        this.Nosepuede = (String) getText(R.string.cannotSend);
+        this.Seleccionado = (String) getText(R.string.selected);
+        this.Desconectad = (String) getText(R.string.disconnect);
+        this.ConexionPerdida = (String) getText(R.string.missedConnection);
+        this.BluetoothEncendido = (String) getText(R.string.bluetoothTurnedOn);
 
         sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
     }
