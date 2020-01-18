@@ -179,10 +179,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         btnBaud = findViewById(R.id.btn_next);
 
-        if (strConnect.equals("Connect")) {
-            btnConnect.setText(strConnect);
-        }
-
         etTemperature.setVisibility(View.VISIBLE);
 
         listDeviceAddresses = new ArrayList();
@@ -227,6 +223,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         strBluetoothTurnedOn = (String) getText(R.string.bluetoothTurnedOn);
 
         sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+
+        if (strConnect.equals("Connect")) {
+            btnConnect.setText(strConnect);
+        }
     }
 
     // endregion

@@ -36,8 +36,10 @@ public class SharedPreferenceService {
      * @return
      */
     public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException {
+        String value = context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "");
+
         try {
-            return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
+            return Integer.parseInt(value);
         } catch (Exception e) {
             return 0;
         }
