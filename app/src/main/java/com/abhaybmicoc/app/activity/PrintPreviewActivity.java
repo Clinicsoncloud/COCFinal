@@ -1090,7 +1090,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void setNewList() {
         try {
-            printDataListNew.add(new PrintData("Height", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""))));
+            printDataListNew.add(new PrintData("Weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""))));
             printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, ""))));
             printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, ""))));
             printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, ""))));
@@ -1640,7 +1640,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         str = str.replace("{physique}", getActofitPreferenceData(Constant.Fields.PHYSIQUE));
         str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
         str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
-        str = str.replace("{bloodGlucose}", getSugarPreferenceData(Constant.Fields.BLOOD_GLUCOSE));
+        str = str.replace("{bloodGlucose}", getSugarPreferenceData(Constant.Fields.SUGAR));
         str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
         str = str.replace("{standardHemoglobin}", standardHemoglobin);
         str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));

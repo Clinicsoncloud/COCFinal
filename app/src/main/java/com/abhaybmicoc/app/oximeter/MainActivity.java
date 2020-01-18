@@ -86,8 +86,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     tvPulseRate.setText("Pulse rate: " + msg.arg2);
                     tvBodyOxygen.setText("Body Oxygen：" + msg.arg1);
 
-                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, "pulse_rate", String.valueOf(msg.arg2));
-                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, "body_oxygen", String.valueOf(msg.arg1));
+                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE, String.valueOf(msg.arg2));
+                    writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN, String.valueOf(msg.arg1));
                     break;
             }
         }

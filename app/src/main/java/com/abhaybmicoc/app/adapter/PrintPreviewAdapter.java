@@ -580,7 +580,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.valueTV.setText("" +printData.getCurr_value());
             viewHolder.parameterTV.setText("" +printData.getParameter());
 
-            if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Fasting (Before Meal)")) {
+            if (sharedPreferencesPersonalPreferencesGlucose.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
                 if (printData.getCurr_value() > 100) {
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
@@ -598,7 +598,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
                 glucoseEditor.putString("standardGlucose", "70-100 mg/dl");
                 glucoseEditor.commit();
 
-            } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Post Prandial (After Meal)")) {
+            } else if (sharedPreferencesPersonalPreferencesGlucose.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
                 if (printData.getCurr_value() > 140) {
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
@@ -618,7 +618,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
                 glucoseEditor.putString("standardGlucose", "70-140 mg/dl");
                 glucoseEditor.commit();
 
-            } else if (sharedPreferencesPersonalPreferencesGlucose.getString("glucosetype", "").equals("Random (Not Sure)")) {
+            } else if (sharedPreferencesPersonalPreferencesGlucose.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
                 if (printData.getCurr_value() > 160) {
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
