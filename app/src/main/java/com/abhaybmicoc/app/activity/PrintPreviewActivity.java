@@ -34,6 +34,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintDataOld;
@@ -1049,21 +1050,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     @SuppressLint("SimpleDateFormat")
     private void calculations() {
-        String parsedDate = null;
-
-        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-        String inputText = sharedPreferencesPersonalData.getString(Constant.Fields.DATE_OF_BIRTH, "");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-
-        try {
-            Date date = inputDateFormat.parse(inputText);
-            parsedDate = formatter.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        age = getAge(parsedDate);
+        age = getAge();
 
         SimpleDateFormat formatterCurrent = new SimpleDateFormat("dd/MM/yy");
         Date date = new Date();
@@ -1620,36 +1607,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.homebtn:
-                SharedPreferences objBiosense = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-                SharedPreferences objBp = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
-                SharedPreferences objPulse = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
-                SharedPreferences objActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-                SharedPreferences objNewRecord = getSharedPreferences(ApiUtils.PREFERENCE_NEWRECORD, MODE_PRIVATE);
-                SharedPreferences objUrl = getSharedPreferences(ApiUtils.PREFERENCE_URL, MODE_PRIVATE);
-                SharedPreferences objHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-                SharedPreferences objSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-                SharedPreferences objAshok = getSharedPreferences("ashok", MODE_PRIVATE);
-                objBiosense.edit().clear().commit();
-                objBp.edit().clear().commit();
-                objPulse.edit().clear().commit();
-                objActofit.edit().clear().commit();
-                objNewRecord.edit().clear().commit();
-                objUrl.edit().clear().commit();
-                objAshok.edit().clear().commit();
-                objHemoglobin.edit().clear().commit();
-                objSugar.edit().clear().commit();
-                sharedPreferencesActofit.edit().clear().commit();
-                sharedPreferencesOximeter.edit().clear();
-                sharedPreferencesPersonalData.edit().clear();
-                sharedPreferencesThermometer.edit().clear();
-                sharedPreferencesBloodPressure.edit().clear();
-                sharedPreferencesSugar.edit().clear();
-                sharedPreferencesHemoglobin.edit().clear();
-                Intent newIntent = new Intent(getApplicationContext(), OtpLoginScreen.class);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(newIntent);
-                break;
+                goToHome();
             case R.id.printbtn:
                 Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
                 EnterTextAsyc asynctask = new EnterTextAsyc();
@@ -1702,37 +1660,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
-    private int getAge(String dobString) {
-        Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            date = sdf.parse(dobString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (date == null)
-            return 0;
-
-        Calendar dob = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
-
-        dob.setTime(date);
-
-        int year = dob.get(Calendar.YEAR);
-        int month = dob.get(Calendar.MONTH);
-        int day = dob.get(Calendar.DAY_OF_MONTH);
-
-        dob.set(year, month + 1, day);
-
-        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-
-        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR))
-            age--;
-
-        return age;
-    }
-
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
         /* displays the progress dialog untill background task is completed */
         @Override
@@ -1747,16 +1674,17 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         protected Integer doInBackground(Integer... params) {
             try {
                 ptrGen.iFlushBuf();
-//                String empty = printString;
+
                 String empty = printerText;
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
-                Log.e("iRetVal", "" + iRetVal);
             } catch (NullPointerException e) {
                 iRetVal = DEVICE_NOTCONNECTED;
-                e.printStackTrace();
+
+                // TODO: Handle exception
                 return iRetVal;
             }
+
             return iRetVal;
         }
 
@@ -1845,28 +1773,69 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     /* This performs Progress dialog box to show the progress of operation */
     protected void dlgShowCustom(Context con, String Message) {
         dlgCustomdialog = new Dialog(con);
-        dlgCustomdialog.setTitle("Pride Demo");
         dlgCustomdialog.setCancelable(false);
+        dlgCustomdialog.setTitle("Pride Demo");
         dlgCustomdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dlgCustomdialog.getWindow().setBackgroundDrawable(
-                new ColorDrawable(Color.TRANSPARENT));
+        dlgCustomdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dlgCustomdialog.setContentView(R.layout.progressdialog);
-        TextView title_tv = (TextView) dlgCustomdialog
-                .findViewById(R.id.tvTitle);
-        title_tv.setWidth(iWidth);
-        TextView message_tv = (TextView) dlgCustomdialog
-                .findViewById(R.id.tvMessage);
-        message_tv.setText(Message);
-        llprog = (LinearLayout) dlgCustomdialog.findViewById(R.id.llProg);
-        pbProgress = (ProgressBar) dlgCustomdialog.findViewById(R.id.pbDialog);
-        btnOk = (Button) dlgCustomdialog.findViewById(R.id.btnOk);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                dlgCustomdialog.dismiss();
-            }
-        });
+
+        TextView tvTitle = dlgCustomdialog.findViewById(R.id.tvTitle);
+        TextView tvMessage = dlgCustomdialog.findViewById(R.id.tvMessage);
+
+        tvTitle.setWidth(iWidth);
+        tvMessage.setText(Message);
+
+        llprog = dlgCustomdialog.findViewById(R.id.llProg);
+        pbProgress = dlgCustomdialog.findViewById(R.id.pbDialog);
+
+        btnOk = dlgCustomdialog.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(view -> dlgCustomdialog.dismiss());
+
         dlgCustomdialog.show();
+    }
+
+    private int getAge() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH)){
+            String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.DATE_OF_BIRTH);
+            return DateService.getAgeFromStringDate(dateOfBirth);
+        }else
+            return 0;
+    }
+
+    private void goToHome(){
+        Intent newIntent = new Intent(getApplicationContext(), OtpLoginScreen.class);
+
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(newIntent);
+    }
+
+    private void clearDatabase(){
+        SharedPreferences objSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        SharedPreferences objNewRecord = getSharedPreferences(ApiUtils.PREFERENCE_NEWRECORD, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesURL = getSharedPreferences(ApiUtils.PREFERENCE_URL, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesPulse = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesBiosense = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+
+        objSugar.edit().clear().commit();
+        objNewRecord.edit().clear().commit();
+        sharedPreferencesSugar.edit().clear();
+        sharedPreferencesOximeter.edit().clear();
+        sharedPreferencesHemoglobin.edit().clear();
+        sharedPreferencesThermometer.edit().clear();
+        sharedPreferencesPersonalData.edit().clear();
+        sharedPreferencesURL.edit().clear().commit();
+        sharedPreferencesBloodPressure.edit().clear();
+        sharedPreferencesPulse.edit().clear().commit();
+        sharedPreferencesActofit.edit().clear().commit();
+        sharedPreferencesActofit.edit().clear().commit();
+        sharedPreferencesBiosense.edit().clear().commit();
+        sharedPreferencesHemoglobin.edit().clear().commit();
+        sharedPreferencesBloodPressure.edit().clear().commit();
     }
 }
