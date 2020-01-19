@@ -570,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             dialogConnectionProgress.dismiss();
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
+            btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
         }else{
             COUNT_CONNECTION_TRY++;
 

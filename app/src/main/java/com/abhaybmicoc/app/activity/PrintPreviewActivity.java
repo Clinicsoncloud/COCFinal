@@ -247,6 +247,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
+
     }
 
     private void setupEvents() {
@@ -541,16 +542,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     musclemassResult = "High";
                 else if (muscleMass >= 49.4 && muscleMass <= 59.5)
                     musclemassResult = "Standard";
-                else
+                else if (muscleMass < 49.4)
                     musclemassResult = "Low";
-            } else if (height >= 170 && height >= 160) {
+            } else if (height <= 170 && height >= 160) {
                 standardMuscleMass = "44-52.4kg";
 
                 if (muscleMass > 52.4)
                     musclemassResult = "High";
                 else if (muscleMass >= 44 && muscleMass <= 52.4)
                     musclemassResult = "Standard";
-                else
+                else if (muscleMass < 44)
                     musclemassResult = "Low";
             } else if (height < 160) {
                 musclemassResult = "38.5-46.5kg";
@@ -559,7 +560,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     musclemassResult = "High";
                 else if (muscleMass >= 38.5 && muscleMass <= 46.5)
                     musclemassResult = "Standard";
-                else
+                else if (muscleMass < 38.5)
                     musclemassResult = "Low";
             }
         } else
@@ -655,10 +656,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             }
         } else
             hemoglobinResult = "NA";
+
     }
 
     private void getMaleGlucoseResult() {
-        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.GLUCOSE_TYPE)) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE)) {
+
             double sugar = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.SUGAR);
             String glucoseType = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE);
 
@@ -713,9 +716,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN)) {
             double protein = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
 
-            if (protein >= 18)
-                proteinResult = "Standard";
+            if (protein > 18)
+                proteinResult = "High";
             else if (protein >= 16 && protein <= 18)
+                proteinResult = "Standard";
+            else if (protein < 16)
                 proteinResult = "Low";
         } else
             proteinResult = "NA";
@@ -767,7 +772,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     musclemassResult = "Standard";
                 else
                     musclemassResult = "Low";
-            } else if (height >= 170 && height >= 160) {
+            } else if (height <= 170 && height >= 160) {
                 standardMuscleMass = "44-52.4kg";
 
                 if (muscleMass > 52.4)
@@ -853,7 +858,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
             if (bodyFat > 26)
                 bodyfatResult = "Seriously High";
-            else if (bodyFat > 22 && bodyFat <= 26)
+            else if (bodyFat >= 22 && bodyFat <= 26)
                 bodyfatResult = "High";
             else if (bodyFat > 11 && bodyFat <= 21)
                 bodyfatResult = "Standard";
@@ -924,10 +929,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
-            Log.e("activate", "pirnter gen is activated");
-        } catch (Exception e) {
-            Log.e("de_activate", "pirnter gen is not activated" + e);
-        }
+        } catch (Exception e) { }
     }
 
     // endregion
@@ -1136,10 +1138,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void postData() {
-        Log.e("post_data", "calling");
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PRINT_POST_URL,
                 response -> {
-                    Log.e("response", "" + response);
                     readFileName(response);
 
                     Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
@@ -1308,8 +1309,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     params.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
                     params.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
 
-                    Log.e("params", ":" + params);
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1332,7 +1331,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");
-            Log.e("champa", "" + fileName);
         } catch (JSONException e) {
             // TODO: Handle exception here
         }
@@ -1585,24 +1583,31 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 "[Normal Range]: 18.5 - 25\n" +
                 "-----------------------\n" +
                 "Body Fat : {bodyFat}\n" +
-                "[Normal Range] : {standardBodyFat}\n" +
+                "[Normal Range] : \n"
+                + " {standardBodyFat}\n" +
                 "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
                 "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                "[Normal Range]: {subcutaneousFatRange}\n\n" +
+                "[Normal Range]: \n" +
+                "{subcutaneousFatRange}\n\n" +
                 "Visceral Fat : {visceralFat}\n" +
                 "[Normal Range]: <=9\n\n" +
                 "Body Water : {bodyWater}\n" +
-                "[Normal Range]: {standardBodyWater}\n\n" +
+                "[Normal Range]: \n" +
+                "{standardBodyWater}\n\n" +
                 "Skeletal Muscle : {skeletalMuscle}\n" +
-                "[Normal Range]: {standardSkeletalMuscle}\n\n" +
+                "[Normal Range]: \n" +
+                "{standardSkeletalMuscle}\n\n" +
                 "Muscle Mass : {muscleMass}\n" +
-                "[Normal Range]: {standardMuscleMass}\n\n" +
+                "[Normal Range]: \n" +
+                "{standardMuscleMass}\n\n" +
                 "Bone Mass : {boneMass}\n" +
-                "[Normal Range]: {standardBoneMass}\n\n" +
+                "[Normal Range]: \n" +
+                "{standardBoneMass}\n\n" +
                 "Protein : {protein}\n" +
                 "[Normal Range]: 16-18(%) \n\n" +
                 "BMR : {bmr}\n" +
-                "[Normal Range]: \n > = {standardMetabolism} Kcal\n\n" +
+                "[Normal Range]: \n " +
+                "> = {standardMetabolism} Kcal\n\n" +
                 "Physique: {physique}\n\n" +
                 "Meta Age : {metaAge} yrs\n\n" +
                 "Health Score : {healthScore}\n\n" +
@@ -1610,7 +1615,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 "Blood Glucose : {bloodGlucose} g/dl\n" +
                 "-----------------------\n" +
                 "Hemoglobin : {hemoglobin}\n" +
-                "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
+                "[Normal Range]: \n " +
+                "> = {standardHemoglobin} g/dl\n\n" +
                 "-----------------------\n" +
                 "Blood Pressure : \n" +
                 "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
