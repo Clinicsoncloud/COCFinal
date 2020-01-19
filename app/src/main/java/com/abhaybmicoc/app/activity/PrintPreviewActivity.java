@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.ListView;
 import android.widget.ImageView;
-import android.app.ProgressDialog;
 import android.widget.ProgressBar;
 import android.widget.LinearLayout;
 import android.app.DownloadManager;
@@ -35,22 +34,21 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.model.PrintData;
+import com.abhaybmicoc.app.model.PrintDataOld;
+import com.abhaybmicoc.app.services.DateService;
+import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.interfaces.VolleyResponse;
 import com.abhaybmicoc.app.services.AccessWebServices;
-import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.model.PrintDataOld;
-import com.abhaybmicoc.app.model.PrintData;
-import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.services.SharedPreferenceService;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
-import com.abhaybmicoc.app.utils.Constant;
-import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.abhaybmicoc.app.utils.Constant;
 
 import com.prowesspride.api.Printer_GEN;
 
@@ -61,7 +59,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import java.util.Map;
@@ -82,37 +79,26 @@ import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
 
-    @BindView(R.id.dobTV)
-    TextView dobTV;
-    @BindView(R.id.nameTV)
-    TextView nameTV;
-    @BindView(R.id.valueTV)
-    TextView valueTV;
-    @BindView(R.id.rangeTV)
-    TextView rangeTV;
-    @BindView(R.id.txtWish)
-    TextView txtWish;
-    @BindView(R.id.heightTV)
-    TextView heightTV;
-    @BindView(R.id.resultTV)
-    TextView resultTV;
-    @BindView(R.id.genderTV)
-    TextView genderTV;
-    @BindView(R.id.parameterTV)
-    TextView parameterTV;
+    private Context context = PrintPreviewActivity.this;
 
-    @BindView(R.id.lV)
-    ListView lV;
-    @BindView(R.id.topLL)
-    LinearLayout topLL;
+    @BindView(R.id.dobTV) TextView dobTV;
+    @BindView(R.id.nameTV) TextView nameTV;
+    @BindView(R.id.valueTV) TextView valueTV;
+    @BindView(R.id.rangeTV) TextView rangeTV;
+    @BindView(R.id.txtWish) TextView txtWish;
+    @BindView(R.id.heightTV) TextView heightTV;
+    @BindView(R.id.resultTV) TextView resultTV;
+    @BindView(R.id.genderTV) TextView genderTV;
+    @BindView(R.id.parameterTV) TextView parameterTV;
+
+    @BindView(R.id.lV) ListView lV;
+    @BindView(R.id.topLL) LinearLayout topLL;
 
     private Button btnOk;
     private Button btnConfirm;
     private Button btnUnicode11;
-    @BindView(R.id.homebtn)
-    Button homebtn;
-    @BindView(R.id.printbtn)
-    Button printbtn;
+    @BindView(R.id.homebtn) Button btnHome;
+    @BindView(R.id.printbtn) Button btnPrint;
 
     private LinearLayout llprog;
     @BindView(R.id.buttonLL)
@@ -120,7 +106,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     @BindView(R.id.headerLL)
     LinearLayout headerLL;
 
-    SharedPreferences ActofitObject, OximeterObject, PersonalObject, ThermometerObject, BPObject, BiosenseObject, HemoglobinObject, spToken;
+    private SharedPreferences sharedPreferencesToken;
+    private SharedPreferences sharedPreferencesSugar;
+    private SharedPreferences sharedPreferencesActofit;
+    private SharedPreferences sharedPreferencesOximeter;
+    private SharedPreferences sharedPreferencesHemoglobin;
+    private SharedPreferences sharedPreferencesThermometer;
+    private SharedPreferences sharedPreferencesPersonalData;
+    private SharedPreferences sharedPreferencesBloodPressure;
 
     private ImageView ivDownload;
 
@@ -131,41 +124,25 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     public static final int DEVICE_NOTCONNECTED = -100;
     private static final int PERMISSION_STORAGE_CODE = 1000;
 
-    private Dialog dlgBarcode;
     public Dialog dlgCustomdialog;
     public static ProgressBar pbProgress;
-    private ProgressDialog progressDialog;
 
     private double weight;
-    double standardWeighRangeTo;
-    double standardWeighRangeFrom;
+    private double standardWeighRangeTo;
+    private double standardWeighRangeFrom;
     private double standardMetabolism;
 
-    boolean isMale = false;
-    private boolean blBleStatusBefore = false;
-
-    private String subcutaneousFat;
-    private String printString = "";
-    private String printStringNew = "";
-    private String fileName = "";
-    private String standardWeightTo;
-    private String standardWeightFrom;
-    private String standarHemoglobin;
-    private String standardBodyFat;
-    private String standardBodyWater;
-    private String standardSkeltonMuscle;
-    private String standardBoneMass;
-    private String standardMuscleMass;
-    private String standardBMR;
-    private String standardGlucose;
+    private String txtSpeak;
+    private String fileName;
+    private String bmrResult;
+    private String bmiResult;
+    private String printerText;
+    private String downloadUrl;
     private String currentDate;
     private String currentTime;
-    private String txt = "";
-    private String parsedate1 = null;
-    private String bmiResult;
-    private String bmrResult;
     private String sugarResult;
     private String pulseResult;
+    private String standardBMR;
     private String oxygenResult;
     private String weightResult;
     private String proteinResult;
@@ -174,16 +151,25 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String bonemassResult;
     private String bodywaterResult;
     private String diastolicResult;
+    private String standardGlucose;
+    private String subcutaneousFat;
+    private String standardBodyFat;
     private String tempratureResult;
     private String musclemassResult;
-    private String downloadUrl = "";
+    private String standardWeightTo;
+    private String standardBoneMass;
     private String hemoglobinResult;
+    private String standardHemoglobin;
+    private String standardBodyWater;
     private String visceralfatResult;
+    private String standardWeightFrom;
+    private String standardMuscleMass;
     private String subcutaneousResult;
     private String bloodpressureResult;
     private String standardVisceralFat;
     private String standardWeightRange;
     private String skeletonmuscleResult;
+    private String standardSkeltonMuscle;
     private String fatfreeweightResult = "";
 
     public static Printer_GEN ptrGen;
@@ -196,7 +182,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     List<PrintData> printDataListNew = new ArrayList<>();
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
 
-    Context context = PrintPreviewActivity.this;
+    // endregion
+
+    // region Events
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,35 +192,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
-        textToSpeech = new TextToSpeech(this, this);
-
-        ivDownload = findViewById(R.id.iv_download);
-
-        txt = "Please click on the print button to get your printout";
-        speakOut(txt);
-
-        printerBond();
-
-        gettingDataObjects();
-
-        calculations();
-
-        setNewList();
-
-        getStandardRange();
-
-        setStaticData();
-
-        getPrintData();
-
-        getResults();
-
         setupUI();
-
-        postData();
-
-        printerActivation();
-
+        setupEvents();
+        initializeData();
     }
 
     @Override
@@ -240,15 +202,108 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         super.onResume();
 
         //reinitialization of the textToSpeech engine for voice command
-        textToSpeech = new TextToSpeech(this, this);
+        textToSpeech = new TextToSpeech(this,this);
+    }
 
+    @Override
+    public void onInit(int status) {
+        startTextToSpeech(status);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        //close the textToSpeech engine to avoide runtime exception
+        stopTextToSpeech();
+    }
+
+    // endregion
+
+    // region Initialization methods
+
+    private void setupUI(){
+        ivDownload = findViewById(R.id.iv_download);
+    }
+
+    private void setupEvents(){
+        btnHome.setOnClickListener(view -> goToHome());
+
+        btnPrint.setOnClickListener(view -> {
+            Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
+
+            EnterTextAsyc asynctask = new EnterTextAsyc();
+            asynctask.execute(0);
+
+            txtSpeak = "Please collect your result receipt";
+            speakOut(txtSpeak);
+        });
+
+        ivDownload.setOnClickListener(view -> downloadFile(fileName));
+    }
+
+    private void initializeData(){
+        textToSpeech = new TextToSpeech(this,this);
+
+        txtSpeak = "Please click on the print button to get your printout";
+        speakOut(txtSpeak);
+
+        printerBond();
+        gettingDataObjects();
+        calculations();
+        setNewList();
+        getStandardRange();
+        setStaticData();
+        getPrintData();
+        getResults();
+        postData();
+        printerActivation();
+    }
+
+    // endregion
+
+    // region Logical methods
+
+    /**
+     *
+     * @param text
+     */
+    private void speakOut(String text) {
+        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+    }
+
+    /**
+     *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+            } else {
+                speakOut(txtSpeak);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+        }
+    }
+
+    /**
+     *
+     */
+    private void stopTextToSpeech(){
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
@@ -257,17 +312,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         } catch (Exception e) {
             System.out.println("onPauseException" + e.getMessage());
         }
-
     }
 
     private void getResults() {
+        if(SharedPreferenceService.isMalePatient(context)){
+            /* Calculate result as per male gender */
 
-        if (PersonalObject.getString("gender", "").equalsIgnoreCase("male")) {
-            //Calculate result as per male gender
             getMaleWeightResult();
             getMaleBMIResult();
             getMaleBodyFatResult();
-            getMetaAgeResult();
             getMaleSubcutaneousResult();
             getMaleVisceralFatResult();
             getMaleBodyWaterResult();
@@ -278,544 +331,555 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             getMaleBMRResult();
             getMaleGlucoseResult();
             getMaleHemoglobinResult();
-            getBloodPressureResult();
-            getDiastolicResult();
+
+            getMetaAgeResult();
+            getSystolicBloodPressureResult();
+            getDiastolicBloodPressureResult();
             getOximeterResult();
             getPulseResult();
-            getTempratureResult();
+            getTemperatureResult();
 
-        } else {
-            //calculate result as per female gender
-            getWeightResult();
-            getBMIResult();
-            getBodyFatResult();
-            getMetaAgeResult();
-            getSubcutaneousResult();
+        }else {
+            /* Calculate result as per female gender */
+
+            getFemaleWeightResult();
+            getFemaleBMIResult();
+            getFemaleBodyFatResult();
+            getFemaleSubcutaneousResult();
             getMaleVisceralFatResult();
-            getBodWaterResult();
-            getSkeletalMuscle();
-            getMuscleMassResult();
-            getBoneMassResult();
+            getFemaleBodyWaterResult();
+            getFemaleSkeletalMuscle();
+            getFemaleMuscleMassResult();
+            getFemaleBoneMassResult();
             getMaleProteinResult();
             getMaleBMRResult();
             getMaleGlucoseResult();
-            getHemoglobinResult();
-            getBloodPressureResult();
-            getDiastolicResult();
+            getFemaleHemoglobinResult();
+
+            getMetaAgeResult();
+            getSystolicBloodPressureResult();
+            getDiastolicBloodPressureResult();
             getOximeterResult();
             getPulseResult();
-            getTempratureResult();
-        }
-
-    }
-
-    private void getDiastolicResult() {
-        if (!BPObject.getString("diastolic", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(BPObject.getString("diastolic", "")) > 89) {
-                diastolicResult = "High";
-            } else if (Double.parseDouble(BPObject.getString("diastolic", "")) <= 89 && Double.parseDouble(BPObject.getString("diastolic", "")) >= 60) {
-                diastolicResult = "standard";
-            } else {
-                diastolicResult = "Low";
-            }
-        } else {
-            diastolicResult = "NA";
+            getTemperatureResult();
         }
     }
+
+    // endregion
+
+    // region Gender common calculation methods
 
     private void getMetaAgeResult() {
-        if (!ActofitObject.getString("metaage", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("metaage", "")) <= age) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE)) {
+            double metaAge = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.META_AGE);
+
+            if (metaAge <= age)
                 metaageResult = "Standard";
-            } else {
-                metaageResult = "Not upto standard";
-            }
-        } else {
+            else
+                metaageResult = "Not up to standard";
+        }else
             metaageResult = "NA";
-        }
     }
 
-    private void getSubcutaneousResult() {
-        if (!ActofitObject.getString("subfat", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("subfat", "")) > 26.7) {
-                subcutaneousResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("subfat", "")) <= 26.7 && Double.parseDouble(ActofitObject.getString("subfat", "")) >= 18.5) {
-                subcutaneousResult = "standard";
-            } else {
-                subcutaneousResult = "Low";
-            }
-        } else {
-            subcutaneousResult = "NA";
-        }
-    }
+    private void getTemperatureResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE)) {
+            double temperature = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_THERMOMETERDATA, Constant.Fields.TEMPERATURE);
 
-    private void getHemoglobinResult() {
-        if (!HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) > 15.1) {
-                hemoglobinResult = "High";
-            } else if (Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) <= 15.1 && Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) >= 12.1) {
-                hemoglobinResult = "standard";
-            } else {
-                hemoglobinResult = "Low";
-            }
-        } else {
-            hemoglobinResult = "NA";
-        }
-    }
-
-    private void getBoneMassResult() {
-
-        if (!ActofitObject.getString("bonemass", "").equalsIgnoreCase("")) {
-            if (weight > 60) {
-                standardBoneMass = "2.3 - 2.7kg";
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 2.7) {
-                    bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 2.7 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 2.3) {
-                    bonemassResult = "standard";
-                } else {
-                    bonemassResult = "Low";
-                }
-            } else if (weight <= 60 && weight >= 45) {
-                standardBoneMass = "2.0-2.4kg";
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 2.4) {
-                    bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 2.4 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 2.0) {
-                    bonemassResult = "standard";
-                } else {
-                    bonemassResult = "Low";
-                }
-            } else if (weight < 45) {
-                standardBoneMass = "1.6 - 2.0kg";
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 2.0) {
-                    bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 2.0 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 1.6) {
-                    bonemassResult = "standard";
-                } else {
-                    bonemassResult = "Low";
-                }
-            }
-        } else {
-            bonemassResult = "NA";
-        }
-
-    }
-
-    private void getMuscleMassResult() {
-        if (!ActofitObject.getString("musmass", "").equalsIgnoreCase("")) {
-
-            if (height > 170) {
-                standardMuscleMass = "49.4-59.5kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 59.5) {
-                    musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 59.5 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 49.4) {
-                    musclemassResult = "standard";
-                } else {
-                    musclemassResult = "Low";
-                }
-            } else if (height <= 170 && height >= 160) {
-                standardMuscleMass = "44-52.4kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 52.4) {
-                    musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 52.4 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 44) {
-                    musclemassResult = "standard";
-                } else {
-                    musclemassResult = "Low";
-                }
-            } else if (height < 160) {
-                standardMuscleMass = "38.5-46.5kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 46.5) {
-                    musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 46.5 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 38.5) {
-                    musclemassResult = "standard";
-                } else {
-                    musclemassResult = "Low";
-                }
-            }
-        } else {
-            musclemassResult = "NA";
-        }
-    }
-
-    private void getSkeletalMuscle() {
-        if (!ActofitObject.getString("skemus", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("skemus", "")) > 50) {
-                skeletonmuscleResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("skemus", "")) <= 50 && Double.parseDouble(ActofitObject.getString("skemus", "")) >= 40) {
-                skeletonmuscleResult = "standard";
-            } else {
-                skeletonmuscleResult = "Low";
-            }
-        } else {
-            skeletonmuscleResult = "NA";
-        }
-    }
-
-    private void getBodWaterResult() {
-        if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 60) {
-                bodywaterResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 60 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 45) {
-                bodywaterResult = "standard";
-            } else {
-                bodywaterResult = "Low";
-            }
-        } else {
-            bodywaterResult = "NA";
-        }
-    }
-
-    private void getTempratureResult() {
-        if (!ThermometerObject.getString("data", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ThermometerObject.getString("data", "")) > 99) {
+            if (temperature > 99)
                 tempratureResult = "High";
-            } else if (Double.parseDouble(ThermometerObject.getString("data", "")) <= 99 && Double.parseDouble(ThermometerObject.getString("data", "")) >= 97) {
-                tempratureResult = "standard";
-            } else {
+            else if (temperature >= 97 && temperature <= 99)
+                tempratureResult = "Standard";
+            else
                 tempratureResult = "Low";
-            }
-        } else {
+        }else
             tempratureResult = "NA";
-        }
     }
 
     private void getPulseResult() {
-        if (!OximeterObject.getString("pulse_rate", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(OximeterObject.getString("pulse_rate", "")) > 100) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE)) {
+            double pulseRate = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE);
+
+            if (pulseRate > 100)
                 pulseResult = "High";
-            } else if (Double.parseDouble(OximeterObject.getString("pulse_rate", "")) <= 100 && Double.parseDouble(OximeterObject.getString("pulse_rate", "")) >= 60) {
-                pulseResult = "standard";
-            } else {
+            else if (pulseRate >= 60 && pulseRate <= 100)
+                pulseResult = "Standard";
+            else
                 pulseResult = "Low";
-            }
-        } else {
+        }else
             pulseResult = "NA";
-        }
     }
 
     private void getOximeterResult() {
-        if (!OximeterObject.getString("body_oxygen", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(OximeterObject.getString("body_oxygen", "")) >= 94) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN)) {
+            double bloodOxygen = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN);
+
+            if (bloodOxygen >= 94)
                 oxygenResult = "Standard";
-            } else if (Double.parseDouble(OximeterObject.getString("body_oxygen", "")) < 94) {
+            else if (bloodOxygen < 94)
                 oxygenResult = "Low";
-            }
-        } else {
+        }else
             oxygenResult = "NA";
-        }
     }
 
-    private void getBloodPressureResult() {
-        if (!BPObject.getString("systolic", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(BPObject.getString("systolic", "")) > 139) {
+    private void getSystolicBloodPressureResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC)) {
+            double bloodPressureSystolic = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_SYSTOLIC);
+
+            if (bloodPressureSystolic > 139)
                 bloodpressureResult = "High";
-            } else if (Double.parseDouble(BPObject.getString("systolic", "")) <= 139 && Double.parseDouble(BPObject.getString("systolic", "")) >= 90) {
-                bloodpressureResult = "standard";
-            } else {
+            else if (bloodPressureSystolic >= 90 && bloodPressureSystolic <= 139)
+                bloodpressureResult = "Standard";
+            else
                 bloodpressureResult = "Low";
-            }
-        } else {
+        }else
             bloodpressureResult = "NA";
-        }
     }
 
+    private void getDiastolicBloodPressureResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
+            double bloodPressureDiastolic = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
+
+            if (bloodPressureDiastolic > 89) {
+                diastolicResult = "High";
+            } else if (bloodPressureDiastolic >= 60 && bloodPressureDiastolic <= 89) {
+                diastolicResult = "Standard";
+            } else {
+                diastolicResult = "Low";
+            }
+        } else
+            diastolicResult = "NA";
+    }
+
+    // endregion
+
+    // region Female calculation methods
+
+    private void getFemaleSubcutaneousResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double subcutaneousFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+
+            if (subcutaneousFat > 26.7)
+                subcutaneousResult = "High";
+            else if (subcutaneousFat >= 18.5 && subcutaneousFat <= 26.7)
+                subcutaneousResult = "Standard";
+            else
+                subcutaneousResult = "Low";
+        } else
+            subcutaneousResult = "NA";
+    }
+
+    private void getFemaleHemoglobinResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double hemoglobin = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.SUBCUTANEOUS_FAT);
+
+            if (hemoglobin > 15.1)
+                hemoglobinResult = "High";
+            else if (hemoglobin >= 12.1 && hemoglobin <= 15.1)
+                hemoglobinResult = "Standard";
+            else
+                hemoglobinResult = "Low";
+        } else
+            hemoglobinResult = "NA";
+    }
+
+    private void getFemaleBoneMassResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
+            double boneMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
+
+            if(weight > 60) {
+                standardBoneMass = "2.3 - 2.7kg";
+
+                if (boneMass > 2.7)
+                    bonemassResult = "High";
+                else if (boneMass >= 2.3 && boneMass <= 2.7)
+                    bonemassResult = "Standard";
+                else
+                    bonemassResult = "Low";
+            }else if (weight >= 45 && weight <= 60) {
+                standardBoneMass = "2.0-2.4kg";
+
+                if (boneMass > 2.4)
+                    bonemassResult = "High";
+                else if (boneMass >= 2.0 && boneMass <= 2.4)
+                    bonemassResult = "Standard";
+                else
+                    bonemassResult = "Low";
+            } else if(weight < 45){
+                standardBoneMass = "1.6 - 2.0kg";
+
+                if (boneMass > 2.0)
+                    bonemassResult = "High";
+                else if (boneMass >= 1.6 && boneMass <= 2.0)
+                    bonemassResult = "Standard";
+                else
+                    bonemassResult = "Low";
+            }
+        } else
+            bonemassResult = "NA";
+    }
+
+    private void getFemaleMuscleMassResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
+            double muscleMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
+
+            if (height > 170) {
+                standardMuscleMass = "49.4-59.5kg";
+
+                if (muscleMass > 59.5)
+                    musclemassResult = "High";
+                else if (muscleMass >= 49.4 && muscleMass <= 59.5)
+                    musclemassResult = "Standard";
+                else
+                    musclemassResult = "Low";
+            } else if (height >= 170 && height >= 160) {
+                standardMuscleMass = "44-52.4kg";
+
+                if (muscleMass > 52.4)
+                    musclemassResult = "High";
+                else if (muscleMass >= 44 && muscleMass <= 52.4)
+                    musclemassResult = "Standard";
+                else
+                    musclemassResult = "Low";
+            } else if (height < 160) {
+                musclemassResult = "38.5-46.5kg";
+
+                if (muscleMass > 46.5)
+                    musclemassResult = "High";
+                else if (muscleMass >= 38.5 && muscleMass <= 46.5)
+                    musclemassResult = "Standard";
+                else
+                    musclemassResult = "Low";
+            }
+        } else
+            musclemassResult = "NA";
+    }
+
+    private void getFemaleSkeletalMuscle() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+
+            if (skeletalMuscle > 50)
+                skeletonmuscleResult = "High";
+            else if (skeletalMuscle >= 40 && skeletalMuscle <= 50)
+                skeletonmuscleResult = "Standard";
+            else
+                skeletonmuscleResult = "Low";
+        } else
+            skeletonmuscleResult = "NA";
+    }
+
+    private void getFemaleBodyWaterResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+
+            if (bodyWater > 60)
+                bodywaterResult = "High";
+            else if (bodyWater >= 45 && bodyWater <= 60)
+                bodywaterResult = "Standard";
+            else
+                bodywaterResult = "Low";
+        } else
+            bodywaterResult = "NA";
+    }
+
+    private void getFemaleBodyFatResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+
+            if (bodyFat > 36)
+                bodyfatResult = "Seriously High";
+            else if (bodyFat > 30 && weight <= 36)
+                bodyfatResult = "High";
+            else if (bodyFat > 21 && weight <= 30)
+                bodyfatResult = "Standard";
+            else
+                bodyfatResult = "Low";
+        } else
+            bodyfatResult = "NA";
+    }
+
+    private void getFemaleBMIResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+
+            if (bmi > 25)
+                bmiResult = "Seriously High";
+            else if (bmi > 18.5 && weight <= 25)
+                bmiResult = "High";
+            else
+                bmiResult = "Low";
+        } else
+            bmiResult = "NA";
+    }
+
+    private void getFemaleWeightResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+
+            if (weight > standardWeighRangeTo)
+                weightResult = "High";
+            else if (weight > standardWeighRangeTo && weight <= standardWeighRangeTo)
+                weightResult = "Standard";
+            else
+                weightResult = "Low";
+        } else
+            weightResult = "NA";
+    }
+
+    // endregion
+
+    // region Male calculation methods
 
     private void getMaleHemoglobinResult() {
-        if (!HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) > 17.2) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN)) {
+            double hemoglobin = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_HEMOGLOBIN, Constant.Fields.HEMOGLOBIN);
+
+            if (hemoglobin > 17.2) {
                 hemoglobinResult = "High";
-            } else if (Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) <= 17.2 && Double.parseDouble(HemoglobinObject.getString("hemoglobin", "")) >= 13.8) {
-                hemoglobinResult = "standard";
+            } else if (hemoglobin >= 13.8 && hemoglobin <= 17.2) {
+                hemoglobinResult = "Standard";
             } else {
                 hemoglobinResult = "Low";
             }
-        } else {
+        } else
             hemoglobinResult = "NA";
-        }
     }
 
     private void getMaleGlucoseResult() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.GLUCOSE_TYPE)) {
+            double sugar = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.SUGAR);
+            String glucoseType = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_BIOSENSE, Constant.Fields.GLUCOSE_TYPE);
 
-        if (!BiosenseObject.getString("last", "").equalsIgnoreCase("")) {
-
-            if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
+            if (glucoseType.equals("Fasting (Before Meal)")) {
                 standardGlucose = "70-100mg/dl(Fasting)";
-                if (Double.parseDouble(BiosenseObject.getString("last", "")) > 100) {
+
+                if (sugar > 100) {
                     sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString("last", "")) <= 100 && Double.parseDouble(BiosenseObject.getString("last", "")) >= 70) {
-                    sugarResult = "standard";
-                } else {
-                    sugarResult = "Low";
-                }
-            } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
-                standardGlucose = "70-140 mg/dl(Post Meal)";
-                if (Double.parseDouble(BiosenseObject.getString("last", "")) > 140) {
-                    sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString("last", "")) <= 140 && Double.parseDouble(BiosenseObject.getString("last", "")) >= 70) {
-                    sugarResult = "standard";
-                } else {
-                    sugarResult = "Low";
-                }
-            } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
-                standardGlucose = "79-160 mg/dl(Random)";
-                if (Double.parseDouble(BiosenseObject.getString("last", "")) > 160) {
-                    sugarResult = "High";
-                } else if (Double.parseDouble(BiosenseObject.getString("last", "")) <= 160 && Double.parseDouble(BiosenseObject.getString("last", "")) >= 79) {
-                    sugarResult = "standard";
+                } else if (sugar >= 70 && sugar <= 100) {
+                    sugarResult = "Standard";
                 } else {
                     sugarResult = "Low";
                 }
             }
-        } else {
-            sugarResult = "NA";
-        }
+            else if (glucoseType.equals("Post Prandial (After Meal)")) {
+                standardGlucose = "70-140 mg/dl(Post Meal)";
 
+                if (sugar > 140) {
+                    sugarResult = "High";
+                } else if (sugar >= 70 && sugar <= 140) {
+                    sugarResult = "Standard";
+                } else {
+                    sugarResult = "Low";
+                }
+            }
+            else if (glucoseType.equals("Random (Not Sure)")) {
+                standardGlucose = "79-160 mg/dl(Random)";
+
+                if (sugar > 160) {
+                    sugarResult = "High";
+                } else if (sugar >= 79 && sugar <= 160) {
+                    sugarResult = "Standard";
+                } else {
+                    sugarResult = "Low";
+                }
+            }
+        } else
+            sugarResult = "NA";
     }
 
     private void getMaleBMRResult() {
-        if (!ActofitObject.getString("bmr", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bmr", "")) >= standardMetabolism) {
-                bmrResult = "High";
-            } else {
-                bmrResult = "Not upto Standard";
-            }
-        } else {
-            bmrResult = "NA";
-        }
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR)) {
+            double bmr = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR);
 
+            if (bmr >= standardMetabolism)
+                bmrResult = "High";
+            else
+                bmrResult = "Not up to mark";
+        } else
+            bmrResult = "NA";
     }
 
     private void getMaleProteinResult() {
-        if (!ActofitObject.getString("protine", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("protine", "")) > 18) {
-                proteinResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("protine", "")) <= 18 && Double.parseDouble(ActofitObject.getString("protine", "")) >= 16) {
-                proteinResult = "standard";
-            } else {
-                proteinResult = "Low";
-            }
-        } else {
-            proteinResult = "NA";
-        }
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN)) {
+            double protein = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
 
+            if (protein >= 18)
+                proteinResult = "Standard";
+            else if (protein >= 16 && protein <= 18)
+                proteinResult = "Low";
+        } else
+            proteinResult = "NA";
     }
 
     private void getMaleBoneMassResult() {
-        if (!ActofitObject.getString("bonemass", "").equalsIgnoreCase("")) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS)) {
+            double boneMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BONE_MASS);
+
             if (weight > 75) {
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 3.4) {
+                if (boneMass > 3.4) {
                     bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 3.4 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 3.0) {
-                    bonemassResult = "standard";
+                } else if (boneMass <= 3.4 && boneMass >= 3.0) {
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
             } else if (weight <= 75 && weight >= 60) {
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 3.1) {
+                if (boneMass > 3.1) {
                     bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 3.1 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 2.7) {
-                    bonemassResult = "standard";
+                } else if (boneMass <= 3.1 && boneMass >= 2.7) {
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
             } else if (weight < 60) {
-                if (Double.parseDouble(ActofitObject.getString("bonemass", "")) > 2.7) {
+                if (boneMass > 2.7) {
                     bonemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("bonemass", "")) <= 2.7 && Double.parseDouble(ActofitObject.getString("bonemass", "")) >= 2.3) {
-                    bonemassResult = "standard";
+                } else if (boneMass <= 2.7 && boneMass >= 2.3) {
+                    bonemassResult = "Standard";
                 } else {
                     bonemassResult = "Low";
                 }
             }
-        } else {
+        } else
             bonemassResult = "NA";
-        }
-
     }
 
-
     private void getMaleMuscleMassResult() {
-        if (!ActofitObject.getString("musmass", "").equalsIgnoreCase("")) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
+            double muscleMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
 
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 59.5) {
+
+                if (muscleMass > 59.5)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 59.5 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 49.4) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 49.4 && muscleMass <= 59.5)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
-            } else if (height <= 170 && height >= 160) {
+            } else if (height >= 170 && height >= 160) {
                 standardMuscleMass = "44-52.4kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 52.4) {
+
+                if (muscleMass > 52.4)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 52.4 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 44) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 44 && muscleMass <= 52.4)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
             } else if (height < 160) {
-                standardMuscleMass = "38.5-46.5kg";
-                if (Double.parseDouble(ActofitObject.getString("musmass", "")) > 46.5) {
+                musclemassResult = "38.5-46.5kg";
+
+                if (muscleMass > 46.5)
                     musclemassResult = "High";
-                } else if (Double.parseDouble(ActofitObject.getString("musmass", "")) <= 46.5 && Double.parseDouble(ActofitObject.getString("musmass", "")) >= 38.5) {
-                    musclemassResult = "standard";
-                } else {
+                else if (muscleMass >= 38.5 && muscleMass <= 46.5)
+                    musclemassResult = "Standard";
+                else
                     musclemassResult = "Low";
-                }
             }
-        } else {
+        } else
             musclemassResult = "NA";
-        }
     }
 
     private void getMaleSkeletalMuscle() {
-        if (!ActofitObject.getString("skemus", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("skemus", "")) > 59) {
-                skeletonmuscleResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("skemus", "")) <= 59 && Double.parseDouble(ActofitObject.getString("skemus", "")) >= 49) {
-                skeletonmuscleResult = "standard";
-            } else {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE)) {
+            double skeletalMuscle = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SKELETAL_MUSCLE);
+
+            if (skeletalMuscle > 59)
+                skeletonmuscleResult = "Standard";
+            else if (skeletalMuscle >= 49 && skeletalMuscle <= 59)
                 skeletonmuscleResult = "Low";
-            }
-        } else {
+        } else
             skeletonmuscleResult = "NA";
-        }
     }
 
     private void getMaleBodyWaterResult() {
-        if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) > 65) {
-                bodywaterResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) <= 65 && Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) >= 55) {
-                bodywaterResult = "standard";
-            } else {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER)) {
+            double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
+
+            if (bodyWater > 65)
+                bodywaterResult = "Standard";
+            else if (bodyWater >= 55 && bodyWater <= 65)
                 bodywaterResult = "Low";
-            }
-        } else {
+        } else
             bodywaterResult = "NA";
-        }
     }
 
     private void getMaleVisceralFatResult() {
-        if (!ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 14) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT)) {
+            double visceralFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.VISCERAL_FAT);
+
+            if (visceralFat > 14)
                 visceralfatResult = "Seriously High";
-            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) > 9) {
+            else if (visceralFat > 9)
                 visceralfatResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) <= 9) {
-                visceralfatResult = "standard";
-            }
-        } else {
+            else
+                visceralfatResult = "Standard";
+        } else
             visceralfatResult = "NA";
-        }
     }
 
     private void getMaleSubcutaneousResult() {
-        if (!ActofitObject.getString("subfat", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("subfat", "")) > 16.7) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT)) {
+            double subcutaneousFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.SUBCUTANEOUS_FAT);
+
+            // TODO: Check these values
+            if (subcutaneousFat > 16.7)
                 subcutaneousResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("subfat", "")) <= 16.7 && Double.parseDouble(ActofitObject.getString("subfat", "")) >= 8.6) {
-                subcutaneousResult = "standard";
-            } else {
+            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 16.7)
+                subcutaneousResult = "Standard";
+            else
                 subcutaneousResult = "Low";
-            }
-        } else {
+        } else
             subcutaneousResult = "NA";
-        }
     }
 
     private void getMaleBodyFatResult() {
-        if (!ActofitObject.getString("bodyfat", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) > 26) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT)) {
+            double bodyFat = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_FAT);
+
+            if (bodyFat > 26)
                 bodyfatResult = "Seriously High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) <= 26 && Double.parseDouble(ActofitObject.getString("bodyfat", "")) >= 22) {
+            else if (bodyFat > 22 && bodyFat <= 26)
                 bodyfatResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) <= 21 && Double.parseDouble(ActofitObject.getString("bodyfat", "")) >= 11) {
+            else if (bodyFat > 11 && bodyFat <= 21)
                 bodyfatResult = "Standard";
-            } else {
+            else
                 bodyfatResult = "Low";
-            }
-        } else {
+        } else
             bodyfatResult = "NA";
-        }
     }
 
     private void getMaleBMIResult() {
-        if (!ActofitObject.getString("bmi", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bmi", "")) > 25) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI)) {
+            double bmi = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
+
+            if (bmi > 25)
                 bmiResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bmi", "")) <= 25 && Double.parseDouble(ActofitObject.getString("bmi", "")) >= 18.5) {
-                bmiResult = "standard";
-            } else {
+            else if (bmi > 18.5 && bmi <= 25)
+                bmiResult = "Standard";
+            else
                 bmiResult = "Low";
-            }
-        } else {
+        } else
             bmiResult = "NA";
-        }
     }
 
     private void getMaleWeightResult() {
-        if (!ActofitObject.getString("weight", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("weight", "")) > standardWeighRangeTo) {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
+            double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+
+            if (weight > standardWeighRangeTo)
                 weightResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("weight", "")) <= standardWeighRangeTo && Double.parseDouble(ActofitObject.getString("weight", "")) >= standardWeighRangeFrom) {
-                weightResult = "standard";
-            } else {
+            else if (weight > standardWeighRangeFrom && weight <= standardWeighRangeTo)
+                weightResult = "Standard";
+            else
                 weightResult = "Low";
-            }
-        } else {
+        } else
             weightResult = "NA";
-        }
     }
 
-    private void getBodyFatResult() {
-        if (!ActofitObject.getString("bodyfat", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) > 36) {
-                bodyfatResult = "Seriously High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) <= 36 && Double.parseDouble(ActofitObject.getString("bodyfat", "")) >= 31) {
-                bodyfatResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bodyfat", "")) <= 30 && Double.parseDouble(ActofitObject.getString("bodyfat", "")) >= 21) {
-                bodyfatResult = "Standard";
-            } else {
-                bodyfatResult = "Low";
-            }
-        } else {
-            bodyfatResult = "NA";
-        }
-    }
+    // endregion
 
-    private void getBMIResult() {
-        if (!ActofitObject.getString("bmi", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("bmi", "")) > 25) {
-                bmiResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("bmi", "")) <= 25 && Double.parseDouble(ActofitObject.getString("bmi", "")) >= 18.5) {
-                bmiResult = "standard";
-            } else {
-                bmiResult = "Low";
-            }
-        } else {
-            bmiResult = "NA";
-        }
-    }
-
-    private void getWeightResult() {
-        if (!ActofitObject.getString("weight", "").equalsIgnoreCase("")) {
-            if (Double.parseDouble(ActofitObject.getString("weight", "")) > standardWeighRangeTo) {
-                weightResult = "High";
-            } else if (Double.parseDouble(ActofitObject.getString("weight", "")) <= standardWeighRangeTo && Double.parseDouble(ActofitObject.getString("weight", "")) >= standardWeighRangeFrom) {
-                weightResult = "standard";
-            } else {
-                weightResult = "Low";
-            }
-        } else {
-            weightResult = "NA";
-        }
-
-    }
-
-    private void setupUI() {
-    }
+    // region Printer methods
 
     private void printerBond() {
         try {
@@ -835,7 +899,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             }
 
         } catch (Exception e) {
-
+            // TODO: Handle exception here
         }
     }
 
@@ -852,82 +916,65 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
+    // endregion
+
+    // region Range methods
+
     private void getStandardRange() {
-
-
-        if (ActofitObject.getString("weight", "").equalsIgnoreCase("")) {
-            weight = 0.0;
-        } else {
-            weight = Double.parseDouble(ActofitObject.getString("weight", ""));
-        }
-
-
-        if (!ActofitObject.getString("height", "").equalsIgnoreCase("")) {
-            height = Integer.parseInt(ActofitObject.getString("height", ""));
-        } else {
-            height = 0;
-        }
-
+        height = getHeight();
+        weight = getWeight();
 
         double standardWeightMen = ((height - 80) * 0.7);
         standardWeightMen = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightMen));
+
         double standardWeightFemale = (((height * 1.37) - 110) * 0.45);
         standardWeightFemale = Double.parseDouble(new DecimalFormat("#.##").format(standardWeightFemale));
 
-
         glucoseRange();
 
-        if (PersonalObject.getString("gender", "").equals("male")) {
+        if(SharedPreferenceService.isMalePatient(context))
             maleRange(standardWeightMen);
-        } else {
+        else
             femaleRange(standardWeightFemale);
-        }
-
     }
 
-    //creating region on glucoseRange
     private void glucoseRange() {
-
-        if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
+        if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)"))
             standardGlucose = "70-100mg/dl(Fasting)";
-        } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)")) {
+        else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)"))
             standardGlucose = "70-140 mg/dl(Post Meal)";
-        } else if (BiosenseObject.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)")) {
+        else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)"))
             standardGlucose = "79-160 mg/dl(Random)";
-        } else {
+        else
             standardGlucose = "";
-        }
-
     }
 
     private void femaleRange(double standardWeightFemale) {
         standardWeighRangeFrom = (0.90 * standardWeightFemale);
         standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+
         standardWeighRangeTo = (1.09 * standardWeightFemale);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
-        standardWeightRange = String.valueOf(standardWeighRangeFrom) + "-" + String.valueOf(standardWeighRangeTo);
-        Log.e("standardWeightRange", "" + standardWeightRange);
+        standardWeightRange = standardWeighRangeFrom + "-" + standardWeighRangeTo;
 
-        if (height > 160) {
+        if (height > 160)
             standardMuscleMass = "36.4-42.5kg";
-        } else if (height <= 160 && height >= 150) {
+        else if (height <= 160 && height >= 150)
             standardMuscleMass = "32.9-37.5kg";
-        } else if (height < 150) {
+        else if (height < 150)
             standardMuscleMass = "29.1-34.7kg";
-        } else {
+        else
             standardMuscleMass = "";
-        }
 
-        if (weight > 60) {
+        if (weight > 60)
             standardBoneMass = "2.3 - 2.7kg";
-        } else if (weight <= 60 && weight >= 45) {
+        else if (weight <= 60 && weight >= 45)
             standardBoneMass = "2.0-2.4kg";
-        } else if (weight < 45) {
+        else if (weight < 45)
             standardBoneMass = "1.6 - 2.0kg";
-        } else {
+        else
             standardBoneMass = "";
-        }
 
         if (age >= 70) {
             standardMetabolism = 20.7 * weight;
@@ -943,53 +990,47 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
         }
 
+        standardVisceralFat = "<=9";
         standardBodyFat = "21-30(%)";
-        standarHemoglobin = "12.1-15.1gm/dl";
         standardBodyFat = "21-30(%)";
         standardBodyWater = "45-60(%)";
-        standardSkeltonMuscle = "40-50(%)";
         subcutaneousFat = "18.5-26.7(%)";
-        standardVisceralFat = "<=9";
-        standardBMR = " > =" + String.valueOf(standardMetabolism) + "kcal";
-        Log.e("standardWeightFrom", "" + standardWeightFrom);
-        Log.e("standardWeightTo", "" + standardWeightTo);
-
+        standardSkeltonMuscle = "40-50(%)";
+        standardHemoglobin = "12.1-15.1gm/dl";
+        standardBMR = " > = " + standardMetabolism + " kcal";
     }
 
     private void maleRange(double standardWeightMen) {
-
-        standarHemoglobin = "13.8-17.2gm/dl";
         standardBodyFat = "11-21(%)";
         standardBodyWater = "55-65(%)";
         standardSkeltonMuscle = "49-59(%)";
+        standardHemoglobin = "13.8-17.2gm/dl";
+
         standardWeighRangeFrom = (0.90 * standardWeightMen);
         standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+
         standardWeighRangeTo = (1.09 * standardWeightMen);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
-        standardWeightRange = String.valueOf(standardWeighRangeFrom) + "-" + String.valueOf(standardWeighRangeTo);
-        ;
-        Log.e("standardWeightRange", "" + standardWeightRange);
+        standardWeightRange = standardWeighRangeFrom + "-" + standardWeighRangeTo;
 
-        if (height > 170) {
+        if (height > 170)
             standardMuscleMass = "49.4-59.5kg";
-        } else if (height <= 170 && height >= 160) {
+        else if (height <= 170 && height >= 160)
             standardMuscleMass = "44-52.4kg";
-        } else if (height < 160) {
+        else if (height < 160)
             standardMuscleMass = "38.5-46.5kg";
-        } else {
+        else
             standardMuscleMass = "";
-        }
 
-        if (weight > 75) {
+        if (weight > 75)
             standardBoneMass = "3.0-3.4kg";
-        } else if (weight <= 75 && weight >= 60) {
+        else if (weight <= 75 && weight >= 60)
             standardBoneMass = "2.7-3.1kg";
-        } else if (weight < 60) {
+        else if (weight < 60)
             standardBoneMass = "2.3-2.7kg";
-        } else {
+        else
             standardBoneMass = "";
-        }
 
         if (age >= 70) {
             standardMetabolism = 21.5 * weight;
@@ -1004,559 +1045,282 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             standardMetabolism = 24 * weight;
             standardMetabolism = Double.parseDouble(new DecimalFormat("#.##").format(standardMetabolism));
         }
+
         standardBodyFat = "11-21(%)";
-        subcutaneousFat = "8.6-16.7(%)";
-        standardBMR = " > =" + String.valueOf(standardMetabolism) + "kcal";
         standardVisceralFat = "< = 9";
+        subcutaneousFat = "8.6-16.7(%)";
+        standardBMR = " > =" + standardMetabolism + "kcal";
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
+    // endregion
 
     private void setStaticData() {
-
-        nameTV.setText("Name :" + PersonalObject.getString("name", ""));
-        dobTV.setText("DOB :" + PersonalObject.getString("dob", ""));
-        heightTV.setText("Height :" + ActofitObject.getString("height", ""));
-        genderTV.setText("Gender :" + PersonalObject.getString("gender", ""));
-
+        nameTV.setText("Name :" + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
+        heightTV.setText("Height :" + sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, ""));
+        genderTV.setText("Gender :" + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
+        dobTV.setText("DOB :" + sharedPreferencesPersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
     }
 
+    @SuppressLint("SimpleDateFormat")
     private void calculations() {
-        String parsedDate = null;
-        @SuppressLint("SimpleDateFormat")
-        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String inputText = PersonalObject.getString("dob", "");
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        SimpleDateFormat formatter1 = new SimpleDateFormat("dd-MM-yy");
-        try {
-            Date date = inputDateFormat.parse(inputText);
-            parsedDate = formatter.format(date);
-            parsedate1 = formatter1.format(date);
-            System.out.println("Date---------" + parsedDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        age = getAge(parsedDate);
-
-        Log.e("age", "" + age);
+        age = getAge();
 
         SimpleDateFormat formatterCurrent = new SimpleDateFormat("dd/MM/yy");
         Date date = new Date();
+
         currentDate = formatterCurrent.format(date);
         currentTime = getCurrentTime();
+    }
 
+    private int getHeight(){
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
+            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
+        else
+            return 0;
+    }
+
+    private double getWeight(){
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT))
+            return SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
+        else
+            return 0;
     }
 
     private void getPrintData() {
-
-        if (!BiosenseObject.getString("last", "").equalsIgnoreCase("") && !HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase("")) {
-
-            printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + PersonalObject.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + PersonalObject.getString("gender", "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + ActofitObject.getString("height", "") + "CM" + "\n" +
-                    "Weight :" + ActofitObject.getString("weight", "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + ActofitObject.getString("bmi", "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + ActofitObject.getString("bodyfat", "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + ActofitObject.getString("musmass", "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + ActofitObject.getString("bonemass", "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + ActofitObject.getString("protine", "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + ActofitObject.getString("bmr", "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + ActofitObject.getString("physique", "") + "\n\n" +
-                    "Meta Age :" + ActofitObject.getString("metaage", "") + "yrs" + "\n\n" +
-                    "Health Score :" + ActofitObject.getString("helthscore", "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + BiosenseObject.getString("last", "") + "mg/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standardGlucose + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + HemoglobinObject.getString("hemoglobin", "") + " g/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standarHemoglobin + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + BPObject.getString("systolic", "") + "mmHg" + "\n" +
-                    "Diastolic :" + BPObject.getString("diastolic", "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + OximeterObject.getString("body_oxygen", "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   " + "Above results are" + "\n" +
-                    "      " + " indicative" + "\n" +
-                    "  " + "figure,don't follow it" + "\n" +
-                    "   " + "without consulting a" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-
-        } else if (!BiosenseObject.getString("last", "").equalsIgnoreCase("") && HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase("")) {
-            printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + PersonalObject.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + PersonalObject.getString("gender", "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + ActofitObject.getString("height", "") + "CM" + "\n" +
-                    "Weight :" + ActofitObject.getString("weight", "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + ActofitObject.getString("bmi", "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + ActofitObject.getString("bodyfat", "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + ActofitObject.getString("musmass", "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + ActofitObject.getString("bonemass", "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + ActofitObject.getString("protine", "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + ActofitObject.getString("bmr", "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + ActofitObject.getString("physique", "") + "\n\n" +
-                    "Meta Age :" + ActofitObject.getString("metaage", "") + "yrs" + "\n\n" +
-                    "Health Score :" + ActofitObject.getString("helthscore", "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + BiosenseObject.getString("last", "") + "mg/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standardGlucose + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + "NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + BPObject.getString("systolic", "") + "mmHg" + "\n" +
-                    "Diastolic :" + BPObject.getString("diastolic", "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + OximeterObject.getString("body_oxygen", "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   " + "Above results are" + "\n" +
-                    "      " + " indicative" + "\n" +
-                    "  " + "figure,don't follow it" + "\n" +
-                    "   " + "without consulting a" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        } else if (BiosenseObject.getString("last", "").equalsIgnoreCase("") && !HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase("")) {
-            printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + PersonalObject.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + PersonalObject.getString("gender", "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + ActofitObject.getString("height", "") + "CM" + "\n" +
-                    "Weight :" + ActofitObject.getString("weight", "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + ActofitObject.getString("bmi", "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + ActofitObject.getString("bodyfat", "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + ActofitObject.getString("musmass", "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + ActofitObject.getString("bonemass", "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + ActofitObject.getString("protine", "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + ActofitObject.getString("bmr", "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + ActofitObject.getString("physique", "") + "\n\n" +
-                    "Meta Age :" + ActofitObject.getString("metaage", "") + "yrs" + "\n\n" +
-                    "Health Score :" + ActofitObject.getString("helthscore", "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + HemoglobinObject.getString("hemoglobin", "") + " g/dl" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    standarHemoglobin + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + BPObject.getString("systolic", "") + "mmHg" + "\n" +
-                    "Diastolic :" + BPObject.getString("diastolic", "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + OximeterObject.getString("body_oxygen", "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   " + "Above results are" + "\n" +
-                    "      " + " indicative" + "\n" +
-                    "  " + "figure,don't follow it" + "\n" +
-                    "   " + "without consulting a" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        } else {
-
-            printStringNew = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Name :" + PersonalObject.getString("name", "") + "\n" +
-                    "Age :" + age + "   " + "Gender :" + PersonalObject.getString("gender", "") + "\n" +
-                    "" + currentDate + "  " + "" + currentTime + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Height :" + ActofitObject.getString("height", "") + "CM" + "\n" +
-                    "Weight :" + ActofitObject.getString("weight", "") + "Kg" + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + standardWeighRangeFrom + "-" + standardWeighRangeTo + "kg" + "\n" +
-                    "BMI :" + "" + ActofitObject.getString("bmi", "") + "\n" +
-                    "[Normal Range]:" + "18.5 - 25" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Body Fat :" + ActofitObject.getString("bodyfat", "") + "%" + "\n" +
-                    "[Normal Range] :" + standardBodyFat + "\n\n" +
-                    "Fat Free Weight :" + ActofitObject.getString("fatfreeweight", "") + "Kg" + "\n\n" +
-                    "Subcutaneous Fat :" + ActofitObject.getString("subfat", "") + "%" + "\n" +
-                    "[Normal Range]:" + subcutaneousFat + "\n\n" +
-                    "Visceral Fat :" + ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "") + "\n" +
-                    "[Normal Range]:" + "<=9" + "\n\n" +
-                    "Body Water : " + ActofitObject.getString(Constant.Fields.BODY_WATER, "") + "\n" +
-                    "[Normal Range]:" +
-                    standardBodyWater + "\n\n" +
-                    "Skeletal Muscle :" + ActofitObject.getString("skemus", "") + "\n" +
-                    "[Normal Range]:" +
-                    standardSkeltonMuscle + "\n\n" +
-                    "Muscle Mass :" + ActofitObject.getString("musmass", "") + "\n" +
-                    "[Normal Range]:" + standardMuscleMass + "\n\n" +
-                    "Bone Mass :" + ActofitObject.getString("bonemass", "") + "\n" +
-                    "[Normal Range]:" + standardBoneMass + "\n\n" +
-                    "Protein :" + ActofitObject.getString("protine", "") + "\n" +
-                    "[Normal Range]:" + "16-18(%)" + "\n\n" +
-                    "BMR :" + ActofitObject.getString("bmr", "") + "\n" +
-                    "[Normal Range]:" + "\n"
-                    + "> = " + standardMetabolism + "Kcal" + "\n\n" +
-                    "Physique:" + ActofitObject.getString("physique", "") + "\n\n" +
-                    "Meta Age :" + ActofitObject.getString("metaage", "") + "yrs" + "\n\n" +
-                    "Health Score :" + ActofitObject.getString("helthscore", "") + "\n\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Glucose :" + "NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Hemoglobin :" + "NA" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Pressure :" + "\n" +
-                    "Systolic :" + BPObject.getString("systolic", "") + "mmHg" + "\n" +
-                    "Diastolic :" + BPObject.getString("diastolic", "") + "mmHg" + "\n" +
-                    "[Normal Range]:" + "\n" +
-                    "systolic :" + "90-139mmHg" + "\n" +
-                    "Diastolic :" + "60-89mmHg" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Blood Oxygen :" + OximeterObject.getString("body_oxygen", "") + " %" + "\n" +
-                    "[Normal Range]:" + ">94%" + "\n" +
-                    "Pulse Rate: " + OximeterObject.getString("pulse_rate", "") + " bpm" + "\n" +
-                    "[Normal Range]:" + "60-100bpm" + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "Temperature :" + ThermometerObject.getString("data", "") + "F" + "\n" +
-                    "[Normal Range]:" + "97-99F " + "\n" +
-                    "" + "-----------------------" + "\n" +
-                    "       " + "Thank You" + "\n" +
-                    "   " + "Above results are" + "\n" +
-                    "      " + " indicative" + "\n" +
-                    "  " + "figure,don't follow it" + "\n" +
-                    "   " + "without consulting a" + "\n" +
-                    "        " + "doctor" + "\n\n\n\n\n\n\n";
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        printerText = getPrintText();
     }
 
     private void setNewList() {
+        try {
+            printDataListNew.add(new PrintData("Weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""))));
+            printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, ""))));
+            printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, ""))));
+            printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, ""))));
+            printDataListNew.add(new PrintData("Subcutaneous Fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""))));
+            printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, ""))));
+            printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""))));
+            printDataListNew.add(new PrintData("Skeleton muscle", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, ""))));
+            printDataListNew.add(new PrintData("Protein", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, ""))));
+            printDataListNew.add(new PrintData("Metabolic Age", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, ""))));
+            printDataListNew.add(new PrintData("Health Score", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""))));
+            printDataListNew.add(new PrintData("BMR", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMR, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMR, ""))));
+            printDataListNew.add(new PrintData("Physique", 0.0));
+            printDataListNew.add(new PrintData("Muscle Mass", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""))));
+            printDataListNew.add(new PrintData("Bone Mass", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""))));
+            printDataListNew.add(new PrintData("Body Temp", TextUtils.isEmpty(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) ? 0 : Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, ""))));
+            printDataListNew.add(new PrintData("Systolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""))));
+            printDataListNew.add(new PrintData("Diastolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""))));
+            printDataListNew.add(new PrintData("Pulse Oximeter", TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, ""))));
+            printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, ""))));
+            printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, ""))));
+            printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""))));
 
-        printDataListNew.add(new PrintData("Weight", TextUtils.isEmpty(ActofitObject.getString("weight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("weight", ""))));
-        printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(ActofitObject.getString("bmi", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmi", ""))));
-        printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(ActofitObject.getString("bodyfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bodyfat", ""))));
-        printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(ActofitObject.getString("fatfreeweight", "")) ? 0 : Double.parseDouble(ActofitObject.getString("fatfreeweight", ""))));
-        printDataListNew.add(new PrintData("Subcutaneous Fat", TextUtils.isEmpty(ActofitObject.getString("subfat", "")) ? 0 : Double.parseDouble(ActofitObject.getString("subfat", ""))));
-        printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "")) ? 0 : Double.parseDouble(ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""))));
-        printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(ActofitObject.getString(Constant.Fields.BODY_WATER, "")) ? 0 : Double.parseDouble(ActofitObject.getString(Constant.Fields.BODY_WATER, ""))));
-        printDataListNew.add(new PrintData("Skeleton muscle", TextUtils.isEmpty(ActofitObject.getString("skemus", "")) ? 0 : Double.parseDouble(ActofitObject.getString("skemus", ""))));
-        printDataListNew.add(new PrintData("Protein", TextUtils.isEmpty(ActofitObject.getString("protine", "")) ? 0 : Double.parseDouble(ActofitObject.getString("protine", ""))));
-        printDataListNew.add(new PrintData("Metabolic Age", TextUtils.isEmpty(ActofitObject.getString("metaage", "")) ? 0 : Double.parseDouble(ActofitObject.getString("metaage", ""))));
-        printDataListNew.add(new PrintData("Health Score", TextUtils.isEmpty(ActofitObject.getString("helthscore", "")) ? 0 : Double.parseDouble(ActofitObject.getString("helthscore", ""))));
-        printDataListNew.add(new PrintData("BMR", TextUtils.isEmpty(ActofitObject.getString("bmr", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bmr", ""))));
-        printDataListNew.add(new PrintData("Physique", 0.0));
-        printDataListNew.add(new PrintData("Muscle Mass", TextUtils.isEmpty(ActofitObject.getString("musmass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("musmass", ""))));
-        printDataListNew.add(new PrintData("Bone Mass", TextUtils.isEmpty(ActofitObject.getString("bonemass", "")) ? 0 : Double.parseDouble(ActofitObject.getString("bonemass", ""))));
-        printDataListNew.add(new PrintData("Body Temp", TextUtils.isEmpty(ThermometerObject.getString("data", "")) ? 0 : Double.parseDouble(ThermometerObject.getString("data", ""))));
-        printDataListNew.add(new PrintData("Systolic", TextUtils.isEmpty(BPObject.getString("systolic", "")) ? 0 : Double.parseDouble(BPObject.getString("systolic", ""))));
-        printDataListNew.add(new PrintData("Diastolic", TextUtils.isEmpty(BPObject.getString("diastolic", "")) ? 0 : Double.parseDouble(BPObject.getString("diastolic", ""))));
-        printDataListNew.add(new PrintData("Pulse Oximeter", TextUtils.isEmpty(OximeterObject.getString("body_oxygen", "")) ? 0 : Double.parseDouble(OximeterObject.getString("body_oxygen", ""))));
-        printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(OximeterObject.getString("pulse_rate", "")) ? 0 : Double.parseDouble(OximeterObject.getString("pulse_rate", ""))));
-        printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(BiosenseObject.getString("last", "")) ? 0 : Double.parseDouble(BiosenseObject.getString("last", ""))));
-        printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(HemoglobinObject.getString("hemoglobin", "")) ? 0 : Double.parseDouble(HemoglobinObject.getString("hemoglobin", ""))));
-
-        lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
-
+            lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void postData() {
+        Map<String, String> requestBodyParams = new HashMap<>();
 
-        Map<String, String> params;
+        requestBodyParams.put(Constant.Fields.BMI, sharedPreferencesActofit.getString(Constant.Fields.BMI, ""));
+        requestBodyParams.put(Constant.Fields.BMR, sharedPreferencesActofit.getString(Constant.Fields.BMR, ""));
+        requestBodyParams.put(Constant.Fields.SUGAR, sharedPreferencesSugar.getString(Constant.Fields.SUGAR, ""));
+        requestBodyParams.put(Constant.Fields.HEIGHT, sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, ""));
+        requestBodyParams.put(Constant.Fields.WEIGHT, sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""));
+        requestBodyParams.put(Constant.Fields.PROTEIN, sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, ""));
+        requestBodyParams.put(Constant.Fields.META_AGE, sharedPreferencesActofit.getString(Constant.Fields.META_AGE, ""));
+        requestBodyParams.put(Constant.Fields.BODY_FAT, sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, ""));
+        requestBodyParams.put(Constant.Fields.PHYSIQUE, sharedPreferencesActofit.getString(Constant.Fields.PHYSIQUE, ""));
+        requestBodyParams.put(Constant.Fields.GENDER, sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
+        requestBodyParams.put(Constant.Fields.BONE_MASS, sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""));
+        requestBodyParams.put(Constant.Fields.BODY_WATER, sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""));
+        requestBodyParams.put(Constant.Fields.PULSE_RATE, sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, ""));
+        requestBodyParams.put(Constant.Fields.MUSCLE_MASS, sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""));
+        requestBodyParams.put(Constant.Fields.HEMOGLOBIN, sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""));
+        requestBodyParams.put(Constant.Fields.HEALTH_SCORE, sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""));
+        requestBodyParams.put(Constant.Fields.VISCERAL_FAT, sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, ""));
+        requestBodyParams.put(Constant.Fields.BLOOD_OXYGEN, sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, ""));
+        requestBodyParams.put(Constant.Fields.TEMPERATURE, sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, ""));
+        requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE, sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, ""));
+        requestBodyParams.put(Constant.Fields.FAT_FREE_WEIGHT, sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
+        requestBodyParams.put(Constant.Fields.SUBCUTANEOUS_FAT, sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
+        requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
+        requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
 
-        params = new HashMap<>();
-        params.put("bmi", ActofitObject.getString(Constant.Fields.BMI, ""));
-        params.put("bmr", ActofitObject.getString(Constant.Fields.BMR, ""));
-        params.put("sugar", BiosenseObject.getString(Constant.Fields.SUGAR, ""));
-        params.put("height", ActofitObject.getString(Constant.Fields.HEIGHT, ""));
-        params.put("weight", ActofitObject.getString(Constant.Fields.WEIGHT, ""));
-        params.put("gender", PersonalObject.getString(Constant.Fields.GENDER, ""));
-        params.put("protein", ActofitObject.getString(Constant.Fields.PROTEIN, ""));
-        params.put("meta_age", ActofitObject.getString(Constant.Fields.META_AGE, ""));
-        params.put("pulse", OximeterObject.getString(Constant.Fields.PULSE_RATE, ""));
-        params.put("body_fat", ActofitObject.getString(Constant.Fields.BODY_FAT, ""));
-        params.put("physique", ActofitObject.getString(Constant.Fields.PHYSIQUE, ""));
-        params.put("bone_mass", ActofitObject.getString(Constant.Fields.BONE_MASS, ""));
-        params.put("oxygen", OximeterObject.getString(Constant.Fields.BLOOD_OXYGEN, ""));
-        params.put("body_water", ActofitObject.getString(Constant.Fields.BODY_WATER, ""));
-        params.put("muscle_mass", ActofitObject.getString(Constant.Fields.MUSCLE_MASS, ""));
-        params.put("hemoglobin", HemoglobinObject.getString(Constant.Fields.HEMOGLOBIN, ""));
-        params.put("health_score", ActofitObject.getString(Constant.Fields.HEALTH_SCORE, ""));
-        params.put("visceral_fat", ActofitObject.getString(Constant.Fields.VISCERAL_FAT, ""));
-        params.put("temperature", ThermometerObject.getString(Constant.Fields.TEMPERATURE, ""));
-        params.put("subcutaneous", ActofitObject.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
-        params.put("dialostic", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
-        params.put("skeleton_muscle", ActofitObject.getString(Constant.Fields.SKELETAL_MUSCLE, ""));
-        params.put("fat_free_weight", ActofitObject.getString(Constant.Fields.FAT_FREE_WEIGHT, ""));
-        params.put("blood_pressure", BPObject.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
-
-        if (!ActofitObject.getString("weight", "").equalsIgnoreCase("")) {
-            params.put("weightrange", "" + standardWeightRange + "kg");
-        } else {
-            params.put("weightrange", "NA");
-        }
-
-        if (!ActofitObject.getString("bmi", "").equalsIgnoreCase("")) {
-            params.put("bmirange", "18.5-25");
-        } else {
-            params.put("bmirange", "NA");
-        }
-
-        if (!ActofitObject.getString("bodyfat", "").equalsIgnoreCase("")) {
-            params.put("bodyfatrange", standardBodyFat);
-        } else {
-            params.put("bodyfatrange", "NA");
-        }
-        if (!ActofitObject.getString("subfat", "").equalsIgnoreCase("")) {
-            params.put("subfatrange", subcutaneousFat);
-        } else {
-            params.put("subfatrange", "NA");
-        }
-        if (!ActofitObject.getString(Constant.Fields.VISCERAL_FAT, "").equalsIgnoreCase("")) {
-            params.put("visceralfatrange", standardVisceralFat);
-            Log.e("viscerialFatRange", "" + standardVisceralFat);
-        } else {
-            params.put("visceralfatrange", "NA");
-        }
-        if (!ActofitObject.getString(Constant.Fields.BODY_WATER, "").equalsIgnoreCase("")) {
-            params.put("bodywaterrange", standardBodyWater);
-        } else {
-            params.put("bodywaterrange", "NA");
-        }
-        if (!ActofitObject.getString("skemus", "").equalsIgnoreCase("")) {
-            params.put("skeletanmusclerange", standardSkeltonMuscle);
-        } else {
-            params.put("skeletanmusclerange", "NA");
-        }
-        if (!ActofitObject.getString("protine", "").equalsIgnoreCase("")) {
-            params.put("proteinrange", "16-18 %");
-        } else {
-            params.put("proteinrange", "NA");
-        }
-        if (!ActofitObject.getString("metaage", "").equalsIgnoreCase("")) {
-            params.put("metaagerange", "<=" + age);
-            Log.e("metaage_range", "<=" + age);
-        } else {
-            params.put("metaagerange", "NA");
-        }
-        params.put("healthscorerange", "");
-        if (!ActofitObject.getString("bmr", "").equalsIgnoreCase("")) {
-            params.put("bmrrange", standardBMR);
-        } else {
-            params.put("bmrrange", "NA");
-        }
-        params.put("physiquerange", "");
-        if (!ActofitObject.getString("musmass", "").equalsIgnoreCase("")) {
-            params.put("musclemassrange", standardMuscleMass);
-        } else {
-            params.put("musclemassrange", "NA");
-        }
-        if (!ActofitObject.getString("bonemass", "").equalsIgnoreCase("")) {
-            params.put("bonemassrange", standardBoneMass);
-        } else {
-            params.put("bonemassrange", "NA");
-        }
-        if (!ThermometerObject.getString("data", "").equalsIgnoreCase("")) {
-            params.put("bodytemprange", "97 - 99 F");
-        } else {
-            params.put("bodytemprange", "NA");
-        }
-
-        if (!BPObject.getString("systolic", "").equalsIgnoreCase(""))
-            params.put("systolicrange", "90-139 mmHg");
+        if(!sharedPreferencesActofit.getString(Constant.Fields.WEIGHT,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.WEIGHT_RANGE, "" + standardWeightRange + " kg");
         else
-            params.put("systolicrange", "NA");
-        if (!BPObject.getString("diastolic", "").equalsIgnoreCase(""))
-            params.put("dialosticrange", "60-89 mmHg");
+            requestBodyParams.put(Constant.Fields.WEIGHT_RANGE, "NA");
+
+        if(!sharedPreferencesActofit.getString(Constant.Fields.BMI,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BMI_RANGE, "18.5-25");
         else
-            params.put("dialosticrange", "NA");
-        if (!OximeterObject.getString("body_oxygen", "").equalsIgnoreCase(""))
-            params.put("pulseoximeterrange", ">94%");
+            requestBodyParams.put(Constant.Fields.BMI_RANGE, "NA");
+
+        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BODY_FAT_RANGE, standardBodyFat);
         else
-            params.put("pulseoximeterrange", "NA");
-        if (!OximeterObject.getString("pulse_rate", "").equalsIgnoreCase(""))
-            params.put("pulserange", "60-100 bpm");
+            requestBodyParams.put(Constant.Fields.BODY_FAT_RANGE, "NA");
+
+        if(!sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.SUBCUTANEOUS_FAT_RANGE, subcutaneousFat);
         else
-            params.put("pulserange", "NA");
-        if (!BiosenseObject.getString("last", "").equalsIgnoreCase(""))
-            params.put("bloodsugarrange", standardGlucose);
+            requestBodyParams.put(Constant.Fields.SUBCUTANEOUS_FAT_RANGE, "NA");
+
+        if(!sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.VISCERAL_FAT_RANGE,standardVisceralFat);
         else
-            params.put("bloodsugarrange", "NA");
-        if (!HemoglobinObject.getString("hemoglobin", "").equalsIgnoreCase(""))
-            params.put("hemoglobinrange", standarHemoglobin);
+            requestBodyParams.put(Constant.Fields.VISCERAL_FAT_RANGE,"NA");
+
+        if(!sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BODY_WATER_RANGE, standardBodyWater);
         else
-            params.put("hemoglobinrange", "NA");
+            requestBodyParams.put(Constant.Fields.BODY_WATER_RANGE, "NA");
 
-        params.put("heightresult", "");
-        params.put("weightresult", weightResult);
-        params.put("bmiresult", bmiResult);
-        params.put("bmrresult", bmrResult);
-        params.put("metaageresult", metaageResult);
-        params.put("subcutaneousresult", subcutaneousResult);
-        params.put("visceralfatresult", visceralfatResult);
-        params.put("skeletonmuscleresult", skeletonmuscleResult);
-        params.put("bodywaterresult", bodywaterResult);
-        params.put("musclemassresult", musclemassResult);
-        params.put("fatfreeweightresult", fatfreeweightResult);
-        params.put("proteinresult", proteinResult);
-        params.put("bodyfatresult", bodyfatResult);
-        params.put("bonemassresult", bonemassResult);
-        params.put("systolicresult", bloodpressureResult);
-        params.put("bloodpressureresult", diastolicResult);
-        params.put("oxygenresult", oxygenResult);
-        params.put("pulseresult", pulseResult);
-        params.put("temperatureresult", tempratureResult);
-        params.put("hemoglobinresult", hemoglobinResult);
-        params.put("sugarresult", sugarResult);
+        if(!sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RANGE, standardSkeltonMuscle);
+        else
+            requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RANGE, "NA");
 
-        HashMap headersParams = new HashMap();
+        if(!sharedPreferencesActofit.getString(Constant.Fields.PROTEIN,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.PROTEIN_RANGE,"16-18 %");
+        else
+            requestBodyParams.put(Constant.Fields.PROTEIN_RANGE,"NA");
 
-        String bearer = "Bearer ".concat(spToken.getString("token", ""));
-        headersParams.put("Authorization", bearer);
+        if(!sharedPreferencesActofit.getString(Constant.Fields.META_AGE,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.META_AGE_RANGE, "<="+age);
+        else
+            requestBodyParams.put(Constant.Fields.META_AGE_RANGE,"NA");
 
-        AccessWebServices.accessWebServices(context, ApiUtils.PRINT_POST_URL, params, headersParams, new VolleyResponse() {
+        requestBodyParams.put(Constant.Fields.HEALTH_SCORE_RANGE,"");
 
-            @Override
-            public void onProcessFinish(String response, VolleyError error, String status) {
-                if (status.equals("response")) {
-                    try {
-                        readFileName(response);
+        if(!sharedPreferencesActofit.getString(Constant.Fields.BMR,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BMR_RANGE, standardBMR);
+        else
+            requestBodyParams.put(Constant.Fields.BMR_RANGE, "NA");
 
-                        Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
+        requestBodyParams.put(Constant.Fields.PHYSIQUE_RANGE, "");
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (status.equals("error")) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        if(!sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.MUSCLE_MASS_RANGE,standardMuscleMass);
+        else
+            requestBodyParams.put(Constant.Fields.MUSCLE_MASS_RANGE,"NA");
 
+        if(!sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BONE_MASS_RANGE, standardBoneMass);
+        else
+            requestBodyParams.put(Constant.Fields.BONE_MASS_RANGE, "NA");
+
+        if(!sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.TEMPERATURE_RANGE, "97 - 99 F");
+        else
+            requestBodyParams.put(Constant.Fields.TEMPERATURE_RANGE, "NA");
+
+        if(!sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RANGE,"90-139 mmHg");
+        else
+            requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RANGE,"NA");
+
+        if(!sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RANGE, "60-89 mmHg");
+        else
+            requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RANGE, "NA");
+
+        if(!sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.BLOOD_OXYGEN_RANGE,">94%");
+        else
+            requestBodyParams.put(Constant.Fields.BLOOD_OXYGEN_RANGE,"NA");
+
+        if(!sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE,"").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.PULSE_RATE_RANGE, "60-100 bpm");
+        else
+            requestBodyParams.put(Constant.Fields.PULSE_RATE_RANGE, "NA");
+
+        if(!sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.SUGAR_RANGE, standardGlucose);
+        else
+            requestBodyParams.put(Constant.Fields.SUGAR_RANGE, "NA");
+
+        if(!sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "").equalsIgnoreCase(""))
+            requestBodyParams.put(Constant.Fields.HEMOGLOBIN_RANGE,standardHemoglobin);
+        else
+            requestBodyParams.put(Constant.Fields.HEMOGLOBIN_RANGE,"NA");
+
+        requestBodyParams.put(Constant.Fields.HEIGHT_RESULT, "");
+        requestBodyParams.put(Constant.Fields.BMI_RESULT, bmiResult);
+        requestBodyParams.put(Constant.Fields.BMR_RESULT, bmrResult);
+        requestBodyParams.put(Constant.Fields.SUGAR_RESULT, sugarResult);
+        requestBodyParams.put(Constant.Fields.WEIGHT_REUSLT, weightResult);
+        requestBodyParams.put(Constant.Fields.PROTEIN_RESULT, proteinResult);
+        requestBodyParams.put(Constant.Fields.META_AGE_RESULT, metaageResult);
+        requestBodyParams.put(Constant.Fields.BODY_FAT_RESULT, bodyfatResult);
+        requestBodyParams.put(Constant.Fields.PULSE_RATE_RESULT, pulseResult);
+        requestBodyParams.put(Constant.Fields.BONE_MASS_RESULT, bonemassResult);
+        requestBodyParams.put(Constant.Fields.BLOOD_OXYGEN_RESULT, oxygenResult);
+        requestBodyParams.put(Constant.Fields.BODY_WATER_RESULT, bodywaterResult);
+        requestBodyParams.put(Constant.Fields.HEMOGLOBIN_RESULT, hemoglobinResult);
+        requestBodyParams.put(Constant.Fields.MUSCLE_MASS_RESULT, musclemassResult);
+        requestBodyParams.put(Constant.Fields.TEMPERATURE_RESULT, tempratureResult);
+        requestBodyParams.put(Constant.Fields.VISCERAL_FAT_RESULT, visceralfatResult);
+        requestBodyParams.put(Constant.Fields.FAT_FREE_WEIGHT_RESULT, fatfreeweightResult);
+        requestBodyParams.put(Constant.Fields.SUBCUTANEOUS_FAT_RESULT, subcutaneousResult);
+        requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
+        requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
+        requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
+
+        HashMap mapHeadersParams = new HashMap();
+
+        String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
+        mapHeadersParams.put("Authorization", bearer);
+
+        AccessWebServices.accessWebServices(
+                context, ApiUtils.PRINT_POST_URL,
+                requestBodyParams,
+                mapHeadersParams,
+                (response, error, status) -> handleAPIResponse(response, error, status));
     }
 
+    private void handleAPIResponse(String response, VolleyError error, String status) {
+        if (status.equals("response")) {
+            try {
+                readFileName(response);
 
+                Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
+
+            } catch (Exception e) {
+                // TODO: Handle exception
+            }
+        } else if (status.equals("error")) {
+            Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+            // TODO: Handle error
+        }
+    }
+
+    /**
+     *
+     * @param response
+     */
     private void readFileName(String response) {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");
-            System.out.println("fileName = " + fileName);
         } catch (JSONException e) {
-            e.printStackTrace();
+            // TODO: Handle exception here
         }
-
     }
 
     private void gettingDataObjects() {
-        ActofitObject = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-        OximeterObject = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
-        PersonalObject = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        ThermometerObject = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
-        BPObject = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
-        BiosenseObject = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-        HemoglobinObject = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-        spToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesOximeter = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
+        sharedPreferencesSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+        sharedPreferencesThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
+        sharedPreferencesToken = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
+        sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
     }
 
 
@@ -1564,55 +1328,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance().getTime());
     }
 
-    @OnClick({R.id.homebtn, R.id.printbtn, R.id.iv_download})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.homebtn:
-                SharedPreferences objBiosense = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-                SharedPreferences objBp = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
-                SharedPreferences objPulse = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
-                SharedPreferences objActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-                SharedPreferences objNewRecord = getSharedPreferences(ApiUtils.PREFERENCE_NEWRECORD, MODE_PRIVATE);
-                SharedPreferences objUrl = getSharedPreferences(ApiUtils.PREFERENCE_URL, MODE_PRIVATE);
-                SharedPreferences objHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-                SharedPreferences objSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
-                SharedPreferences objAshok = getSharedPreferences("ashok", MODE_PRIVATE);
-                objBiosense.edit().clear().commit();
-                objBp.edit().clear().commit();
-                objPulse.edit().clear().commit();
-                objActofit.edit().clear().commit();
-                objNewRecord.edit().clear().commit();
-                objUrl.edit().clear().commit();
-                objAshok.edit().clear().commit();
-                objHemoglobin.edit().clear().commit();
-                objSugar.edit().clear().commit();
-                ActofitObject.edit().clear().commit();
-                OximeterObject.edit().clear();
-                PersonalObject.edit().clear();
-                ThermometerObject.edit().clear();
-                BPObject.edit().clear();
-                BiosenseObject.edit().clear();
-                HemoglobinObject.edit().clear();
-                Intent newIntent = new Intent(getApplicationContext(), OtpLoginScreen.class);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(newIntent);
-                break;
-            case R.id.printbtn:
-                Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-                EnterTextAsyc asynctask = new EnterTextAsyc();
-                asynctask.execute(0);
-                txt = "Please collect your result receipt";
-                speakOut(txt);
-                break;
-
-            case R.id.iv_download:
-                downloadFile();
-                break;
-        }
-    }
-
-    private void downloadFile() {
+    private void downloadFile(String fileName) {
         downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
 
         if (fileName != null)
@@ -1650,61 +1366,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         }
     }
 
-    private int getAge(String dobString) {
-        Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            date = sdf.parse(dobString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (date == null)
-            return 0;
-
-        Calendar dob = Calendar.getInstance();
-        Calendar today = Calendar.getInstance();
-
-        dob.setTime(date);
-
-        int year = dob.get(Calendar.YEAR);
-        int month = dob.get(Calendar.MONTH);
-        int day = dob.get(Calendar.DAY_OF_MONTH);
-
-        dob.set(year, month + 1, day);
-
-        int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
-
-        if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
-            age--;
-        }
-        return age;
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            textToSpeech.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
         /* displays the progress dialog untill background task is completed */
         @Override
@@ -1719,16 +1380,17 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         protected Integer doInBackground(Integer... params) {
             try {
                 ptrGen.iFlushBuf();
-//                String empty = printString;
-                String empty = printStringNew;
+
+                String empty = printerText;
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
-                Log.e("iRetVal", "" + iRetVal);
             } catch (NullPointerException e) {
                 iRetVal = DEVICE_NOTCONNECTED;
-                e.printStackTrace();
+
+                // TODO: Handle exception
                 return iRetVal;
             }
+
             return iRetVal;
         }
 
@@ -1773,8 +1435,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             switch (msg.what) {
                 case 1:
                     try {
-                        TextView tvMessage = (TextView) dlgCustomdialog
-                                .findViewById(R.id.tvMessage);
+                        TextView tvMessage = (TextView) dlgCustomdialog.findViewById(R.id.tvMessage);
                         tvMessage.setText("" + msg.obj);
                     } catch (Exception e) {
                         // TODO: handle exception
@@ -1817,28 +1478,203 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     /* This performs Progress dialog box to show the progress of operation */
     protected void dlgShowCustom(Context con, String Message) {
         dlgCustomdialog = new Dialog(con);
-        dlgCustomdialog.setTitle("Pride Demo");
         dlgCustomdialog.setCancelable(false);
+        dlgCustomdialog.setTitle("Pride Demo");
         dlgCustomdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dlgCustomdialog.getWindow().setBackgroundDrawable(
-                new ColorDrawable(Color.TRANSPARENT));
+        dlgCustomdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dlgCustomdialog.setContentView(R.layout.progressdialog);
-        TextView title_tv = (TextView) dlgCustomdialog
-                .findViewById(R.id.tvTitle);
-        title_tv.setWidth(iWidth);
-        TextView message_tv = (TextView) dlgCustomdialog
-                .findViewById(R.id.tvMessage);
-        message_tv.setText(Message);
-        llprog = (LinearLayout) dlgCustomdialog.findViewById(R.id.llProg);
-        pbProgress = (ProgressBar) dlgCustomdialog.findViewById(R.id.pbDialog);
-        btnOk = (Button) dlgCustomdialog.findViewById(R.id.btnOk);
-        btnOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                dlgCustomdialog.dismiss();
-            }
-        });
+
+        TextView tvTitle = dlgCustomdialog.findViewById(R.id.tvTitle);
+        TextView tvMessage = dlgCustomdialog.findViewById(R.id.tvMessage);
+
+        tvTitle.setWidth(iWidth);
+        tvMessage.setText(Message);
+
+        llprog = dlgCustomdialog.findViewById(R.id.llProg);
+        pbProgress = dlgCustomdialog.findViewById(R.id.pbDialog);
+
+        btnOk = dlgCustomdialog.findViewById(R.id.btnOk);
+        btnOk.setOnClickListener(view -> dlgCustomdialog.dismiss());
+
         dlgCustomdialog.show();
+    }
+
+    private int getAge() {
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)){
+            String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
+            return DateService.getAgeFromStringDate(dateOfBirth);
+        }else
+            return 0;
+    }
+
+    private void goToHome(){
+        clearDatabase();
+
+        Intent newIntent = new Intent(getApplicationContext(), OtpLoginScreen.class);
+
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(newIntent);
+    }
+
+    private void clearDatabase(){
+        SharedPreferences objSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        SharedPreferences objNewRecord = getSharedPreferences(ApiUtils.PREFERENCE_NEWRECORD, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesURL = getSharedPreferences(ApiUtils.PREFERENCE_URL, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesPulse = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesBiosense = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+
+        objSugar.edit().clear().apply();
+        objNewRecord.edit().clear().apply();
+        sharedPreferencesURL.edit().clear().apply();
+        sharedPreferencesPulse.edit().clear().apply();
+        sharedPreferencesSugar.edit().clear().apply();
+        sharedPreferencesActofit.edit().clear().apply();
+        sharedPreferencesActofit.edit().clear().apply();
+        sharedPreferencesBiosense.edit().clear().apply();
+        sharedPreferencesOximeter.edit().clear().apply();
+        sharedPreferencesHemoglobin.edit().clear().apply();
+        sharedPreferencesHemoglobin.edit().clear().apply();
+        sharedPreferencesThermometer.edit().clear().apply();
+        sharedPreferencesPersonalData.edit().clear().apply();
+        sharedPreferencesBloodPressure.edit().clear().apply();
+        sharedPreferencesBloodPressure.edit().clear().apply();
+    }
+
+    private String getPrintText(){
+        String str = "Clinics On Cloud\n" +
+                     "Name : {name}\n" +
+                     "Age : {age}  Gender : {gender}" +
+                     "{currentDate}  {currentTime} \n" +
+                     "-----------------------\n" +
+                     "Height : {height} CM\n" +
+                     "Weight : {weight} Kg\n" +
+                     "[Normal Range]:\n {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
+                     "BMI : {bmi}\n" +
+                     "[Normal Range]: 18.5 - 25\n" +
+                     "-----------------------\n" +
+                     "Body Fat : {bodyFat}\n" +
+                     "[Normal Range] : {standardBodyFat}\n" +
+                     "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
+                     "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
+                     "[Normal Range]: {subcutaneousFatRange}\n\n" +
+                     "Visceral Fat : {visceralFat}\n" +
+                     "[Normal Range]: <=9\n\n" +
+                     "Body Water : {bodyWater}\n" +
+                     "[Normal Range]: {standardBodyWater}\n\n" +
+                     "Skeletal Muscle : {skeletalMuscle}\n" +
+                     "[Normal Range]: {standardSkeletalMuscle}\n\n" +
+                     "Muscle Mass : {muscleMass}\n" +
+                     "[Normal Range]: {standardMuscleMass}\n\n" +
+                     "Bone Mass : {boneMass}\n" +
+                     "[Normal Range]: {standardBoneMass}\n\n" +
+                     "Protein : {protein}\n" +
+                     "[Normal Range]: 16-18(%) \n\n" +
+                     "BMR : {bmr}\n" +
+                     "[Normal Range]: \n > = {standardMetabolism} Kcal\n\n" +
+                     "Physique: {physique}\n\n" +
+                     "Meta Age : {metaAge} yrs\n\n" +
+                     "Health Score : {healthScore}\n\n" +
+                     "-----------------------\n" +
+                     "Blood Glucose : {bloodGlucose} g/dl\n" +
+                     "-----------------------\n" +
+                     "Hemoglobin : {hemoglobin}\n" +
+                    "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
+                     "-----------------------\n" +
+                     "Blood Pressure : \n" +
+                     "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
+                     "Diastolic : {bloodPressureDiastolic} mmHg \n" +
+                     "[Normal Range]: \n" +
+                     "Systolic : 90-139mmHg\n" +
+                     "Diastolic : 60-89mmHg\n" +
+                     "-----------------------\n" +
+                     "Blood Oxygen : {bloodOxygen} %" + "\n" +
+                     "[Normal Range]: >94%\n" +
+                     "Pulse Rate: {pulseRate} bpm\n" +
+                     "[Normal Range]: 60-100bpm\n" +
+                     "-----------------------\n" +
+                     "Temperature : {temperature} F\n" +
+                     "[Normal Range]: 97-99 F\n" +
+                     "-----------------------\n" +
+                     "       Thank You\n" +
+                     "   Above results are\n" +
+                     "       indicative\n"+
+                     "  figure,don't follow it\n"+
+                     "   without consulting a\n"+
+                     "        doctor\n\n\n\n\n\n\n";
+
+        str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
+        str = str.replace("{age}", String.valueOf(age));
+        str = str.replace("{gender}", getPersonalPreferenceData(Constant.Fields.GENDER));
+        str = str.replace("{currentDate}", currentDate);
+        str = str.replace("{currentTime}", currentTime);
+        str = str.replace("{height}", getActofitPreferenceData(Constant.Fields.HEIGHT));
+        str = str.replace("{weight}", getActofitPreferenceData(Constant.Fields.WEIGHT));
+        str = str.replace("{standardWeightRangeFrom}", String.valueOf(standardWeighRangeFrom));
+        str = str.replace("{standardWeightRangeTo}", String.valueOf(standardWeighRangeTo));
+        str = str.replace("{bmi}", getActofitPreferenceData(Constant.Fields.BMI));
+        str = str.replace("{bodyFat}", getActofitPreferenceData(Constant.Fields.BODY_FAT));
+        str = str.replace("{standardBodyFat}", standardBodyFat);
+        str = str.replace("{fatFreeWeight}", getActofitPreferenceData(Constant.Fields.FAT_FREE_WEIGHT));
+        str = str.replace("{subcutaneousFat}", getActofitPreferenceData(Constant.Fields.SUBCUTANEOUS_FAT));
+        str = str.replace("{subcutaneousFatRange}", subcutaneousFat);
+        str = str.replace("{visceralFat}", getActofitPreferenceData(Constant.Fields.VISCERAL_FAT));
+        str = str.replace("{bodyWater}", getActofitPreferenceData(Constant.Fields.BODY_WATER));
+        str = str.replace("{standardBodyWater}", standardBodyWater);
+        str = str.replace("{skeletalMuscle}", getActofitPreferenceData(Constant.Fields.SKELETAL_MUSCLE));
+        str = str.replace("{standardSkeletalMuscle}", standardSkeltonMuscle);
+        str = str.replace("{muscleMass}", getActofitPreferenceData(Constant.Fields.MUSCLE_MASS));
+        str = str.replace("{standardMuscleMass}", standardMuscleMass);
+        str = str.replace("{boneMass}", getActofitPreferenceData(Constant.Fields.BONE_MASS));
+        str = str.replace("{standardBoneMass}", standardBoneMass);
+        str = str.replace("{protein}", getActofitPreferenceData(Constant.Fields.PROTEIN));
+        str = str.replace("{bmr}", getActofitPreferenceData(Constant.Fields.BMR));
+        str = str.replace("{standardMetabolism}", String.valueOf(standardMetabolism));
+        str = str.replace("{physique}", getActofitPreferenceData(Constant.Fields.PHYSIQUE));
+        str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
+        str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
+        str = str.replace("{bloodGlucose}", getSugarPreferenceData(Constant.Fields.SUGAR));
+        str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
+        str = str.replace("{standardHemoglobin}", standardHemoglobin);
+        str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));
+        str = str.replace("{bloodPressureDiastolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC));
+        str = str.replace("{bloodOxygen}", getOximeterPreferenceData(Constant.Fields.BLOOD_OXYGEN));
+        str = str.replace("{pulseRate}", getOximeterPreferenceData(Constant.Fields.PULSE_RATE));
+        str = str.replace("{temperature}", getThermometerPreferenceData(Constant.Fields.TEMPERATURE));
+
+        return str;
+    }
+
+    private String getPersonalPreferenceData(String key){
+        return sharedPreferencesPersonalData.getString(key, "");
+    }
+
+    private String getActofitPreferenceData(String key){
+        return sharedPreferencesActofit.getString(key, "");
+    }
+
+    private String getSugarPreferenceData(String key){
+        return sharedPreferencesSugar.getString(key, "");
+    }
+
+    private String getHemoglobinPreferenceData(String key){
+        return sharedPreferencesHemoglobin.getString(key, "");
+    }
+
+    private String getThermometerPreferenceData(String key){
+        return sharedPreferencesThermometer.getString(key, "");
+    }
+
+    private String getOximeterPreferenceData(String key){
+        return sharedPreferencesOximeter.getString(key, "");
+    }
+
+    private String geBloodPressurePreferenceData(String key){
+        return sharedPreferencesBloodPressure.getString(key, "");
     }
 }

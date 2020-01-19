@@ -83,7 +83,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private TextView tvResultText;
     private TextView tvLogDisplay;
     private TextView offlineTitle;
-    private TextView tvTemprature;
+    private TextView tvTemperature;
     private TextView tvResultTextNew;
     private TextView tvConnectionLabel;
 
@@ -112,14 +112,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private RecyclerView readingRecyclerView;
 
-    private InputStream ins;
-    private SerializeUUID serializeUUID;
     private SyncLib syncLib;
+    private InputStream inputStream;
     private TextToSpeech textToSpeech;
+    private SerializeUUID serializeUUID;
     private Communicator communicator = this;
     private SharedPreferences sharedPreferencesPersonal;
 
-    private String textToSpeak = "";
+    private String textToSpeak;
     private String resultOfGlucose;
 
     // endregion
@@ -427,7 +427,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void setupUI(){
         setContentView(R.layout.activity_home);
 
-        layoutGlucose = findViewById(R.id.layout_glucose);
+        layoutGlucose = findViewById(R.id.layout_glucose_result);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
@@ -464,7 +464,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         tvWeight = findViewById(R.id.tv_header_weight);
         tvMobile = findViewById(R.id.tv_mobile_number);
         btnNext = findViewById(R.id.tv_header_pulseoximeter);
-        tvTemprature = findViewById(R.id.tv_header_tempreture);
+        tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
         tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
         tvResultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
@@ -487,10 +487,10 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         btnStartTest = findViewById(R.id.btn_start_test);
         btnRestartTest = findViewById(R.id.restartTest);
 
-        ins = getResources().openRawResource(R.raw.synclibserialize);
+        inputStream = getResources().openRawResource(R.raw.synclibserialize);
 
         serializeUUID = new SerializeUUID();
-        serializeUUID.readFile(ins);
+        serializeUUID.readFile(inputStream);
 
         tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
@@ -503,7 +503,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         tvWeight.setOnClickListener(this);
         btnNext.setOnClickListener(this);
         tvBpMonitor.setOnClickListener(this);
-        tvTemprature.setOnClickListener(this);
+        tvTemperature.setOnClickListener(this);
 
         btnReadData.setOnClickListener(view -> readData());
         btnStartTest.setOnClickListener(view -> startTest());

@@ -47,7 +47,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     private boolean autoConnectFlag = false;
 
     String deviceAddress;
-    private String txt = "";
+    private String txtSpeak;
 
     private static final long SCAN_PERIOD = 20000;
     private static final int REQUEST_ENABLE_BT = 1;
@@ -90,16 +90,14 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
 
         refreshScan();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
         if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED)
         {
@@ -110,8 +108,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         super.onPause();
 
         clearScan();
@@ -119,8 +116,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode)
         {
             case PERMISSION_REQUEST_COARSE_LOCATION:
@@ -221,7 +217,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         btnNext.setOnClickListener(view -> handleGo());
         btnScan.setOnClickListener(view -> handleScanList());
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListner(getApplicationContext(), recyclerView, new ClickListner()
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListner(getApplicationContext(), recyclerView, new ClickListener()
         {
             @Override
             public void onClick(View view, int position)
@@ -261,20 +257,18 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
-        {
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
-        }
+
         final BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-        {
             mBluetoothAdapter = bluetoothManager.getAdapter();
-        }
 
         // Checks if Bluetooth is supported on the device.
-        if (mBluetoothAdapter == null)
-        {
+        if (mBluetoothAdapter == null) {
             Toast.makeText(this, R.string.error_bluetooth_not_supported, Toast.LENGTH_SHORT).show();
             finish();
+
             return;
         }
 
@@ -289,8 +283,8 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         deviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         autoConnectFlag = util.readboolean(HelperC.key_autoconnectflag, false);
 
-        txt = "Please long press the device bluetooth button and click on Sync Plus";
-        speakOut(txt);
+        txtSpeak = "Please long press the device bluetooth button and click on Sync Plus";
+        speakOut(txtSpeak);
     }
 
     /**
@@ -305,15 +299,15 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
      *
      */
     private void handleScanList(){
-        if (btnScan.getText().toString().equals("Scan"))
-        {
+        if (btnScan.getText().toString().equals("Scan")) {
             btnScan.setText("Stop Scan");
             tvScanningText.setText("Scaning Started");
+
             scanLeDevice(true);
-        } else
-        {
+        } else {
             btnScan.setText("Scan");
             tvScanningText.setText("Scaning Stopped");
+
             scanLeDevice(false);
         }
     }
@@ -325,14 +319,11 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
      */
     private void handleRecyclerClick(View view, int position){
         TextView name = view.findViewById(R.id.btname);
-        try
-        {
+        try {
 
             final BluetoothDevice device = adapter.getDevice(position);
             if (device == null)
-            {
                 return;
-            }
 
             util.putString(HelperC.key_autoconnecbtname, name.getText().toString());
             util.putString(HelperC.key_autoconnectaddress, device.getAddress());
@@ -342,16 +333,14 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, name.getText().toString());
             intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
 
-            if (mScanning)
-            {
+            if (mScanning) {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 mScanning = false;
             }
 
             startActivity(intent);
             finish();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Please scan once again.", Toast.LENGTH_SHORT).show();
         }
@@ -380,7 +369,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
-                speakOut(txt);
+                speakOut(txtSpeak);
             }
 
         } else {
@@ -456,8 +445,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
      */
     private void scanLeDevice(final boolean enable)
     {
-        if (enable)
-        {
+        if (enable) {
             // Stops scanning after a pre-defined scan period.
 
             ivScanImage.setVisibility(View.VISIBLE);
@@ -467,32 +455,32 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
                 public void run()
                 {
                     mScanning = false;
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-                    {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                         tvScanningText.setText("Scaning Stopped");
                         btnScan.setText("Scan");
                     }
+
                     invalidateOptionsMenu();
                 }
             }, SCAN_PERIOD);
 
             mScanning = true;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-            {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
                 btnScan.setText("Stop Scan");
             }
         } else {
             mScanning = false;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
-            {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                 tvScanningText.setText("Scaning Stopped");
                 btnScan.setText("Scan");
             }
-
         }
+
         invalidateOptionsMenu();
     }
 
@@ -515,8 +503,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
     // region Nested classes
 
-    public static interface ClickListner
-    {
+    public static interface ClickListener {
         public void onClick(View view, int position);
 
         public void onLongClick(View view, int position);
@@ -524,12 +511,12 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
     class RecyclerTouchListner implements RecyclerView.OnItemTouchListener
     {
+        private ClickListener clickListener;
         private GestureDetector gestureDetector;
-        private ClickListner clickListner;
 
-        public RecyclerTouchListner(Context context, final RecyclerView recyclerView, final ClickListner clickListner)
+        public RecyclerTouchListner(Context context, final RecyclerView recyclerView, final ClickListener clickListener)
         {
-            this.clickListner = clickListner;
+            this.clickListener = clickListener;
             gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener()
             {
                 @Override
@@ -543,9 +530,9 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
                 {
                     super.onLongPress(e);
                     View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                    if (child != null && clickListner != null)
+                    if (child != null && clickListener != null)
                     {
-                        clickListner.onLongClick(child, recyclerView.getChildAdapterPosition(child));
+                        clickListener.onLongClick(child, recyclerView.getChildAdapterPosition(child));
                     }
                 }
 
@@ -557,9 +544,9 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         {
             View child = rv.findChildViewUnder(e.getX(), e.getY());
 
-            if (child != null && clickListner != null && gestureDetector.onTouchEvent(e))
+            if (child != null && clickListener != null && gestureDetector.onTouchEvent(e))
             {
-                clickListner.onClick(child, rv.getChildAdapterPosition(child));
+                clickListener.onClick(child, rv.getChildAdapterPosition(child));
             }
             return false;
         }

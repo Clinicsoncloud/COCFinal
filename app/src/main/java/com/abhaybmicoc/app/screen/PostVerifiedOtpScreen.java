@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.screen;
 
 import android.util.Log;
 import android.os.Bundle;
+import android.widget.Toast;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
@@ -10,29 +11,21 @@ import android.app.ProgressDialog;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.interfaces.VolleyResponse;
-import com.abhaybmicoc.app.services.AccessWebServices;
-import com.abhaybmicoc.app.utils.Constant;
-import com.android.volley.Request;
-
-import com.abhaybmicoc.app.utils.Tools;
-import com.abhaybmicoc.app.utils.ApiUtils;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.services.AccessWebServices;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 import java.util.Locale;
 import java.util.HashMap;
 
-import org.json.JSONObject;
-import org.json.JSONException;
-
 public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+
     // region Variables
 
     private Context context = PostVerifiedOtpScreen.this;
@@ -201,28 +194,31 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         Map<String, String> headerParams;
         headerParams = new HashMap<>();
 
-        AccessWebServices.accessWebServices(context, ApiUtils.VERIFY_OTP_URL, params, headerParams, new VolleyResponse() {
+        AccessWebServices.accessWebServices(
+                context,
+                ApiUtils.VERIFY_OTP_URL,
+                params, headerParams,
+                (response, error, status) -> handleAPIResponse(response, error, status));
+    }
 
-            @Override
-            public void onProcessFinish(String response, VolleyError error, String status) {
-                if (status.equals("response")) {
-                    try {
+    private void handleAPIResponse(String response, VolleyError error, String status) {
+        if (status.equals("response")) {
+            try {
 
-                        JSONObject responseObject = new JSONObject(response);
+                JSONObject responseObject = new JSONObject(response);
 
-                        writeToPersonalSharedPreference(Constant.Fields.TOKEN, responseObject.getJSONObject("data").getString(Constant.Fields.TOKEN));
+                writeToPersonalSharedPreference(Constant.Fields.TOKEN, responseObject.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
-                        Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
-                        objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, mobileNumber);
-                        startActivity(objIntent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if (status.equals("error")) {
-                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
-                }
+                Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, mobileNumber);
+                startActivity(objIntent);
+            } catch (Exception e) {
+                // TODO: Handle exception
             }
-        });
+        } else if (status.equals("error")) {
+            Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+            // TODO: Handle error
+        }
     }
     // endregion
 }

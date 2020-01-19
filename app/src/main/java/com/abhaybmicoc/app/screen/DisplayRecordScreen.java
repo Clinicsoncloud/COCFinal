@@ -12,11 +12,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.utils.Constant;
 
 public class DisplayRecordScreen extends AppCompatActivity implements View.OnClickListener {
     // region Variables
@@ -62,6 +62,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         setupUI();
         setupEvents();
+        initializeData();
     }
 
     @Override
@@ -113,21 +114,28 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         tvSkeletalMuscle = findViewById(R.id.tv_skeletel_muscle);
 
         btnBack = findViewById(R.id.btn_next);
-
-        Intent intent = getIntent();
-
-        showData(intent);
-        updateActofitSharedPreferences(intent);
     }
 
     /**
      *
      */
     private void setupEvents(){
-        tvHeight.setOnClickListener(this);
-        tvWeight.setOnClickListener(this);
+        tvHeight.setOnClickListener(view -> {
+            context.startActivity(new Intent(this, HeightActivity.class));
+        });
+
+        tvWeight.setOnClickListener(view -> {
+            context.startActivity(new Intent(this, ActofitMainActivity.class));
+        });
 
         btnBack.setOnClickListener(v -> goBack());
+    }
+
+    private void initializeData(){
+        Intent intent = getIntent();
+
+        showData(intent);
+        updateActofitSharedPreferences(intent);
     }
 
     // endregion
