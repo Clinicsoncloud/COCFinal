@@ -2,7 +2,6 @@ package com.abhaybmicoc.app.hemoglobin;
 
 
 import android.Manifest;
-import android.app.Activity;
 import android.os.Build;
 import android.util.Log;
 import android.os.Bundle;
@@ -40,8 +39,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
@@ -51,7 +50,6 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
-import com.abhaybmicoc.app.utils.Constant;
 
 import java.util.Map;
 import java.util.List;
@@ -77,17 +75,17 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private BluetoothGatt mGatt;
     private ScanCallback mScanCallback;
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothLeScanner mBluetoothLeScanner;
+    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothLeScanner bluetoothLeScanner;
 
-    private Map<String, BluetoothDevice> mScanResults;
+    private Map<String, BluetoothDevice> mapBluetoothScanResults;
     
     private Handler mHandler;
     private Handler deviceConnectionTimeoutHandler;
 
     private boolean mScanning;
-    private boolean mConnected;
-    private boolean mEchoInitialized;
+    private boolean isDeviceConnected;
+    private boolean isEchoInitialized;
 
     private String txt;
     
@@ -152,13 +150,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     protected void onResume() {
         super.onResume();
 
-        // Check low energy support
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
-            // Get a newer device
-            logError("No BLE Support.");
-            showToast("No BLE Support.");
-            finish();
-        }
+        checkBluetoothLe();
     }
 
     @Override
@@ -240,12 +232,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void initializeTime() {
-        mEchoInitialized = true;
+        isEchoInitialized = true;
     }
 
     @Override
     public void initializeEcho() {
-        mEchoInitialized = true;
+        isEchoInitialized = true;
     }
 
     @Override
@@ -336,7 +328,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        mBluetoothAdapter = bluetoothManager.getAdapter();
+        bluetoothAdapter = bluetoothManager.getAdapter();
 
         sharedPreferencesDevice = getSharedPreferences("device_data", MODE_PRIVATE);
         sharedPreferencesDeviceHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
@@ -413,7 +405,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      * @param msg
      */
     private void sendMessage(String msg) {
-        if (!mConnected || !mEchoInitialized) {
+        if (!isDeviceConnected || !isEchoInitialized) {
             showToast("Not Connected");
             return;
         }
@@ -472,7 +464,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 } else {
                     sendMessage("U403" + code);
                 }
-                //  Toast.makeText(getApplicationContext(), "Text entered is " + input.getText().toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -500,13 +491,15 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private boolean hasPermissions() {
-        if (mBluetoothAdapter == null || !mBluetoothAdapter.isEnabled()) {
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             requestBluetoothEnable();
             return false;
+
         } else if (!hasLocationPermissions()) {
             requestPermission();
             return false;
         }
+
         return true;
     }
 
@@ -521,6 +514,16 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void test() {
         sendMessage("U401");
         sendMessage("U401");
+    }
+
+    private void checkBluetoothLe(){
+        /* Check bluetooth low energy support */
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
+            // Get a newer device
+            logError("No BLE Support.");
+            showToast("No BLE Support.");
+            finish();
+        }
     }
 
     /**
@@ -559,7 +562,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          *   - Else try to connect again
          */
 
-        mConnected = connected;
+        isDeviceConnected = connected;
 
         if(connected) {
             COUNT_CONNECTION_TRY = 0;
@@ -619,7 +622,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
             String deviceName = spinnerDevice.getSelectedItem().toString();
             String deviceAddress = deviceName.substring(deviceName.length() - 17);
-            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
+            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
 
             saveDeviceInformation(device.getName(), device.getAddress());
 
@@ -651,8 +654,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         if (dialogProgress != null)
             dialogProgress.dismiss();
 
-        mConnected = false;
-        mEchoInitialized = false;
+        isDeviceConnected = false;
+        isEchoInitialized = false;
 
         tvViewDevice.setText("Please check device and try again");
         btnConnect.setVisibility(View.VISIBLE);
@@ -693,7 +696,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      * @return
      */
     private BluetoothDevice getDevice(String deviceName){
-        return mBluetoothAdapter.getRemoteDevice(deviceName);
+        return bluetoothAdapter.getRemoteDevice(deviceName);
     }
 
     /**
@@ -754,11 +757,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         dialogScanProgress.show();
 
-        mScanResults = new HashMap<>();
-        mScanCallback = new BtleScanCallback(mScanResults);
+        mapBluetoothScanResults = new HashMap<>();
+        mScanCallback = new BluetoothLeScanCallback(mapBluetoothScanResults);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner = mBluetoothAdapter.getBluetoothLeScanner();
+            bluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         }
 
         // Note: Filtering does not work the same (or at all) on most devices. It also is unable to
@@ -781,7 +784,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mBluetoothLeScanner.startScan(filters, settings, mScanCallback);
+            bluetoothLeScanner.startScan(filters, settings, mScanCallback);
         }
 
         mHandler = new Handler();
@@ -793,8 +796,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void stopScan() {
-        if (mScanning && mBluetoothAdapter != null && mBluetoothAdapter.isEnabled() && mBluetoothLeScanner != null) {
-            mBluetoothLeScanner.stopScan(mScanCallback);
+        if (mScanning && bluetoothAdapter != null && bluetoothAdapter.isEnabled() && bluetoothLeScanner != null) {
+            bluetoothLeScanner.stopScan(mScanCallback);
             scanComplete();
         }
 
@@ -804,7 +807,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     private void scanComplete() {
-        if (mScanResults.isEmpty())
+        if (mapBluetoothScanResults.isEmpty())
             return;
 
         dialogScanProgress.dismiss();
@@ -815,8 +818,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void showDeviceList() {
         deviceArrayList.clear();
 
-        for (String deviceAddress : mScanResults.keySet()) {
-            BluetoothDevice device = mScanResults.get(deviceAddress);
+        for (String deviceAddress : mapBluetoothScanResults.keySet()) {
+            BluetoothDevice device = mapBluetoothScanResults.get(deviceAddress);
             if (device.getName() != null && device.getName().contains("THB_W"))
                 deviceArrayList.add(device.getName() + "\n" + device);
         }
@@ -848,12 +851,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     // region Nested classes
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private class BtleScanCallback extends ScanCallback {
+    private class BluetoothLeScanCallback extends ScanCallback {
 
-        private Map<String, BluetoothDevice> mScanResults;
+        private Map<String, BluetoothDevice> mapBluetoothScanResults;
 
-        BtleScanCallback(Map<String, BluetoothDevice> scanResults) {
-            mScanResults = scanResults;
+        BluetoothLeScanCallback(Map<String, BluetoothDevice> scanResults) {
+            mapBluetoothScanResults = scanResults;
         }
 
         @Override
@@ -876,7 +879,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         private void addScanResult(ScanResult result) {
             BluetoothDevice device = result.getDevice();
             String deviceAddress = device.getAddress();
-            mScanResults.put(deviceAddress, device);
+            mapBluetoothScanResults.put(deviceAddress, device);
         }
     }
 
