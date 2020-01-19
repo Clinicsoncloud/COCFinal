@@ -46,7 +46,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
-    private SharedPreferences activator;
+    private SharedPreferences sharedPreferencesActivator;
 
     // endregion
 
@@ -126,8 +126,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         speakOut(WELCOME_LOGIN_MESSAGE);
 
         try {
-            activator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
-            kiosk_id = activator.getString("pinLock", "");
+            sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+            kiosk_id = sharedPreferencesActivator.getString("pinLock", "");
         } catch (Exception e) {
         }
 
@@ -218,6 +218,27 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         getSharedPreferences(preferenceName, MODE_PRIVATE).edit().clear().commit();
     }
 
+    /**
+     *
+     * @param jsonResponse
+     * @throws JSONException
+     */
+    private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException{
+        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
+
+        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
+        editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
+        editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
+        editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
+        editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
+        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH));
+        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
+
+        editor.commit();
+
+    }
+
     // endregion
 
     // region API methods
@@ -278,27 +299,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
         AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(90000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-    }
-
-    /**
-     *
-     * @param jsonResponse
-     * @throws JSONException
-     */
-    private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException{
-        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
-
-        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("id"));
-        editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("name"));
-        editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("email"));
-        editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("token"));
-        editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("gender"));
-        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("dob"));
-        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString("mobile"));
-
-        editor.commit();
-
     }
 
     // endregion

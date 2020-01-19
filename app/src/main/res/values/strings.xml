@@ -461,33 +461,32 @@
     <string name="area_min_gravity" translatable="false">最小加速値 9.744</string>
     <!-- end デバッグ用データ。本番では使われない  -->
 
-    <string name="area_tokyo_osaka">Tokyo, Osaka</string>
+    <string name="area_naha">Naha</string>
     <string name="area_sapporo">Sapporo</string>
     <string name="area_sendai">Sendai</string>
     <string name="area_kagoshima">Kagoshima</string>
-    <string name="area_naha">Naha</string>
+    <string name="area_tokyo_osaka">Tokyo, Osaka</string>
 
-
-    <string name="detected_dialog_message">More than one Bluetooth device is\nin range. Please select witch \n device you would like to use.</string>
     <string name="arrow_up">&#xf106;</string>
     <string name="arrow_down">&#xf107;</string>
-    <string name="detected_message">Cool Design Blood Pressure\nMonitor\n DETECTED</string>
     <string name="detected_take_measurement">Take Measurement</string>
     <string name="detected_read_stored_data">Read Stored Data</string>
+    <string name="detected_message">Cool Design Blood Pressure\nMonitor\n DETECTED</string>
+    <string name="detected_dialog_message">More than one Bluetooth device is\nin range. Please select witch \n device you would like to use.</string>
 
     <!-- New device screen Setup  -->
-    <string name="bloodPressure_heading">Blood Pressure Monitors</string>
-    <string name="weightscale_heading">Weight Scales</string>
-    <string name="activitymonitor_heading" translatable="false">Hemoglobin</string>
-    <string name="pulseoximeter_heading">Pulse Oximeter</string>
     <string name="thermometer_heading">Thermometer</string>
+    <string name="weightscale_heading">Weight Scales</string>
+    <string name="pulseoximeter_heading">Pulse Oximeter</string>
+    <string name="bloodPressure_heading">Blood Pressure Monitors</string>
+    <string name="activitymonitor_heading" translatable="false">Hemoglobin</string>
 
     <!-- UW Tracker information  -->
-    <string name="pairing_instruction_one">Slowly but firmly swipe from right to left to reach the setting icon</string>
     <string name="pairing_instruction_two">Tap</string>
     <string name="pairing_instruction_three">Pairing begins</string>
     <string name="title_activity_otp_login_screen">OtpLoginScreen</string>
     <string name="title_activity_otp_verify_screen">OtpVerifyScreen</string>
+    <string name="pairing_instruction_one">Slowly but firmly swipe from right to left to reach the setting icon</string>
 
     <string name="home">Home</string>
     <string name="scan_button">Scan</string>
@@ -495,16 +494,16 @@
     <string name="ble_not_supported">BLE is not supported</string>
     <string name="error_bluetooth_not_supported">Bluetooth not supported.</string>
 
-    <string name="unknown_device">Unknown device</string>
-    <string name="starttest">Start the Test</string>
-    <string name="writedata">Write Calib Data</string>
     <string name="getdata">Get Data</string>
-    <string name="stoptest">Stop the Test</string>
-    <string name="restartTest">Restart Test</string>
     <string name="canceled">Canceled!</string>
+    <string name="connected">Connected</string>
+    <string name="stoptest">Stop the Test</string>
+    <string name="starttest">Start the Test</string>
+    <string name="restartTest">Restart Test</string>
     <string name="scandevices">Scan Devices</string>
     <string name="disconnected">Disconnected</string>
-    <string name="connected">Connected</string>
+    <string name="writedata">Write Calib Data</string>
+    <string name="unknown_device">Unknown device</string>
 
 
     <string name="device_type_dumo">Duplex mode Bluetooth</string>
@@ -562,48 +561,45 @@
     <string name="title_activity_height_screen">HeightScreen</string>
     <string name="title_activity_thermometer_screen">ThermometerScreen</string>
 
-
     <string name="turn_on_glucose">\t\t\t\t\tLong Press the \n Right button to turn on the Device</string>
     <string name="txt_hemoglobin_img">Insert Strip &amp; Add Blood</string>
 
-
-    <string name="turn_on_bluetooth">Turn On Bluetooth</string>
-    <string name="turn_off_bluetooth">Turn Off Bluetooth</string>
+    <string name="str_berry_med">BerryMed</string>
     <string name="search_oximeters">Search</string>
     <string name="str_device_name">Device Name</string>
+    <string name="strChangeName">Change BT Name</string>
+    <string name="str_bluetooth_name">Bluetooth Name:</string>
+    <string name="turn_on_bluetooth">Turn On Bluetooth</string>
+    <string name="turn_off_bluetooth">Turn Off Bluetooth</string>
     <string name="str_firmware_version">Firmware Version</string>
     <string name="str_bluetooth_version">Bluetooth Version</string>
-    <string name="str_bluetooth_name">Bluetooth Name:</string>
-    <string name="str_berry_med">BerryMed</string>
-    <string name="str_get_source_code"><u>Get Source Code>>></u></string>
-    <string name="strChangeName">Change BT Name</string>
     <string name="strHintModifyName">Modify Bluetooth Name</string>
     <string name="title_activity_weight_screen">WeightScreen</string>
-    <string name="title_activity_dashboard_screen">DashboardScreen</string>
     <string name="title_activity_bp_login_screen">BpLoginScreen</string>
+    <string name="str_get_source_code"><u>Get Source Code>>></u></string>
+    <string name="title_activity_dashboard_screen">DashboardScreen</string>
     <string name="title_activity_post_verified_otp_screen">PostVerifiedOtpScreen</string>
 
-    <string name="bindDevice">Start Test</string>
-    <string name="connectDevice">Connecting device</string>
     <string name="readSN">Get SN</string>
     <string name="readID">Get ID</string>
-    <string name="disconnect">Disconnect Bluetooth</string>
+    <string name="bindDevice">Start Test</string>
+    <string name="connectDevice">Connecting device</string>
+    <string name="disconnectBluetooth">Disconnect Bluetooth</string>
 
-    <string name="spo">Blood oxygen</string>
-    <string name="pr">Pulse rate</string>
-    <string name="ID">Device ID</string>
     <string name="SN">Device SN</string>
+    <string name="ID">Device ID</string>
+    <string name="pr">Pulse rate</string>
+    <string name="spo">Blood oxygen</string>
 
-    <string name="Connectad">Connect</string>
-    <string name="Desconectad">Disconnect</string>
-    <string name="ConexionPerdida">Missed Connection</string>
     <string name="Enviar">Send</string>
     <string name="Limpiar">Clean</string>
-    <string name="ConectadO">Connected</string>
-    <string name="Conectese">Connect to a device</string>
-    <string name="connecting">Connecting to a device..</string>
-    <string name="Nosepuede">Can not Send</string>
-    <string name="Seleccionado">Selected:</string>
-    <string name="BluetoothEncendido">Bluetooth on</string>
+    <string name="connect">Connect</string>
+    <string name="selected">Selected:</string>
     <string name="device">Select device</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="cannotSend">Can not Send</string>
+    <string name="Conectese">Connect to a device</string>
+    <string name="bluetoothTurnedOn">Bluetooth on</string>
+    <string name="missedConnection">Missed Connection</string>
+    <string name="connecting">Connecting to a device..</string>
 </resources>

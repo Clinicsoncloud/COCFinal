@@ -15,15 +15,12 @@ public class DateService {
      */
     public static int getAgeFromStringDate(String dateOfBirth) {
         Date date = null;
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             date = sdf.parse(dateOfBirth);
         } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        if (date == null)
             return 0;
+        }
 
         Calendar calDateOfBirth = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
@@ -44,12 +41,6 @@ public class DateService {
         return age;
     }
 
-    /**
-     *
-     * @param date
-     * @param format
-     * @return
-     */
     public static String formatDateFromString(String date, String fromDatePattern, String toDatePattern){
         String formattedDate;
 

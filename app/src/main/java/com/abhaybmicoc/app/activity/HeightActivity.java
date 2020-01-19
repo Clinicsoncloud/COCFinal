@@ -23,11 +23,11 @@ import android.bluetooth.BluetoothAdapter;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 
 import java.util.Set;
 import java.util.UUID;
@@ -43,74 +43,63 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     private Context context;
 
-    private static final int REQUEST_ENABLE_BT = 3;
-
-    private String conec;
-    private String enable;
-    private String Enviar;
-    private String Limpiar;
-    private String txt = "";
-    private String recibido;
-    private String disconec;
     private String str = "";
-    private String ConectadO;
-    private String Connectad;
-    private String Conectese;
-    private String Nosepuede;
-    private String Desconectad;
-    private String Seleccionado;
-    private String estadoBoton2;
     private String message = "";
-    private String btDeviceAddres;
     private String strHeight = "";
-    private String ConexionPerdida;
-    private String BluetoothEncendido;
-    private String estadoBoton = "Connect";
-    private String dispositivoSeleccionado;
+    private String state = "Connect";
 
-    private StringBuffer sb;
+    private String state2;
+    private String txtSpeak;
+    private String strEnabled;
+    private String strConnect;
+    private String strConnected;
+    private String strCannotSend;
+    private String strDisconnect;
+    private String deviceSelected;
+    private String strMissedConnection;
+    private String strBluetoothTurnedOn;
 
     private int adjustedHeight;
-    private boolean isConnected = false;
 
     private Button btnNext;
-    private Button btnEnviar;       // enviar (Spanish) => send (English)
-    private Button btnLimpiar;         // limpiar (Spanish) => clean (English)
+    private Button btnClean;
     private Button btnConnect;
+    private Button btnGetHeight;
 
-    private BluetoothDevice dispositivo;
+    private ArrayList listLinkedDevices;
+    private ArrayList listDeviceAddresses;
 
-    private ArrayAdapter<String> adp;
-    private ArrayList mMacDispositivos;
-    private ArrayList mDispositivosVinculados;
+    private ArrayAdapter<String> adapterDevices;
 
-    private EditText multitxt, etManualHeight;
+    private EditText etManualHeight;
+    private EditText etBluetoothLogs;
 
-    private InputStream ins;
-    private OutputStream ons;
+    private InputStream inputStreamHeightReceiver;
+    private OutputStream outputStreamHeightReceiver;
+
     private BluetoothSocket socket;
-    private BluetoothAdapter mBluetoothAdapter;
+    private BluetoothDevice bluetoothDevice;
+    private BluetoothAdapter bluetoothAdapter;
 
-    private Spinner spn;
+    private Spinner spDevices;
     private ProgressDialog progressDialog;
 
-    private SharedPreferences shared;
-    private SharedPreferences sharedPreferenceActofit;
-    private SharedPreferences objBluetoothAddress;
+    private SharedPreferences sharedPreferencePersonalData;
+    private SharedPreferences sharedPreferenceBluetoothAddress;
 
-    private TextView txtAge;
-    private TextView txtName;
-    private TextView txtGender;
-    private TextView txtMobile;
+    private TextView tvAge;
+    private TextView tvName;
+    private TextView tvGender;
+    private TextView tvMobileNumber;
 
     private TextToSpeech textToSpeech;
 
-    private int connectTryCount = 0;
+    private int CONNECTION_TRY_COUNT = 0;
     private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
 
     //milliseconds declaration
-    //It will take break of 5ms while trying to reconect
-    private int CONNECT_TRY_PAUSE_MILLISECONDS = 500;
+    //It will take break of 5s while trying to reconnect
+    private int CONNECT_TRY_PAUSE_MILLISECONDS = 5000;
 
     // endregion
 
@@ -121,13 +110,14 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     private void showCannotConnectToDevice(){
         // Reset connect try count to 0
-        HeightActivity.this.connectTryCount = 0;
+        CONNECTION_TRY_COUNT = 0;
 
-        HeightActivity.this.estadoBoton = "Connect";
-        HeightActivity.this.estadoBoton2 = HeightActivity.this.conec;
-        HeightActivity.this.enable = "false";
-        txt = "No Bluetooth Device Found Please Connect it Manually";
-        speakOut(txt);
+        state = strConnect;
+        state2 = strConnect;
+        strEnabled = "false";
+
+        txtSpeak = "No Bluetooth Device Found Please Connect it Manually";
+        speakOut(txtSpeak);
     }
 
     @Override
@@ -142,47 +132,46 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         setupUI();
         setupEvents();
         initializeData();
-
-        sharedPreferenceActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-
-        if (this.estadoBoton.equals("Connect")) {
-            this.btnConnect.setText(this.conec);
-        }
-
-        this.btnNext = findViewById(R.id.btn_next);
-
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
-
     }
 
-
     private void connectToDevice() {
-        if (HeightActivity.this.estadoBoton.equals("Connect")) {
-            HeightActivity.this.encenderBluetooth();
-            new Connect(HeightActivity.this, null).execute(new String[]{objBluetoothAddress.getString("hcbluetooth", "")});
-            HeightActivity.this.enable = "false";
+        if (state.equals("Connect")) {
+            strEnabled = "false";
+
+            turnOnBluetooth();
+
+            new Connect().execute(new String[]{getDeviceAddress()});
+
             return;
         }
     }
 
+    private String getDeviceAddress(){
+        return sharedPreferenceBluetoothAddress.getString("hcbluetooth", "");
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == -1) {
-            Set<BluetoothDevice> dispositivos = this.mBluetoothAdapter.getBondedDevices();
-            int a = dispositivos.size();
-            this.mDispositivosVinculados = new ArrayList();
-            this.mMacDispositivos = new ArrayList();
-            if (a > 0) {
-                for (BluetoothDevice device : dispositivos) {
-                    this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
-                    this.mMacDispositivos.add(device.getAddress());
+            Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
+
+            listDeviceAddresses = new ArrayList();
+            listLinkedDevices = new ArrayList();
+
+            if (bluetoothDevices.size() > 0) {
+                for (BluetoothDevice device : bluetoothDevices) {
+                    listLinkedDevices.add(device.getName() + "\n" + device.getAddress());
+                    listDeviceAddresses.add(device.getAddress());
                 }
             }
-            this.adp = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
-            this.spn.setAdapter(this.adp);
-            Toast.makeText(this, this.BluetoothEncendido, Toast.LENGTH_LONG).show();
+
+            adapterDevices = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, listLinkedDevices);
+            spDevices.setAdapter(adapterDevices);
+
+            Toast.makeText(this, strBluetoothTurnedOn, Toast.LENGTH_LONG).show();
+
             return;
         }
+
         finish();
     }
 
@@ -190,9 +179,6 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     public void onResume() {
         super.onResume();
 
-        if(!sharedPreferenceActofit.getString(Constant.Fields.HEIGHT,"").equals("")) {
-            Log.e("onResume : ", "Height :" + sharedPreferenceActofit.getString(Constant.Fields.HEIGHT, ""));
-        }
         connectToDevice();
     }
 
@@ -207,21 +193,23 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     /* access modifiers changed from: protected */
     public void onStop() {
         super.onStop();
-        if (this.estadoBoton.equals("Desconectar")) {
-            this.estadoBoton = "Connect";
-            this.btnConnect.setText(this.conec);
-            this.enable = "false";
+
+        if (state.equals(strDisconnect)) {
+            state = strConnect;
+            strEnabled = "false";
+            btnConnect.setText(strConnect);
+
             try {
-                this.socket.close();
+                socket.close();
             } catch (IOException e) {
-                ErrorUtils.logErrors(e,"HeightActivity.java","onStop","not connected");
+                ErrorUtils.logErrors(e,"HeightActivity.java","onStop()","Not connected");
             }
         }
     }
 
     /* access modifiers changed from: protected */
     public void onRestart() {
-        encenderBluetooth();
+        turnOnBluetooth();
         super.onRestart();
     }
 
@@ -230,9 +218,11 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         super.onDestroy();
     }
 
-    public void encenderBluetooth() {
-        this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!this.mBluetoothAdapter.isEnabled()) {
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        if (!bluetoothAdapter.isEnabled()) {
             startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
         }
     }
@@ -245,98 +235,102 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     private void setupUI(){
         setContentView(R.layout.activity_height_screen);
 
-        this.mMacDispositivos = new ArrayList();
-        this.mDispositivosVinculados = new ArrayList();
+        listLinkedDevices = new ArrayList();
+        listDeviceAddresses = new ArrayList();
 
-        this.multitxt = findViewById(R.id.et_multiline);
-        this.Enviar = (String) getText(R.string.Enviar);
-        this.conec = (String) getText(R.string.Connectad);
-        this.Limpiar = (String) getText(R.string.Limpiar);
-        this.Connectad = (String) getText(R.string.Connectad);
-        this.ConectadO = (String) getText(R.string.ConectadO);
-        this.Conectese = (String) getText(R.string.Conectese);
-        this.Nosepuede = (String) getText(R.string.Nosepuede);
-        this.disconec = (String) getText(R.string.Desconectad);
-        this.Desconectad = (String) getText(R.string.Desconectad);
-        this.Seleccionado = (String) getText(R.string.Seleccionado);
-        this.ConexionPerdida = (String) getText(R.string.ConexionPerdida);
-        this.BluetoothEncendido = (String) getText(R.string.BluetoothEncendido);
+        strConnect = (String) getText(R.string.connect);
+        strConnected = (String) getText(R.string.connected);
+        strCannotSend = (String) getText(R.string.cannotSend);
+        strDisconnect = (String) getText(R.string.disconnect);
+        etBluetoothLogs = findViewById(R.id.et_bluetooth_logs);
+        strMissedConnection = (String) getText(R.string.missedConnection);
+        strBluetoothTurnedOn = (String) getText(R.string.bluetoothTurnedOn);
 
-        this.btnNext = findViewById(R.id.btn_next);
-        this.btnLimpiar = findViewById(R.id.btn_clean);
-        this.btnConnect = findViewById(R.id.btn_connect);
-        this.btnEnviar = findViewById(R.id.btn_get_height);
+        btnNext = findViewById(R.id.btn_next);
+        btnClean = findViewById(R.id.btn_clean);
+        btnConnect = findViewById(R.id.btn_connect);
+        btnGetHeight = findViewById(R.id.btn_get_height);
 
-        shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+        // TODO: Rename from AUTO_CONNECT
+        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+        sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-        txtAge = findViewById(R.id.tv_age);
-        txtName = findViewById(R.id.tv_name);
-        txtGender = findViewById(R.id.tv_gender);
-        txtMobile = findViewById(R.id.tv_mobile_number);
+        tvAge = findViewById(R.id.tv_age);
+        tvName = findViewById(R.id.tv_name);
+        tvGender = findViewById(R.id.tv_gender);
+        tvMobileNumber = findViewById(R.id.tv_mobile_number);
         etManualHeight = findViewById(R.id.et_manual_height);
 
-        this.spn = findViewById(R.id.sp_height);
+        spDevices = findViewById(R.id.sp_devices);
     }
 
     private void setupEvents(){
-        this.btnNext.setOnClickListener(view -> gotoNext());
-        this.btnConnect.setOnClickListener(view -> connect());
-
-        encenderBluetooth();
-        Set<BluetoothDevice> dispositivos = this.mBluetoothAdapter.getBondedDevices();
-        if (dispositivos.size() > 0) {
-            for (BluetoothDevice device : dispositivos) {
-                if (device.getName().equals("HC-05")) {
-
-                    this.mDispositivosVinculados.add(device.getName() + "\n" + device.getAddress());
-                    this.mMacDispositivos.add(device.getAddress());
-
-                    objBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
-                    SharedPreferences.Editor editor = objBluetoothAddress.edit();
-                    if(objBluetoothAddress.getString("hcbluetooth","").equalsIgnoreCase("")){
-                        editor.putString("hcbluetooth", device.getAddress());
-                        editor.commit();
-                    }
-                    Log.e("device_name", "" + device.getName());
-                    Log.e("device_address", "" + device.getAddress());
-                }
-
-            }
-        }
-
-        this.adp = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, this.mDispositivosVinculados);
-        this.spn.setAdapter(this.adp);
-        this.spn.setOnItemSelectedListener(new OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> adapterView, View arg1, int position, long arg3) {
-                HeightActivity.this.dispositivoSeleccionado = (String) ((CharSequence) HeightActivity.this.mMacDispositivos.get(position));
-
-                Log.e("address", "" + objBluetoothAddress.getString("hcbluetooth", ""));
-
-//                Toast.makeText(HeightActivity.this, new StringBuilder(String.valueOf(HeightActivity.this.Seleccionado)).append((String) ((CharSequence) HeightActivity.this.mDispositivosVinculados.get(position))).toString(), Toast.LENGTH_SHORT).show();
-            }
-
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        this.btnEnviar.setOnClickListener(view -> send());
-        this.btnLimpiar.setOnClickListener(view -> clean());
+        btnClean.setOnClickListener(view -> clean());
+        btnNext.setOnClickListener(view -> gotoNext());
+        btnConnect.setOnClickListener(view -> connect());
+        btnGetHeight.setOnClickListener(view -> getHeight());
     }
 
     private void initializeData(){
-        this.btnLimpiar.setText(this.Limpiar);
+        btnClean.setText("Clean");
+        btnNext = findViewById(R.id.btn_next);
 
-        this.multitxt.setFocusable(false);
-        this.multitxt.setText(">:Bluetooth Terminal\n");
-        this.multitxt.setTextColor(getResources().getColor(R.color.white));
-        this.multitxt.setBackgroundColor(getResources().getColor(R.color.black));
+        etBluetoothLogs.setFocusable(false);
+        etBluetoothLogs.setText(">:Bluetooth Terminal\n");
+        etBluetoothLogs.setTextColor(getResources().getColor(R.color.white));
+        etBluetoothLogs.setBackgroundColor(getResources().getColor(R.color.black));
 
-        txtAge.setText("DOB : " + shared.getString("dob", ""));
-        txtName.setText("Name : " + shared.getString("name", ""));
-        txtGender.setText("Gender : " + shared.getString("gender", ""));
-        txtMobile.setText("Phone : " + shared.getString("mobile_number", ""));
+        tvName.setText("Name : " + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
+        tvGender.setText("Gender : " + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
+        tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+        tvMobileNumber.setText("Phone : " + sharedPreferencePersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
+
+        if (state.equals("Connect")) {
+            btnConnect.setText(strConnect);
+        }
+
+        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+
+        initializeBluetooth();
+    }
+
+    private void initializeBluetooth(){
+        turnOnBluetooth();
+
+        Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
+
+        if (bluetoothDevices.size() > 0) {
+            for (BluetoothDevice device : bluetoothDevices) {
+                if (device.getName().equals("HC-05")) {
+                    listLinkedDevices.add(device.getName() + "\n" + device.getAddress());
+                    listDeviceAddresses.add(device.getAddress());
+
+                    storeBluetoothInformation(device);
+                }
+            }
+        }
+
+        adapterDevices = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, listLinkedDevices);
+        spDevices.setAdapter(adapterDevices);
+
+        spDevices.setOnItemSelectedListener(new OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> adapterView, View arg1, int position, long arg3) {
+                deviceSelected = (String) ((CharSequence) listDeviceAddresses.get(position));
+            }
+
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+    }
+
+    private void storeBluetoothInformation(BluetoothDevice device) {
+        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
+        if(sharedPreferenceBluetoothAddress.getString("hcbluetooth","").equalsIgnoreCase("")){
+            editor.putString("hcbluetooth", device.getAddress());
+            editor.commit();
+        }
     }
 
     // region Logical methods
@@ -345,46 +339,48 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      *
      */
     private void connect(){
-        if (HeightActivity.this.estadoBoton.equals("Connect")) {
-            HeightActivity.this.encenderBluetooth();
-            new Connect(HeightActivity.this, null).execute(new String[]{HeightActivity.this.dispositivoSeleccionado});
-            HeightActivity.this.enable = "false";
+        if (state.equals(strConnect)) {
+            turnOnBluetooth();
+
+            new Connect().execute(new String[]{deviceSelected});
+            strEnabled = "false";
+
             return;
         }
         try {
-            HeightActivity.this.socket.close();
-            HeightActivity.this.estadoBoton = "Connect";
-            HeightActivity.this.btnConnect.setText(HeightActivity.this.conec);
+            socket.close();
+            state = "Connect";
+            btnConnect.setText(strConnect);
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"HeightActivity.java","btnonClick","failded to close socket");
+            ErrorUtils.logErrors(e,"HeightActivity.java","connect()","Failed to close socket");
         }
     }
 
     /**
      *
      */
-    private void send(){
-        Log.e("getHeight","clicked");
-        if (HeightActivity.this.estadoBoton.equals("Connect")) {
+    private void getHeight(){
+        if (state.equals(strConnect)) {
             Toast.makeText(HeightActivity.this, "Connecting to device...", Toast.LENGTH_SHORT).show();
             connectToDevice();
             return;
         }
 
-        HeightActivity.this.multitxt.append(">:" + "1" + "\n");
-        String env = "1";
+        etBluetoothLogs.append(">:" + "1" + "\n");
+
         strHeight = "";
+        String env = "1";
 
         try {
             if (etManualHeight.getText().length() > 0) {
                 etManualHeight.setText("");
-                HeightActivity.this.ons.write(env.getBytes(Charset.forName("UTF-8")));
+                outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
             } else {
-                HeightActivity.this.ons.write(env.getBytes(Charset.forName("UTF-8")));
+                outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
             }
         } catch (IOException e) {
-            ErrorUtils.logErrors(e,"HeightActivity.java","onClick","click event failed");
-            Toast.makeText(HeightActivity.this, HeightActivity.this.Nosepuede, Toast.LENGTH_SHORT).show();
+            ErrorUtils.logErrors(e,"HeightActivity.java","getHeight()","Get height failed");
+            Toast.makeText(HeightActivity.this, strCannotSend, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -392,7 +388,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      *
      */
     private void clean(){
-        HeightActivity.this.etManualHeight.setText("");
+        etManualHeight.setText("");
     }
 
     /**
@@ -401,18 +397,19 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     private void gotoNext(){
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
-            txt = "Please Enter Manual Height";
-            speakOut(txt);
+
+            txtSpeak = "Please Enter Manual Height";
+            speakOut(txtSpeak);
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
             objIntent.putExtra(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
-            objIntent.putExtra(Constant.Fields.ID, shared.getString(Constant.Fields.ID, ""));
-            objIntent.putExtra(Constant.Fields.NAME, shared.getString(Constant.Fields.NAME, ""));
-            objIntent.putExtra(Constant.Fields.GENDER, shared.getString(Constant.Fields.GENDER, ""));
-            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+            objIntent.putExtra(Constant.Fields.ID, sharedPreferencePersonalData.getString(Constant.Fields.ID, ""));
+            objIntent.putExtra(Constant.Fields.NAME, sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
+            objIntent.putExtra(Constant.Fields.GENDER, sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
+            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
-            writeToActofitSharedPreference(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
+            writeToSharedPreferences(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
 
             startActivity(objIntent);
             finish();
@@ -437,12 +434,13 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
+                // TODO: Handle this instead of logging
             } else {
-                speakOut(txt);
+                speakOut(txtSpeak);
             }
-
         } else {
             Log.e("TTS", "Initialization Failed!");
+            // TODO: Handle this instead of logging
         }
     }
 
@@ -456,7 +454,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                 textToSpeech.shutdown();
             }
         }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+            Log.e("TTS", "Stopping text to speech Failed!");
         }
     }
 
@@ -464,25 +462,33 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      *
      */
     private void closeConnection() {
-        if (ins != null) {
-            try {ins.close();}
-            catch (Exception e) {
+        if (inputStreamHeightReceiver != null) {
+            try {
+                inputStreamHeightReceiver.close();
+            } catch (Exception e) {
                 Log.e("",""+e.getMessage());
             }
-            ins = null;
+
+            inputStreamHeightReceiver = null;
         }
 
-        if (ons != null) {
-            try {ons.close();} catch (Exception e) {
+        if (outputStreamHeightReceiver != null) {
+            try {
+                outputStreamHeightReceiver.close();
+            } catch (Exception e) {
                 Log.e("",""+e.getMessage());
             }
-            ons = null;
+
+            outputStreamHeightReceiver = null;
         }
 
         if (socket != null) {
-            try {socket.close();} catch (Exception e) {
+            try {
+                socket.close();
+            } catch (Exception e) {
                 Log.e("",""+e.getMessage());
             }
+
             socket = null;
         }
     }
@@ -490,7 +496,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     /**
      *
      */
-    private void writeToActofitSharedPreference(String key, String value){
+    private void writeToSharedPreferences(String key, String value){
         SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
@@ -502,42 +508,39 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
 
     // region Nested classes
 
-
-    public class Recibir extends AsyncTask<String, String, String> {
-
-        public Recibir() {
-
+    public class Receiver extends AsyncTask<String, String, String> {
+        public Receiver() {
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            System.out.println("onPreExecute : Executed");
         }
 
         /* access modifiers changed from: protected */
         public String doInBackground(String... params) {
-            String str = params[0];
+            message = "";
             byte[] buffer = new byte[128];
-            HeightActivity.this.message = "";
-            while (HeightActivity.this.enable.equals("true")) {
+
+            while (strEnabled.equals("true")) {
                 try {
-                    int bytes = HeightActivity.this.ins.read(buffer);
-                    HeightActivity.this.message = new String(buffer, 0, bytes);
+                    int bytes = inputStreamHeightReceiver.read(buffer);
+                    message = new String(buffer, 0, bytes);
                 } catch (IOException e) {
-                    HeightActivity.this.enable = "false";
-                    HeightActivity.this.message = "";
-                    ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground","failed to read bytes data");
+                    message = "";
+                    strEnabled = "false";
+                    ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground()","Failed to read bytes data");
                 }
-                publishProgress(new String[]{HeightActivity.this.message, HeightActivity.this.enable});
+
+                publishProgress(new String[]{message, strEnabled});
             }
-            return HeightActivity.this.message;
+
+            return message;
         }
 
         /* access modifiers changed from: protected */
-        public void onProgressUpdate(String... recib) {
-
-            str = recib[0];
+        public void onProgressUpdate(String... params) {
+            str = params[0];
             str = str.replace("�", "");
 
             strHeight += str;
@@ -545,39 +548,36 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
             try {
                 if (!strHeight.equalsIgnoreCase("")) {
                     adjustedHeight = Integer.parseInt(strHeight) - 1;
-                    HeightActivity.this.etManualHeight.setText(String.valueOf(adjustedHeight));
+                    etManualHeight.setText(String.valueOf(adjustedHeight));
                 }
             }catch (Exception e){
-                ErrorUtils.logErrors(e,"HeightActivity.java","onProgressUpdate","failed to adjust height");
+                ErrorUtils.logErrors(e,"HeightActivity.java","onProgressUpdate()","Failed to adjust height");
             }
 
-            if (recib[1].equals("false")) {
-                HeightActivity.this.estadoBoton = "Connect";
-                HeightActivity.this.estadoBoton2 = HeightActivity.this.conec;
-                HeightActivity.this.enable = "false";
-                HeightActivity.this.multitxt.append(">:" + HeightActivity.this.ConexionPerdida + "\n");
+            if (params[1].equals("false")) {
+                state = strConnect;
+                state2 = strConnect;
+                strEnabled = "false";
+
+                etBluetoothLogs.append(">:" + strMissedConnection + "\n");
             } else {
-                HeightActivity.this.estadoBoton = "Desconectar";
-                HeightActivity.this.estadoBoton2 = HeightActivity.this.disconec;
-                HeightActivity.this.enable = "true";
+                strEnabled = "true";
+                state2 = strDisconnect;
+                state = strDisconnect;
             }
-            HeightActivity.this.btnConnect.setText(HeightActivity.this.estadoBoton2);
-        }
 
+            btnConnect.setText(state2);
+        }
     }
 
     private class Connect extends AsyncTask<String, String, String> {
-        private Connect() {
-
-        }
-
-        /* synthetic */ Connect(HeightActivity principal, Connect Connect) {
-            this();
+        public Connect() {
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             progressDialog = new ProgressDialog(HeightActivity.this);
             progressDialog.setMessage("Connecting..");
             progressDialog.setCancelable(true);
@@ -585,23 +585,26 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         }
 
         /* access modifiers changed from: protected */
-        public String doInBackground(String... disp) {
-            String d = disp[0];
-            Log.e("d", "" + d);
-            if (d.equalsIgnoreCase("")) {
+        public String doInBackground(String... deviceAddresses) {
+            String deviceAddress = deviceAddresses[0];
+
+            if (deviceAddress.trim().length() == 0) {
                 return "";
             }
 
-            HeightActivity.this.dispositivo = HeightActivity.this.mBluetoothAdapter.getRemoteDevice(d);
-            try {
-                HeightActivity.this.socket = HeightActivity.this.dispositivo.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                if(!HeightActivity.this.socket.isConnected()){
-                    HeightActivity.this.socket.connect();
-                }
-                HeightActivity.this.ins = HeightActivity.this.socket.getInputStream();
-                HeightActivity.this.ons = HeightActivity.this.socket.getOutputStream();
-                return "Conectado";
+            bluetoothDevice = bluetoothAdapter.getRemoteDevice(deviceAddress);
 
+            try {
+                socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
+
+                if(!socket.isConnected()){
+                    socket.connect();
+                }
+
+                inputStreamHeightReceiver = socket.getInputStream();
+                outputStreamHeightReceiver = socket.getOutputStream();
+
+                return strConnected;
             } catch (Exception e) {
                 ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground","failed to connect with socket");
                 return "";
@@ -609,44 +612,40 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         }
 
         /* access modifiers changed from: protected */
-        public void onPostExecute(String res) {
-
+        public void onPostExecute(String result) {
             if(progressDialog.isShowing()) {
                 progressDialog.dismiss();
             }
-            String mEstado = res;
-            String eg = res;
-            if (res.equals("Conectado")) {
-                mEstado = HeightActivity.this.ConectadO;
-            }
-            Toast.makeText(HeightActivity.this, mEstado, Toast.LENGTH_SHORT).show();
-            if (eg.equals("Conectado")) {
-                HeightActivity.this.estadoBoton = "Desconectar";
-                HeightActivity.this.estadoBoton2 = HeightActivity.this.disconec;
-                HeightActivity.this.enable = "true";
-                txt = "Please stand below the height sensor and click get Height Button";
-                speakOut(txt);
-                new Recibir().execute(new String[]{HeightActivity.this.enable});
+
+            Toast.makeText(HeightActivity.this, result, Toast.LENGTH_SHORT).show();
+
+            if (result.equals(strConnected)) {
+                strEnabled = "true";
+                state = strDisconnect;
+                state2 = strDisconnect;
+
+                speakOut("Please stand below the height sensor and click get Height Button");
+
+                new Receiver().execute(new String[]{strEnabled});
             } else {
-                if(HeightActivity.this.connectTryCount > HeightActivity.this.ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
-                    HeightActivity.this.showCannotConnectToDevice();
+                if(CONNECTION_TRY_COUNT > ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
+                    showCannotConnectToDevice();
                 }else{
                     try{
-                        Thread.sleep(HeightActivity.this.CONNECT_TRY_PAUSE_MILLISECONDS);
+                        Thread.sleep(CONNECT_TRY_PAUSE_MILLISECONDS);
 
                         // Increase connection try count and try to connect
-                        HeightActivity.this.connectTryCount++;
-                        HeightActivity.this.connectToDevice();
+                        CONNECTION_TRY_COUNT++;
 
+                        connectToDevice();
                     }catch(Exception ex){
-
-                        ErrorUtils.logErrors(ex,"HeightActivity.java","onPostExecute","error while reconnecting");
-                        HeightActivity.this.showCannotConnectToDevice();
-
+                        ErrorUtils.logErrors(ex,"HeightActivity.java","onPostExecute()","error while reconnecting");
+                        showCannotConnectToDevice();
                     }
                 }
             }
-            HeightActivity.this.btnConnect.setText(HeightActivity.this.estadoBoton2);
+
+            btnConnect.setText(state2);
         }
     }
 

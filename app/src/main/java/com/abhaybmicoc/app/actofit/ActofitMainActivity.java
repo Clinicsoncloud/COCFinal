@@ -33,7 +33,7 @@ import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
+public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
     // region Variables
 
     private Context context = ActofitMainActivity.this;
@@ -73,7 +73,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     public static final int REQUSET_CODE = 1001;
 
     private String gen;
-    private String txt = "";
+    private String txtSpeak = "";
     private String KEY_ERROR = "error";
     private String KEY_MESSAGE = "message";
     public static final String TAG = "MainActivity";
@@ -106,7 +106,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float bmi = intent.getFloatExtra("bmi", 0f);
         float weight = intent.getFloatExtra("weight", 0f);
         float subFat = intent.getFloatExtra("subfat", 0f);
-        float protein = intent.getFloatExtra("protein", 0f);
+        float protein = intent.getFloatExtra("protine", 0f);    // TODO: Check variable name
         float bodyFat = intent.getFloatExtra("bodyfat", 0f);
         float metaAge = intent.getFloatExtra("metaage", 0f);
         float boneMass = intent.getFloatExtra("bonemass", 0f);
@@ -114,9 +114,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float bodyWater = intent.getFloatExtra("bodywater", 0f);
         float muscleMass = intent.getFloatExtra("musmass", 0f);
         float visceralFat = intent.getFloatExtra("visfat", 0f);
-        float healthScore = intent.getFloatExtra("healthscore", 0f);
-        float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
         float skeletalMuscle = intent.getFloatExtra("skemus", 0f);
+        float healthScore = intent.getFloatExtra("helthscore", 0f);
+        float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
 
         float height = Float.parseFloat(getIntent().getStringExtra("height"));
 
@@ -143,14 +143,13 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             editor.commit();
         } catch (Exception e) {
-
+            // TODO: Handle exception here
         }
 
         Intent intent1 = new Intent(ActofitMainActivity.this, DisplayRecordScreen.class);
 
         intent1.putExtra(Constant.Fields.BMR, bmr);
         intent1.putExtra(Constant.Fields.BMI, bmi);
-        intent1.putExtra(Constant.Fields.SUBCUTANEOUS_FAT, subFat);
         intent1.putExtra(Constant.Fields.WEIGHT, weight);
         intent1.putExtra(Constant.Fields.BODY_FAT, bodyFat);
         intent1.putExtra(Constant.Fields.PROTEIN, protein);
@@ -159,6 +158,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         intent1.putExtra(Constant.Fields.BONE_MASS, boneMass);
         intent1.putExtra(Constant.Fields.BODY_WATER, bodyWater);
         intent1.putExtra(Constant.Fields.MUSCLE_MASS, muscleMass);
+        intent1.putExtra(Constant.Fields.SUBCUTANEOUS_FAT, subFat);
         intent1.putExtra(Constant.Fields.HEALTH_SCORE, healthScore);
         intent1.putExtra(Constant.Fields.VISCERAL_FAT, visceralFat);
         intent1.putExtra(Constant.Fields.FAT_FREE_WEIGHT, fatFreeWeight);
@@ -170,6 +170,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     @Override
     protected void onPause() {
         super.onPause();
+
         stopTextToSpeech();
     }
 
@@ -190,28 +191,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     @Override
     public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initilization Failed!");
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        //click Listener
-        switch (view.getId()) {
-            case R.id.tv_header_height:
-                context.startActivity(new Intent(this, HeightActivity.class));
-                break;
-        }
+        startTextToSpeech(status);
     }
 
     // endregion
@@ -230,8 +210,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         actionBar.setTitle("Weight Measurement");
 
         etUserId = findViewById(R.id.txtuid);
-        etUserName = findViewById(R.id.txtuname);
         etHeight = findViewById(R.id.txtuheight);
+        etUserName = findViewById(R.id.txtuname);
         etUserDateOfBirth = findViewById(R.id.txt_sdob);
 
         radioMale = findViewById(R.id.radioMale);
@@ -243,9 +223,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
-        tvMobile = findViewById(R.id.tv_mobile_number);
-
         tvHeight = findViewById(R.id.tv_header_height);
+        tvMobile = findViewById(R.id.tv_mobile_number);
 
         btnNext = findViewById(R.id.btn_next);
         btnRepeat = findViewById(R.id.btn_repeat);
@@ -257,20 +236,22 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
      */
     private void setupEvents(){
         btnNext.setOnClickListener(view -> goNext());
+        btnSmartScale.setOnClickListener(view -> startSmartScale());
 
         etUserDateOfBirth.setOnClickListener(view -> editUserDateOfBirth());
-
         switchAthlete.setOnCheckedChangeListener((compoundButton, isChecked) -> updateIsAthlete(isChecked));
 
-        btnSmartScale.setOnClickListener(view -> startSmartScale());
+        tvHeight.setOnClickListener(view -> {
+            context.startActivity(new Intent(this, HeightActivity.class));
+        });
     }
 
     /**
      *
      */
     private void initializeData(){
-        txt = "Please Click on GoTo SmartScale, and stand on weight Scale";
-        speakOut(txt);
+        txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
+        speakOut(txtSpeak);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -280,6 +261,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
             tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         } catch (Exception e) {
+            // TODO: Handle exception here
         }
     }
 
@@ -297,7 +279,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             String customAction = "com.actofit.share.smartscale";
             intent.setAction(customAction);
 
-            @SuppressLint("SimpleDateFormat") Date initDate = null;
+            @SuppressLint("SimpleDateFormat")
+            Date initDate = null;
             try {
                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra(Constant.Fields.DATE_OF_BIRTH));
             } catch (ParseException e) {
@@ -307,14 +290,24 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String parsedDate = formatter.format(initDate);
 
-            String height = getIntent().getStringExtra(Constant.Fields.HEIGHT);
+            int height = 0;
+            String strHeight = getIntent().getStringExtra(Constant.Fields.HEIGHT);
+            if(strHeight != null){
+                try{
+                    height = Integer.parseInt(strHeight);
+                }
+                catch(Exception ex){
+                    height = 0;
+                    // TODO: Handle why cannot read height
+                }
+            }
 
+            intent.putExtra(Constant.Fields.HEIGHT, height);
+            intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
+            intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));
             intent.putExtra(Constant.Fields.NAME, sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             intent.putExtra(Constant.Fields.GENDER, sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
-            intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
-            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(height));
-            intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
 
             intent.setType("text/plain");
             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -380,16 +373,36 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     /**
      *
+     * @param status
+     */
+    private void startTextToSpeech(int status){
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.US);
+
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("TTS", "This Language is not supported");
+                // TODO: Handle this instead of logging
+            } else {
+                speakOut(txtSpeak);
+            }
+
+        } else {
+            Log.e("TTS", "Initialization Failed!");
+            // TODO: Handle this instead of logging
+        }
+    }
+
+    /**
+     *
      */
     private void stopTextToSpeech(){
-        /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
         }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+            Log.e("TTS", "Stopping text to speech Failed!");
         }
     }
 

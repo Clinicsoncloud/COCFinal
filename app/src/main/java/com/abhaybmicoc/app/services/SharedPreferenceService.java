@@ -2,22 +2,24 @@ package com.abhaybmicoc.app.services;
 
 import android.content.Context;
 
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
+
 import static android.content.Context.MODE_PRIVATE;
 
-public class SharedPerferenceService {
+public class SharedPreferenceService {
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
      * @return
      */
     public static boolean isAvailable(Context context, String sharedPreferenceName, String key) {
-        return context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "").isEmpty();
+        String value = context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "");
+        return value != null && value.trim().length() > 0;
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
@@ -28,33 +30,36 @@ public class SharedPerferenceService {
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
      * @return
      */
-    public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
-        try {
+    public static int getInteger(Context context, String sharedPreferenceName, String key) throws NumberFormatException {
+        String value = context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, "");
 
-            return Integer.parseInt(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
-        }catch (Exception e){
+        try {
+            return (int)Double.parseDouble(value);
+        } catch (Exception e) {
             return 0;
         }
     }
 
     /**
-     *
      * @param context
      * @param sharedPreferenceName
      * @param key
      * @return
      */
-    public static double getDouble(Context context, String sharedPreferenceName, String key) throws NumberFormatException{
+    public static double getDouble(Context context, String sharedPreferenceName, String key) throws NumberFormatException {
         try {
             return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
-        }catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
+    }
+
+    public static boolean isMalePatient(Context context){
+        return SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.GENDER).equalsIgnoreCase("male");
     }
 }
