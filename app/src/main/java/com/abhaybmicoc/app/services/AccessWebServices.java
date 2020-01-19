@@ -1,21 +1,23 @@
 package com.abhaybmicoc.app.services;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
+import java.util.Map;
+
 import android.util.Log;
+import android.app.Activity;
+import android.content.Context;
+import android.app.ProgressDialog;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.RetryPolicy;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 
 import com.abhaybmicoc.app.interfaces.VolleyResponse;
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
-import java.util.Map;
 
 public class AccessWebServices {
 
