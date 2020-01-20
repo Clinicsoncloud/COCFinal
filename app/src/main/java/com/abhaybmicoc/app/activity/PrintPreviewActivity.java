@@ -1569,32 +1569,38 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private String getPrintText() {
-        String str = "Clinics On Cloud\n" +
+        String str = "" + "  " + "Clinics On Cloud" + "" + "\n" +
                      "Name : {name}\n" +
-                     "Age : {age}  Gender : {gender}" +
+                     "Age : {age}  Gender : {gender}\n" +
                      "{currentDate}  {currentTime} \n" +
                      "-----------------------\n" +
-                     "Height : {height} CM\n" +
+                     "Height : {height} cm\n" +
                      "Weight : {weight} Kg\n" +
-                     "[Normal Range]:\n {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
+                     "[Normal Range]:\n" +
+                     " {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
                      "BMI : {bmi}\n" +
                      "[Normal Range]: 18.5 - 25\n" +
                      "-----------------------\n" +
                      "Body Fat : {bodyFat}\n" +
-                     "[Normal Range] : {standardBodyFat}\n" +
+                     "[Normal Range] : " +
+                     "{standardBodyFat}\n" +
                      "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
                      "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                     "[Normal Range]: {subcutaneousFatRange}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{subcutaneousFatRange}\n\n" +
                      "Visceral Fat : {visceralFat}\n" +
                      "[Normal Range]: <=9\n\n" +
                      "Body Water : {bodyWater}\n" +
-                     "[Normal Range]: {standardBodyWater}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBodyWater}\n\n" +
                      "Skeletal Muscle : {skeletalMuscle}\n" +
-                     "[Normal Range]: {standardSkeletalMuscle}\n\n" +
+                     "[Normal Range]: " +
+                     "{standardSkeletalMuscle}\n\n" +
                      "Muscle Mass : {muscleMass}\n" +
                      "[Normal Range]: {standardMuscleMass}\n\n" +
                      "Bone Mass : {boneMass}\n" +
-                     "[Normal Range]: {standardBoneMass}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBoneMass}\n\n" +
                      "Protein : {protein}\n" +
                      "[Normal Range]: 16-18(%) \n\n" +
                      "BMR : {bmr}\n" +
@@ -1603,9 +1609,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "Meta Age : {metaAge} yrs\n\n" +
                      "Health Score : {healthScore}\n\n" +
                      "-----------------------\n" +
-                     "Blood Glucose : {sugar} g/dl\n" +
+                     "Blood Glucose : {sugar} mg/dl\n" +
+                     "[Normal Range]: \n > = {standardSugar} mg/dl\n\n" +
                      "-----------------------\n" +
-                     "Hemoglobin : {hemoglobin}\n" +
+                     "Hemoglobin : {hemoglobin} g/dl\n" +
                     "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
                      "-----------------------\n" +
                      "Blood Pressure : \n" +
@@ -1627,7 +1634,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "   Above results are\n" +
                      "       indicative\n"+
                      "  figure,don't follow it\n"+
-                     "   without consulting a\n"+
+                     "   without consulting the\n"+
                      "        doctor\n\n\n\n\n\n\n";
 
         str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
@@ -1661,6 +1668,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
         str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
         str = str.replace("{sugar}", getSugarPreferenceData(Constant.Fields.SUGAR));
+        str = str.replace("{standardSugar}", standardGlucose);
         str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
         str = str.replace("{standardHemoglobin}", standardHemoglobin);
         str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));
