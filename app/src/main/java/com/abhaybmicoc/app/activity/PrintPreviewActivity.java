@@ -448,13 +448,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC)) {
             double bloodPressureDiastolic = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.BLOOD_PRESSURE_DIASTOLIC);
 
-            if (bloodPressureDiastolic > 89) {
+            if (bloodPressureDiastolic > 89)
                 diastolicResult = "High";
-            } else if (bloodPressureDiastolic >= 60 && bloodPressureDiastolic <= 89) {
+            else if (bloodPressureDiastolic >= 60 && bloodPressureDiastolic <= 89)
                 diastolicResult = "Standard";
-            } else {
+            else
                 diastolicResult = "Low";
-            }
         } else
             diastolicResult = "NA";
     }
@@ -684,13 +683,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             } else if (glucoseType.equals("Random (Not Sure)")) {
                 standardGlucose = "79-160 mg/dl(Random)";
 
-                if (sugar > 160) {
+                if (sugar > 160)
                     sugarResult = "High";
-                } else if (sugar >= 79 && sugar <= 160) {
+                else if (sugar >= 79 && sugar <= 160)
                     sugarResult = "Standard";
-                } else {
+                else
                     sugarResult = "Low";
-                }
             }
         } else
             sugarResult = "NA";
@@ -1557,73 +1555,65 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private String getPrintText() {
         String str = "Clinics On Cloud\n" +
-                "Name : {name}\n" +
-                "Age : {age}  Gender : {gender}" +
-                "{currentDate}  {currentTime} \n" +
-                "-----------------------\n" +
-                "Height : {height} CM\n" +
-                "Weight : {weight} Kg\n" +
-                "[Normal Range]:\n {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
-                "BMI : {bmi}\n" +
-                "[Normal Range]: 18.5 - 25\n" +
-                "-----------------------\n" +
-                "Body Fat : {bodyFat}\n" +
-                "[Normal Range] : \n"
-                + " {standardBodyFat}\n" +
-                "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
-                "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                "[Normal Range]: \n" +
-                "{subcutaneousFatRange}\n\n" +
-                "Visceral Fat : {visceralFat}\n" +
-                "[Normal Range]: <=9\n\n" +
-                "Body Water : {bodyWater}\n" +
-                "[Normal Range]: \n" +
-                "{standardBodyWater}\n\n" +
-                "Skeletal Muscle : {skeletalMuscle}\n" +
-                "[Normal Range]: \n" +
-                "{standardSkeletalMuscle}\n\n" +
-                "Muscle Mass : {muscleMass}\n" +
-                "[Normal Range]: \n" +
-                "{standardMuscleMass}\n\n" +
-                "Bone Mass : {boneMass}\n" +
-                "[Normal Range]: \n" +
-                "{standardBoneMass}\n\n" +
-                "Protein : {protein}\n" +
-                "[Normal Range]: 16-18(%) \n\n" +
-                "BMR : {bmr}\n" +
-                "[Normal Range]: \n " +
-                "> = {standardMetabolism} Kcal\n\n" +
-                "Physique: {physique}\n\n" +
-                "Meta Age : {metaAge} yrs\n\n" +
-                "Health Score : {healthScore}\n\n" +
-                "-----------------------\n" +
-                "Blood Glucose : {bloodGlucose} g/dl\n" +
-                "-----------------------\n" +
-                "Hemoglobin : {hemoglobin}\n" +
-                "[Normal Range]: \n " +
-                "> = {standardHemoglobin} g/dl\n\n" +
-                "-----------------------\n" +
-                "Blood Pressure : \n" +
-                "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
-                "Diastolic : {bloodPressureDiastolic} mmHg \n" +
-                "[Normal Range]: \n" +
-                "Systolic : 90-139mmHg\n" +
-                "Diastolic : 60-89mmHg\n" +
-                "-----------------------\n" +
-                "Blood Oxygen : {bloodOxygen} %" + "\n" +
-                "[Normal Range]: >94%\n" +
-                "Pulse Rate: {pulseRate} bpm\n" +
-                "[Normal Range]: 60-100bpm\n" +
-                "-----------------------\n" +
-                "Temperature : {temperature} F\n" +
-                "[Normal Range]: 97-99 F\n" +
-                "-----------------------\n" +
-                "       Thank You\n" +
-                "   Above results are\n" +
-                "       indicative\n" +
-                "  figure,don't follow it\n" +
-                "   without consulting a\n" +
-                "        doctor\n\n\n\n\n\n\n";
+                     "Name : {name}\n" +
+                     "Age : {age}  Gender : {gender}" +
+                     "{currentDate}  {currentTime} \n" +
+                     "-----------------------\n" +
+                     "Height : {height} CM\n" +
+                     "Weight : {weight} Kg\n" +
+                     "[Normal Range]:\n {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
+                     "BMI : {bmi}\n" +
+                     "[Normal Range]: 18.5 - 25\n" +
+                     "-----------------------\n" +
+                     "Body Fat : {bodyFat}\n" +
+                     "[Normal Range] : {standardBodyFat}\n" +
+                     "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
+                     "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
+                     "[Normal Range]: {subcutaneousFatRange}\n\n" +
+                     "Visceral Fat : {visceralFat}\n" +
+                     "[Normal Range]: <=9\n\n" +
+                     "Body Water : {bodyWater}\n" +
+                     "[Normal Range]: {standardBodyWater}\n\n" +
+                     "Skeletal Muscle : {skeletalMuscle}\n" +
+                     "[Normal Range]: {standardSkeletalMuscle}\n\n" +
+                     "Muscle Mass : {muscleMass}\n" +
+                     "[Normal Range]: {standardMuscleMass}\n\n" +
+                     "Bone Mass : {boneMass}\n" +
+                     "[Normal Range]: {standardBoneMass}\n\n" +
+                     "Protein : {protein}\n" +
+                     "[Normal Range]: 16-18(%) \n\n" +
+                     "BMR : {bmr}\n" +
+                     "[Normal Range]: \n > = {standardMetabolism} Kcal\n\n" +
+                     "Physique: {physique}\n\n" +
+                     "Meta Age : {metaAge} yrs\n\n" +
+                     "Health Score : {healthScore}\n\n" +
+                     "-----------------------\n" +
+                     "Blood Glucose : {sugar} g/dl\n" +
+                     "-----------------------\n" +
+                     "Hemoglobin : {hemoglobin}\n" +
+                    "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
+                     "-----------------------\n" +
+                     "Blood Pressure : \n" +
+                     "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
+                     "Diastolic : {bloodPressureDiastolic} mmHg \n" +
+                     "[Normal Range]: \n" +
+                     "Systolic : 90-139mmHg\n" +
+                     "Diastolic : 60-89mmHg\n" +
+                     "-----------------------\n" +
+                     "Blood Oxygen : {bloodOxygen} %" + "\n" +
+                     "[Normal Range]: >94%\n" +
+                     "Pulse Rate: {pulseRate} bpm\n" +
+                     "[Normal Range]: 60-100bpm\n" +
+                     "-----------------------\n" +
+                     "Temperature : {temperature} F\n" +
+                     "[Normal Range]: 97-99 F\n" +
+                     "-----------------------\n" +
+                     "       Thank You\n" +
+                     "   Above results are\n" +
+                     "       indicative\n"+
+                     "  figure,don't follow it\n"+
+                     "   without consulting a\n"+
+                     "        doctor\n\n\n\n\n\n\n";
 
         str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
         str = str.replace("{age}", String.valueOf(age));
@@ -1655,7 +1645,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         str = str.replace("{physique}", getActofitPreferenceData(Constant.Fields.PHYSIQUE));
         str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
         str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
-        str = str.replace("{bloodGlucose}", getSugarPreferenceData(Constant.Fields.SUGAR));
+        str = str.replace("{sugar}", getSugarPreferenceData(Constant.Fields.SUGAR));
         str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
         str = str.replace("{standardHemoglobin}", standardHemoglobin);
         str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));

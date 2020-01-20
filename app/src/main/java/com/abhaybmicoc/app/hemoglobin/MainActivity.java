@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private boolean isEchoInitialized;
 
     private String txt;
-    
+
     private TextView tvName;
     private TextView tvGender;
     private TextView tvMainSugar;
@@ -156,12 +156,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onPause() {
         super.onPause();
-        if(tvViewDisplay.getText().toString().contains("Test")){
+        if (tvViewDisplay.getText().toString().contains("Test")) {
             sendMessage("U370");
             disconnectGattServer();
         }
 
-        if(textToSpeech != null){
+        if (textToSpeech != null) {
             textToSpeech.shutdown();
         }
     }
@@ -324,8 +324,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void initializeData(){
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+    private void initializeData() {
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
@@ -360,7 +360,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     // region Logical methods
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -368,10 +367,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -389,19 +387,18 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     /**
-     *
      * @param msg
      */
     private void sendMessage(String msg) {
@@ -433,7 +430,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     /**
-     *
      * @param view
      */
     public void readBatchCode(View view) {
@@ -441,7 +437,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     /**
-     *
      * @param view
      */
     public void writeBatchCode(View view) {
@@ -484,7 +479,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         try {
             AndMedical_App_Global.mBTcomm = null;
-        } catch(NullPointerException e) { }
+        } catch (NullPointerException e) {
+        }
 
         startActivity(new Intent(MainActivity.this, Act_Main.class));
     }
@@ -527,7 +523,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     /**
-     *
      * @param view
      */
     public void readLastTest(View view) {
@@ -537,23 +532,23 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     /**
      *
      */
-    private void connectOrShowScanDevice(){
+    private void connectOrShowScanDevice() {
         /**
          * On load, check if device is stored in local storage
          * If yes, connect
          * If no, show scan button
          */
 
-        if(savedDeviceAlreadyExists()) {
+        if (savedDeviceAlreadyExists()) {
             btnScan.setVisibility(View.GONE);
             btnConnect.setVisibility(View.GONE);
             connect();
-        } else{
+        } else {
             btnScan.setVisibility(View.VISIBLE);
         }
     }
 
-    private void updateConnectionStatus(boolean connected){
+    private void updateConnectionStatus(boolean connected) {
         /**
          * Store connection status in a variable
          * If connected, hide connect button, show connection message
@@ -564,7 +559,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         isDeviceConnected = connected;
 
-        if(connected) {
+        if (connected) {
             COUNT_CONNECTION_TRY = 0;
 
             dialogConnectionProgress.dismiss();
@@ -574,11 +569,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }else{
             COUNT_CONNECTION_TRY++;
 
-            if(COUNT_CONNECTION_TRY == COUNT_CONNECTION_MAXIMUM_TRY){
+            if (COUNT_CONNECTION_TRY == COUNT_CONNECTION_MAXIMUM_TRY) {
                 tvViewDevice.setText("Cannot connect to device, scan the device again");
 
                 btnScan.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 tvViewDevice.setText("Cannot connect to device, trying again");
 
                 connect();
@@ -606,7 +601,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     /**
      *
      */
-    private void connectToScannedDevice(){
+    private void connectToScannedDevice() {
         /**
          * Show progress dialog for connecting
          * Hide connect button
@@ -615,9 +610,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          * Connect to device
          */
 
-        if(savedDeviceAlreadyExists()) {
+        if (savedDeviceAlreadyExists()) {
             connect();
-        }else {
+        } else {
             dialogConnectionProgress.show();
             btnConnect.setVisibility(View.GONE);
 
@@ -638,20 +633,20 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
     }
 
-    private void setDeviceConnectionTimeoutHandler(){
+    private void setDeviceConnectionTimeoutHandler() {
         deviceConnectionTimeoutHandler = new Handler();
 
-        deviceConnectionTimeoutHandler.postDelayed(()->{
-           if(dialogConnectionProgress != null && dialogConnectionProgress.isShowing()){
-               dialogConnectionProgress.dismiss();
+        deviceConnectionTimeoutHandler.postDelayed(() -> {
+            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
+                dialogConnectionProgress.dismiss();
 
-               stopBluetoothConnection();
-           }
+                stopBluetoothConnection();
+            }
 
         }, DEVICE_CONNECTION_WAITING_TIME);
     }
 
-    private void stopBluetoothConnection(){
+    private void stopBluetoothConnection() {
         if (dialogProgress != null)
             dialogProgress.dismiss();
 
@@ -665,35 +660,30 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             try {
                 mGatt.disconnect();
                 mGatt.close();
-            }
-            catch(RuntimeException ex){
+            } catch (RuntimeException ex) {
             }
         }
     }
 
-    private String getStoredDeviceName(){
+    private String getStoredDeviceName() {
         return sharedPreferencesDevice.getString("deviceName", "");
     }
 
     /**
-     *
-     *
      * @return
      */
-    private String getStoredDeviceAddress(){
-        return sharedPreferencesDevice.getString("deviceAddress","");
+    private String getStoredDeviceAddress() {
+        return sharedPreferencesDevice.getString("deviceAddress", "");
     }
 
     /**
-     *
      * @return
      */
-    private boolean savedDeviceAlreadyExists(){
+    private boolean savedDeviceAlreadyExists() {
         return !sharedPreferencesDevice.getString("deviceName", "").equals("");
     }
 
     /**
-     *
      * @return
      */
     private BluetoothDevice getDevice(String deviceName){
@@ -734,8 +724,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     void requestPermission() {
         try {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
-        }
-        catch(RuntimeException ex){
+        } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
         }
     }
@@ -827,18 +816,17 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.text1, R.id.text1, deviceArrayList);
         adapter.notifyDataSetChanged();
-        
+
         spinnerDevice.setAdapter(adapter);
 
         btnConnect.setVisibility(View.VISIBLE);
     }
 
     /**
-     *
      * @param deviceName
      * @param deviceAddress
      */
-    private void saveDeviceInformation(String deviceName, String deviceAddress){
+    private void saveDeviceInformation(String deviceName, String deviceAddress) {
         SharedPreferences.Editor editor = sharedPreferencesDevice.edit();
 
         editor.putString("deviceName", deviceName);
