@@ -92,6 +92,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private TextView tvTemperature;
     private TextView tvResultTextNew;
     private TextView tvConnectionLabel;
+    private TextView tvConnectionStatus;
 
     private LinearLayout layoutGlucose;
 
@@ -133,6 +134,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private String textToSpeak;
     private String resultOfGlucose;
+
+    private boolean isTestStarted = false;
 
     // endregion
 
@@ -355,6 +358,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             bluetoothIcon.setBackgroundResource(R.drawable.connect);
             batteryIcon.setVisibility(View.VISIBLE);
 
+            tvConnectionStatus.setText("Connected");
+
             saveDeviceInformation(mDeviceAddress, mDeviceName);
 
             textToSpeak = "Please click on start Test";
@@ -364,6 +369,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 dialogConnectionProgress.dismiss();
             }
         } else {
+            tvConnectionStatus.setText("Connecting");
+
             batteryIcon.setVisibility(View.INVISIBLE);
             bluetoothIcon.setBackgroundResource(R.drawable.disconnect);
         }
@@ -501,6 +508,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         btnNext = findViewById(R.id.tv_header_pulseoximeter);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
+        tvConnectionStatus = findViewById(R.id.tv_connection_status);
         tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
         tvResultTextNew = layoutGlucose.findViewById(R.id.tv_resultNew);
         tvConnectionLabel = mCustomView.findViewById(R.id.connectionLabel);
@@ -593,7 +601,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     }
 
     private void connectDevice() {
-        dialogConnectionProgress.show();
+//        dialogConnectionProgress.show();
 
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
         syncLib.startReceiver();
@@ -609,30 +617,37 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         deviceConnectionTimeoutHandler = new Handler();
 
         deviceConnectionTimeoutHandler.postDelayed(() -> {
-            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
-                dialogConnectionProgress.dismiss();
+//            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
+//                dialogConnectionProgress.dismiss();
 
-                Log.e("mConnected_Handler", ":" + mConnected);
-                if (!mConnected) {
+            Log.e("mConnected_Handler", ":" + mConnected);
+            if (!mConnected) {
 
-                    syncLib.stopReceiver();
+                syncLib.stopReceiver();
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                            context);
-                    alertDialogBuilder.setTitle("Connectivity Lost!");
-                    alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    connectDevice();
-                                }
-                            });
-                    /* create alert dialog */
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    /* show alert dialog */
-                    alertDialog.show();
-                    alertDialogBuilder.setCancelable(false);
-                }
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+                alertDialogBuilder.setTitle("Connectivity Lost!");
+                alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
+                        .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                connectDevice();
+                            }
+                        });
+                alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        writeData();
+                    }
+                });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
             }
+//            }
         }, DEVICE_CONNECTION_WAITING_TIME);
     }
 
@@ -656,6 +671,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         if (mConnected) {
             syncLib.startTest();
+            isTestStarted = true;
+            btnWriteData.setText("Next");
+            
         } else {
             Toast.makeText(getApplicationContext(), "Please Connect to Device!", Toast.LENGTH_SHORT).show();
         }
@@ -687,11 +705,17 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         if (mConnected) {
             syncLib.notifyGetData();
         }
-        if (rgGlucose.getCheckedRadioButtonId() == -1) {
-            // no radio buttons are checked
-            Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
+        if (isTestStarted) {
+            if (rgGlucose.getCheckedRadioButtonId() == -1) {
+                // no radio buttons are checked
+                Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
+            } else {
+                // one of the radio buttons is checked
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         } else {
-            // one of the radio buttons is checked
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
