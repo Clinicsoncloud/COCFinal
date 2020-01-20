@@ -191,10 +191,14 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // region Nested classes
 
     static class ViewHolder {
-        @BindView(R.id.rangeTV) TextView rangeTV;
-        @BindView(R.id.valueTV) TextView valueTV;
-        @BindView(R.id.resultTV) TextView resultTV;
-        @BindView(R.id.parameterTV) TextView parameterTV;
+        @BindView(R.id.rangeTV)
+        TextView rangeTV;
+        @BindView(R.id.valueTV)
+        TextView valueTV;
+        @BindView(R.id.resultTV)
+        TextView resultTV;
+        @BindView(R.id.parameterTV)
+        TextView parameterTV;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
@@ -205,8 +209,8 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     // region Data display methods
 
-    private void showWeight(ViewHolder viewHolder){
-        int height = getHeight();
+    private void showWeight(ViewHolder viewHolder) {
+        double height = getHeight();
 
         if (printData.getCurr_value() == 0.0) {
             viewHolder.parameterTV.setText("" + printData.getParameter());
@@ -346,7 +350,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBodyFat(ViewHolder viewHolder){
+    private void showBodyFat(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -395,7 +399,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showFatFreeWeight(ViewHolder viewHolder){
+    private void showFatFreeWeight(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -411,7 +415,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showSubcutaneousFat(ViewHolder viewHolder){
+    private void showSubcutaneousFat(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -420,7 +424,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
         }else {
-            viewHolder.valueTV.setText(""+printData.getCurr_value());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
@@ -454,7 +458,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showVisceralFat(ViewHolder viewHolder){
+    private void showVisceralFat(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -480,7 +484,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBodyWater(ViewHolder viewHolder){
+    private void showBodyWater(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -641,12 +645,12 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showPulseRate(ViewHolder viewHolder){
+    private void showPulseRate(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
             viewHolder.valueTV.setText("NA");
-            viewHolder.parameterTV.setText(""+printData.getParameter());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
 
         } else {
@@ -702,7 +706,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showDiastolicBloodPressure(ViewHolder viewHolder){
+    private void showDiastolicBloodPressure(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -733,7 +737,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showSystolicBloodPressure(ViewHolder viewHolder){
+    private void showSystolicBloodPressure(ViewHolder viewHolder) {
 
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
@@ -765,7 +769,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBodyTemperature(ViewHolder viewHolder){
+    private void showBodyTemperature(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -796,7 +800,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBoneMass(ViewHolder viewHolder){
+    private void showBoneMass(ViewHolder viewHolder) {
         double weight = getWeight();
 
         if (printData.getCurr_value() == 0.0) {
@@ -927,7 +931,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showMuscleMass(ViewHolder viewHolder){
+    private void showMuscleMass(ViewHolder viewHolder) {
         double height = getHeight();
 
         if (printData.getCurr_value() == 0.0) {
@@ -1061,7 +1065,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showPhysique(ViewHolder viewHolder){
+    private void showPhysique(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.valueTV.setText("");
@@ -1071,7 +1075,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBmr(ViewHolder viewHolder){
+    private void showBmr(ViewHolder viewHolder) {
         int age = getAge();
         double weight = getWeight();
 
@@ -1147,7 +1151,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showMetabolicAge(ViewHolder viewHolder){
+    private void showMetabolicAge(ViewHolder viewHolder) {
         int age = getAge();
 
         if (printData.getCurr_value() == 0.0) {
@@ -1172,7 +1176,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showHealthScore(ViewHolder viewHolder){
+    private void showHealthScore(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -1189,7 +1193,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showProtein(ViewHolder viewHolder){
+    private void showProtein(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -1218,7 +1222,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showSkeletalMuscle(ViewHolder viewHolder){
+    private void showSkeletalMuscle(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");

@@ -41,12 +41,6 @@ public class DateService {
         return age;
     }
 
-    /**
-     *
-     * @param date
-     * @param format
-     * @return
-     */
     public static String formatDateFromString(String date, String fromDatePattern, String toDatePattern){
         String formattedDate;
 

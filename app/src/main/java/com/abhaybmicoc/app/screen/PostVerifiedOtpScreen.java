@@ -99,9 +99,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
      *
      */
     private void setupEvents(){
-        btnVerify.setOnClickListener(v -> {
-            verifyOtp();
-        });
+        btnVerify.setOnClickListener(v -> verifyOtp());
     }
 
     private void initializeLogic(){

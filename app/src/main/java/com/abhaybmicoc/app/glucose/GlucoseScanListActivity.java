@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.view.GestureDetector;
 import android.speech.tts.TextToSpeech;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.support.v7.widget.Toolbar;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter;
@@ -71,6 +72,8 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
     private List<ResultsModel> resultsListforAdapter = new ArrayList<>();
 
+    private SharedPreferences sharedPreferencesDevice;
+
     // endregion
 
     // Events
@@ -99,8 +102,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED)
-        {
+        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
             finish();
             return;
         }
@@ -136,36 +138,28 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     private BluetoothAdapter.LeScanCallback mLeScanCallback = (bluetoothDevice, rssi, scanRecord) -> handleScanCallback(bluetoothDevice);
 
     /**
-     *
      * @param device
      */
     private void handleScanCallback(BluetoothDevice device) {
-        if (device != null)
-        {
-            if ("SyncPlus".equals(device.getName()) || util.readString(HelperC.key_devname, "SyncPlus").equals(device.getName()))
-            {
+        if (device != null) {
+            if ("SyncPlus".equals(device.getName()) || util.readString(HelperC.key_devname, "SyncPlus").equals(device.getName())) {
                 adapter.addDevice(device);
                 adapter.notifyDataSetChanged();
                 ivScanImage.setVisibility(View.GONE);
 
-                if (autoConnectFlag)
-                {
-                    if (device == null)
-                    {
+                if (autoConnectFlag) {
+                    if (device == null) {
                         System.out.println("Scan List :inside  ");
                         return;
                     }
 
-                    if (deviceAddress.equals(device.getAddress()))
-                    {
-                        if (flag != 2)
-                        {
+                    if (deviceAddress.equals(device.getAddress())) {
+                        if (flag != 2) {
                             final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
                             intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, device.getName());
                             intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
 
-                            if (mScanning)
-                            {
+                            if (mScanning) {
                                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
                                 mScanning = false;
                             }
@@ -186,7 +180,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_scan_list);
 
         /* Setup toolbar */
@@ -213,21 +207,18 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         btnNext.setOnClickListener(view -> handleGo());
         btnScan.setOnClickListener(view -> handleScanList());
 
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListner(getApplicationContext(), recyclerView, new ClickListener()
-        {
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListner(getApplicationContext(), recyclerView, new ClickListener() {
             @Override
-            public void onClick(View view, int position)
-            {
+            public void onClick(View view, int position) {
                 handleRecyclerClick(view, position);
             }
 
             @Override
-            public void onLongClick(View view, int position)
-            {
+            public void onLongClick(View view, int position) {
             }
         }));
     }
@@ -235,9 +226,8 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void initializeData(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-        {
+    private void initializeData() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             /*if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -253,8 +243,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
                 builder.show();
             }*/
         }
-        //}
-
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
             Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show();
@@ -272,7 +260,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             return;
         }
 
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         flag = getIntent().getIntExtra("flag", -1);
 
@@ -285,12 +273,63 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
         txtSpeak = "Please long press the device bluetooth button and click on Sync Plus";
         speakOut(txtSpeak);
+
+        sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
+
+        connectOrShowScanDevice();
+    }
+
+    private void connectOrShowScanDevice() {
+        /**
+         * On load, check if device is stored in local storage
+         * If yes, connect
+         * If no, show scan button
+         */
+
+        Log.e("DeviceSaved_ScanLog", ":" + savedDeviceAlreadyExists() + "    : Devicename :    " + getStoredDeviceName() + "   : DeviceAddress :   " + getStoredDeviceAddress());
+
+        if (savedDeviceAlreadyExists()) {
+            btnScan.setVisibility(View.GONE);
+            moveToGlucoseActivity(getStoredDeviceName(), getStoredDeviceAddress());
+        } else {
+            btnScan.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void moveToGlucoseActivity(String deviceName, String deviceAddress) {
+
+        final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
+        intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, deviceName);
+        intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, deviceAddress);
+
+        if (mScanning) {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mScanning = false;
+        }
+
+        startActivity(intent);
+        finish();
+
+    }
+
+
+    private String getStoredDeviceName() {
+        return sharedPreferencesDevice.getString("glucoseDeviceAddress", "");
+    }
+
+    private String getStoredDeviceAddress() {
+        return sharedPreferencesDevice.getString("glucoseDeviceAddress", "");
+    }
+
+
+    private boolean savedDeviceAlreadyExists() {
+        return !sharedPreferencesDevice.getString("glucoseDeviceAddress", "").equals("");
     }
 
     /**
      *
      */
-    private void handleGo(){
+    private void handleGo() {
         Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(objIntent);
     }
@@ -313,15 +352,15 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     /**
-     *
      * @param view
      * @param position
      */
-    private void handleRecyclerClick(View view, int position){
+    private void handleRecyclerClick(View view, int position) {
         TextView name = view.findViewById(R.id.btname);
-        try {
 
+        try {
             final BluetoothDevice device = adapter.getDevice(position);
+
             if (device == null)
                 return;
 
@@ -329,19 +368,9 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             util.putString(HelperC.key_autoconnectaddress, device.getAddress());
             util.putBoolean(HelperC.key_autoconnectflag, true);
 
-            final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
-            intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, name.getText().toString());
-            intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, device.getAddress());
-
-            if (mScanning) {
-                mBluetoothAdapter.stopLeScan(mLeScanCallback);
-                mScanning = false;
-            }
-
-            startActivity(intent);
-            finish();
+            moveToGlucoseActivity(name.getText().toString(), device.getAddress());
         } catch (Exception e) {
-            e.printStackTrace();
+            // TODO: Handle exception
             Toast.makeText(getApplicationContext(), "Please scan once again.", Toast.LENGTH_SHORT).show();
         }
     }
@@ -351,7 +380,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     // region Logical methods
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -359,10 +387,9 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -380,26 +407,25 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     /**
      *
      */
-    private void clearScan(){
+    private void clearScan() {
         scanLeDevice(false);
 
-        try
-        {
+        try {
             adapter.clear();
             //   unregisterReceiver(mReceiver);
         } catch (Exception e) {
@@ -410,14 +436,12 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void refreshScan(){
-        try{
+    private void refreshScan() {
+        try {
             // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
             // fire an intent to display a dialog asking the user to grant permission to enable it.
-            if (!mBluetoothAdapter.isEnabled())
-            {
-                if (!mBluetoothAdapter.isEnabled())
-                {
+            if (!mBluetoothAdapter.isEnabled()) {
+                if (!mBluetoothAdapter.isEnabled()) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                 }
@@ -440,20 +464,16 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     }
 
     /**
-     *
      * @param enable
      */
-    private void scanLeDevice(final boolean enable)
-    {
+    private void scanLeDevice(final boolean enable) {
         if (enable) {
             // Stops scanning after a pre-defined scan period.
 
             ivScanImage.setVisibility(View.VISIBLE);
-            mHandler.postDelayed(new Runnable()
-            {
+            mHandler.postDelayed(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     mScanning = false;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
@@ -487,14 +507,15 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void showNoLocationAccessDialog(){
+    private void showNoLocationAccessDialog() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         builder.setTitle("Functionality limited");
         builder.setMessage("Since location access has not been granted, this app will not be able to discover beacons when in the background.");
         builder.setPositiveButton(android.R.string.ok, null);
 
-        builder.setOnDismissListener(dialogInterface -> {});
+        builder.setOnDismissListener(dialogInterface -> {
+        });
 
         builder.show();
     }
@@ -509,57 +530,49 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         public void onLongClick(View view, int position);
     }
 
-    class RecyclerTouchListner implements RecyclerView.OnItemTouchListener
-    {
+    class RecyclerTouchListner implements RecyclerView.OnItemTouchListener {
         private ClickListener clickListener;
         private GestureDetector gestureDetector;
 
-        public RecyclerTouchListner(Context context, final RecyclerView recyclerView, final ClickListener clickListener)
-        {
+        public RecyclerTouchListner(Context context, final RecyclerView recyclerView, final ClickListener clickListener) {
             this.clickListener = clickListener;
-            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener()
-            {
+
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
                 @Override
-                public boolean onSingleTapUp(MotionEvent e)
-                {
+                public boolean onSingleTapUp(MotionEvent e) {
                     return true;
                 }
 
                 @Override
-                public void onLongPress(MotionEvent e)
-                {
+                public void onLongPress(MotionEvent e) {
                     super.onLongPress(e);
+
                     View child = recyclerView.findChildViewUnder(e.getX(), e.getY());
+
                     if (child != null && clickListener != null)
-                    {
                         clickListener.onLongClick(child, recyclerView.getChildAdapterPosition(child));
-                    }
                 }
 
             });
         }
 
         @Override
-        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e)
-        {
+        public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
             View child = rv.findChildViewUnder(e.getX(), e.getY());
 
             if (child != null && clickListener != null && gestureDetector.onTouchEvent(e))
-            {
                 clickListener.onClick(child, rv.getChildAdapterPosition(child));
-            }
+
             return false;
         }
 
         @Override
-        public void onTouchEvent(RecyclerView rv, MotionEvent e)
-        {
+        public void onTouchEvent(RecyclerView rv, MotionEvent e) {
 
         }
 
         @Override
-        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept)
-        {
+        public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
         }
     }

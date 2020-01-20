@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="500dp"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -9,42 +8,42 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
-        android:orientation="vertical"
+        android:background="@drawable/circle_drawable"
         android:gravity="center"
-        android:background="@drawable/circle_drawable">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_resultText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text=""
             android:textColor="@color/white"
             android:textSize="35sp"
-            android:visibility="visible"
-            android:layout_gravity="center"/>
+            android:visibility="visible" />
 
 
         <TextView
             android:id="@+id/tv_resultNew"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:text=""
             android:textColor="@color/white"
             android:textSize="35sp"
-            android:visibility="gone"
-            android:layout_gravity="center"/>
+            android:visibility="gone" />
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="mg/dl"
+            android:layout_gravity="center"
             android:layout_marginTop="5dp"
+            android:text="mg/dl"
             android:textColor="@color/white"
-            android:textSize="25sp"
-            android:layout_gravity="center"/>
+            android:textSize="25sp" />
 
     </LinearLayout>
 
@@ -61,31 +60,32 @@
             android:id="@+id/rb_fasting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:padding="10dp"
-            android:buttonTint="@color/white"
             android:backgroundTint="@color/white"
+            android:buttonTint="@color/white"
+            android:padding="10dp"
+            android:text="Fasting (Before Meal)"
             android:textColor="@color/white"
-            android:text="Fasting (Before Meal)"/>
+            android:textSize="25sp" />
 
         <RadioButton
             android:id="@+id/rb_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:padding="10dp"
             android:buttonTint="@color/white"
+            android:padding="10dp"
+            android:text="Post Prandial (After Meal)"
             android:textColor="@color/white"
-            android:text="Post Prandial (After Meal)"/>
+            android:textSize="25sp" />
+
         <RadioButton
             android:id="@+id/rb_random"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="25sp"
-            android:padding="10dp"
             android:buttonTint="@color/white"
+            android:padding="10dp"
+            android:text="Random (Not Sure)"
             android:textColor="@color/white"
-            android:text="Random (Not Sure)"/>
+            android:textSize="25sp" />
 
     </RadioGroup>
 
