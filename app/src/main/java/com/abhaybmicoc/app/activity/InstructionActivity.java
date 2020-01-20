@@ -50,7 +50,7 @@ public class InstructionActivity extends ADInstructionActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if(requestCode == DialogActivity.REQUEST_CODE) {
-			Intent intent = new Intent(InstructionActivity.this, DashboardActivity.class);
+			Intent intent = new Intent(InstructionActivity.this, BloodPressureActivity.class);
 
 			startActivity(intent);
 			finish();

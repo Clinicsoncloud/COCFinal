@@ -21,7 +21,7 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -169,13 +169,13 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
         btnRepeat.setOnClickListener(view -> handleRepeat());
         btnNext.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent objIntent = new Intent(getApplicationContext(), BloodPressureActivity.class);
             startActivity(objIntent);
             finish();
         });
 
         btnSkip.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent objIntent = new Intent(getApplicationContext(), BloodPressureActivity.class);
             startActivity(objIntent);
             finish();
         });
