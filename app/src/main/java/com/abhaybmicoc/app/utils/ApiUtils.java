@@ -11,7 +11,7 @@ public class ApiUtils {
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";
 
     /* api for downloading pdf */
-    public static String DOWNLOAD_PDF_URL = PROTOCOL + SERVER_URL + "/api/v1/file/pdf/";
+    public static String DOWNLOAD_PDF_URL = PROTOCOL + SERVER_URL + "/pdfs/";
 
     public static String PREFERENCE_PULSE = "pulse";
     public static String PREFERENCE_URL = "abhayBmi";
