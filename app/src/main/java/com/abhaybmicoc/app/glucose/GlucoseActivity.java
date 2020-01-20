@@ -1,58 +1,57 @@
 package com.abhaybmicoc.app.glucose;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Handler;
-import android.util.Log;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.os.Handler;
 import android.widget.Toast;
 import android.view.Gravity;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
+import android.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.RadioButton;
-import android.widget.LinearLayout;
+import android.app.ProgressDialog;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout;
 import android.speech.tts.TextToSpeech;
-import android.support.v7.app.ActionBar;
+import android.content.DialogInterface;
 import android.view.animation.Animation;
-import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.content.SharedPreferences;
 import android.view.animation.AlphaAnimation;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.animation.LinearInterpolator;
 import android.view.inputmethod.InputMethodManager;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.utils.Constant;
 import com.google.zxing.integration.android.IntentResult;
+import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 
 import org.maniteja.com.synclib.helper.Util;
-import org.maniteja.com.synclib.helper.HelperC;
 import org.maniteja.com.synclib.helper.SyncLib;
+import org.maniteja.com.synclib.helper.HelperC;
 import org.maniteja.com.synclib.helper.Communicator;
 import org.maniteja.com.synclib.helper.SerializeUUID;
 
 import java.util.Locale;
-import java.io.InputStream;
 import java.util.ArrayList;
+import java.io.InputStream;
 import java.util.Collections;
 
 public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
@@ -331,12 +330,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         editor.putString(Constant.Fields.SUGAR, tvResultText.getText().toString());
         editor.putString(Constant.Fields.GLUCOSE_TYPE, radioButtonId.getText().toString());
 
-        Log.e("sdhslkjskdshdsa", ":" + radioButtonId.getText().toString());
-
         editor.commit();
-
-        Log.e("sugar_saved", ":" + glucoseData.getString(Constant.Fields.SUGAR, ""));
-        Log.e("glucose_type_saved", ":" + glucoseData.getString(Constant.Fields.GLUCOSE_TYPE, ""));
 
     }
 
@@ -353,12 +347,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     public void setConnectionStatus(String s, boolean connectionStatus) {
 
         mConnected = connectionStatus;
-        Log.e("mConnected_Log", ":" + mConnected);
         if (mConnected) {
             bluetoothIcon.setBackgroundResource(R.drawable.connect);
             batteryIcon.setVisibility(View.VISIBLE);
 
             tvConnectionStatus.setText("Connected");
+
+            btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
 
             saveDeviceInformation(mDeviceAddress, mDeviceName);
 
@@ -423,13 +418,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             textToSpeech.setSpeechRate(1);
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
             } else {
                 speakOut(textToSpeak);
             }
 
         } else {
-            Log.e("TTS", "Initialization Failed!");
         }
     }
 
@@ -606,7 +599,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
         syncLib.startReceiver();
 
-        Log.e("mConnected_Connect", ":" + mConnected);
 
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
 
@@ -620,7 +612,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 //            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
 //                dialogConnectionProgress.dismiss();
 
-            Log.e("mConnected_Handler", ":" + mConnected);
             if (!mConnected) {
 
                 syncLib.stopReceiver();
@@ -667,13 +658,12 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      */
     private void startTest() {
 
-        Log.e("mConnected_Test_Log", ":" + mConnected);
 
         if (mConnected) {
             syncLib.startTest();
             isTestStarted = true;
             btnWriteData.setText("Next");
-            
+
         } else {
             Toast.makeText(getApplicationContext(), "Please Connect to Device!", Toast.LENGTH_SHORT).show();
         }

@@ -314,7 +314,7 @@
                                 android:layout_height="50dp"
                                 android:layout_margin="10dp"
                                 android:layout_weight="1"
-                                android:background="@drawable/greenback"
+                                android:background="@drawable/grayback"
                                 android:text="@string/starttest"
                                 android:textColor="@color/white"
                                 android:textSize="25sp"
