@@ -1554,44 +1554,57 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private String getPrintText() {
-        String str = "Clinics On Cloud\n" +
-                     "Name : {name}\n" +
-                     "Age : {age}  Gender : {gender}" +
+        String str = "" + "    " + "Clinics On Cloud" + "" + "\n\n" +
+                     "Name: {name}\n" +
+                     "Age : {age}  Gender: {gender}\n" +
                      "{currentDate}  {currentTime} \n" +
                      "-----------------------\n" +
-                     "Height : {height} CM\n" +
-                     "Weight : {weight} Kg\n" +
-                     "[Normal Range]:\n {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
+                     "Height : {height} cm\n" +
+                     "Weight : {weight} kg\n" +
+                     "[Normal Range]:\n" +
+                     "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
                      "BMI : {bmi}\n" +
-                     "[Normal Range]: 18.5 - 25\n" +
+                     "[Normal Range]: \n" +
+                     "18.5 - 25\n" +
                      "-----------------------\n" +
                      "Body Fat : {bodyFat}\n" +
-                     "[Normal Range] : {standardBodyFat}\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBodyFat}\n\n" +
                      "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
                      "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                     "[Normal Range]: {subcutaneousFatRange}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{subcutaneousFatRange}\n\n" +
                      "Visceral Fat : {visceralFat}\n" +
                      "[Normal Range]: <=9\n\n" +
                      "Body Water : {bodyWater}\n" +
-                     "[Normal Range]: {standardBodyWater}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBodyWater}\n\n" +
                      "Skeletal Muscle : {skeletalMuscle}\n" +
-                     "[Normal Range]: {standardSkeletalMuscle}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardSkeletalMuscle}\n\n" +
                      "Muscle Mass : {muscleMass}\n" +
-                     "[Normal Range]: {standardMuscleMass}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardMuscleMass}\n\n" +
                      "Bone Mass : {boneMass}\n" +
-                     "[Normal Range]: {standardBoneMass}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBoneMass}\n\n" +
                      "Protein : {protein}\n" +
-                     "[Normal Range]: 16-18(%) \n\n" +
+                     "[Normal Range]: \n" +
+                     "16-18(%) \n\n" +
                      "BMR : {bmr}\n" +
-                     "[Normal Range]: \n > = {standardMetabolism} Kcal\n\n" +
+                     "[Normal Range]: \n " +
+                     "> ={standardMetabolism} Kcal\n\n" +
                      "Physique: {physique}\n\n" +
                      "Meta Age : {metaAge} yrs\n\n" +
                      "Health Score : {healthScore}\n\n" +
                      "-----------------------\n" +
-                     "Blood Glucose : {sugar} g/dl\n" +
+                     "Blood Glucose : {sugar} mg/dl\n" +
+                     "[Normal Range]: \n" +
+                     "{standardSugar}\n\n" +
                      "-----------------------\n" +
-                     "Hemoglobin : {hemoglobin}\n" +
-                    "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
+                     "Hemoglobin : {hemoglobin} g/dl\n" +
+                     "[Normal Range]: \n" +
+                     "{standardHemoglobin}\n\n" +
                      "-----------------------\n" +
                      "Blood Pressure : \n" +
                      "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
@@ -1603,7 +1616,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "Blood Oxygen : {bloodOxygen} %" + "\n" +
                      "[Normal Range]: >94%\n" +
                      "Pulse Rate: {pulseRate} bpm\n" +
-                     "[Normal Range]: 60-100bpm\n" +
+                     "[Normal Range]: \n" +
+                     "60-100bpm\n" +
                      "-----------------------\n" +
                      "Temperature : {temperature} F\n" +
                      "[Normal Range]: 97-99 F\n" +
@@ -1646,6 +1660,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
         str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
         str = str.replace("{sugar}", getSugarPreferenceData(Constant.Fields.SUGAR));
+        str = str.replace("{standardSugar}", standardGlucose);
         str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
         str = str.replace("{standardHemoglobin}", standardHemoglobin);
         str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));
