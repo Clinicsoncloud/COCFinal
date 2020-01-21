@@ -26,6 +26,7 @@ import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.Date;
 import java.util.Locale;
@@ -284,7 +285,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             try {
                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra(Constant.Fields.DATE_OF_BIRTH));
             } catch (ParseException e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"ActofitMainActivity","startSmartScale","failed to parse Date");
             }
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -299,6 +300,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 catch(Exception ex){
                     height = 0;
                     // TODO: Handle why cannot read height
+                    ErrorUtils.logErrors(ex,"ActofitMainActivity","startSmartScale","failed to read height");
                 }
             }
 
@@ -402,7 +404,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
                 textToSpeech.shutdown();
             }
         }catch (Exception e){
-            Log.e("TTS", "Stopping text to speech Failed!");
+            ErrorUtils.logErrors(e,"ActofitMainActivity","stopTextToSpeech","faied to stop texttospeech");
         }
     }
 

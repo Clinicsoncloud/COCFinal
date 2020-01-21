@@ -50,6 +50,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
@@ -255,7 +256,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
                 startActivity(objIntent);
                 finish();
-            }catch (Exception e){}
+            }catch (Exception e){
+                ErrorUtils.logErrors(e,"DashboardActivity","setupEvents","BtnClick failed");
+            }
         });
 
         btnStart.setOnClickListener(v -> {
@@ -294,7 +297,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private void initializeData(){
-        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+        txt = "please insert hand to the cuff and tight it properly,and then start Machine and click start Button";
         speakOut(txt);
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));

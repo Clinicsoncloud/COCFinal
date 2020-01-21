@@ -250,12 +250,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());
                 editor.commit();
 
-                try {
-                    // turnBluetoothOff();
-                } catch (Exception e) {
-
-                    Toast.makeText(ThermometerScreen.this, "Exception", Toast.LENGTH_SHORT).show();
-                }
 
                 startActivity(objpulse);
                 finish();
@@ -316,7 +310,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         try {
             outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
         } catch (IOException e) {
-            Toast.makeText(ThermometerScreen.this, strCannotSend, Toast.LENGTH_SHORT).show();
+            ErrorUtils.logErrors(e,"ThermometerScreeen","startSmartScale","failed to send command");
         }
     }
 
@@ -426,6 +420,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             try {
                 socket.close();
             } catch (IOException e) {
+                ErrorUtils.logErrors(e,"ThermometerScreen","closeBluetooth","failed to close bluetooth");
             }
         }
     }
@@ -447,7 +442,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             int result = textToSpeech.setLanguage(Locale.US);
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
             } else {
                 speakOut(txtSpeak);
             }
@@ -467,7 +461,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 textToSpeech.shutdown();
             }
         }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+            ErrorUtils.logErrors(e,"ThermometerScreen","startTextToSpeech","failed to stop textToSpeech");
         }
     }
 
@@ -511,7 +505,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                 return "Connected";
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"ThermometerScreen","doInBackground","failed to connect Thermometer socket");
                 return "";
             }
         }
@@ -549,7 +543,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                         connectToDevice();
                     }catch(Exception ex){
-
+                        ErrorUtils.logErrors(ex,"ThermometerScreen","onPostExecute","failed to connect Thermomerter");
                         showCannotConnectToDevice();
                     }
                 }
@@ -580,7 +574,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 } catch (IOException e) {
                     message = "";
                     strEnabled = "false";
-                    ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground()","Failed to read bytes data");
+                    ErrorUtils.logErrors(e,"ThermometerScreen","doInBackground","Failed to read bytes data");
                 }
 
                 publishProgress(new String[]{message, strEnabled});
