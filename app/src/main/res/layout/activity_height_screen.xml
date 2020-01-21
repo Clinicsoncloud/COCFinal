@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background"
     android:orientation="vertical"
     android:weightSum="3"
-    android:background="@drawable/background"
-    tools:context=".heightweight.HeightScreen">
+    tools:context=".activity.HeightActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -188,7 +188,8 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@drawable/line" />
-        <LinearLayout
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="visible">
@@ -197,24 +198,26 @@
                 android:id="@+id/sp_devices"
                 android:layout_width="119dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.64" />
+                android:layout_weight="0.64"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_connect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/repeat"
-                android:layout_weight="0"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
                 android:layout_margin="5dp"
-                android:textColor="@color/white"
-                android:text="Connect" />
-        </LinearLayout>
+                android:background="@drawable/repeat"
+                android:padding="@dimen/pad15"
+                android:text="Connecting..."
+                android:textColor="@color/white" />
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="130dp"
             android:layout_gravity="center"
+            android:layout_marginTop="130dp"
             android:orientation="vertical">
 
             <EditText
@@ -222,62 +225,62 @@
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:ellipsize="end"
-                android:visibility="gone"
-                android:inputType="textMultiLine" />
+                android:inputType="textMultiLine"
+                android:visibility="gone" />
 
             <EditText
                 android:id="@+id/et_manual_height"
                 android:layout_width="300dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
-                android:hint="Manual Height"
-                android:gravity="center"
-                android:textColor="@color/white"
-                android:textColorHint="@color/white"
                 android:background="@drawable/rectangle"
-                android:inputType="number" />
+                android:gravity="center"
+                android:hint="Manual Height"
+                android:inputType="number"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_margin="@dimen/pad10"
-            android:padding="@dimen/pad10"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/pad10">
 
             <EditText
                 android:id="@+id/et_temprature"
                 android:layout_width="139dp"
-                android:layout_marginStart="@dimen/margin20"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin20"
                 android:layout_weight="0.65"
-                android:visibility="gone"
+                android:ems="10"
                 android:textColor="@color/white"
-                android:ems="10" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_get_height"
-                android:background="@drawable/repeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:textSize="22sp"
+                android:background="@drawable/repeat"
+                android:text="Get Height"
                 android:textAllCaps="false"
-                android:text="Get Height" />
+                android:textColor="@color/white"
+                android:textSize="22sp" />
 
             <Button
                 android:id="@+id/btn_clean"
-                android:textColor="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/repeat"
-                android:textSize="22sp"
-                android:visibility="gone"
                 android:layout_marginStart="@dimen/margin20"
-                android:text="Clean" />
+                android:background="@drawable/repeat"
+                android:text="Clean"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:visibility="gone" />
         </LinearLayout>
 
     </LinearLayout>
@@ -286,11 +289,11 @@
         android:id="@+id/btn_next"
         android:layout_width="700dp"
         android:layout_height="20dp"
+        android:layout_gravity="center"
         android:layout_margin="10dp"
         android:layout_weight=".6"
         android:background="@drawable/repeat"
         android:text="NEXT"
-        android:layout_gravity="center"
         android:textColor="@color/white"
         android:textSize="25sp"
         android:textStyle="bold" />
