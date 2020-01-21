@@ -38,7 +38,7 @@ import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.model.PrintDataOld;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.services.AccessWebServices;
+import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
@@ -1285,7 +1285,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
         mapHeadersParams.put("Authorization", bearer);
 
-        AccessWebServices.accessWebServices(
+        HttpService.accessWebServices(
                 context, ApiUtils.PRINT_POST_URL,
                 requestBodyParams,
                 mapHeadersParams,

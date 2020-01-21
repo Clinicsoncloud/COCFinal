@@ -16,7 +16,7 @@ import com.abhaybmicoc.app.R;
 import com.android.volley.VolleyError;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.services.AccessWebServices;
+import com.abhaybmicoc.app.services.HttpService;
 
 import org.json.JSONObject;
 
@@ -192,7 +192,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         Map<String, String> headerParams;
         headerParams = new HashMap<>();
 
-        AccessWebServices.accessWebServices(
+        HttpService.accessWebServices(
                 context,
                 ApiUtils.VERIFY_OTP_URL,
                 params, headerParams,

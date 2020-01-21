@@ -19,7 +19,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.toolbox.StringRequest;
 
 
-public class AccessWebServices {
+public class HttpService {
 
     public static void accessWebServices(final Context context, String url, final Map param, final Map headerParam, final VolleyResponse responseListner) {
         final ProgressDialog loading = ProgressDialog.show(context, "Loading.....", "Please wait...", true);

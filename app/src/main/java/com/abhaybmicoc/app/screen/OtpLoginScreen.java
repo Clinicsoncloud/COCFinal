@@ -21,8 +21,7 @@ import com.android.volley.VolleyError;
 import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.interfaces.VolleyResponse;
-import com.abhaybmicoc.app.services.AccessWebServices;
+import com.abhaybmicoc.app.services.HttpService;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -250,7 +249,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
 
 
-        AccessWebServices.accessWebServices(
+        HttpService.accessWebServices(
                 context,
                 ApiUtils.LOGIN_URL,
                 requestBodyParams,
