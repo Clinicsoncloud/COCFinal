@@ -119,12 +119,9 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode)
-        {
-            case PERMISSION_REQUEST_COARSE_LOCATION:
-            {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_COARSE_LOCATION: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Log.d(TAG, "coarse location permission granted");
                 } else {
                     showNoLocationAccessDialog();
@@ -196,7 +193,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         mHandler = new Handler();
         recyclerView = findViewById(R.id.rv_results);
 
-        btnNext = findViewById(R.id.btn_next);
+        btnNext = findViewById(R.id.btn_skip);
         btnScan = findViewById(R.id.btn_scan);
 
         ivScanImage = findViewById(R.id.imageview);
@@ -337,7 +334,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     /**
      *
      */
-    private void handleScanList(){
+    private void handleScanList() {
         if (btnScan.getText().toString().equals("Scan")) {
             btnScan.setText("Stop Scan");
             tvScanningText.setText("Scaning Started");
@@ -576,6 +573,11 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
 
         }
     }
+
+    @Override
+    public void onBackPressed() {
+    }
+
 
     // endregion
 }

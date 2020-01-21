@@ -160,8 +160,6 @@
                             android:textSize="22sp" />
 
 
-
-
                         <TextView
                             android:id="@+id/tv_header_bloodpressure"
                             android:layout_width="wrap_content"
@@ -340,7 +338,7 @@
                             android:text="Press Device Button and Start Measurement"
                             android:textSize="@dimen/space25" />
 
-                        <LinearLayout
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="100dp"
@@ -348,50 +346,22 @@
                             android:weightSum="3">
 
                             <Button
-                                android:id="@+id/btn_repeat"
+                                android:id="@+id/btn_skip"
                                 android:layout_width="wrap_content"
                                 android:layout_height="50dp"
-                                android:layout_gravity="center_vertical"
+                                android:layout_centerHorizontal="true"
+                                android:layout_gravity="center"
                                 android:layout_margin="5dp"
-                                android:layout_marginTop="10dp"
+
                                 android:layout_weight="1"
                                 android:background="@drawable/repeat"
                                 android:gravity="center"
-                                android:text="REPEAT"
+                                android:text="Skip"
                                 android:textColor="@color/white"
                                 android:textSize="35sp"
                                 android:textStyle="bold" />
 
-                            <Button
-                                android:id="@+id/btn_start"
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_margin="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/greenback"
-                                android:gravity="center"
-                                android:text="START"
-                                android:textColor="@color/white"
-                                android:textSize="35sp"
-                                android:textStyle="bold" />
-
-
-                            <Button
-                                android:id="@+id/btn_next"
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_margin="5dp"
-                                android:layout_weight="1"
-                                android:background="@drawable/repeat"
-                                android:gravity="center"
-                                android:text="NEXT"
-                                android:textColor="@color/white"
-                                android:textSize="35sp"
-                                android:textStyle="bold" />
-
-                        </LinearLayout>
+                        </RelativeLayout>
 
 
                     </FrameLayout>

@@ -2,7 +2,6 @@ package com.abhaybmicoc.app.actofit;
 
 import android.util.Log;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 import android.widget.Button;
 import android.widget.Switch;
@@ -59,7 +58,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
 
-    private Button btnNext;
+    private Button btnSkip;
     private Button btnRepeat;
     private Button btnSmartScale;
 
@@ -201,7 +200,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.actofit_main_activity);
 
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
@@ -226,7 +225,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tvHeight = findViewById(R.id.tv_header_height);
         tvMobile = findViewById(R.id.tv_mobile_number);
 
-        btnNext = findViewById(R.id.btn_next);
+        btnSkip = findViewById(R.id.btn_skip);
         btnRepeat = findViewById(R.id.btn_repeat);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
     }
@@ -234,8 +233,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void setupEvents(){
-        btnNext.setOnClickListener(view -> goNext());
+    private void setupEvents() {
+        btnSkip.setOnClickListener(view -> goNext());
         btnSmartScale.setOnClickListener(view -> startSmartScale());
 
         etUserDateOfBirth.setOnClickListener(view -> editUserDateOfBirth());
@@ -249,7 +248,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void initializeData(){
+    private void initializeData() {
         txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
         speakOut(txtSpeak);
 
@@ -270,7 +269,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void startSmartScale(){
+    private void startSmartScale() {
         boolean appInstalled = isAppInstalled("com.actofitSmartScale");
 
         if (appInstalled) {
@@ -292,11 +291,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
             int height = 0;
             String strHeight = getIntent().getStringExtra(Constant.Fields.HEIGHT);
-            if(strHeight != null){
-                try{
+            if (strHeight != null) {
+                try {
                     height = Integer.parseInt(strHeight);
-                }
-                catch(Exception ex){
+                } catch (Exception ex) {
                     height = 0;
                     // TODO: Handle why cannot read height
                 }
@@ -324,7 +322,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void goNext(){
+    private void goNext() {
         Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
         startActivity(objIntent);
         finish();
@@ -333,21 +331,21 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void editUserDateOfBirth(){
+    private void editUserDateOfBirth() {
         final Calendar c = Calendar.getInstance();
 
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog.OnDateSetListener listener = (datePicker, year, month, day) ->{
-                Calendar calender = Calendar.getInstance();
-                calender.setTimeInMillis(0);
-                calender.set(year, month, day, 0, 0, 0);
+        DatePickerDialog.OnDateSetListener listener = (datePicker, year, month, day) -> {
+            Calendar calender = Calendar.getInstance();
+            calender.setTimeInMillis(0);
+            calender.set(year, month, day, 0, 0, 0);
 
-                Date selectedDate = calender.getTime();
-                String dateFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
-                etUserDateOfBirth.setText(dateFormatUS);
+            Date selectedDate = calender.getTime();
+            String dateFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
+            etUserDateOfBirth.setText(dateFormatUS);
         };
 
         DatePickerDialog dpDialog = new DatePickerDialog(ActofitMainActivity.this, listener, year, month + 1, day);
@@ -356,15 +354,13 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     }
 
     /**
-     *
      * @param isAthlete
      */
-    private void updateIsAthlete(boolean isAthlete){
+    private void updateIsAthlete(boolean isAthlete) {
         this.isAthlete = isAthlete;
     }
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -372,10 +368,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -395,19 +390,18 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("TTS", "Stopping text to speech Failed!");
         }
     }
 
     /**
-     *
      * @param uri
      * @return
      */
@@ -420,5 +414,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onBackPressed() {
     }
 }

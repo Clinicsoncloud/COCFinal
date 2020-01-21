@@ -199,10 +199,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         syncLib.stopReceiver();
     }
 
-
     @Override
     public void onBackPressed() {
-        setSwitchActivity();
+//        setSwitchActivity();
     }
 
     @Override
@@ -219,7 +218,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         //already existed the return statement of the boolean method
         return false;
     }
-
 
     @Override
     protected void onPause() {
@@ -516,7 +514,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         btnReadData = findViewById(R.id.getData);
-        btnWriteData = findViewById(R.id.btn_next);
+        btnWriteData = findViewById(R.id.btn_skip);
         btnStartTest = findViewById(R.id.btn_start_test);
         btnRestartTest = findViewById(R.id.restartTest);
 

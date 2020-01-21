@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private BluetoothLeScanner bluetoothLeScanner;
 
     private Map<String, BluetoothDevice> mapBluetoothScanResults;
-    
+
     private Handler mHandler;
     private Handler deviceConnectionTimeoutHandler;
 
@@ -136,9 +136,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-
-        context.startActivity(new Intent(this, GlucoseScanListActivity.class));
     }
 
     @Override
@@ -165,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             textToSpeech.shutdown();
         }
     }
+
 
     @Override
     public void showToast(final String msg) {
@@ -261,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void setupUI() {
         setContentView(R.layout.new_try_hemoglobin);
 
-        btnNext = findViewById(R.id.btn_next);
+        btnNext = findViewById(R.id.btn_skip);
         btnScan = findViewById(R.id.btn_scan);
         btnTest = findViewById(R.id.btn_test);
         btnConnect = findViewById(R.id.btn_connect);
@@ -512,7 +510,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sendMessage("U401");
     }
 
-    private void checkBluetoothLe(){
+    private void checkBluetoothLe() {
         /* Check bluetooth low energy support */
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
             // Get a newer device
@@ -566,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
-        }else{
+        } else {
             COUNT_CONNECTION_TRY++;
 
             if (COUNT_CONNECTION_TRY == COUNT_CONNECTION_MAXIMUM_TRY) {
@@ -686,7 +684,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     /**
      * @return
      */
-    private BluetoothDevice getDevice(String deviceName){
+    private BluetoothDevice getDevice(String deviceName) {
         return bluetoothAdapter.getRemoteDevice(deviceName);
     }
 

@@ -49,8 +49,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private static final String TAG = "MainActivity";
     public static final String MAC_ADDRESS_KEY = "MAC_ADDRESS_KEY";
 
-    @ViewInject(R.id.tv_pulse_rate) private TextView tvPulseRate;
-    @ViewInject(R.id.tv_body_oxygen) private TextView tvBodyOxygen;
+    @ViewInject(R.id.tv_pulse_rate)
+    private TextView tvPulseRate;
+    @ViewInject(R.id.tv_body_oxygen)
+    private TextView tvBodyOxygen;
 
     private TextView tvAge;
     private TextView tvName;
@@ -65,10 +67,13 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private Button btnNext;
     private Button btnSkip;
     private Button btnRepeat;
-    
-    @ViewInject(R.id.btn_start_test) private Button btnStartTest;
-    @ViewInject(R.id.btn_connect_device) private Button btnConnectDevice;
-    @ViewInject(R.id.btn_disconnect_device) private Button btnDisconnectDevice;
+
+    @ViewInject(R.id.btn_start_test)
+    private Button btnStartTest;
+    @ViewInject(R.id.btn_connect_device)
+    private Button btnConnectDevice;
+    @ViewInject(R.id.btn_disconnect_device)
+    private Button btnDisconnectDevice;
 
     private C208Invoker c208Invoker;
     private TextToSpeech textToSpeech;
@@ -123,17 +128,21 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         startTextToSpeech(status);
     }
 
+    @Override
+    public void onBackPressed() {
+    }
+
     // endregion
 
     // region Initialization methods
 
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_pulse_oximeter_main);
 
         ViewUtils.inject(this);
 
         c208Invoker = new C208Invoker(this);
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
         macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
         txt = "Put Finger inside the Device and Click Start Test Button";
@@ -154,7 +163,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         tvWeight = findViewById(R.id.tv_header_weight);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
 
-        btnNext = findViewById(R.id.btn_next);
+        btnNext = findViewById(R.id.btn_Next);
         btnSkip = findViewById(R.id.btn_skip);
         btnRepeat = findViewById(R.id.btn_repeat);
     }
@@ -162,7 +171,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         tvHeight.setOnClickListener(view -> handleHeight());
         tvWeight.setOnClickListener(view -> handleWeight());
         tvTemperature.setOnClickListener(view -> handleTemperature());
@@ -185,7 +194,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         btnDisconnectDevice.setOnClickListener(view -> disconnectDevice());
     }
 
-    private void initializeData(){
+    private void initializeData() {
         tvName.setText("Name : " + shared.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + shared.getString(Constant.Fields.GENDER, ""));
         tvAge.setText("DOB : " + shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
@@ -197,10 +206,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     // region Logical methods
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -217,20 +225,19 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         /* close the textToSpeech engine to avoid the runtime exception from it */
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -240,28 +247,28 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void handleHeight(){
+    private void handleHeight() {
         context.startActivity(new Intent(this, HeightActivity.class));
     }
 
     /**
      *
      */
-    private void handleWeight(){
+    private void handleWeight() {
         context.startActivity(new Intent(this, ActofitMainActivity.class));
     }
 
     /**
      *
      */
-    private void handleTemperature(){
+    private void handleTemperature() {
         context.startActivity(new Intent(this, ThermometerScreen.class));
     }
 
     /**
      *
      */
-    private void handleRepeat(){
+    private void handleRepeat() {
         tvBodyOxygen.setText("spo");
         tvPulseRate.setText(R.string.pr);
     }
@@ -269,7 +276,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void bindDevice(){
+    private void bindDevice() {
         progressDialog = Tools.progressDialog(MainActivity.this);
 
         c208Invoker.bindDevice(new C208BindDeviceListener() {
@@ -320,7 +327,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void connectDevice(){
+    private void connectDevice() {
         if ("".equals(macAddress)) {
             Toast.makeText(this, "Please bind the device first！！", Toast.LENGTH_SHORT).show();
             return;
@@ -362,12 +369,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void disconnectDevice(){
+    private void disconnectDevice() {
         c208Invoker.disconnectDevice(() -> {
         });
     }
 
-    private void writeToSharedPreference(String preferenceName, String key, String value){
+    private void writeToSharedPreference(String preferenceName, String key, String value) {
         SharedPreferences sharedPreference = getSharedPreferences(preferenceName, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreference.edit();
         editor.putString(key, value);

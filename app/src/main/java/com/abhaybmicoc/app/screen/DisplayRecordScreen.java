@@ -113,7 +113,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         tvFatFreeWeight = findViewById(R.id.tv_fat_free_weight);
         tvSkeletalMuscle = findViewById(R.id.tv_skeletel_muscle);
 
-        btnBack = findViewById(R.id.btn_next);
+        btnBack = findViewById(R.id.btn_skip);
     }
 
     /**

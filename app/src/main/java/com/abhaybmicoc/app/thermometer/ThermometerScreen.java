@@ -38,7 +38,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.OutputStream;
-import java.io.DataInputStream;
 import java.nio.charset.Charset;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
@@ -48,7 +47,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     Context context = ThermometerScreen.this;
 
-    private String str  = "";
+    private String str = "";
     private String strReceiveData = "";
 
     private String message;
@@ -152,10 +151,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     // region Initialization data
 
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_main_temperature);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -177,7 +176,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
 
-        btnBaud = findViewById(R.id.btn_next);
+        btnBaud = findViewById(R.id.btn_skip);
 
         etTemperature.setVisibility(View.VISIBLE);
 
@@ -189,7 +188,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         spinner.setAdapter(adapterDevices);
     }
 
-    private void setupEvents(){
+    private void setupEvents() {
         /* Add event for top weight and height */
         tvHeight.setOnClickListener(view -> {
             context.startActivity(new Intent(this, HeightActivity.class));
@@ -213,7 +212,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         });
     }
 
-    private void initializeData(){
+    private void initializeData() {
         sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         strConnect = (String) getText(R.string.connect);
@@ -241,9 +240,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         }
     }
 
-    private void handleBaud(){
-        if(etTemperature.getText().length() > 0) {
-            if(etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
+    private void handleBaud() {
+        if (etTemperature.getText().length() > 0) {
+            if (etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
                 SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
@@ -259,12 +258,12 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                 startActivity(objpulse);
                 finish();
-            }else{
-                Toast.makeText(context, "Please Enter temprature in valid format", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Please Enter temperature in valid format", Toast.LENGTH_SHORT).show();
             }
-        }else{
-            Toast.makeText(ThermometerScreen.this, "Enter Manual Temprature", Toast.LENGTH_SHORT).show();
-            txtSpeak = "Please Enter Body Temprature Manually";
+        } else {
+            Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
+            txtSpeak = "Please Enter Body temperature Manually";
             speakOut(txtSpeak);
         }
     }
@@ -323,7 +322,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void getTemperature(){
+    private void getTemperature() {
         if (strConnect == "Connect") {
             Toast.makeText(ThermometerScreen.this, "Connecting to device...", Toast.LENGTH_SHORT).show();
 
@@ -356,7 +355,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void storeBluetoothDevices(){
+    private void storeBluetoothDevices() {
         Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
 
         if (devices != null && devices.size() > 0) {
@@ -368,7 +367,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                     sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
 
-                    if(sharedPreferenceBluetoothAddress.getString("hcthermometer","").equalsIgnoreCase("")){
+                    if (sharedPreferenceBluetoothAddress.getString("hcthermometer", "").equalsIgnoreCase("")) {
                         editor.putString("hcthermometer", device.getAddress());
                         editor.commit();
                     }
@@ -378,7 +377,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     /**
-     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -387,7 +385,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (resultCode == -1) {
             Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
 
-            if(devices != null && devices.size() > 0) {
+            if (devices != null && devices.size() > 0) {
                 listLinkedDevices = new ArrayList();
                 listDeviceAddresses = new ArrayList();
 
@@ -409,7 +407,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void freeConnections(){
+    private void freeConnections() {
         closeBluetooth();
         stopTextToSpeech();
     }
@@ -417,7 +415,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void closeBluetooth(){
+    private void closeBluetooth() {
         if (strConnect.equals("Disconnect")) {
             strEnabled = "false";
             strConnect = "Connect";
@@ -431,7 +429,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -439,10 +436,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -460,14 +456,14 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
@@ -502,7 +498,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             bluetoothDevice = bluetoothAdapter.getRemoteDevice(params[0]);
             try {
                 socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                if(!socket.isConnected()){
+                if (!socket.isConnected()) {
                     socket.connect();
                 }
 
@@ -518,7 +514,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         /* access modifiers changed from: protected */
         public void onPostExecute(String result) {
-            if(progressDialog.isShowing())
+            if (progressDialog.isShowing())
                 progressDialog.dismiss();
 
             String message = result;
@@ -538,17 +534,17 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
                 new ThermometerScreen.Receiver().execute(new String[]{strEnabled});
             } else {
-                if(connectTryCount > ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
+                if (connectTryCount > ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
                     showCannotConnectToDevice();
-                }else{
-                    try{
+                } else {
+                    try {
                         Thread.sleep(CONNECT_TRY_PAUSE_MILLISECONDS);
 
                         /* Increase connection try count and try to connect */
                         connectTryCount++;
 
                         connectToDevice();
-                    }catch(Exception ex){
+                    } catch (Exception ex) {
 
                         showCannotConnectToDevice();
                     }
@@ -580,7 +576,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 } catch (IOException e) {
                     message = "";
                     strEnabled = "false";
-                    ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground()","Failed to read bytes data");
+                    ErrorUtils.logErrors(e, "HeightActivity.java", "doInBackground()", "Failed to read bytes data");
                 }
 
                 publishProgress(new String[]{message, strEnabled});
@@ -599,7 +595,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
             strReceiveData += str;
 
-            etTemperature.setText(""+strReceiveData);
+            etTemperature.setText("" + strReceiveData);
 
             strReceiveData = "";
 
@@ -620,6 +616,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     // endregion

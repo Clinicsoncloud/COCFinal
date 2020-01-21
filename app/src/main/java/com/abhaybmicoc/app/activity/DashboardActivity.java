@@ -31,7 +31,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.graphics.drawable.ColorDrawable;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.MeasuDataManager;
@@ -109,8 +108,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private Dialog progress;
 
     private Button btnNext;
-    private Button btnStart;
-    private Button btnRepeat;
 
     private Handler uiThreadHandler = new Handler();
 
@@ -188,7 +185,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     // region Initialization methods
 
-    private void setupUI(){
+    private void setupUI() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         setContentView(R.layout.and_dashboard_new);
@@ -223,9 +220,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             db = new DataBase(this);
         }
 
-        btnNext = findViewById(R.id.btn_next);
-        btnStart = findViewById(R.id.btn_start);
-        btnRepeat = findViewById(R.id.btn_repeat);
+        btnNext = findViewById(R.id.btn_skip);
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
@@ -238,35 +233,25 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
         db.deleteBpData(this);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
     }
 
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         tvHeight.setOnClickListener(view -> context.startActivity(new Intent(this, HeightActivity.class)));
         tvOximeter.setOnClickListener(view -> context.startActivity(new Intent(this, MainActivity.class)));
         tvWeight.setOnClickListener(view -> context.startActivity(new Intent(this, ActofitMainActivity.class)));
         tvTemperature.setOnClickListener(view -> context.startActivity(new Intent(this, ThermometerScreen.class)));
 
         btnNext.setOnClickListener(v -> {
-            try{
+            try {
                 Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
                 startActivity(objIntent);
                 finish();
-            }catch (Exception e){}
-        });
-
-        btnStart.setOnClickListener(v -> {
-            pd = Tools.kHudDialog(DashboardActivity.this);
-            pd.setProgress(40);
-        });
-
-        btnRepeat.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.setAction(BleReceivedService.TYPE_GATT_CONNECTED);
-            sendBroadcast(intent);
+            } catch (Exception e) {
+            }
         });
 
         rightArrow.setOnClickListener(view -> {
@@ -293,7 +278,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     /**
      *
      */
-    private void initializeData(){
+    private void initializeData() {
         txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
         speakOut(txt);
 
@@ -314,7 +299,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     // region Logical methods
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -322,10 +306,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -343,19 +326,18 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     /**
-     *
      * @param bytes
      * @return
      */
@@ -365,7 +347,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     /**
-     * 
      * @param date
      * @return
      */
@@ -389,7 +370,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private void doStartService() {
-        Log.e("inside","doStartService");
+        Log.e("inside", "doStartService");
         Intent intent1 = new Intent(this, BleReceivedService.class);
         startService(intent1);
         if (!mIsBleReceiver) {
@@ -403,7 +384,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private void doStopService() {
-        Log.e("inside","doStopService");
+        Log.e("inside", "doStopService");
         if (mIsBleReceiver) {
             unregisterReceiver(bleServiceReceiver);
             mIsBleReceiver = false;
@@ -434,10 +415,10 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                     //Check if its 651 or 352
                     if (name.contains("651")) {
                         //This is BP
-                        Log.e("bpDevice_condition","");
+                        Log.e("bpDevice_condition", "");
                         if (!pairingDevices.contains("bpDevice")) {
                             pairedDeviceList.add("bpDevice");
-                            Log.e("bpDevice_condition","");
+                            Log.e("bpDevice_condition", "");
                         }
 
                     } else if (name.contains("352")) {
@@ -472,8 +453,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     /**
      *
      */
-    private void enableBluetooth(){
-        if(checkIfDeviceIsPaired()) {
+    private void enableBluetooth() {
+        if (checkIfDeviceIsPaired()) {
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
 
             if (measuDataManager == null) {
@@ -531,15 +512,20 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     }
 
     private void refreshBloodPressureLayout() {
+
+
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
 
         Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_BP);
 
         boolean isExistData = (data != null);
 
-        if (isExistData)
-            layoutBloodPressure.setData(data);
+        if (isExistData) {
 
+            btnNext.setText("Next");
+            btnNext.setBackground(getResources().getDrawable(R.drawable.greenback));
+            layoutBloodPressure.setData(data);
+        }
         layoutBloodPressure.setHide(!isExistData);
     }
 
@@ -622,7 +608,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             bindService(new Intent(DashboardActivity.this,
                     BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
             isBindBleReceivedService = true;
-            Log.e("inside_condition","dobindBleReceivedService");
+            Log.e("inside_condition", "dobindBleReceivedService");
         }
     }
 
@@ -729,7 +715,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             stopScan();
     }
 
-    private void clearDataAndServices(){
+    private void clearDataAndServices() {
         dismissIndicator();
         doStopService();
         unregisterReceiver(mMeasudataUpdateReceiver);
@@ -1130,11 +1116,11 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         public void onReceive(Context context, Intent intent) {
             Bundle intentBundle = intent.getExtras();
             String type = intent.getExtras().getString(BleReceivedService.EXTRA_TYPE);
-            Log.e("onReceive_intentAction",""+intent.getExtras().getString(BleReceivedService.EXTRA_TYPE));
-            Log.e("onReceive_Type"," = "+BleReceivedService.EXTRA_TYPE);
+            Log.e("onReceive_intentAction", "" + intent.getExtras().getString(BleReceivedService.EXTRA_TYPE));
+            Log.e("onReceive_Type", " = " + BleReceivedService.EXTRA_TYPE);
             if (BleReceivedService.TYPE_GATT_CONNECTED.equals(type)) {
                 linearContainer.setVisibility(View.VISIBLE);
-                Log.e("inside","onReceive_GATT_CONNECTED");
+                Log.e("inside", "onReceive_GATT_CONNECTED");
 
                 try {
                     pd.dismiss();
@@ -1147,7 +1133,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 setDateTimeDelay = Long.MIN_VALUE;
                 indicationDelay = Long.MIN_VALUE;
             } else if (BleReceivedService.TYPE_GATT_DISCONNECTED.equals(type)) {
-                Log.e("inside","onReceive_GATT_DISCONNECTED");
+                Log.e("inside", "onReceive_GATT_DISCONNECTED");
                 dismissIndicator();
                 if (shouldStartConnectDevice) {
                     linearContainer.setVisibility(View.VISIBLE);
@@ -1168,7 +1154,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                     }, 80L);
                 }
             } else if (BleReceivedService.TYPE_GATT_ERROR.equals(type)) {
-                Log.e("inside","onReceive_GATT_ERROR");
+                Log.e("inside", "onReceive_GATT_ERROR");
                 int status = intent.getExtras().getInt(BleReceivedService.EXTRA_STATUS);
                 if (status == 19) {
                     return;
@@ -1197,7 +1183,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 }
             } else {
                 if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
-                    Log.e("inside","onReceive_GATT_DISCOVERED");
+                    Log.e("inside", "onReceive_GATT_DISCOVERED");
                     if (shouldStartConnectDevice) {
                         if (BleReceivedService.getInstance() != null) {
 
@@ -1353,6 +1339,10 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             refreshArrowVisible();
         }
     };
+
+    @Override
+    public void onBackPressed() {
+    }
 
     // endregion
 }

@@ -90,7 +90,7 @@ public class HeightScreen extends AppCompatActivity implements View.OnClickListe
     }
 
     public void init() {
-        btnnext = findViewById(R.id.btn_next);
+        btnnext = findViewById(R.id.btn_skip);
         //  etManualheight = findViewById(R.id.etManualheight);
         txtheight = findViewById(R.id.txtheight);
         btnnext.setOnClickListener(this);
@@ -134,7 +134,7 @@ public class HeightScreen extends AppCompatActivity implements View.OnClickListe
                 box9600.setChecked(true);
         });
 
-        Button baudrateButton = findViewById(R.id.btn_next);
+        Button baudrateButton = findViewById(R.id.btn_skip);
         baudrateButton.setOnClickListener(v -> {
             if (box9600.isChecked())
                 HeightUsbService.changeBaudRate(9600);
@@ -165,7 +165,7 @@ public class HeightScreen extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_next) {
+        if (v.getId() == R.id.btn_skip) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
