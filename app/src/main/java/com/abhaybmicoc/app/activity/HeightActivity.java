@@ -497,7 +497,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
      *
      */
     private void writeToSharedPreferences(String key, String value){
-        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
 
         SharedPreferences.Editor editor = sharedPreference.edit();
         editor.putString(key, value);

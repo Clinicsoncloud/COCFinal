@@ -118,7 +118,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float healthScore = intent.getFloatExtra("helthscore", 0f);
         float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
 
-        float height = Float.parseFloat(getIntent().getStringExtra("height"));
+        int height = (int) Float.parseFloat(getIntent().getStringExtra("height"));
 
         try {
             sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);

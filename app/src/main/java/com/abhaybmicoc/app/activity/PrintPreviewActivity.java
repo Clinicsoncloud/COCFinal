@@ -1569,21 +1569,22 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private String getPrintText() {
-        String str = "" + "  " + "Clinics On Cloud" + "" + "\n" +
-                     "Name : {name}\n" +
-                     "Age : {age}  Gender : {gender}\n" +
+        String str = "" + "    " + "Clinics On Cloud" + "" + "\n\n" +
+                     "Name: {name}\n" +
+                     "Age : {age}  Gender: {gender}\n" +
                      "{currentDate}  {currentTime} \n" +
                      "-----------------------\n" +
                      "Height : {height} cm\n" +
-                     "Weight : {weight} Kg\n" +
+                     "Weight : {weight} kg\n" +
                      "[Normal Range]:\n" +
-                     " {standardWeightRangeFrom} - {standardWeightRangeTo} Kg\n" +
+                     "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
                      "BMI : {bmi}\n" +
-                     "[Normal Range]: 18.5 - 25\n" +
+                     "[Normal Range]: \n" +
+                     "18.5 - 25\n" +
                      "-----------------------\n" +
                      "Body Fat : {bodyFat}\n" +
-                     "[Normal Range] : " +
-                     "{standardBodyFat}\n" +
+                     "[Normal Range]: \n" +
+                     "{standardBodyFat}\n\n" +
                      "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
                      "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
                      "[Normal Range]: \n" +
@@ -1594,26 +1595,31 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "[Normal Range]: \n" +
                      "{standardBodyWater}\n\n" +
                      "Skeletal Muscle : {skeletalMuscle}\n" +
-                     "[Normal Range]: " +
+                     "[Normal Range]: \n" +
                      "{standardSkeletalMuscle}\n\n" +
                      "Muscle Mass : {muscleMass}\n" +
-                     "[Normal Range]: {standardMuscleMass}\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardMuscleMass}\n\n" +
                      "Bone Mass : {boneMass}\n" +
                      "[Normal Range]: \n" +
                      "{standardBoneMass}\n\n" +
                      "Protein : {protein}\n" +
-                     "[Normal Range]: 16-18(%) \n\n" +
+                     "[Normal Range]: \n" +
+                     "16-18(%) \n\n" +
                      "BMR : {bmr}\n" +
-                     "[Normal Range]: \n > = {standardMetabolism} Kcal\n\n" +
+                     "[Normal Range]: \n " +
+                     "> ={standardMetabolism} Kcal\n\n" +
                      "Physique: {physique}\n\n" +
                      "Meta Age : {metaAge} yrs\n\n" +
                      "Health Score : {healthScore}\n\n" +
                      "-----------------------\n" +
                      "Blood Glucose : {sugar} mg/dl\n" +
-                     "[Normal Range]: \n > = {standardSugar} mg/dl\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardSugar}\n\n" +
                      "-----------------------\n" +
                      "Hemoglobin : {hemoglobin} g/dl\n" +
-                    "[Normal Range]: \n > = {standardHemoglobin} g/dl\n\n" +
+                     "[Normal Range]: \n" +
+                     "{standardHemoglobin}\n\n" +
                      "-----------------------\n" +
                      "Blood Pressure : \n" +
                      "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
@@ -1625,7 +1631,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "Blood Oxygen : {bloodOxygen} %" + "\n" +
                      "[Normal Range]: >94%\n" +
                      "Pulse Rate: {pulseRate} bpm\n" +
-                     "[Normal Range]: 60-100bpm\n" +
+                     "[Normal Range]: \n" +
+                     "60-100bpm\n" +
                      "-----------------------\n" +
                      "Temperature : {temperature} F\n" +
                      "[Normal Range]: 97-99 F\n" +
@@ -1634,7 +1641,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "   Above results are\n" +
                      "       indicative\n"+
                      "  figure,don't follow it\n"+
-                     "   without consulting the\n"+
+                     "   without consulting a\n"+
                      "        doctor\n\n\n\n\n\n\n";
 
         str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
