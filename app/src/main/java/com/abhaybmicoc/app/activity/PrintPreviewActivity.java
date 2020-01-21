@@ -1608,7 +1608,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                      "16-18(%) \n\n" +
                      "BMR : {bmr}\n" +
                      "[Normal Range]: \n " +
-                     "{standardMetabolism} Kcal\n\n" +
+                     "> ={standardMetabolism} Kcal\n\n" +
                      "Physique: {physique}\n\n" +
                      "Meta Age : {metaAge} yrs\n\n" +
                      "Health Score : {healthScore}\n\n" +
