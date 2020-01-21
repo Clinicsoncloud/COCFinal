@@ -429,24 +429,11 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
                         Log.e("bpDevice_condition","");
                         if (!pairingDevices.contains("bpDevice")) {
                             pairedDeviceList.add("bpDevice");
-                            Log.e("bpDevice_condition","");
+                            Log.e("bpDevice_condition",""+pairedDeviceList);
                         }
-
-                    } else if (name.contains("352")) {
-                        //This is weight scale
-                        if (!pairingDevices.contains("wsDevice")) {
-                            pairedDeviceList.add("wsDevice");
-                        }
-
-                    }
-                } else if (name.contains("UW-302")) {
-                    //This is activity tracker
-                    if (!pairingDevices.contains("activityDevice")) {
-                        pairedDeviceList.add("activityDevice");
                     }
                 }
             }
-
             return true;
         }
     }
@@ -505,27 +492,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         }
     }
 
-    private void refreshActivityMonitorLayout() {
-        Log.e("refreshActivityMonitor","firstLog");
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            activitymonitor.setHide(false);
-            activitymonitor.setData(data);
-        } else {
-            if ((pairedDeviceList.size() == 0) ||
-                    !(pairedDeviceList.contains("activityDevice"))) {
-
-                activitymonitor.setHide(!isExistData);
-            } else {
-                activitymonitor.setDataNull(); //Activity device has been paired
-            }
-        }
-    }
 
     private void refreshBloodPressureLayout() {
 
@@ -543,35 +509,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         layoutBloodPressure.setHide(!isExistData);
     }
 
-    private void refreshWeightScaleLayout() {
 
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
 
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            weightscale.setData(data);
-            weightscale.setVisibility(View.VISIBLE);
-        }
-
-        weightscale.setHide(!isExistData);
-    }
-
-    private void refreshThermometerLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            thermometer.setData(data);
-        }
-
-        thermometer.setHide(!isExistData);
-    }
 
     private void refreshArrowVisible() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
@@ -583,20 +522,11 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     private void refreshDisplay(int dataType) {
         if (dataType == MeasuDataManager.MEASU_DATA_TYPE_BP) {
             refreshBloodPressureLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_WS) {
-            refreshWeightScaleLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_TH) {
-            refreshThermometerLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_AM) {
-            refreshActivityMonitorLayout();
         }
     }
 
     private void refreshDisplay() {
-        refreshActivityMonitorLayout();
         refreshBloodPressureLayout();
-        refreshWeightScaleLayout();
-        refreshThermometerLayout();
         refreshArrowVisible();
     }
 
@@ -1336,14 +1266,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
-                refreshActivityMonitorLayout();
-            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
+            if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
                 refreshBloodPressureLayout();
-            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
-                refreshWeightScaleLayout();
-            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
-                refreshThermometerLayout();
             }
 
             refreshArrowVisible();
