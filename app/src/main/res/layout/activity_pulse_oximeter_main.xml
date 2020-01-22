@@ -11,10 +11,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_header_height"
@@ -186,46 +186,46 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:visibility="gone"
             android:layout_marginEnd="300dp"
             android:layout_marginRight="300dp"
-            android:src="@mipmap/applogo" />
+            android:src="@mipmap/applogo"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:weightSum="3"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin20"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@mipmap/pulseimage"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_height="wrap_content" />
+                    android:src="@mipmap/pulseimage" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_body_oxygen"
                     android:layout_width="400dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
-                    android:text="spo"
+                    android:layout_gravity="center"
                     android:background="@drawable/rectangle"
                     android:gravity="center"
-                    android:layout_gravity="center"
+                    android:text="spo"
                     android:textColor="@color/white"
                     android:textSize="25sp" />
 
@@ -235,17 +235,18 @@
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_body_oxygen"
                     android:layout_alignStart="@+id/tv_body_oxygen"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/pr"
-                    android:gravity="center"
-                    android:background="@drawable/rectangle"
                     android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
+                    android:text="@string/pr"
                     android:textColor="@color/white"
                     android:textSize="25sp" />
 
 
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layout"
             android:layout_width="wrap_content"
@@ -259,11 +260,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="80dp"
+                android:background="@drawable/greenback"
+                android:text="@string/connectDevice"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:visibility="gone"
-                android:background="@drawable/greenback"
-                android:text="@string/connectDevice" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -278,32 +279,32 @@
                 android:id="@+id/btn_disconnect_device"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:background="@drawable/greenback"
+                android:text="@string/disconnect"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:visibility="gone"
-                android:background="@drawable/greenback"
-                android:text="@string/disconnect" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_start_test"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/greenback"
-                android:text="@string/bindDevice" />
+                android:gravity="center"
+                android:text="@string/bindDevice"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/linearfive"
             android:layout_gravity="center"
             android:layout_weight="1"
             android:gravity="center"
-            android:layout_below="@+id/linearfive"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -311,43 +312,43 @@
                 android:id="@+id/btn_repeat"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/repeat"
-                android:text="REPEAT"
                 android:gravity="center"
-                android:visibility="gone"
-                android:layout_gravity="center"
+                android:text="REPEAT"
                 android:textColor="@color/white"
                 android:textSize="35sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_skip"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/repeat"
-                android:text="SKIP"
                 android:gravity="center"
-                android:visibility="gone"
-                android:layout_gravity="center"
+                android:text="SKIP"
                 android:textColor="@color/white"
                 android:textSize="35sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
 
             <Button
                 android:id="@+id/btn_Next"
                 android:layout_width="700dp"
                 android:layout_height="50dp"
-                android:layout_margin="10dp"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_margin="10dp"
                 android:background="@drawable/repeat"
-                android:text="NEXT"
+                android:gravity="center"
+                android:text="Skip"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 android:textStyle="bold" />

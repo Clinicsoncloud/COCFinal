@@ -88,9 +88,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             super.handleMessage(msg);
             switch (msg.what) {
                 case RECEIVE_SPO_PR:
+
+                    Log.e("Invoker_Log", "  " + ": 4 :  " + progressDialog.isShowing());
+
                     tvPulseRate.setText("Pulse rate: " + msg.arg2);
                     tvBodyOxygen.setText("Body Oxygen：" + msg.arg1);
+                    btnNext.setText("Next");
 
+                    progressDialog.dismiss();
                     writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE, String.valueOf(msg.arg2));
                     writeToSharedPreference(ApiUtils.PREFERENCE_PULSE, Constant.Fields.BLOOD_OXYGEN, String.valueOf(msg.arg1));
                     break;
@@ -121,6 +126,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onResume() {
         super.onResume();
+
+        Log.e("Invoker_Log", " Resume ");
     }
 
     @Override
@@ -279,11 +286,17 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private void bindDevice() {
         progressDialog = Tools.progressDialog(MainActivity.this);
 
+        tvPulseRate.setText("Pulse rate");
+        tvBodyOxygen.setText("spo");
+
+        btnNext.setText("Next");
+
+
         c208Invoker.bindDevice(new C208BindDeviceListener() {
             @Override
             public void onDataResponse(int spo, int pr) {
-                progressDialog.dismiss();
 
+                Log.e("Invoker_Log", "1");
                 flag = false;
 
                 Message message = new Message();
@@ -296,6 +309,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onError(String message) {
+                Log.e("Invoker_Log", "3");
+                Toast.makeText(context, "Test unsuccessful, try again.", Toast.LENGTH_SHORT).show();
+                btnNext.setText("Skip");
                 progressDialog.dismiss();
             }
 
@@ -312,7 +328,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onBindDeviceFail(String failMessage) {
-                progressDialog.dismiss();
+
+                Log.e("Invoker_Log", " Fail");
             }
         });
     }
@@ -339,6 +356,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         c208Invoker.connectDevice(device, new C208ConnectDeviceListener() {
             @Override
             public void onDataResponse(int spo, int pr) {
+
+                Log.e("Invoker_Log", "2");
+
                 Message message = new Message();
                 message.arg1 = spo;
                 message.arg2 = pr;
