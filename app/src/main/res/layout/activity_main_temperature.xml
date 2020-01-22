@@ -67,7 +67,6 @@
             android:textSize="22sp" />
 
 
-
         <TextView
             android:id="@+id/tv_header_bloodpressure"
             android:layout_width="wrap_content"
@@ -90,8 +89,8 @@
             android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:text="Blood Sugar"
             android:padding="@dimen/pad5"
+            android:text="Blood Sugar"
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -179,6 +178,7 @@
         android:layout_gravity="center"
         android:layout_weight="1"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -192,19 +192,20 @@
 
             <Button
                 android:id="@+id/btn_connect_temperature"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/repeat"
-                android:layout_weight="0"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
                 android:layout_margin="5dp"
-                android:textColor="@color/white"
-                android:text="Connect" />
+                android:layout_weight="0"
+                android:background="@drawable/grayback"
+                android:text="Connecting..."
+                android:textColor="@color/white" />
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="40dp"
+            android:orientation="horizontal"
             android:weightSum="3">
 
             <LinearLayout
@@ -252,43 +253,45 @@
                         android:layout_height="60dp"
                         android:background="@drawable/rectangle"
                         android:ems="10"
-                        android:inputType="text"
                         android:gravity="center"
+                        android:inputType="text"
                         android:textColor="@color/white">
+
                         <requestFocus />
                     </EditText>
+
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:visibility="gone"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/celcius"/>
+                        android:src="@drawable/celcius"
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text=" Ferenhit"
-                        android:visibility="visible"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/white" />
+                        android:textColorHint="@color/white"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_get_temperature"
-                    android:background="@drawable/repeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:visibility="gone"
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:layout_marginRight="30dp"
+                    android:background="@drawable/repeat"
+                    android:text="Get Temprature"
                     android:textAllCaps="false"
-                    android:text="Get Temprature" />
+                    android:textColor="@color/white"
+                    android:textSize="22sp"
+                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/checkBox"
@@ -316,19 +319,20 @@
 
 
         </LinearLayout>
+
         <Button
             android:id="@+id/btn_skip"
             android:layout_width="700dp"
             android:layout_height="50dp"
-            android:layout_marginTop="50dp"
             android:layout_below="@+id/checkBox"
             android:layout_gravity="center"
-            android:visibility="visible"
+            android:layout_marginTop="50dp"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:text="Next"
             android:textColor="@color/white"
-            android:textSize="25sp" />
+            android:textSize="25sp"
+            android:visibility="visible" />
 
     </LinearLayout>
 
