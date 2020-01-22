@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.glucose;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -185,6 +186,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         } else if (mConnected) {
             syncLib.startReceiver();
         }
+
+        CheckVisibility.activityResumed();
     }
 
     @Override
@@ -231,6 +234,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         } catch (Exception e) {
             System.out.println("onPauseException" + e.getMessage());
         }
+
+        CheckVisibility.activityPaused();
     }
 
     @Override
@@ -633,6 +638,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 /* create alert dialog */
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 /* show alert dialog */
+                if(!((Activity)context).isFinishing())
                 alertDialog.show();
                 alertDialogBuilder.setCancelable(false);
             }
