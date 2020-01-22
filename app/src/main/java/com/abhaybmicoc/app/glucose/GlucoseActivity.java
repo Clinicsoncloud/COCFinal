@@ -186,8 +186,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         } else if (mConnected) {
             syncLib.startReceiver();
         }
-
-        CheckVisibility.activityResumed();
     }
 
     @Override
@@ -235,7 +233,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             System.out.println("onPauseException" + e.getMessage());
         }
 
-        CheckVisibility.activityPaused();
     }
 
     @Override
