@@ -75,6 +75,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     private TextView mtvDeviceInfo = null;
     private TextView tvScanbt;
     private LinearLayout mllDeviceCtrl = null;
+    private LinearLayout llSelectedDevicesLayout = null;
     private Button btnPair = null;
     private Button btnComm = null;
     private Button btnBack, btnScanbt, btnContinue;
@@ -166,8 +167,12 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
         mtvDeviceInfo = (TextView) findViewById(R.id.actMain_tv_device_info);
         mllDeviceCtrl = (LinearLayout) findViewById(R.id.actMain_ll_device_ctrl);
+        llSelectedDevicesLayout = (LinearLayout) findViewById(R.id.actMain_ll_SelectedDevicesLayout);
         btnPair = (Button) findViewById(R.id.actMain_btn_pair);
         btnComm = (Button) findViewById(R.id.actMain_btn_conn);
+
+
+        llSelectedDevicesLayout.setVisibility(View.GONE);
 
         tts = new TextToSpeech(getApplicationContext(), this);
 
@@ -298,6 +303,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 if (mhtDeviceInfo.get("BOND").equals(getString(R.string.actDiscovery_bond_nothing))) {
                     Log.e("SharedData", " :2: " + mhtDeviceInfo.get("BOND"));
 
+                    llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.VISIBLE);
                     btnComm.setVisibility(View.GONE);
 
@@ -308,6 +314,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
 
+                    llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
                     onClickBtnConn(btnComm);
@@ -378,12 +385,12 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 if (mhtDeviceInfo.get("BOND").equals(getString(R.string.actDiscovery_bond_nothing))) {
 
                     Log.e("DeviceConnect", " :1: " + data.getStringExtra("NAME") + "  :Bond:  " + data.getStringExtra("BOND"));
-
+                    llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.VISIBLE);
                     btnComm.setVisibility(View.GONE);
                 } else {
                     Log.e("DeviceConnect", " :2: " + data.getStringExtra("NAME") + "  :Bond:  " + data.getStringExtra("BOND"));
-
+                    llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
