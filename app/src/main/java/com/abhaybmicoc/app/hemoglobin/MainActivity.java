@@ -570,6 +570,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
+            btnConnect.setVisibility(View.GONE);
         } else {
             Log.e("ifConnected","false");
 
