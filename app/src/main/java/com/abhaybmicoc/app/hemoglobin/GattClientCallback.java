@@ -46,6 +46,7 @@ public class GattClientCallback extends BluetoothGattCallback {
         }
     }
 
+
     @Override
     public void onServicesDiscovered(BluetoothGatt gatt, int status) {
         super.onServicesDiscovered(gatt, status);
