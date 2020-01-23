@@ -339,7 +339,6 @@
                 android:textStyle="bold"
                 android:visibility="gone" />
 
-
             <Button
                 android:id="@+id/btn_Next"
                 android:layout_width="700dp"

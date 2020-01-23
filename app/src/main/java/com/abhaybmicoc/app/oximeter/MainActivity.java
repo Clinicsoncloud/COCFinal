@@ -8,8 +8,8 @@ import android.widget.Toast;
 import android.app.Activity;
 import android.widget.Button;
 import android.content.Intent;
-import android.widget.TextView;
 import android.content.Context;
+import android.widget.TextView;
 import android.app.ProgressDialog;
 import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
@@ -17,22 +17,20 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.utils.Constant;
+import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
+import com.choicemmed.c208blelibrary.utils.LogUtils;
+import com.lidroid.xutils.view.annotation.ViewInject;
 import com.abhaybmicoc.app.activity.DashboardActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-
-import com.lidroid.xutils.ViewUtils;
-import com.lidroid.xutils.view.annotation.ViewInject;
-
+import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
 import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
 import com.choicemmed.c208blelibrary.cmd.listener.C208ConnectDeviceListener;
-import com.choicemmed.c208blelibrary.utils.LogUtils;
 
 import java.util.Locale;
 
@@ -57,10 +55,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private TextView tvAge;
     private TextView tvName;
     private TextView tvGender;
-    private TextView tvMobileNumber;
     private TextView tvHeight;
     private TextView tvWeight;
     private TextView tvTemperature;
+    private TextView tvMobileNumber;
 
     private ProgressDialog progressDialog;
 
@@ -88,8 +86,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             super.handleMessage(msg);
             switch (msg.what) {
                 case RECEIVE_SPO_PR:
-
-                    Log.e("Invoker_Log", "  " + ": 4 :  " + progressDialog.isShowing());
 
                     tvPulseRate.setText("Pulse rate: " + msg.arg2);
                     tvBodyOxygen.setText("Body Oxygen：" + msg.arg1);
@@ -126,8 +122,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onResume() {
         super.onResume();
-
-        Log.e("Invoker_Log", " Resume ");
     }
 
     @Override
@@ -158,8 +152,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         this.setFinishOnTouchOutside(false);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-//        enableBlutooth();
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
@@ -285,19 +277,20 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      */
     private void bindDevice() {
         progressDialog = Tools.progressDialog(MainActivity.this);
+        progressDialog.setCancelable(false);
 
         tvPulseRate.setText("Pulse rate");
         tvBodyOxygen.setText("spo");
 
         btnNext.setText("Next");
 
-
         c208Invoker.bindDevice(new C208BindDeviceListener() {
+            /* This method is called when we receive data from device */
             @Override
             public void onDataResponse(int spo, int pr) {
-
-                Log.e("Invoker_Log", "1");
                 flag = false;
+
+                Log.e("Device_Connection", " : On Response :" + spo + "  : pr :  " + pr);
 
                 Message message = new Message();
                 message.arg1 = spo;
@@ -309,7 +302,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onError(String message) {
-                Log.e("Invoker_Log", "3");
+                Log.e("Device_Connection", " : On Error :" + message);
+
                 Toast.makeText(context, "Test unsuccessful, try again.", Toast.LENGTH_SHORT).show();
                 btnNext.setText("Skip");
                 progressDialog.dismiss();
@@ -317,19 +311,29 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onStateChanged(int oldState, int newState) {
+                Log.e("Device_Connection", " : Old State:" + oldState + " : New State :" + newState);
+
             }
 
             @Override
             public void onBindDeviceSuccess(C208Device c208Device) {
                 macAddress = c208Device.getDeviceMacAddress();
+                Log.e("Device_Connection", " : Bind Success:" + c208Device);
+
 
                 SharePreferenceUtil.put(MainActivity.this, MAC_ADDRESS_KEY, macAddress);
             }
 
             @Override
             public void onBindDeviceFail(String failMessage) {
+                Log.e("Device_Connection_Fail", " : Bind Fail: " + failMessage);
 
-                Log.e("Invoker_Log", " Fail");
+                // This case will call when device is not active
+                if (failMessage.equals("蓝牙绑定失败，请检查设备蓝牙是否可见！")) {
+                    Toast.makeText(context, "Device is not active, Check device and try again...", Toast.LENGTH_SHORT).show();
+                    btnNext.setText("Skip");
+                    progressDialog.dismiss();
+                }
             }
         });
     }
@@ -357,7 +361,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             @Override
             public void onDataResponse(int spo, int pr) {
 
-                Log.e("Invoker_Log", "2");
+                Log.e("Device_Connection", " : On Response 1:" + spo + "  : pr :  " + pr);
+
 
                 Message message = new Message();
                 message.arg1 = spo;
@@ -369,19 +374,34 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
             @Override
             public void onError(String message) {
+
+                Log.e("Device_Connection", " : On Error 1 :" + message);
+
             }
 
             @Override
             public void onStateChanged(int oldState, int newState) {
+
+                Log.e("Device_Connection", " : Old State 1 :" + oldState + " : New State :" + newState);
+
             }
 
             @Override
             public void onConnectedDeviceSuccess() {
+
+                Log.e("Device_Connection", " : On Success 1 :");
+
                 LogUtils.d(TAG, "onConnectedDeviceSuccess");
             }
 
             @Override
             public void onConnectedDeviceFail(String failMessage) {
+                Log.e("Device_Connection", " : Device Fail 1 :" + failMessage);
+                if (failMessage.equals("蓝牙绑定失败，请检查设备蓝牙是否可见！")) {
+
+                    btnNext.setText("Skip");
+                    progressDialog.dismiss();
+                }
             }
         });
     }
