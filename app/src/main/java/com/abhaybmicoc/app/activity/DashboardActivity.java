@@ -1,6 +1,8 @@
 package com.abhaybmicoc.app.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -87,13 +89,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private long setDateTimeDelay = Long.MIN_VALUE;
     private long indicationDelay = Long.MIN_VALUE;
 
-    private ThermometerDisplayDataLayout thermometer;
-    private WeightScaleDisplayDataLayout weightscale;
-    private ActivityMonitorDisplayDataLayout activitymonitor;
     private BloodPressureDispalyDataLayout layoutBloodPressure;
 
-    private FrameLayout leftArrow;
-    private FrameLayout rightArrow;
     private LinearLayout linearContainer;
 
     private TextView tvAge;
@@ -123,6 +120,10 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private TextToSpeech textToSpeech;
     private BluetoothDevice bluetoothDevice;
     private BluetoothAdapter mBluetoothAdapter;
+    private FrameLayout frameSteps;
+    private FrameLayout frameResult;
+
+    private TextView tvResultMsg;
 
     // endregion
 
@@ -195,26 +196,16 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
+        frameSteps = findViewById(R.id.frame_images);
+        frameResult = findViewById(R.id.frame_result);
+
         registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
 
         //Call function to get paired device
         checkIfDeviceIsPaired();
         doStartService();
 
-        weightscale = findViewById(R.id.llinear_wt);
-        thermometer = findViewById(R.id.llinear_tm);
-        activitymonitor = findViewById(R.id.llinear_am);
         layoutBloodPressure = findViewById(R.id.layout_bp);
-
-        // Arrows
-        rightArrow = findViewById(R.id.right_arrow);
-        rightArrow.setVisibility(View.INVISIBLE);
-
-        leftArrow = findViewById(R.id.left_arrow);
-        leftArrow.setVisibility(View.INVISIBLE);
-
-        TextView header = findViewById(R.id.header);
-        header.setText(R.string.header_dashboard);
 
         if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
             db = new DataBase(this);
@@ -226,6 +217,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
         tvMobileNumber = findViewById(R.id.tv_mobile_number);
+        tvResultMsg = findViewById(R.id.tv_result_msg);
 
         linearContainer = findViewById(R.id.linearContainer);
 
@@ -254,25 +246,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             }
         });
 
-        rightArrow.setOnClickListener(view -> {
-            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-            MeasuDataManager manager = appGlobal.getMeasuDataManager();
 
-            if (manager != null) {
-                manager.moveDatasToThePast();
-                refreshDisplay();
-            }
-        });
-
-        leftArrow.setOnClickListener(view -> {
-            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-            MeasuDataManager manager = appGlobal.getMeasuDataManager();
-
-            if (manager != null) {
-                manager.moveDatasToTheFuture();
-                refreshDisplay();
-            }
-        });
     }
 
     /**
@@ -490,27 +464,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
     }
 
-    private void refreshActivityMonitorLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            activitymonitor.setHide(false);
-            activitymonitor.setData(data);
-        } else {
-            if ((pairedDeviceList.size() == 0) ||
-                    !(pairedDeviceList.contains("activityDevice"))) {
-
-                activitymonitor.setHide(!isExistData);
-            } else {
-                activitymonitor.setDataNull(); //Activity device has been paired
-            }
-        }
-    }
-
     private void refreshBloodPressureLayout() {
 
 
@@ -521,69 +474,29 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         boolean isExistData = (data != null);
 
         if (isExistData) {
-
             btnNext.setText("Next");
+            frameSteps.setVisibility(View.GONE);
+            frameResult.setVisibility(View.VISIBLE);
+            tvResultMsg.setVisibility(View.GONE);
             btnNext.setBackground(getResources().getDrawable(R.drawable.greenback));
             layoutBloodPressure.setData(data);
         }
         layoutBloodPressure.setHide(!isExistData);
     }
 
-    private void refreshWeightScaleLayout() {
-
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            weightscale.setData(data);
-            weightscale.setVisibility(View.VISIBLE);
-        }
-
-        weightscale.setHide(!isExistData);
-    }
-
-    private void refreshThermometerLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            thermometer.setData(data);
-        }
-
-        thermometer.setHide(!isExistData);
-    }
 
     private void refreshArrowVisible() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        leftArrow.setVisibility((measuDataManager.isExistPastDatas()) ? View.VISIBLE : View.INVISIBLE);
-        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void refreshDisplay(int dataType) {
         if (dataType == MeasuDataManager.MEASU_DATA_TYPE_BP) {
             refreshBloodPressureLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_WS) {
-            refreshWeightScaleLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_TH) {
-            refreshThermometerLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_AM) {
-            refreshActivityMonitorLayout();
         }
     }
 
     private void refreshDisplay() {
-        refreshActivityMonitorLayout();
         refreshBloodPressureLayout();
-        refreshWeightScaleLayout();
-        refreshThermometerLayout();
-        refreshArrowVisible();
     }
 
     // 対象の項目の次のデータを表示
@@ -658,7 +571,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
         if (progress.isShowing())
             progress.dismiss();
-
 
         progress = null;
     }
@@ -1164,6 +1076,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                         if (!BleReceivedService.getInstance().isConnectedDevice()) {
                             shouldStartConnectDevice = false;
                             dismissIndicator();
+
+                            showAlertDialog();
+
                             doStartLeScan();
                             linearContainer.setVisibility(View.VISIBLE);
                             try {
@@ -1300,6 +1215,34 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
     };
 
+    private void showAlertDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+        alertDialogBuilder.setTitle("Not Connected");
+        alertDialogBuilder.setMessage("Device is not connected, Please try again by clicking on Reconnect").setCancelable(false)
+                .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        frameSteps.setVisibility(View.VISIBLE);
+                        frameResult.setVisibility(View.GONE);
+                        tvResultMsg.setVisibility(View.VISIBLE);
+                        btnNext.setText("Skip");
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        /* create alert dialog */
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        /* show alert dialog */
+        if (!((Activity) context).isFinishing())
+            alertDialog.show();
+        alertDialogBuilder.setCancelable(false);
+    }
+
     Runnable disableIndicationRunnable = new Runnable() {
         @Override
         public void run() {
@@ -1326,15 +1269,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
-                refreshActivityMonitorLayout();
-            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
+           if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
                 refreshBloodPressureLayout();
-            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
-                refreshWeightScaleLayout();
-            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
-                refreshThermometerLayout();
-            }
+           }
 
             refreshArrowVisible();
         }

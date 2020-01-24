@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
     android:background="@drawable/under_line_border_layout"
@@ -70,7 +71,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+   <!-- <LinearLayout
         android:id="@+id/linearContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -78,17 +79,18 @@
         android:layout_weight="1.0"
         android:orientation="horizontal"
         android:textColor="@android:color/transparent"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.0"
-            android:background="@android:color/transparent">
+            android:background="@drawable/rectangle">
 
             <include
                 android:id="@+id/value_layout_systolic"
                 layout="@layout/display_data_bloodpressure_value_layout" />
+
         </FrameLayout>
 
         <FrameLayout
@@ -110,6 +112,283 @@
                 android:id="@+id/value_layout_pulse"
                 layout="@layout/display_data_bloodpressure_value_layout" />
         </FrameLayout>
+
+    </LinearLayout>-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:id="@+id/linearContainer"
+        android:orientation="vertical"
+        android:background="@drawable/bgapp">
+
+        <LinearLayout
+            android:id="@+id/value_layout_systolic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150dp"
+            android:layout_marginRight="150dp"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <LinearLayout
+                android:id="@+id/layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="25dp"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:background="@drawable/rectangle">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    tools:ignore="Suspicious0dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_bp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:padding="5dp"
+                    tools:ignore="Suspicious0dp">
+                    <TextView
+                        android:id="@+id/tv_bloodpressure_title_sys"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="title"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_margin="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_value_sys"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Value"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_unit_sys"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unit"
+                            android:layout_marginLeft="5dp"
+                            android:textStyle="normal"
+                            android:textSize="25sp"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/value_layout_diastolic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="25dp"
+                android:orientation="horizontal"
+                android:layout_weight="1"
+                android:weightSum="2"
+                android:background="@drawable/rectangle">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    tools:ignore="Suspicious0dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_bp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:padding="10dp"
+                    tools:ignore="Suspicious0dp">
+                    <TextView
+                        android:id="@+id/tv_bloodpressure_title_diastolic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="title"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_margin="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_value_diasltolic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Value"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_unit_diastolic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unit"
+                            android:layout_marginLeft="5dp"
+                            android:textStyle="normal"
+                            android:textSize="25sp"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="150dp"
+            android:layout_marginRight="150dp"
+            android:padding="10dp">
+            <LinearLayout
+                android:id="@+id/value_layout_pulse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                android:layout_marginLeft="275dp"
+                android:layout_marginRight="275dp"
+                android:weightSum="2"
+                android:background="@drawable/rectangle">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.5"
+                    tools:ignore="Suspicious0dp">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icon_bp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    tools:ignore="Suspicious0dp">
+                    <TextView
+                        android:id="@+id/tv_bloodpressure_title_pulse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textSize="22sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="title"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:layout_margin="10dp">
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_value_pulse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Value"
+                            android:textSize="30sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/white" />
+
+                        <TextView
+                            android:id="@+id/tv_bloodpressure_unit_pulse"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Unit"
+                            android:layout_marginLeft="5dp"
+                            android:textStyle="normal"
+                            android:textSize="25sp"
+                            android:textColor="@color/white"/>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
 
     </LinearLayout>
 

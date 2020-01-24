@@ -63,19 +63,19 @@ public class BloodPressureDispalyDataLayout extends ADDisplayDataLinearLayout {
 		rightArrowImageView = (ImageView)findViewById(R.id.image_right_arrow);
 		
 		LinearLayout systolicLayout = (LinearLayout) findViewById(R.id.value_layout_systolic);
-		systolicValueTextView = (TextView)systolicLayout.findViewById(R.id.disp_data_bp_value_textview);
-		systolicUnitTextView = (TextView)systolicLayout.findViewById(R.id.disp_data_bp_unit_textview);
-		systolicTitleTextView = (TextView)systolicLayout.findViewById(R.id.disp_data_bp_title_textview);
+		systolicValueTextView = (TextView)systolicLayout.findViewById(R.id.tv_bloodpressure_value_sys);
+		systolicUnitTextView = (TextView)systolicLayout.findViewById(R.id.tv_bloodpressure_unit_sys);
+		systolicTitleTextView = (TextView)systolicLayout.findViewById(R.id.tv_bloodpressure_title_sys);
 		
 		LinearLayout diastolicLayout = (LinearLayout) findViewById(R.id.value_layout_diastolic);
-		diastolicValueTextView = (TextView)diastolicLayout.findViewById(R.id.disp_data_bp_value_textview);
-		diastolicUnitTextView = (TextView)diastolicLayout.findViewById(R.id.disp_data_bp_unit_textview);
-		diastolicTitleTextView = (TextView)diastolicLayout.findViewById(R.id.disp_data_bp_title_textview);
+		diastolicValueTextView = (TextView)diastolicLayout.findViewById(R.id.tv_bloodpressure_value_diasltolic);
+		diastolicUnitTextView = (TextView)diastolicLayout.findViewById(R.id.tv_bloodpressure_unit_diastolic);
+		diastolicTitleTextView = (TextView)diastolicLayout.findViewById(R.id.tv_bloodpressure_title_diastolic);
 		
 		LinearLayout pulseLayout = (LinearLayout) findViewById(R.id.value_layout_pulse);
-		pulseValueTextView = (TextView)pulseLayout.findViewById(R.id.disp_data_bp_value_textview);
-		pulseUnitTextView = (TextView)pulseLayout.findViewById(R.id.disp_data_bp_unit_textview);
-		pulseTitleTextView = (TextView)pulseLayout.findViewById(R.id.disp_data_bp_title_textview);
+		pulseValueTextView = (TextView)pulseLayout.findViewById(R.id.tv_bloodpressure_value_pulse);
+		pulseUnitTextView = (TextView)pulseLayout.findViewById(R.id.tv_bloodpressure_unit_pulse);
+		pulseTitleTextView = (TextView)pulseLayout.findViewById(R.id.tv_bloodpressure_title_pulse);
 		
 		Resources res = getContext().getResources();
 		systolicUnitTextView.setText("mmHg");
