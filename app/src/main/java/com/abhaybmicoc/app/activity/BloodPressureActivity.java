@@ -122,6 +122,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     private TextToSpeech textToSpeech;
     private BluetoothDevice bluetoothDevice;
     private BluetoothAdapter mBluetoothAdapter;
+    private FrameLayout frameLayout;
 
     // endregion
 
@@ -196,6 +197,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
         tvLabel = findViewById(R.id.tv_label);
+        
+        frameLayout = findViewById(R.id.frame_result);
 
         registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
 
@@ -203,9 +206,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         checkIfDeviceIsPaired();
         doStartService();
 
-        weightscale = findViewById(R.id.llinear_wt);
-        thermometer = findViewById(R.id.llinear_tm);
-        activitymonitor = findViewById(R.id.llinear_am);
         layoutBloodPressure = findViewById(R.id.layout_bp);
 
         // Arrows
@@ -503,9 +503,10 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
         boolean isExistData = (data != null);
 
-        if (isExistData)
+        if (isExistData) {
+            frameLayout.setVisibility(View.VISIBLE);
             layoutBloodPressure.setData(data);
-
+        }
         layoutBloodPressure.setHide(!isExistData);
     }
 
@@ -729,49 +730,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
     private void receivedData(String characteristicUuidString, Bundle bundle) {
         Log.e("receivedData","firstLog");
-        if (ADGattUUID.WeightScaleMeasurement.toString().equals(characteristicUuidString) ||
-                ADGattUUID.AndCustomWeightScaleMeasurement.toString().equals(characteristicUuidString)) {
-
-            double weight = bundle.getDouble(ADGattService.KEY_WEIGHT);
-            String units = bundle.getString(ADGattService.KEY_UNIT, ADSharedPreferences.DEFAULT_WEIGHT_SCALE_UNITS);
-
-            int year = bundle.getInt(ADGattService.KEY_YEAR);
-            int month = bundle.getInt(ADGattService.KEY_MONTH);
-            int day = bundle.getInt(ADGattService.KEY_DAY);
-            int hours = bundle.getInt(ADGattService.KEY_HOURS);
-            int minutes = bundle.getInt(ADGattService.KEY_MINUTES);
-            int seconds = bundle.getInt(ADGattService.KEY_SECONDS);
-
-            String weightString = String.format(Locale.getDefault(), "%.1f", weight);
-            String finalDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-            String finalTime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
-            String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-
-            Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
-            infoBeanObj.setDate(finalDate);
-            infoBeanObj.setTime(finalTime);
-            infoBeanObj.setWeightUnit(units);
-            infoBeanObj.setWeight(weightString);
-
-            ADSharedPreferences.putString(ADSharedPreferences.KEY_WEIGHT_SCALE_UNITS, units);
-
-            infoBeanObj.setIsSynced("no");
-            long dateValue = convertDateToMilliSeconds(finalTimeStamp);
-            infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
-
-            String weightDeviceId = "9DEA020D-1795-3B89-D184-DE7CD609FAD0";
-
-            infoBeanObj.setDeviceId(weightDeviceId);
-            final ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>();
-            insertObjectList.add(infoBeanObj);
-
-            db.weighttrackentry(insertObjectList);
-
-            insertObjectList.clear();
-
-            MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-            measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
-        } else if (ADGattUUID.BloodPressureMeasurement.toString().equals(characteristicUuidString)) {
+        if (ADGattUUID.BloodPressureMeasurement.toString().equals(characteristicUuidString)) {
 
             Log.e("receivedBloodPresure","firstLog");
 
@@ -828,163 +787,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_BP, true);
 
-        } else if (ADGattUUID.TemperatureMeasurement.toString().equals(characteristicUuidString)) {
-            BluetoothGatt gatt = BleReceivedService.getGatt();
-
-            String deviceName = gatt.getDevice().getName();
-            float value = (float) bundle.getFloat(ADGattService.KEY_TEMPERATURE_VALUE);
-            String unit = (String) bundle.getString(ADGattService.KEY_TEMPERATURE_UNIT);
-
-            int year = (int) bundle.getInt(ADGattService.KEY_YEAR);
-            int month = (int) bundle.getInt(ADGattService.KEY_MONTH);
-            int day = (int) bundle.getInt(ADGattService.KEY_DAY);
-
-            int hours = (int) bundle.getInt(ADGattService.KEY_HOURS);
-            int minutes = (int) bundle.getInt(ADGattService.KEY_MINUTES);
-            int seconds = (int) bundle.getInt(ADGattService.KEY_SECONDS);
-
-            String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-            String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
-            String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-
-            Lifetrack_infobean thermometerInfo = new Lifetrack_infobean();
-            thermometerInfo.setDate(finaldate);
-            thermometerInfo.setTime(finaltime);
-            long dateValue = convertDateToMilliSeconds(finalTimeStamp);
-            thermometerInfo.setDateTimeStamp(String.valueOf(dateValue));
-
-            thermometerInfo.setThermometerDeviceName(deviceName);
-            thermometerInfo.setThermometerValue(String.valueOf(value));
-            thermometerInfo.setThermometerUnit(unit);
-
-            thermometerInfo.setIsSynced("no");
-            String weightDeviceId = "web." + ADSharedPreferences.getString(ADSharedPreferences.KEY_USER_ID, "");
-
-            thermometerInfo.setDeviceId(weightDeviceId);
-            final ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>();
-
-            if (unit.equalsIgnoreCase(ADSharedPreferences.VALUE_TEMPERATURE_UNIT_F)) {
-                if (!Locale.getDefault().equals(Locale.JAPAN)) {
-                    insertObjectList.add(thermometerInfo);
-                } else {
-                    dismissIndicator();
-                    return;
-                }
-            } else {
-                insertObjectList.add(thermometerInfo);
-            }
-
-            if (unit.equalsIgnoreCase(ADSharedPreferences.VALUE_TEMPERATURE_UNIT_C)) {
-                ADSharedPreferences.putString(ADSharedPreferences.KEY_TEMPERATURE_UNITS, ADSharedPreferences.VALUE_TEMPERATURE_UNIT_C);
-            } else {
-                ADSharedPreferences.putString(ADSharedPreferences.KEY_TEMPERATURE_UNITS, ADSharedPreferences.VALUE_TEMPERATURE_UNIT_F);
-            }
-
-            db.entryThermometerInfo(insertObjectList);
-
-            setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
-
-
-            insertObjectList.clear();
-            MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-            measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_TH, true);
-        } else if (ADGattUUID.AndCustomtrackerService.toString().equals(characteristicUuidString)) {
-
-            ArrayList<Lifetrack_infobean> hashmapList = (ArrayList<Lifetrack_infobean>) bundle.getSerializable("activity_data");
-
-            MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-            measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_AM, true);
-
-            //Checking if there is any BP data
-            ArrayList<HashMap> bpMapList = (ArrayList<HashMap>) bundle.getSerializable("bp_data");
-            ArrayList<Lifetrack_infobean> insertObjectList = new ArrayList<Lifetrack_infobean>(0);
-            for (int i = 0; i < bpMapList.size(); i++) {
-                HashMap<String, Object> bpData = bpMapList.get(i);
-                Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
-
-                //Extracting values from the hashmap
-                int day = Integer.parseInt(bpData.get("day").toString());
-                int pul = Integer.parseInt(bpData.get("pulse").toString());
-                int year = Integer.parseInt(bpData.get("year").toString());
-                int hours = Integer.parseInt(bpData.get("hour").toString());
-                int month = Integer.parseInt(bpData.get("month").toString());
-                int sys = Integer.parseInt(bpData.get("systolic").toString());
-                int dia = Integer.parseInt(bpData.get("diastolic").toString());
-                int minutes = Integer.parseInt(bpData.get("minutes").toString());
-                int seconds = Integer.parseInt(bpData.get("seconds").toString());
-
-                String finaldate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-                String finaltime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
-                String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-                infoBeanObj.setDate(finaldate);
-                infoBeanObj.setTime(finaltime);
-                infoBeanObj.setPulse(String.valueOf(pul));
-                infoBeanObj.setSystolic(String.valueOf(sys));
-                infoBeanObj.setDiastolic(String.valueOf(dia));
-                infoBeanObj.setPulseUnit("bpm");
-                infoBeanObj.setSystolicUnit("mmhg");
-                infoBeanObj.setDiastolicUnit("mmhg");
-                infoBeanObj.setIsSynced("no");
-                //infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
-                long dateValue = convertDateToMilliSeconds(finalTimeStamp);
-                infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
-                infoBeanObj.setDeviceId("UW-302");
-                insertObjectList.add(infoBeanObj);
-
-            } //End of for loop , now add to database
-            db.bpEntry(insertObjectList);
-            setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
-            insertObjectList.clear();
-            bpMapList.clear();
-            measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-            measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_BP, true);
-
-            //Check if there is weight scale data
-            ArrayList<HashMap> wsMapList = (ArrayList<HashMap>) bundle.getSerializable("weight_data");
-
-            for (int i = 0; i < wsMapList.size(); i++) {
-                HashMap<String, Object> wsData = wsMapList.get(i);
-                Lifetrack_infobean infoBeanObj = new Lifetrack_infobean();
-
-                //Extracting values from the hashmap
-
-                double weight = Double.parseDouble(wsData.get("weight").toString());
-                String weightString = String.format(Locale.getDefault(), "%.1f", weight);
-                String unit = wsData.get("unit").toString();
-                //Add the weight value to the shared preference
-                ADSharedPreferences.putString(ADSharedPreferences.KEY_WEIGHT_SCALE_UNITS, unit);
-
-                int day = Integer.parseInt(wsData.get("day").toString());
-                int year = Integer.parseInt(wsData.get("year").toString());
-                int month = Integer.parseInt(wsData.get("month").toString());
-                int hours = Integer.parseInt(wsData.get("hour").toString());
-                int minutes = Integer.parseInt(wsData.get("minutes").toString());
-                int seconds = Integer.parseInt(wsData.get("seconds").toString());
-
-                String finalDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month, day);
-                String finalTime = String.format(Locale.getDefault(), "%02d:%02d", hours, minutes);
-                String finalTimeStamp = String.format(Locale.getDefault(), "%04d-%02d-%02dT%02d:%02d:%02d", year, month, day, hours, minutes, seconds);
-
-                infoBeanObj.setIsSynced("no");
-                infoBeanObj.setDate(finalDate);
-                infoBeanObj.setTime(finalTime);
-                infoBeanObj.setWeightUnit(unit);
-                infoBeanObj.setWeight(weightString);
-
-                //infoBeanObj.setIrregularPulseDetection(String.valueOf(irregularPulseDetection));
-                long dateValue = convertDateToMilliSeconds(finalTimeStamp);
-                infoBeanObj.setDateTimeStamp(String.valueOf(dateValue));
-                infoBeanObj.setDeviceId("UW-302");
-                insertObjectList.add(infoBeanObj);
-
-            } //End of for loop , now add to database
-
-            db.weighttrackentry(insertObjectList);
-            setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
-            insertObjectList.clear();
-            wsMapList.clear();
-            measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-            measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_WS, true);
         }
     }
 
