@@ -187,7 +187,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             syncLib.startReceiver();
         }
 
-        CheckVisibility.activityResumed();
+//        CheckVisibility.activityResumed();
     }
 
     @Override
@@ -235,7 +235,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             System.out.println("onPauseException" + e.getMessage());
         }
 
-        CheckVisibility.activityPaused();
+//        CheckVisibility.activityPaused();
     }
 
     @Override
@@ -638,8 +638,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 /* create alert dialog */
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 /* show alert dialog */
-                if(!((Activity)context).isFinishing())
-                alertDialog.show();
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
                 alertDialogBuilder.setCancelable(false);
             }
 //            }

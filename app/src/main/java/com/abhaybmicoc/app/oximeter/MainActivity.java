@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Handler;
 import android.app.Activity;
+import android.view.View;
 import android.widget.Toast;
 import android.widget.Button;
 import android.content.Intent;
@@ -54,6 +55,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private TextView tvPulseRate;
     @ViewInject(R.id.tv_body_oxygen)
     private TextView tvBodyOxygen;
+    @ViewInject(R.id.tv_body_oxygen_label)
+    private TextView tvBodyOxygenLabel;
 
     private TextView tvAge;
     private TextView tvName;
@@ -82,11 +85,12 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private BluetoothAdapter mBluetoothAdapter;
 
     private SharedPreferences shared;
+    private AlertDialog timeOutAlertDialog;
 
 
     Handler deviceConnectionTimeoutHandler;
     Runnable connectionTimeoutRunnable;
-    private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 15;
+    private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 25;
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -96,8 +100,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             switch (msg.what) {
                 case RECEIVE_SPO_PR:
 
+                    tvBodyOxygenLabel.setVisibility(View.VISIBLE);
                     tvPulseRate.setText("Pulse rate: " + msg.arg2);
-                    tvBodyOxygen.setText("Body Oxygen：" + msg.arg1);
+                    tvBodyOxygen.setText(msg.arg1 + " %");
+
                     btnNext.setText("Next");
 
                     if (deviceConnectionTimeoutHandler != null)
@@ -297,6 +303,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      *
      */
     private void handleRepeat() {
+        tvBodyOxygenLabel.setVisibility(View.GONE);
         tvBodyOxygen.setText("spo");
         tvPulseRate.setText(R.string.pr);
     }
@@ -311,6 +318,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
         tvPulseRate.setText("Pulse rate");
         tvBodyOxygen.setText("spo");
+        tvBodyOxygenLabel.setVisibility(View.GONE);
 
         btnConnect.setText("Connecting...");
         btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
@@ -369,12 +377,17 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             message.arg2 = pr;
             message.what = RECEIVE_SPO_PR;
 
-            handler.sendMessage(message);
+            if (!timeOutAlertDialog.isShowing())
+                handler.sendMessage(message);
         }
 
         @Override
         public void onError(String message) {
-            Toast.makeText(context, "Test unsuccessful, try again.", Toast.LENGTH_SHORT).show();
+
+
+            showAlertDialog("Test Failure", "Test unsuccessful, try again.");
+
+//            Toast.makeText(context, "Test unsuccessful, try again.", Toast.LENGTH_SHORT).show();
             btnNext.setText("Skip");
             progressDialog.dismiss();
 
@@ -400,13 +413,18 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         public void onBindDeviceFail(String failMessage) {
             // This case will call when device is not active
             if (failMessage.equals("蓝牙绑定失败，请检查设备蓝牙是否可见！")) {
-                Toast.makeText(context, "Device is not active, Check device and try again...", Toast.LENGTH_SHORT).show();
-                btnNext.setText("Skip");
-                progressDialog.dismiss();
+                if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
+                    showAlertDialog("Connection Fail", "Device is not active, Check device and try again...");
 
-                btnConnect.setText("Connect");
-                btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+//                Toast.makeText(context, "Device is not active, Check device and try again...", Toast.LENGTH_SHORT).show();
 
+                    btnNext.setText("Skip");
+                    progressDialog.dismiss();
+
+                    btnConnect.setText("Connect");
+                    btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+
+                }
             } else if (failMessage.equals("蓝牙绑定失败，获取设备SN异常！")) {
                 MainActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
@@ -428,7 +446,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             message.arg2 = pr;
             message.what = RECEIVE_SPO_PR;
 
-            handler.sendMessage(message);
+            if (!timeOutAlertDialog.isShowing())
+                handler.sendMessage(message);
         }
 
         @Override
@@ -472,34 +491,45 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
                     progressDialog.dismiss();
 
-                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-                    alertDialogBuilder.setTitle("Connectivity Lost!");
-                    alertDialogBuilder.setMessage("Device is not active, try again").
-                            setCancelable(false)
-                            .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    bindDevice();
-                                }
-                            });
-
-                    alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            writeData();
-                        }
-                    });
-
-                    /* create alert dialog */
-                    AlertDialog alertDialog = alertDialogBuilder.create();
-                    /* show alert dialog */
-                    if (!((Activity) context).isFinishing())
-                        alertDialog.show();
+                    showAlertDialog("Connectivity Lost!", "Device is not active, try again");
                 }
             };
 
             deviceConnectionTimeoutHandler.postDelayed(connectionTimeoutRunnable, DEVICE_CONNECTION_WAITING_TIME);
         } catch (Exception e) {
         }
+    }
+
+    private void showAlertDialog(String title, String msg) {
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setTitle(title);
+        alertDialogBuilder.setMessage(msg).
+                setCancelable(false)
+                .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        bindDevice();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                writeData();
+            }
+        });
+
+        /* create alert dialog */
+        timeOutAlertDialog = alertDialogBuilder.create();
+        /* show alert dialog */
+
+
+        if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
+            if (!((Activity) context).isFinishing())
+                timeOutAlertDialog.show();
+
+        }
+
     }
 
     private void writeData() {
