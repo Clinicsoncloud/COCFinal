@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.util.Log;
 import android.os.Bundle;
@@ -54,7 +55,6 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.abhaybmicoc.app.entities.DataBase;
 import com.abhaybmicoc.app.base.ADGattService;
 import com.abhaybmicoc.app.gatt.BleReceivedService;
@@ -108,7 +108,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     private Handler uiThreadHandler = new Handler();
 
-    private KProgressHUD pd;
+    private ProgressDialog pd;
+
 
     private DataBase db;
     private SharedPreferences sharedPreferencesPersonalData;
@@ -120,9 +121,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private TextToSpeech textToSpeech;
     private BluetoothDevice bluetoothDevice;
     private BluetoothAdapter mBluetoothAdapter;
-    private LinearLayout frameSteps;
-    private LinearLayout frameResult;
-    private LinearLayout frameButton;
+    private LinearLayout layoutSteps;
 
     private TextView tvResultMsg;
 
@@ -150,27 +149,13 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     protected void onResume() {
         super.onResume();
 
-        setStepsViewVisiblity();
-
         enableBluetooth();
     }
 
     private void setStepsViewVisiblity() {
-        if(frameSteps.getVisibility() == View.GONE && frameResult.getVisibility() == View.GONE) {
-            Log.e("inside","setStepsViewVisibility");
-            frameResult.setVisibility(View.GONE);
-            frameSteps.setVisibility(View.VISIBLE);
-            frameButton.setVisibility(View.VISIBLE);
+        layoutSteps.setVisibility(View.VISIBLE);
+        layoutBloodPressure.setVisibility(View.GONE);
 
-            tvResultMsg.setText("Step 3 - Wait for 50 sec for results");
-
-            btnNext.setText("Skip");
-        }else if(frameSteps.getVisibility() == View.GONE || frameResult.getVisibility() == View.VISIBLE){
-            Log.e("else if","setStepsViewVisibility");
-            frameResult.setVisibility(View.GONE);
-            frameSteps.setVisibility(View.VISIBLE);
-            frameButton.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override
@@ -187,13 +172,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         stopTextToSpeech();
 
 //        setFrameResultVisibility();
-    }
-
-    private void setFrameResultVisibility() {
-
-        frameResult.setVisibility(View.GONE);
-        btnNext.setVisibility(View.GONE);
-//        frameSteps.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -217,18 +195,15 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     // region Initialization methods
 
     private void setupUI() {
-        setContentView(R.layout.and_dashboard_new);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.and_dashboard_new);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
-        frameSteps = findViewById(R.id.frame_images);
-        frameResult = findViewById(R.id.frame_result);
-        frameButton = findViewById(R.id.frame_button);
+        layoutSteps = findViewById(R.id.layout_images);
 
         btnNext = findViewById(R.id.btn_skip);
 
@@ -241,6 +216,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         layoutBloodPressure = findViewById(R.id.layout_bp);
         linearContainer = findViewById(R.id.linearContainer);
 
+        setStepsViewVisiblity();
+
         registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
 
         //Call function to get paired device
@@ -251,7 +228,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             db = new DataBase(this);
         }
 
-        setStepsViewVisiblity();
 
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -502,12 +478,19 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         boolean isExistData = (data != null);
 
         if (isExistData) {
+            layoutBloodPressure.setVisibility(View.VISIBLE);
+            layoutSteps.setVisibility(View.GONE);
+
             btnNext.setText("Next");
-            frameSteps.setVisibility(View.GONE);
-            frameResult.setVisibility(View.VISIBLE);
-            frameButton.setVisibility(View.VISIBLE);
             btnNext.setBackground(getResources().getDrawable(R.drawable.greenback));
+
             layoutBloodPressure.setData(data);
+        } else {
+            layoutBloodPressure.setVisibility(View.GONE);
+            layoutSteps.setVisibility(View.VISIBLE);
+
+            btnNext.setText("Skip");
+            btnNext.setBackground(getResources().getDrawable(R.drawable.repeat));
         }
 
         layoutBloodPressure.setHide(!isExistData);
@@ -1067,6 +1050,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 } catch (Exception e) {
 
                 }
+
                 showIndicator(getResources().getString(R.string.indicator_start_receive));
                 BleReceivedService.getGatt().discoverServices();
 
@@ -1106,13 +1090,11 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                             shouldStartConnectDevice = false;
                             Log.e("inside", "shouldStartConnectDevice" + shouldStartConnectDevice);
                             dismissIndicator();
-                            showAlertDialog();
                             doStartLeScan();
                             linearContainer.setVisibility(View.VISIBLE);
                             try {
                                 pd.dismiss();
                             } catch (Exception e) {
-
                             }
                         } else {
                             BluetoothGatt gatt = BleReceivedService.getGatt();
@@ -1123,6 +1105,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                     }
                 } else {
                     dismissIndicator();
+                    showAlertDialog();
                 }
             } else {
                 if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
@@ -1249,8 +1232,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         alertDialogBuilder.setMessage("Device is not connected, Please try again by clicking on Reconnect").setCancelable(false)
                 .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        frameSteps.setVisibility(View.VISIBLE);
-                        frameResult.setVisibility(View.GONE);
+                        layoutSteps.setVisibility(View.VISIBLE);
+                        layoutBloodPressure.setVisibility(View.GONE);
                         tvResultMsg.setVisibility(View.VISIBLE);
                         btnNext.setText("Skip");
                     }
@@ -1258,7 +1241,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                skipNext();
             }
         });
 
@@ -1268,6 +1251,13 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         if (!((Activity) context).isFinishing())
             alertDialog.show();
         alertDialogBuilder.setCancelable(false);
+    }
+
+    /**
+     *
+     */
+    private void skipNext() {
+        context.startActivity(new Intent(DashboardActivity.this,GlucoseScanListActivity.class));
     }
 
     Runnable disableIndicationRunnable = new Runnable() {
