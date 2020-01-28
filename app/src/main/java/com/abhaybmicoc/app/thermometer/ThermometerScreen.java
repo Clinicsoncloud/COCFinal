@@ -245,7 +245,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     private void handleBaud() {
         if (etTemperature.getText().length() > 0) {
-            if (etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
                 SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
@@ -262,9 +261,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 startActivity(objpulse);
                 closeBluetooth();
                 finish();
-            } else {
-                Toast.makeText(context, "Please Enter temperature in valid format", Toast.LENGTH_SHORT).show();
-            }
         } else {
             Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
             txtSpeak = "Please Enter Body temperature Manually";
