@@ -228,7 +228,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             db = new DataBase(this);
         }
 
-
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         db.deleteBpData(this);
