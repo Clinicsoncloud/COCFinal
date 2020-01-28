@@ -28,7 +28,7 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.choicemmed.c208blelibrary.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.choicemmed.c208blelibrary.Device.C208Device;
@@ -210,7 +210,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         });
 
         btnSkip.setOnClickListener(v -> {
-            Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+            Intent objIntent = new Intent(getApplicationContext(), BloodPressureActivity.class);
             startActivity(objIntent);
             finish();
         });
@@ -535,7 +535,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     }
 
     private void writeData() {
-        Intent objIntent = new Intent(getApplicationContext(), DashboardActivity.class);
+        Intent objIntent = new Intent(getApplicationContext(), BloodPressureActivity.class);
         startActivity(objIntent);
         finish();
     }

@@ -1,9 +1,5 @@
 package com.abhaybmicoc.app.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -11,17 +7,20 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.app.Dialog;
 import android.view.Window;
+import android.app.Activity;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
+import android.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.app.ProgressDialog;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.app.FragmentManager;
 import android.widget.LinearLayout;
 import android.content.IntentFilter;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGatt;
 import android.speech.tts.TextToSpeech;
@@ -52,7 +51,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
 import com.abhaybmicoc.app.entities.DataBase;
@@ -64,15 +62,12 @@ import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.view.WeightScaleDisplayDataLayout;
-import com.abhaybmicoc.app.view.ThermometerDisplayDataLayout;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
-import com.abhaybmicoc.app.view.ActivityMonitorDisplayDataLayout;
 
-public class DashboardActivity extends Activity implements TextToSpeech.OnInitListener {
+public class BloodPressureActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
 
-    private Context context = DashboardActivity.this;
+    private Context context = BloodPressureActivity.this;
 
     private String txt = "";
 
@@ -191,12 +186,11 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     // endregion
 
-
     // region Initialization methods
 
     private void setupUI() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.and_dashboard_new);
+        setContentView(R.layout.layout_blood_pressure);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
@@ -376,7 +370,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private boolean checkIfDeviceIsPaired() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) DashboardActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) BloodPressureActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
 
         Set<BluetoothDevice> pairingDevices = bluetoothManager.getAdapter().getBondedDevices();
 
@@ -529,7 +523,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     private void doBindBleReceivedService() {
         if (!isBindBleReceivedService) {
-            bindService(new Intent(DashboardActivity.this,
+            bindService(new Intent(BloodPressureActivity.this,
                     BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
             isBindBleReceivedService = true;
             Log.e("inside_condition", "dobindBleReceivedService");
@@ -545,9 +539,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
 
     private void showIndicator(String message) {
-        if (!(DashboardActivity.this).isFinishing()) {
+        if (!(BloodPressureActivity.this).isFinishing()) {
             if (progress == null) {
-                progress = new Dialog(DashboardActivity.this);
+                progress = new Dialog(BloodPressureActivity.this);
                 progress.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 progress.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 progress.setContentView(R.layout.custom_alert);
@@ -1256,7 +1250,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private void skipNext() {
-        context.startActivity(new Intent(DashboardActivity.this,GlucoseScanListActivity.class));
+        context.startActivity(new Intent(BloodPressureActivity.this,GlucoseScanListActivity.class));
     }
 
     Runnable disableIndicationRunnable = new Runnable() {

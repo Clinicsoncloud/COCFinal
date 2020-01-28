@@ -11,7 +11,7 @@ import android.content.res.Resources;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.utilities.AndMedicalLogic;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.entities.Lifetrack_infobean;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.base.ADDisplayDataLinearLayout;
@@ -116,7 +116,7 @@ public class BloodPressureDispalyDataLayout extends ADDisplayDataLinearLayout {
 			pulseValueTextView.setText(pulVal);
 		}
 		
-		DashboardActivity dashboard = (DashboardActivity)mContext;
+		BloodPressureActivity dashboard = (BloodPressureActivity)mContext;
 		AndMedical_App_Global appGlobal = (AndMedical_App_Global)dashboard.getApplication();
 		MeasuDataManager manager = appGlobal.getMeasuDataManager();
 		int index = manager.getCurrentIndex(data, MeasuDataManager.MEASU_DATA_TYPE_BP);

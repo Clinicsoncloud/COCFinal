@@ -37,7 +37,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -454,7 +454,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 break;
 
             case R.id.tv_header_bloodpressure:
-                context.startActivity(new Intent(this, DashboardActivity.class));
+                context.startActivity(new Intent(this, BloodPressureActivity.class));
                 finish();
                 break;
         }
