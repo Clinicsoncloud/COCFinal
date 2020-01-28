@@ -16,6 +16,7 @@ import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
@@ -60,7 +61,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private SharedPreferences sharedPreferencesPersonal;
 
     private Button btnSkip;
-    private Button btnRepeat;
     private Button btnSmartScale;
 
     private TextView tvAge;
@@ -72,14 +72,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     public static final int REQUSET_CODE = 1001;
 
-    private String gen;
     private String txtSpeak = "";
-    private String KEY_ERROR = "error";
-    private String KEY_MESSAGE = "message";
     public static final String TAG = "MainActivity";
 
     boolean isAthlete;
-    private String storedHeight;
+    private BluetoothAdapter mBluetoothAdapter;
 
     /*
     RESULT_CANCELED = 101;
@@ -227,7 +224,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tvMobile = findViewById(R.id.tv_mobile_number);
 
         btnSkip = findViewById(R.id.btn_skip);
-        btnRepeat = findViewById(R.id.btn_repeat);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
     }
 
@@ -253,8 +249,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
         speakOut(txtSpeak);
 
-        storedHeight = getIntent().getStringExtra(Constant.Fields.HEIGHT);
-
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -267,6 +261,16 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
 
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+
+        enableBluetooth();
+    }
+
+    private void enableBluetooth() {
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
     }
 
     // endregion
