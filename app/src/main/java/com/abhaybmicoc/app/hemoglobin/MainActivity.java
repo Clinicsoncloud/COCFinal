@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private int COUNT_CONNECTION_TRY = 0;
     private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
-    private int DEVICE_CONNECTION_WAITING_TIME = 10000;
+    private int DEVICE_CONNECTION_WAITING_TIME = 40000;
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
