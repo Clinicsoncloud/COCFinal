@@ -8,220 +8,216 @@
     android:orientation="vertical">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_header_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Height Scale"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_height"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Weight Scale"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_tempreture"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Temperature"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_pulseoximeter"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Pulse Oximeter"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_bloodpressure"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@color/orange4"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="BP Monitor"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_hemoglobin"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Blood Sugar"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_header_bloodsugar"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/repeat"
+                android:gravity="center"
+                android:padding="@dimen/pad5"
+                android:text="Hemoglobin"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="4">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:text="Name : Ashok Songara"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:text="Age : 24"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:text="Gender : Male"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/tv_mobile_number"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/pad10"
+                android:layout_weight="1"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:text="Phone : 7984507908"
+                android:textColor="@color/white"
+                android:textSize="22sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
             <LinearLayout
+                android:id="@+id/frame_result"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:visibility="visible">
 
-                <TextView
-                    android:id="@+id/tv_header_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Height Scale"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fillViewport="true">
 
-                <TextView
-                    android:id="@+id/tv_header_height"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Weight Scale"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/tv_header_tempreture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Temperature"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/tv_header_pulseoximeter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Pulse Oximeter"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/tv_header_bloodpressure"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@color/orange4"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="BP Monitor"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/tv_header_hemoglobin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Blood Sugar"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-                <TextView
-                    android:id="@+id/tv_header_bloodsugar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Hemoglobin"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
-            </LinearLayout>
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:id="@+id/linearlayout_bloodpressure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
+
                     <LinearLayout
+                        android:id="@+id/layout_images"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:weightSum="4">
-
-                        <TextView
-                            android:id="@+id/tv_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="@dimen/pad10"
-                            android:layout_weight="1"
-                            android:background="@drawable/rectangle"
-                            android:gravity="center"
-                            android:text="Name : Ashok Songara"
-                            android:textColor="@color/white"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/tv_age"
-                            android:layout_width="wrap_content"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="@dimen/pad10"
-                            android:layout_weight="1"
-                            android:background="@drawable/rectangle"
-                            android:gravity="center"
-                            android:text="Age : 24"
-                            android:textColor="@color/white"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/tv_gender"
-                            android:layout_width="wrap_content"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="@dimen/pad10"
-                            android:layout_weight="1"
-                            android:background="@drawable/rectangle"
-                            android:gravity="center"
-                            android:text="Gender : Male"
-                            android:textColor="@color/white"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/tv_mobile_number"
-                            android:layout_width="wrap_content"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:layout_margin="@dimen/pad10"
-                            android:layout_weight="1"
-                            android:background="@drawable/rectangle"
-                            android:gravity="center"
-                            android:text="Phone : 7984507908"
-                            android:textColor="@color/white"
-                            android:textSize="22sp" />
-
-                    </LinearLayout>
-
-
-                    <FrameLayout
-                        android:id="@+id/frame_images"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1.5">
+                        android:orientation="vertical"
+                        android:visibility="visible">
 
                         <LinearLayout
                             android:id="@+id/LinearLayout"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
+                            android:gravity="center"
                             android:weightSum="2">
 
                             <RelativeLayout
                                 android:layout_width="0dp"
-                                android:layout_height="450dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <ImageView
-                                    android:id="@+id/iv_bp_step1"
-                                    android:layout_width="300dp"
-                                    android:layout_height="300dp"
-                                    android:layout_centerInParent="true"
-                                    android:src="@drawable/bp_cuff_img" />
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@id/iv_bp_step1"
-                                    android:layout_centerHorizontal="true"
-                                    android:textSize="18sp"
-                                    android:text="@string/bloodpressure_step1" />
-
-                            </RelativeLayout>
-
-                            <RelativeLayout
-                                android:layout_width="0dp"
-                                android:layout_height="450dp"
+                                android:layout_height="400dp"
                                 android:layout_weight="1"
                                 android:orientation="vertical">
 
@@ -237,43 +233,13 @@
                                     android:layout_height="wrap_content"
                                     android:layout_below="@id/iv_bp_step2"
                                     android:layout_centerHorizontal="true"
-                                    android:textSize="18sp"
-                                    android:text="@string/bloodpressure_step2" />
+                                    android:layout_margin="10dp"
+                                    android:text="@string/bloodpressure_step2"
+                                    android:textSize="24sp" />
 
                             </RelativeLayout>
 
                         </LinearLayout>
-
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:id="@+id/frame_result"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:visibility="gone"
-                        android:layout_weight="0.3">
-
-                        <LinearLayout
-                            android:id="@+id/linearlayout_bloodpressure"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <include
-                                android:id="@+id/layout_bp"
-                                layout="@layout/display_data_layout_bloodpressure" />
-
-                        </LinearLayout>
-
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight=".7">
 
                         <TextView
                             android:id="@+id/tv_result_msg"
@@ -282,41 +248,43 @@
                             android:layout_gravity="center_vertical"
                             android:layout_marginBottom="@dimen/margin20"
                             android:gravity="center"
+                            android:visibility="gone"
                             android:text="@string/bloodpressure_step3"
                             android:textSize="@dimen/space25" />
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="100dp"
-                            android:orientation="horizontal"
-                            android:weightSum="3">
+                    </LinearLayout>
 
-                            <Button
-                                android:id="@+id/btn_skip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="50dp"
-                                android:layout_centerHorizontal="true"
-                                android:layout_gravity="center"
-                                android:layout_margin="5dp"
+                    <include
+                        android:id="@+id/layout_bp"
+                        layout="@layout/display_data_layout_bloodpressure"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone" />
 
-                                android:layout_weight="1"
-                                android:background="@drawable/repeat"
-                                android:gravity="center"
-                                android:text="Skip"
-                                android:textColor="@color/white"
-                                android:textSize="35sp"
-                                android:textStyle="bold" />
+                    <Button
+                        android:id="@+id/btn_skip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="35dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat"
+                        android:gravity="center"
+                        android:text="Skip"
+                        android:textColor="@color/white"
+                        android:textSize="35sp"
+                        android:textStyle="bold" />
 
-                        </RelativeLayout>
-
-
-                    </FrameLayout>
                 </LinearLayout>
+
             </ScrollView>
 
         </LinearLayout>
 
+    </LinearLayout>
+
+    </LinearLayout>
 
 
 </LinearLayout>
