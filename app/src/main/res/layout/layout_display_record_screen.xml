@@ -670,22 +670,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_gravity="center"
-
                 android:gravity="center">
-                <Button
-                    android:id="@+id/btn_skip"
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="15dp"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/round_btn_small"
-                    android:gravity="center"
-                    android:text="Next"
-                    android:textColor="#ffffff"
-                    android:textSize="26sp" />
 
                 <Button
                     android:id="@+id/btn_retest"
@@ -701,6 +686,22 @@
                     android:text="@string/actofitScale_retest"
                     android:textColor="#ffffff"
                     android:textSize="26sp" />
+
+                <Button
+                    android:id="@+id/btn_skip"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/round_btn_small"
+                    android:gravity="center"
+                    android:text="Next"
+                    android:textColor="#ffffff"
+                    android:textSize="26sp" />
+
             </LinearLayout>
 
         </LinearLayout>

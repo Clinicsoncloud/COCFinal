@@ -205,6 +205,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
+        actionBar.hide();
 
         etUserId = findViewById(R.id.txtuid);
         etHeight = findViewById(R.id.txtuheight);

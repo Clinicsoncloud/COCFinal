@@ -92,6 +92,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Composition Measure Data");
+        actionBar.hide();
 
         tvBmi = findViewById(R.id.tv_bmi);
         tvBmr = findViewById(R.id.tv_bmr);
