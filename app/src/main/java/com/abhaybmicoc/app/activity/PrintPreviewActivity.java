@@ -1402,8 +1402,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         /* displays the progress dialog untill background task is completed */
         @Override
         protected void onPreExecute() {
-//            dlgShowCustom(PrintPreviewActivity.this, "Please Wait....");
             super.onPreExecute();
+            Log.e("EnterTextAsyc","working");
         }
 
         /* Task of EnterTextAsyc performing in the background */
@@ -1414,8 +1414,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 ptrGen.iFlushBuf();
 
                 String empty = printerText;
+                Log.e("empty",""+empty);
+
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
+
             } catch (NullPointerException e) {
                 iRetVal = DEVICE_NOTCONNECTED;
 
@@ -1484,9 +1487,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 default:
                     break;
             }
-        }
-
-        ;
+        };
     };
 
 
@@ -1761,14 +1762,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         protected Integer doInBackground(String... arg0) {
             Log.e(TAG, "Do in background");
             if (mGP.createConn(arg0[0])) {
-                Log.e(TAG, "inside createconn[]");
-                Log.e(TAG, "conection_check" + CONN_SUCCESS);
-
-                SystemClock.sleep(2000);
+                SystemClock.sleep(10000);
                 return CONN_SUCCESS;
             } else {
                 return CONN_FAIL;
             }
+
         }
 
         /* This displays the status messages of in the dialog box */
@@ -1780,9 +1779,34 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                btnHome.setEnabled(true);
                btnPrint.setEnabled(true);
             } else {
-                Toast.makeText(PrintPreviewActivity.this, getString(R.string.actMain_msg_device_connect_fail), Toast.LENGTH_SHORT).show();
+               showReconnectPopup();
             }
         }
+    }
+
+    private void showReconnectPopup() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+        alertDialogBuilder.setTitle("Communication Lost!");
+        alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
+                .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                       autoConnect();
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        /* create alert dialog */
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        /* show alert dialog */
+        if (!((Activity) context).isFinishing())
+            alertDialog.show();
+        alertDialogBuilder.setCancelable(false);
     }
 }
 
