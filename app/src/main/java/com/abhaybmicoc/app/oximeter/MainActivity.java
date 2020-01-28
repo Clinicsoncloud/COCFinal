@@ -86,7 +86,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private SharedPreferences shared;
     private AlertDialog timeOutAlertDialog;
-
+    AlertDialog.Builder timeOutAlertDialogBuilder;
 
     Handler deviceConnectionTimeoutHandler;
     Runnable connectionTimeoutRunnable;
@@ -313,6 +313,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
      */
     private void bindDevice() {
         progressDialog = Tools.progressDialog(MainActivity.this);
+        progressDialog.setMessage("Fetching data...");
         progressDialog.setCancelable(false);
         progressDialog.dismiss();
 
@@ -341,12 +342,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             Toast.makeText(this, "Please bind the device first！！", Toast.LENGTH_SHORT).show();
             return;
         }
-
         C208Device device = new C208Device();
         device.setDeviceMacAddress(macAddress);
 
         c208Invoker.connectDevice(device, new ConnectDeviceAdapter());
-
     }
 
     /**
@@ -372,18 +371,22 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         public void onDataResponse(int spo, int pr) {
             flag = false;
 
+            Log.e("data_Res_Log", "Received");
+
             Message message = new Message();
             message.arg1 = spo;
             message.arg2 = pr;
             message.what = RECEIVE_SPO_PR;
 
-            if (!timeOutAlertDialog.isShowing())
+            if (timeOutAlertDialog != null && !timeOutAlertDialog.isShowing()) {
                 handler.sendMessage(message);
+            } else if (timeOutAlertDialog == null) {
+                handler.sendMessage(message);
+            }
         }
 
         @Override
         public void onError(String message) {
-
 
             showAlertDialog("Test Failure", "Test unsuccessful, try again.");
 
@@ -423,7 +426,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
                     btnConnect.setText("Connect");
                     btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
-
                 }
             } else if (failMessage.equals("蓝牙绑定失败，获取设备SN异常！")) {
                 MainActivity.this.runOnUiThread(new Runnable() {
@@ -502,9 +504,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private void showAlertDialog(String title, String msg) {
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
-        alertDialogBuilder.setTitle(title);
-        alertDialogBuilder.setMessage(msg).
+        timeOutAlertDialogBuilder = new AlertDialog.Builder(context);
+        timeOutAlertDialogBuilder.setTitle(title);
+        timeOutAlertDialogBuilder.setMessage(msg).
                 setCancelable(false)
                 .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -512,7 +514,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     }
                 });
 
-        alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
+        timeOutAlertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 writeData();
@@ -520,7 +522,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         });
 
         /* create alert dialog */
-        timeOutAlertDialog = alertDialogBuilder.create();
+        timeOutAlertDialog = timeOutAlertDialogBuilder.create();
         /* show alert dialog */
 
 
