@@ -1,9 +1,10 @@
 package com.abhaybmicoc.app.activity;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.util.Log;
 import android.os.Bundle;
-import android.view.View;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
@@ -70,12 +71,10 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import butterknife.OnClick;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
-import static com.abhaybmicoc.app.utils.Constant.Fields.TOKEN;
 
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
@@ -195,6 +194,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     List<PrintDataOld> printDataList = new ArrayList<>();
     List<PrintData> printDataListNew = new ArrayList<>();
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
+    private String TAG = "PrinPriviewActivity";
 
     // endregion
 
@@ -247,7 +247,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
-
     }
 
     private void setupEvents() {
@@ -269,6 +268,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private void initializeData() {
         textToSpeech = new TextToSpeech(this, this);
 
+        mGP = ((AndMedical_App_Global) getApplicationContext());
+
         txtSpeak = "Please click on the print button to get your printout";
         speakOut(txtSpeak);
 
@@ -282,6 +283,15 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         getResults();
         postData();
         printerActivation();
+        autoConnect();
+    }
+
+    private void autoConnect() {
+
+        txtSpeak = "Please wait while calculating your results";
+        speakOut(txtSpeak);
+
+        new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
     // endregion
@@ -1714,4 +1724,65 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String geBloodPressurePreferenceData(String key) {
         return sharedPreferencesBloodPressure.getString(key, "");
     }
+
+    private class ConnSocketTask extends AsyncTask<String, String, Integer> {
+        /**
+         * Process waits prompt box
+         */
+        private ProgressDialog mpd = null;
+        /**
+         * Constants: connection fails
+         */
+        private static final int CONN_FAIL = 0x01;
+        /**
+         * Constant: the connection is established
+         */
+        private static final int CONN_SUCCESS = 0x02;
+
+        /**
+         * Thread start initialization
+         */
+        @Override
+        public void onPreExecute() {
+            mpd = new ProgressDialog(PrintPreviewActivity.this);
+            mpd.setMessage(getString(R.string.actMain_msg_device_connecting));
+            mpd.setCancelable(false);
+            mpd.setCanceledOnTouchOutside(false);
+            btnHome.setEnabled(false);
+            btnPrint.setEnabled(false);
+            if (!((Activity) context).isFinishing())
+            mpd.show();
+
+        }
+
+        /* Task of  performing in the background*/
+
+        @Override
+        protected Integer doInBackground(String... arg0) {
+            Log.e(TAG, "Do in background");
+            if (mGP.createConn(arg0[0])) {
+                Log.e(TAG, "inside createconn[]");
+                Log.e(TAG, "conection_check" + CONN_SUCCESS);
+
+                SystemClock.sleep(2000);
+                return CONN_SUCCESS;
+            } else {
+                return CONN_FAIL;
+            }
+        }
+
+        /* This displays the status messages of in the dialog box */
+        @Override
+        public void onPostExecute(Integer result) {
+            if(mpd != null && mpd.isShowing())
+                mpd.dismiss();
+            if (CONN_SUCCESS == result) {
+               btnHome.setEnabled(true);
+               btnPrint.setEnabled(true);
+            } else {
+                Toast.makeText(PrintPreviewActivity.this, getString(R.string.actMain_msg_device_connect_fail), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
+

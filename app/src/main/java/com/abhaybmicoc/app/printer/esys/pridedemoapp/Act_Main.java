@@ -69,7 +69,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     /**
      * CONST: scan device menu id
      */
-    private AndMedical_App_Global mGP = null;
+    public static AndMedical_App_Global mGP = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
     public static BluetoothDevice mBDevice = null;
     private TextView mtvDeviceInfo = null;
@@ -309,7 +309,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
                     onClickBtnPair(btnPair);
                 } else {
-
                     Log.e("SharedData", " :3: " + mhtDeviceInfo.get("BOND"));
 
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
@@ -317,7 +316,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
-                    onClickBtnConn(btnComm);
+                    startActivity(new Intent(Act_Main.this,PrintPreviewActivity.class));
+//                    onClickBtnConn(btnComm);
                 }
             }
 
@@ -394,7 +394,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
-
                 }
             } else if (Activity.RESULT_CANCELED == resultCode) {
                 // None of device is selected
@@ -601,7 +600,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     }
 
     /*   This method shows the   PairTask operation */
-    private class ConnSocketTask extends AsyncTask<String, String, Integer> {
+    public class ConnSocketTask extends AsyncTask<String, String, Integer> {
         /**
          * Process waits prompt box
          */
@@ -650,11 +649,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
             if (CONN_SUCCESS == result) {
                 btnComm.setVisibility(View.GONE);
-//				svRadio.setVisibility(View.VISIBLE);
-                //wifiManager.setWifiEnabled(true);//To Enable wifi in mobile
-                //dlgShow("BT connection Established successfully");
                 Toast.makeText(mGP, "Bluetooth Connection Established successfully", Toast.LENGTH_SHORT).show();
-//				addListenerOnButton();
                 funContinue();
             } else {
                 Toast.makeText(Act_Main.this, getString(R.string.actMain_msg_device_connect_fail), Toast.LENGTH_SHORT).show();
