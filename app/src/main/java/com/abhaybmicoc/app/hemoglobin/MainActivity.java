@@ -531,7 +531,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     private void connectOrShowScanDevice() {
-        Log.e("connectOrShowScanDevice","");
         /**
          * On load, check if device is stored in local storage
          * If yes, connect
@@ -556,24 +555,16 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          *   - Else try to connect again
          */
 
-        Log.e("updateConnectionStatus","status = " + connected);
-
         isDeviceConnected = connected;
 
         if (connected) {
-
-            Log.e("ifConnected","true");
-
             COUNT_CONNECTION_TRY = 0;
 
             dialogConnectionProgress.dismiss();
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
-            btnConnect.setVisibility(View.GONE);
         } else {
-            Log.e("ifConnected","false");
-
             COUNT_CONNECTION_TRY++;
 
             if (COUNT_CONNECTION_TRY == COUNT_CONNECTION_MAXIMUM_TRY) {
@@ -592,9 +583,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     private void connect() {
-
-        Log.e("connect","connecting");
-
         disconnectGattServer();
 
         dialogConnectionProgress.show();
@@ -612,7 +600,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      *
      */
     private void connectToScannedDevice() {
-        Log.e("connectToScannedDevice","");
         /**
          * Show progress dialog for connecting
          * Hide connect button
@@ -622,10 +609,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          */
 
         if (savedDeviceAlreadyExists()) {
-            Log.e("savedDeviceExists","if_condition");
             connect();
         } else {
-            Log.e("savedDeviceExists","else_condition");
             dialogConnectionProgress.show();
             btnConnect.setVisibility(View.GONE);
 
@@ -750,7 +735,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void scanDevices() {
-        Log.e("scanDevices","");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions() || mScanning) {
                 return;
@@ -822,8 +806,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void showDeviceList() {
         deviceArrayList.clear();
 
-        Log.e("showDeviceList","");
-
         for (String deviceAddress : mapBluetoothScanResults.keySet()) {
             BluetoothDevice device = mapBluetoothScanResults.get(deviceAddress);
             if (device.getName() != null && device.getName().contains("THB_W"))
@@ -843,7 +825,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      * @param deviceAddress
      */
     private void saveDeviceInformation(String deviceName, String deviceAddress) {
-        Log.e("savedDeviceInformation","saving");
         SharedPreferences.Editor editor = sharedPreferencesDevice.edit();
 
         editor.putString("deviceName", deviceName);
@@ -859,24 +840,19 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private class BluetoothLeScanCallback extends ScanCallback {
 
-
         private Map<String, BluetoothDevice> mapBluetoothScanResults;
 
         BluetoothLeScanCallback(Map<String, BluetoothDevice> scanResults) {
             mapBluetoothScanResults = scanResults;
-
-            Log.e("BluetoothLeScanCallback","");
         }
 
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
-            Log.e("onScanResult","");
             addScanResult(result);
         }
 
         @Override
         public void onBatchScanResults(List<ScanResult> results) {
-            Log.e("onBatchScanResults","");
             for (ScanResult result : results) {
                 addScanResult(result);
             }
@@ -884,12 +860,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         @Override
         public void onScanFailed(int errorCode) {
-            Log.e("onScanFailed","");
             logError("BLE Scan Failed with code " + errorCode);
         }
 
         private void addScanResult(ScanResult result) {
-            Log.e("addScanResult","");
             BluetoothDevice device = result.getDevice();
             String deviceAddress = device.getAddress();
             mapBluetoothScanResults.put(deviceAddress, device);
