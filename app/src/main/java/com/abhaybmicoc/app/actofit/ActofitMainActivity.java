@@ -16,10 +16,12 @@ import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
@@ -59,7 +61,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private SharedPreferences sharedPreferencesPersonal;
 
     private Button btnSkip;
-    private Button btnRepeat;
     private Button btnSmartScale;
 
     private TextView tvAge;
@@ -71,13 +72,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     public static final int REQUSET_CODE = 1001;
 
-    private String gen;
     private String txtSpeak = "";
-    private String KEY_ERROR = "error";
-    private String KEY_MESSAGE = "message";
     public static final String TAG = "MainActivity";
 
     boolean isAthlete;
+    private BluetoothAdapter mBluetoothAdapter;
 
     /*
     RESULT_CANCELED = 101;
@@ -117,10 +116,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float healthScore = intent.getFloatExtra("helthscore", 0f);
         float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
 
-        int height = (int) Float.parseFloat(getIntent().getStringExtra("height"));
+        int height = Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,""));
 
         try {
-            sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
 
             SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
@@ -207,6 +205,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
+        actionBar.hide();
 
         etUserId = findViewById(R.id.txtuid);
         etHeight = findViewById(R.id.txtuheight);
@@ -226,7 +225,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tvMobile = findViewById(R.id.tv_mobile_number);
 
         btnSkip = findViewById(R.id.btn_skip);
-        btnRepeat = findViewById(R.id.btn_repeat);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
     }
 
@@ -262,6 +260,18 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         } catch (Exception e) {
             // TODO: Handle exception here
         }
+
+        sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+
+        enableBluetooth();
+    }
+
+    private void enableBluetooth() {
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
     }
 
     // endregion
@@ -281,7 +291,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat")
             Date initDate = null;
             try {
-                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra(Constant.Fields.DATE_OF_BIRTH));
+                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH,""));
+                Log.e("initDate",""+initDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -289,18 +300,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String parsedDate = formatter.format(initDate);
 
-            int height = 0;
-            String strHeight = getIntent().getStringExtra(Constant.Fields.HEIGHT);
-            if (strHeight != null) {
-                try {
-                    height = Integer.parseInt(strHeight);
-                } catch (Exception ex) {
-                    height = 0;
-                    // TODO: Handle why cannot read height
-                }
-            }
-
-            intent.putExtra(Constant.Fields.HEIGHT, height);
+            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,"")));
             intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
             intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));

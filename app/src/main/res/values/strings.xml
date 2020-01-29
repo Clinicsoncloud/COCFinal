@@ -17,6 +17,7 @@
 
     <!--Actofit String-->
     <string name="subscription_over">Seems like your subscription is finished. Please Renew your subscription to continue.</string>
+    <string name="actofitScale_retest">Retest</string>
 
     <string name="side_menu_account_title">My Account</string>
     <string name="side_menu_account_title_guest">&quot;Guest\'s account&quot;</string>

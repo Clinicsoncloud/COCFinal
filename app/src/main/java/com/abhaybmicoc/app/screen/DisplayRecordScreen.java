@@ -24,6 +24,8 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     Context context = DisplayRecordScreen.this;
 
     private Button btnBack;
+    private Button btnRetest;
+
     private ActionBar actionBar;
 
     private SharedPreferences sharedPreferencesActofit;
@@ -90,6 +92,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Composition Measure Data");
+        actionBar.hide();
 
         tvBmi = findViewById(R.id.tv_bmi);
         tvBmr = findViewById(R.id.tv_bmr);
@@ -114,6 +117,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         tvSkeletalMuscle = findViewById(R.id.tv_skeletel_muscle);
 
         btnBack = findViewById(R.id.btn_skip);
+        btnRetest = findViewById(R.id.btn_retest);
     }
 
     /**
@@ -128,7 +132,17 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
             context.startActivity(new Intent(this, ActofitMainActivity.class));
         });
 
-        btnBack.setOnClickListener(v -> goBack());
+        btnBack.setOnClickListener(v -> goNext());
+
+        btnRetest.setOnClickListener(v -> goBack());
+    }
+
+    private void goNext() {
+        clearData();
+
+        startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
+
+        finish();
     }
 
     private void initializeData(){
@@ -148,7 +162,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     private void goBack(){
         clearData();
 
-        startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
+        startActivity(new Intent(getApplicationContext(), ActofitMainActivity.class));
 
         finish();
     }
