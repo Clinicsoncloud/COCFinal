@@ -63,7 +63,8 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener, GattClientActionListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener,
+        GattClientActionListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -72,13 +73,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
 
     private Util util;
-    private String mDeviceAddress;
+    private Toolbar toolbar;
     private String mDeviceName;
     private Animation animation;
-
     private ActionBar mActionBar;
-
-    private Toolbar toolbar;
+    private String mDeviceAddress;
 
     private ImageView ivSteps;
     private ImageView menuIcon;
@@ -183,9 +182,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     }
 
     private void connectionToHemoglobinDevice() {
-
-        Log.e("Connecting_Hb", " :0: ");
-
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
@@ -280,8 +276,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     @Override
     public void setLog(String text) {
         tvLogDisplay.setText(text);
-
-        Log.e("text_SetLogs", ":" + text);
 
         if (text.equals("Insert Strip!")) {
             ivSteps.setVisibility(View.VISIBLE);
@@ -651,7 +645,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             mDeviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         }
 
-        Log.e("Initilize_DEvices", " :1: ");
         connectDevice();
     }
 
@@ -660,8 +653,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         llConnectingStepsLayout.setVisibility(View.VISIBLE);
         llReadingsLayout.setVisibility(View.GONE);
-
-        Log.e("Connected_DEvices", " :1: ");
 
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
         syncLib.startReceiver();
@@ -674,12 +665,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void setDeviceConnectionTimeoutHandler() {
         deviceConnectionTimeoutHandler = new Handler();
 
-        Log.e("Connected_DEvices", " :2: " + mConnected);
-
-
         deviceConnectionTimeoutHandler.postDelayed(() -> {
-//            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
-//                dialogConnectionProgress.dismiss();
 
             if (!mConnected) {
 
@@ -713,9 +699,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private void setStartTestTimerHandler() {
         deviceConnectionTimeoutHandler = new Handler();
-
-        Log.e("started_test_Waiting", " :2: " + mConnected);
-
 
         deviceConnectionTimeoutHandler.postDelayed(() -> {
             tvConnectionStatus.setText("Connected");
@@ -751,9 +734,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 isTestStarted = true;
                 btnWriteData.setText("Next");
             } catch (Exception e) {
-                e.printStackTrace();
-
-                Log.e("Exception_Occuurs", ":");
             }
         } else {
             Toast.makeText(getApplicationContext(), "Please Connect to Device!", Toast.LENGTH_SHORT).show();
@@ -907,12 +887,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         /**
          * On load, check if device is stored in local storage
          * If yes, connect
-         * If no, show scan button
          */
 
-        Log.e("Connecting_Hb", " :non exist: ");
         if (savedDeviceAlreadyExists()) {
-            Log.e("Connecting_Hb", " :exist: ");
             connect();
         }
     }
@@ -925,15 +902,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
          *   - If we have tried maximum times, show scan button
          *   - Else try to connect again
          */
-
         isDeviceConnected = connected;
 
-        Log.e("Connecting_Hb", " :Connected: " + isDeviceConnected);
-
-        if (connected) {
-
-
-        } else {
+        if (!connected) {
             connect();
         }
     }
@@ -957,17 +928,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      *
      */
     private void connect() {
-        Log.e("Connecting_Hb", " :connect: ");
         disconnectGattServer();
-
-//        dialogConnectionProgress.show();
 
         BluetoothDevice device = getDevice(getStoredDeviceAddress());
 
         GattClientCallback gattClientCallback = new GattClientCallback(this);
 
         mGatt = device.connectGatt(this, true, gattClientCallback);
-
         // TODO: Check state of connection
     }
 
