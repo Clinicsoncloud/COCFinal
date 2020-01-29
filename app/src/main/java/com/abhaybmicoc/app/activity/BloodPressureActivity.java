@@ -762,6 +762,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
             SharedPreferences.Editor editor = sharedPreferencesBloodPressure.edit();
             editor.putString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, String.valueOf(sys));
             editor.putString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, String.valueOf(dia));
+            editor.putString(Constant.Fields.PULSE_RATE, String.valueOf(pul));
             editor.commit();
 
             infoBeanObj.setIsSynced("no");
