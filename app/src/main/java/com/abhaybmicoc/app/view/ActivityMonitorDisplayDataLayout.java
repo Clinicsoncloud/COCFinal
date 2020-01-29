@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.MeasuDataManager;
 import com.abhaybmicoc.app.entities.DataBase;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.entities.Lifetrack_infobean;
 import com.abhaybmicoc.app.entities.RegistrationInfoBean;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
@@ -220,7 +220,7 @@ public class ActivityMonitorDisplayDataLayout extends ADDisplayDataLinearLayout 
 				.FormatDashboardDispDate(mContext, data.getDate() + "T"
 						+ data.getTime()));
 		
-		DashboardActivity dashboard = (DashboardActivity)mContext;
+		BloodPressureActivity dashboard = (BloodPressureActivity)mContext;
 		AndMedical_App_Global appGlobal = (AndMedical_App_Global)dashboard.getApplication();
 		MeasuDataManager manager = appGlobal.getMeasuDataManager();
 		int index = manager.getCurrentIndex(data, MeasuDataManager.MEASU_DATA_TYPE_AM);

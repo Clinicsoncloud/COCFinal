@@ -37,7 +37,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -435,22 +435,27 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         switch (view.getId()) {
             case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_tempreture:
                 context.startActivity(new Intent(this, ThermometerScreen.class));
+                finish();
                 break;
 
             case R.id.tv_header_pulseoximeter:
                 context.startActivity(new Intent(this, com.abhaybmicoc.app.oximeter.MainActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_bloodpressure:
-                context.startActivity(new Intent(this, DashboardActivity.class));
+                context.startActivity(new Intent(this, BloodPressureActivity.class));
+                finish();
                 break;
         }
     }
@@ -635,8 +640,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 /* create alert dialog */
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 /* show alert dialog */
-                if(!((Activity)context).isFinishing())
-                alertDialog.show();
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
                 alertDialogBuilder.setCancelable(false);
             }
 //            }
@@ -659,7 +664,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      */
     private void startTest() {
 
-
         if (mConnected) {
             syncLib.startTest();
             isTestStarted = true;
@@ -675,6 +679,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      */
     private void restartTest() {
         if (mConnected) {
+
             if (devTestStarted) {
                 try {
                     syncLib.stopTest();

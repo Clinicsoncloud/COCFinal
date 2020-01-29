@@ -266,6 +266,10 @@
 
     <!-- Blood Pressure -->
     <string name="bloodpressure_title">Blood Pressure</string>
+    <string name="bloodpressure_value">Value</string>
+    <string name="bloodpressure_step1">Step 1 - Please wear the cuff 2cm above the elbow</string>
+    <string name="bloodpressure_step2">Press the Device start Button wait 50 sec to get Results</string>
+    <string name="bloodpressure_step3">Please wait for Results</string>
     <string name="bloodpressure_title_systolic">Systolic</string>
     <string name="bloodpressure_title_diastolic">Diastolic</string>
     <string name="bloodpressure_title_pulse">Pulse</string>

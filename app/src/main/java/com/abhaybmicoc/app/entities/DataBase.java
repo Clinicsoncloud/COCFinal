@@ -125,7 +125,7 @@ public class DataBase extends SQLiteOpenHelper {
         SQLiteDatabase db;
         db = this.getWritableDatabase();
         db.execSQL("delete from "+ BPTRACK_TABLE);
-        Toast.makeText(context, "Deleted All bp records", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Deleted All bp records", Toast.LENGTH_SHORT).show();
     }
 
 

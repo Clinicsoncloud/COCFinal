@@ -1,6 +1,5 @@
 package com.abhaybmicoc.app.activity;
 
-import android.app.Activity;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -8,17 +7,20 @@ import android.os.IBinder;
 import android.os.Handler;
 import android.app.Dialog;
 import android.view.Window;
+import android.app.Activity;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
+import android.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.app.ProgressDialog;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.app.FragmentManager;
 import android.widget.LinearLayout;
 import android.content.IntentFilter;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothGatt;
 import android.speech.tts.TextToSpeech;
@@ -49,10 +51,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
-import com.kaopiz.kprogresshud.KProgressHUD;
 import com.abhaybmicoc.app.entities.DataBase;
 import com.abhaybmicoc.app.base.ADGattService;
 import com.abhaybmicoc.app.gatt.BleReceivedService;
@@ -62,15 +62,12 @@ import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.view.WeightScaleDisplayDataLayout;
-import com.abhaybmicoc.app.view.ThermometerDisplayDataLayout;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
-import com.abhaybmicoc.app.view.ActivityMonitorDisplayDataLayout;
 
-public class DashboardActivity extends Activity implements TextToSpeech.OnInitListener {
+public class BloodPressureActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
 
-    private Context context = DashboardActivity.this;
+    private Context context = BloodPressureActivity.this;
 
     private String txt = "";
 
@@ -87,13 +84,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private long setDateTimeDelay = Long.MIN_VALUE;
     private long indicationDelay = Long.MIN_VALUE;
 
-    private ThermometerDisplayDataLayout thermometer;
-    private WeightScaleDisplayDataLayout weightscale;
-    private ActivityMonitorDisplayDataLayout activitymonitor;
     private BloodPressureDispalyDataLayout layoutBloodPressure;
 
-    private FrameLayout leftArrow;
-    private FrameLayout rightArrow;
     private LinearLayout linearContainer;
 
     private TextView tvAge;
@@ -111,7 +103,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     private Handler uiThreadHandler = new Handler();
 
-    private KProgressHUD pd;
+    private ProgressDialog pd;
+
 
     private DataBase db;
     private SharedPreferences sharedPreferencesPersonalData;
@@ -123,6 +116,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
     private TextToSpeech textToSpeech;
     private BluetoothDevice bluetoothDevice;
     private BluetoothAdapter mBluetoothAdapter;
+    private LinearLayout layoutSteps;
+
+    private TextView tvResultMsg;
 
     // endregion
 
@@ -151,6 +147,12 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         enableBluetooth();
     }
 
+    private void setStepsViewVisiblity() {
+        layoutSteps.setVisibility(View.VISIBLE);
+        layoutBloodPressure.setVisibility(View.GONE);
+
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -163,6 +165,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
 
         stopTextToSpeech();
+
+//        setFrameResultVisibility();
     }
 
     @Override
@@ -182,43 +186,18 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     // endregion
 
-
     // region Initialization methods
 
     private void setupUI() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        setContentView(R.layout.and_dashboard_new);
+        setContentView(R.layout.layout_blood_pressure);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvOximeter = findViewById(R.id.tv_header_pulseoximeter);
 
-        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
-
-        //Call function to get paired device
-        checkIfDeviceIsPaired();
-        doStartService();
-
-        weightscale = findViewById(R.id.llinear_wt);
-        thermometer = findViewById(R.id.llinear_tm);
-        activitymonitor = findViewById(R.id.llinear_am);
-        layoutBloodPressure = findViewById(R.id.layout_bp);
-
-        // Arrows
-        rightArrow = findViewById(R.id.right_arrow);
-        rightArrow.setVisibility(View.INVISIBLE);
-
-        leftArrow = findViewById(R.id.left_arrow);
-        leftArrow.setVisibility(View.INVISIBLE);
-
-        TextView header = findViewById(R.id.header);
-        header.setText(R.string.header_dashboard);
-
-        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
-            db = new DataBase(this);
-        }
+        layoutSteps = findViewById(R.id.layout_images);
 
         btnNext = findViewById(R.id.btn_skip);
 
@@ -226,8 +205,22 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
         tvMobileNumber = findViewById(R.id.tv_mobile_number);
+        tvResultMsg = findViewById(R.id.tv_result_msg);
 
+        layoutBloodPressure = findViewById(R.id.layout_bp);
         linearContainer = findViewById(R.id.linearContainer);
+
+        setStepsViewVisiblity();
+
+        registerReceiver(mMeasudataUpdateReceiver, MeasuDataManager.MeasuDataUpdateIntentFilter());
+
+        //Call function to get paired device
+        checkIfDeviceIsPaired();
+        doStartService();
+
+        if (ANDMedicalUtilities.APP_STAND_ALONE_MODE) {
+            db = new DataBase(this);
+        }
 
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -251,26 +244,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 startActivity(objIntent);
                 finish();
             } catch (Exception e) {
-            }
-        });
-
-        rightArrow.setOnClickListener(view -> {
-            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-            MeasuDataManager manager = appGlobal.getMeasuDataManager();
-
-            if (manager != null) {
-                manager.moveDatasToThePast();
-                refreshDisplay();
-            }
-        });
-
-        leftArrow.setOnClickListener(view -> {
-            AndMedical_App_Global appGlobal = (AndMedical_App_Global) getApplication();
-            MeasuDataManager manager = appGlobal.getMeasuDataManager();
-
-            if (manager != null) {
-                manager.moveDatasToTheFuture();
-                refreshDisplay();
             }
         });
     }
@@ -362,7 +335,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return timestamp;
     }
 
@@ -398,7 +370,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
      *
      */
     private boolean checkIfDeviceIsPaired() {
-        final BluetoothManager bluetoothManager = (BluetoothManager) DashboardActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
+        final BluetoothManager bluetoothManager = (BluetoothManager) BloodPressureActivity.this.getSystemService(Context.BLUETOOTH_SERVICE);
 
         Set<BluetoothDevice> pairingDevices = bluetoothManager.getAdapter().getBondedDevices();
 
@@ -490,29 +462,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
     }
 
-    private void refreshActivityMonitorLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_AM);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            activitymonitor.setHide(false);
-            activitymonitor.setData(data);
-        } else {
-            if ((pairedDeviceList.size() == 0) ||
-                    !(pairedDeviceList.contains("activityDevice"))) {
-
-                activitymonitor.setHide(!isExistData);
-            } else {
-                activitymonitor.setDataNull(); //Activity device has been paired
-            }
-        }
-    }
-
     private void refreshBloodPressureLayout() {
-
 
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
 
@@ -521,69 +471,37 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         boolean isExistData = (data != null);
 
         if (isExistData) {
+            layoutBloodPressure.setVisibility(View.VISIBLE);
+            layoutSteps.setVisibility(View.GONE);
 
             btnNext.setText("Next");
             btnNext.setBackground(getResources().getDrawable(R.drawable.greenback));
+
             layoutBloodPressure.setData(data);
+        } else {
+            layoutBloodPressure.setVisibility(View.GONE);
+            layoutSteps.setVisibility(View.VISIBLE);
+
+            btnNext.setText("Skip");
+            btnNext.setBackground(getResources().getDrawable(R.drawable.repeat));
         }
+
         layoutBloodPressure.setHide(!isExistData);
     }
 
-    private void refreshWeightScaleLayout() {
-
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_WS);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            weightscale.setData(data);
-            weightscale.setVisibility(View.VISIBLE);
-        }
-
-        weightscale.setHide(!isExistData);
-    }
-
-    private void refreshThermometerLayout() {
-        MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        Lifetrack_infobean data = measuDataManager.getCurrentDispData(MeasuDataManager.MEASU_DATA_TYPE_TH);
-
-        boolean isExistData = (data != null);
-
-        if (isExistData) {
-            thermometer.setData(data);
-        }
-
-        thermometer.setHide(!isExistData);
-    }
 
     private void refreshArrowVisible() {
         MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
-
-        leftArrow.setVisibility((measuDataManager.isExistPastDatas()) ? View.VISIBLE : View.INVISIBLE);
-        rightArrow.setVisibility((measuDataManager.isExistFutureDatas()) ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void refreshDisplay(int dataType) {
         if (dataType == MeasuDataManager.MEASU_DATA_TYPE_BP) {
             refreshBloodPressureLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_WS) {
-            refreshWeightScaleLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_TH) {
-            refreshThermometerLayout();
-        } else if (dataType == MeasuDataManager.MEASU_DATA_TYPE_AM) {
-            refreshActivityMonitorLayout();
         }
     }
 
     private void refreshDisplay() {
-        refreshActivityMonitorLayout();
         refreshBloodPressureLayout();
-        refreshWeightScaleLayout();
-        refreshThermometerLayout();
-        refreshArrowVisible();
     }
 
     // 対象の項目の次のデータを表示
@@ -605,7 +523,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
     private void doBindBleReceivedService() {
         if (!isBindBleReceivedService) {
-            bindService(new Intent(DashboardActivity.this,
+            bindService(new Intent(BloodPressureActivity.this,
                     BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
             isBindBleReceivedService = true;
             Log.e("inside_condition", "dobindBleReceivedService");
@@ -621,9 +539,9 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
 
     private void showIndicator(String message) {
-        if (!(DashboardActivity.this).isFinishing()) {
+        if (!(BloodPressureActivity.this).isFinishing()) {
             if (progress == null) {
-                progress = new Dialog(DashboardActivity.this);
+                progress = new Dialog(BloodPressureActivity.this);
                 progress.getWindow().setBackgroundDrawable(new ColorDrawable(0));
                 progress.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 progress.setContentView(R.layout.custom_alert);
@@ -658,7 +576,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
 
         if (progress.isShowing())
             progress.dismiss();
-
 
         progress = null;
     }
@@ -1121,12 +1038,12 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
             if (BleReceivedService.TYPE_GATT_CONNECTED.equals(type)) {
                 linearContainer.setVisibility(View.VISIBLE);
                 Log.e("inside", "onReceive_GATT_CONNECTED");
-
                 try {
                     pd.dismiss();
                 } catch (Exception e) {
 
                 }
+
                 showIndicator(getResources().getString(R.string.indicator_start_receive));
                 BleReceivedService.getGatt().discoverServices();
 
@@ -1157,19 +1074,20 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                 Log.e("inside", "onReceive_GATT_ERROR");
                 int status = intent.getExtras().getInt(BleReceivedService.EXTRA_STATUS);
                 if (status == 19) {
+                    showAlertDialog();
                     return;
                 }
                 if (shouldStartConnectDevice) {
                     if (BleReceivedService.getInstance() != null) {
                         if (!BleReceivedService.getInstance().isConnectedDevice()) {
                             shouldStartConnectDevice = false;
+                            Log.e("inside", "shouldStartConnectDevice" + shouldStartConnectDevice);
                             dismissIndicator();
                             doStartLeScan();
                             linearContainer.setVisibility(View.VISIBLE);
                             try {
                                 pd.dismiss();
                             } catch (Exception e) {
-
                             }
                         } else {
                             BluetoothGatt gatt = BleReceivedService.getGatt();
@@ -1180,6 +1098,7 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                     }
                 } else {
                     dismissIndicator();
+                    showAlertDialog();
                 }
             } else {
                 if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
@@ -1235,7 +1154,6 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
                                 break;
                             }
                         }
-
 
                         if (isGroup1) {
                             setDateTimeDelay = 40L;
@@ -1300,6 +1218,41 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         }
     };
 
+    private void showAlertDialog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+        alertDialogBuilder.setTitle("Not Connected");
+        alertDialogBuilder.setMessage("Device is not connected, Please try again by clicking on Reconnect").setCancelable(false)
+                .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        layoutSteps.setVisibility(View.VISIBLE);
+                        layoutBloodPressure.setVisibility(View.GONE);
+                        tvResultMsg.setVisibility(View.VISIBLE);
+                        btnNext.setText("Skip");
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Skip Test", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                skipNext();
+            }
+        });
+
+        /* create alert dialog */
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        /* show alert dialog */
+        if (!((Activity) context).isFinishing())
+            alertDialog.show();
+        alertDialogBuilder.setCancelable(false);
+    }
+
+    /**
+     *
+     */
+    private void skipNext() {
+        context.startActivity(new Intent(BloodPressureActivity.this,GlucoseScanListActivity.class));
+    }
+
     Runnable disableIndicationRunnable = new Runnable() {
         @Override
         public void run() {
@@ -1326,14 +1279,8 @@ public class DashboardActivity extends Activity implements TextToSpeech.OnInitLi
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
-            if (MeasuDataManager.ACTION_AM_DATA_UPDATE.equals(action)) {
-                refreshActivityMonitorLayout();
-            } else if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
+            if (MeasuDataManager.ACTION_BP_DATA_UPDATE.equals(action)) {
                 refreshBloodPressureLayout();
-            } else if (MeasuDataManager.ACTION_WS_DATA_UPDATE.equals(action)) {
-                refreshWeightScaleLayout();
-            } else if (MeasuDataManager.ACTION_TH_DATA_UPDATE.equals(action)) {
-                refreshThermometerLayout();
             }
 
             refreshArrowVisible();
