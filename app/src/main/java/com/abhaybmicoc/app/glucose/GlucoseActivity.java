@@ -1,7 +1,14 @@
 package com.abhaybmicoc.app.glucose;
 
+import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.os.Handler;
 import android.widget.Toast;
@@ -32,11 +39,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.hemoglobin.GattClientActionListener;
+import com.abhaybmicoc.app.hemoglobin.GattClientCallback;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -54,8 +63,9 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
-    // region Variables
+public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener,
+        GattClientActionListener {
+    // region Variables,
 
     private Context context = GlucoseActivity.this;
 
@@ -63,13 +73,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     public static final String EXTRAS_DEVICE_NAME = "DEVICE_NAME";
 
     private Util util;
-    private String mDeviceAddress;
+    private Toolbar toolbar;
     private String mDeviceName;
     private Animation animation;
-
     private ActionBar mActionBar;
-
-    private Toolbar toolbar;
+    private String mDeviceAddress;
 
     private ImageView ivSteps;
     private ImageView menuIcon;
@@ -94,6 +102,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private TextView tvConnectionStatus;
 
     private LinearLayout layoutGlucose;
+    private LinearLayout llReadingsLayout;
+    private LinearLayout llConnectingStepsLayout;
 
     private View mView;
 
@@ -124,17 +134,30 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private SerializeUUID serializeUUID;
     private Communicator communicator = this;
     private SharedPreferences sharedPreferencesPersonal;
-    private SharedPreferences sharedPreferencesDevice;
+    private SharedPreferences sharedPreferenceGlucoseDEvice;
+
+    private SharedPreferences sharedPreferenceHBDevice;
+    private SharedPreferences sharedPreferencesDeviceHemoglobin;
+
+    private BluetoothGatt mGatt;
 
     private Handler deviceConnectionTimeoutHandler;
     private ProgressDialog dialogConnectionProgress;
 
     private int DEVICE_CONNECTION_WAITING_TIME = 10000;
+    private int STATR_TEST_ACTIVATION_TIME = 2000;
 
     private String textToSpeak;
     private String resultOfGlucose;
 
     private boolean isTestStarted = false;
+
+    private BluetoothAdapter bluetoothAdapter;
+
+    private boolean mScanning;
+    private boolean isDeviceConnected;
+    private boolean isEchoInitialized;
+
 
     // endregion
 
@@ -152,7 +175,22 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         setupEvents();
 
         initializeData();
+
+        turnOnBluetooth();
+
+        connectionToHemoglobinDevice();
     }
+
+    private void connectionToHemoglobinDevice() {
+        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+        bluetoothAdapter = bluetoothManager.getAdapter();
+
+        sharedPreferenceHBDevice = getSharedPreferences("device_data", MODE_PRIVATE);
+        sharedPreferencesDeviceHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
+
+        connectOrShowScanDevice();
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -191,6 +229,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     protected void onStop() {
         super.onStop();
         syncLib.stopReceiver();
+        stopBluetoothConnection();
     }
 
     @Override
@@ -231,6 +270,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         } catch (Exception e) {
             System.out.println("onPauseException" + e.getMessage());
         }
+
     }
 
     @Override
@@ -321,6 +361,15 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         }
     }
 
+
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
+    }
+
     private void writeSugarSharedPreference() {
         glucoseData = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
         SharedPreferences.Editor editor = glucoseData.edit();
@@ -349,20 +398,20 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             bluetoothIcon.setBackgroundResource(R.drawable.connect);
             batteryIcon.setVisibility(View.VISIBLE);
 
-            tvConnectionStatus.setText("Connected");
+            setStartTestTimerHandler();
 
-            btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
 
             saveDeviceInformation(mDeviceAddress, mDeviceName);
 
-            textToSpeak = "Please click on start Test";
-            speakOut(textToSpeak);
 
             if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
                 dialogConnectionProgress.dismiss();
             }
         } else {
             tvConnectionStatus.setText("Connecting");
+
+            llConnectingStepsLayout.setVisibility(View.VISIBLE);
+            llReadingsLayout.setVisibility(View.GONE);
 
             batteryIcon.setVisibility(View.INVISIBLE);
             bluetoothIcon.setBackgroundResource(R.drawable.disconnect);
@@ -432,23 +481,28 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_header_height:
-                context.startActivity(new Intent(this, HeightActivity.class));
+                startActivity(new Intent(context, HeightActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_weight:
-                context.startActivity(new Intent(this, ActofitMainActivity.class));
+                startActivity(new Intent(context, ActofitMainActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_tempreture:
-                context.startActivity(new Intent(this, ThermometerScreen.class));
+                startActivity(new Intent(context, ThermometerScreen.class));
+                finish();
                 break;
 
             case R.id.tv_header_pulseoximeter:
-                context.startActivity(new Intent(this, com.abhaybmicoc.app.oximeter.MainActivity.class));
+                startActivity(new Intent(context, com.abhaybmicoc.app.oximeter.MainActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_bloodpressure:
-                context.startActivity(new Intent(this, DashboardActivity.class));
+                startActivity(new Intent(this, BloodPressureActivity.class));
+                finish();
                 break;
         }
     }
@@ -461,6 +515,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         setContentView(R.layout.activity_home);
 
         layoutGlucose = findViewById(R.id.layout_glucose_result);
+        llReadingsLayout = findViewById(R.id.ll_readings_layout);
+        llConnectingStepsLayout = findViewById(R.id.ll_connecting_steps_layout);
 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
@@ -575,7 +631,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void initializeData() {
         util = new Util(this, this);
 
-        sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
+        mConnected = false;
+        sharedPreferenceGlucoseDEvice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
 
         final Intent intent = getIntent();
 
@@ -594,9 +651,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void connectDevice() {
 //        dialogConnectionProgress.show();
 
+        llConnectingStepsLayout.setVisibility(View.VISIBLE);
+        llReadingsLayout.setVisibility(View.GONE);
+
         syncLib = new SyncLib(communicator, this, GlucoseActivity.this, serializeUUID, mDeviceAddress);
         syncLib.startReceiver();
-
 
         util.print("Scan List Address :Main " + mDeviceAddress + "::" + util.readString(HelperC.key_mybluetoothaddress, "") + " - " + mDeviceAddress.length());
 
@@ -607,8 +666,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         deviceConnectionTimeoutHandler = new Handler();
 
         deviceConnectionTimeoutHandler.postDelayed(() -> {
-//            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
-//                dialogConnectionProgress.dismiss();
 
             if (!mConnected) {
 
@@ -633,15 +690,30 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 /* create alert dialog */
                 AlertDialog alertDialog = alertDialogBuilder.create();
                 /* show alert dialog */
-                alertDialog.show();
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
                 alertDialogBuilder.setCancelable(false);
             }
-//            }
         }, DEVICE_CONNECTION_WAITING_TIME);
     }
 
+    private void setStartTestTimerHandler() {
+        deviceConnectionTimeoutHandler = new Handler();
+
+        deviceConnectionTimeoutHandler.postDelayed(() -> {
+            tvConnectionStatus.setText("Connected");
+
+            llConnectingStepsLayout.setVisibility(View.GONE);
+            llReadingsLayout.setVisibility(View.VISIBLE);
+
+            btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
+            textToSpeak = "Please click on start Test";
+            speakOut(textToSpeak);
+        }, STATR_TEST_ACTIVATION_TIME);
+    }
+
     private void saveDeviceInformation(String deviceAddress, String deviceName) {
-        SharedPreferences.Editor editor = sharedPreferencesDevice.edit();
+        SharedPreferences.Editor editor = sharedPreferenceGlucoseDEvice.edit();
         editor.putString("glucoseDeviceAddress", deviceAddress);
         editor.putString("glucoseDeviceName", deviceName);
         editor.commit();
@@ -656,12 +728,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      */
     private void startTest() {
 
-
         if (mConnected) {
-            syncLib.startTest();
-            isTestStarted = true;
-            btnWriteData.setText("Next");
-
+            try {
+                syncLib.startTest();
+                isTestStarted = true;
+                btnWriteData.setText("Next");
+            } catch (Exception e) {
+            }
         } else {
             Toast.makeText(getApplicationContext(), "Please Connect to Device!", Toast.LENGTH_SHORT).show();
         }
@@ -672,6 +745,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      */
     private void restartTest() {
         if (mConnected) {
+
             if (devTestStarted) {
                 try {
                     syncLib.stopTest();
@@ -768,6 +842,123 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             batteryIcon.startAnimation(animation);
         }
     }
+
+    @Override
+    public void log(String message) {
+
+    }
+
+    @Override
+    public void logError(String message) {
+
+    }
+
+    @Override
+    public void setConnected(boolean connected) {
+        mScanning = false;
+
+        updateConnectionStatus(connected);
+    }
+
+    @Override
+    public void initializeTime() {
+        isEchoInitialized = true;
+    }
+
+    @Override
+    public void initializeEcho() {
+        isEchoInitialized = true;
+    }
+
+    @Override
+    public void disconnectGattServer() {
+        stopBluetoothConnection();
+    }
+
+    @Override
+    public void showToast(String msg) {
+
+    }
+
+    /**
+     *
+     */
+    private void connectOrShowScanDevice() {
+        /**
+         * On load, check if device is stored in local storage
+         * If yes, connect
+         */
+
+        if (savedDeviceAlreadyExists()) {
+            connect();
+        }
+    }
+
+    private void updateConnectionStatus(boolean connected) {
+        /**
+         * Store connection status in a variable
+         * If connected, hide connect button, show connection message
+         * If not connected
+         *   - If we have tried maximum times, show scan button
+         *   - Else try to connect again
+         */
+        isDeviceConnected = connected;
+
+        if (!connected) {
+            connect();
+        }
+    }
+
+    private void stopBluetoothConnection() {
+
+        isDeviceConnected = false;
+        isEchoInitialized = false;
+
+        if (mGatt != null) {
+            try {
+                mGatt.disconnect();
+                mGatt.close();
+            } catch (RuntimeException ex) {
+            }
+        }
+    }
+
+
+    /**
+     *
+     */
+    private void connect() {
+        disconnectGattServer();
+
+        BluetoothDevice device = getDevice(getStoredDeviceAddress());
+
+        GattClientCallback gattClientCallback = new GattClientCallback(this);
+
+        mGatt = device.connectGatt(this, true, gattClientCallback);
+        // TODO: Check state of connection
+    }
+
+    /**
+     * @return
+     */
+    private boolean savedDeviceAlreadyExists() {
+        return !sharedPreferenceHBDevice.getString("deviceName", "").equals("");
+    }
+
+    /**
+     * @return
+     */
+    private String getStoredDeviceAddress() {
+        return sharedPreferenceHBDevice.getString("deviceAddress", "");
+    }
+
+    /**
+     * @return
+     */
+    private BluetoothDevice getDevice(String deviceName) {
+        return bluetoothAdapter.getRemoteDevice(deviceName);
+    }
+
 
     // endregion
 }

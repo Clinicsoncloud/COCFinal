@@ -42,7 +42,7 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.DashboardActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private int COUNT_CONNECTION_TRY = 0;
     private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
-    private int DEVICE_CONNECTION_WAITING_TIME = 10000;
+    private int DEVICE_CONNECTION_WAITING_TIME = 40000;
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -310,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         });
 
         tvMainBpMonitor.setOnClickListener(view -> {
-            context.startActivity(new Intent(MainActivity.this, DashboardActivity.class));
+            context.startActivity(new Intent(MainActivity.this, BloodPressureActivity.class));
         });
 
         tvMainSugar.setOnClickListener(view -> {

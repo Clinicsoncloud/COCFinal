@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -11,10 +12,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:layout_height="wrap_content">
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/tv_header_height"
@@ -175,7 +176,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:orientation="vertical">
 
         <ImageView
@@ -186,48 +186,108 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:visibility="gone"
             android:layout_marginEnd="300dp"
             android:layout_marginRight="300dp"
-            android:src="@mipmap/applogo" />
+            android:src="@mipmap/applogo"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:id="@+id/rl_ConnectionStatusLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/main"
+            android:visibility="visible">
+
+
+            <Button
+                android:id="@+id/btn_connect"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:background="@drawable/repeat"
+                android:padding="@dimen/pad15"
+                android:text="Connecting..."
+                android:textColor="@color/white" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:weightSum="3"
+            android:layout_height="250dp"
+            android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/margin20"
-            android:layout_height="wrap_content">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="3">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="match_parent"
+                android:layout_gravity="clip_vertical"
                 android:layout_weight="2"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@mipmap/pulseimage"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@mipmap/pulseimage" />
+            </RelativeLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
+                android:layout_height="250dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_body_oxygen"
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cardview_room1"
                     android:layout_width="400dp"
-                    android:layout_height="50dp"
-                    android:layout_centerHorizontal="true"
-                    android:text="spo"
-                    android:background="@drawable/rectangle"
-                    android:gravity="center"
+                    android:layout_height="250dp"
                     android:layout_gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    app:cardBackgroundColor="#374752"
+                    app:cardCornerRadius="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tv_body_oxygen_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="Body Oxygen is"
+                            android:textColor="@color/white"
+                            android:textSize="25sp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/tv_body_oxygen"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="spo"
+                            android:textColor="@color/white"
+                            android:textSize="45sp" />
+                        <!--                        android:background="@drawable/rectangle"-->
+
+
+                    </LinearLayout>
+
+
+                </android.support.v7.widget.CardView>
+
 
                 <TextView
                     android:id="@+id/tv_pulse_rate"
@@ -235,35 +295,37 @@
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_body_oxygen"
                     android:layout_alignStart="@+id/tv_body_oxygen"
-                    android:layout_marginTop="20dp"
-                    android:text="@string/pr"
-                    android:gravity="center"
-                    android:background="@drawable/rectangle"
                     android:layout_gravity="center"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
+                    android:text="@string/pr"
                     android:textColor="@color/white"
-                    android:textSize="25sp" />
+                    android:textSize="25sp"
+                    android:visibility="gone" />
 
 
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_pulse_rate"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="100dp">
+            android:layout_marginTop="20dp">
 
             <Button
                 android:id="@+id/btn_connect_device"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
                 android:layout_marginStart="80dp"
+                android:background="@drawable/greenback"
+                android:text="@string/connectDevice"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:visibility="gone"
-                android:background="@drawable/greenback"
-                android:text="@string/connectDevice" />
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -278,32 +340,33 @@
                 android:id="@+id/btn_disconnect_device"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
+                android:background="@drawable/greenback"
+                android:text="@string/disconnect"
                 android:textColor="@color/white"
                 android:textSize="25sp"
-                android:visibility="gone"
-                android:background="@drawable/greenback"
-                android:text="@string/disconnect" />
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_start_test"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:textColor="@color/white"
-                android:textSize="25sp"
-                android:gravity="center"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/greenback"
-                android:text="@string/bindDevice" />
+                android:gravity="center"
+                android:text="@string/bindDevice"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
             android:layout_below="@+id/linearfive"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -311,43 +374,42 @@
                 android:id="@+id/btn_repeat"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/repeat"
-                android:text="REPEAT"
                 android:gravity="center"
-                android:visibility="gone"
-                android:layout_gravity="center"
+                android:text="REPEAT"
                 android:textColor="@color/white"
                 android:textSize="35sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_skip"
                 android:layout_width="wrap_content"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:layout_weight="1"
                 android:background="@drawable/repeat"
-                android:text="SKIP"
                 android:gravity="center"
-                android:visibility="gone"
-                android:layout_gravity="center"
+                android:text="SKIP"
                 android:textColor="@color/white"
                 android:textSize="35sp"
-                android:textStyle="bold" />
-
+                android:textStyle="bold"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/btn_Next"
                 android:layout_width="700dp"
                 android:layout_height="50dp"
-                android:layout_margin="10dp"
                 android:layout_gravity="center"
-                android:gravity="center"
+                android:layout_margin="10dp"
                 android:background="@drawable/repeat"
-                android:text="NEXT"
+                android:gravity="center"
+                android:text="Skip"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 android:textStyle="bold" />

@@ -3,7 +3,6 @@ package com.abhaybmicoc.app.activity;
 import android.net.Uri;
 import android.util.Log;
 import android.os.Bundle;
-import android.view.View;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
@@ -12,6 +11,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import android.app.Activity;
 import android.widget.Button;
+import android.os.SystemClock;
 import android.graphics.Color;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.ListView;
 import android.widget.ImageView;
+import android.app.ProgressDialog;
 import android.widget.ProgressBar;
 import android.widget.LinearLayout;
 import android.app.DownloadManager;
@@ -51,6 +52,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
 
 import com.prowesspride.api.Printer_GEN;
+import com.prowesspride.api.Setup;
 
 import org.json.JSONObject;
 import org.json.JSONException;
@@ -70,12 +72,10 @@ import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import butterknife.OnClick;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
-import static com.abhaybmicoc.app.utils.Constant.Fields.TOKEN;
 
 public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
     // region Variables
@@ -195,6 +195,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     List<PrintDataOld> printDataList = new ArrayList<>();
     List<PrintData> printDataListNew = new ArrayList<>();
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
+    private String TAG = "PrinPriviewActivity";
 
     // endregion
 
@@ -247,7 +248,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
-
     }
 
     private void setupEvents() {
@@ -269,10 +269,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private void initializeData() {
         textToSpeech = new TextToSpeech(this, this);
 
+        mGP = ((AndMedical_App_Global) getApplicationContext());
+
         txtSpeak = "Please click on the print button to get your printout";
         speakOut(txtSpeak);
 
         printerBond();
+        autoConnectPrinter();
         gettingDataObjects();
         calculations();
         setNewList();
@@ -281,7 +284,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         getPrintData();
         getResults();
         postData();
-        printerActivation();
+
+    }
+
+    private void autoConnectPrinter() {
+        new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
     // endregion
@@ -921,13 +928,13 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void printerActivation() {
-
-        iWidth = getWindowManager().getDefaultDisplay().getWidth();
         try {
+            iWidth = getWindowManager().getDefaultDisplay().getWidth();
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
     }
 
     // endregion
@@ -1392,7 +1399,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         /* displays the progress dialog untill background task is completed */
         @Override
         protected void onPreExecute() {
-//            dlgShowCustom(PrintPreviewActivity.this, "Please Wait....");
             super.onPreExecute();
         }
 
@@ -1401,24 +1407,28 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
+                if (ptrGen == null) {printerActivation();}
+
                 ptrGen.iFlushBuf();
 
                 String empty = printerText;
+
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 iRetVal = DEVICE_NOTCONNECTED;
 
                 // TODO: Handle exception
                 return iRetVal;
             }
-
             return iRetVal;
         }
 
         /* This displays the status messages of EnterTextAsyc in the dialog box */
         @Override
         protected void onPostExecute(Integer result) {
+
+            Log.e("result_PosstLog", ":" + result);
             if (iRetVal == DEVICE_NOTCONNECTED)
                 ptrHandler.obtainMessage(1, "Device not connected").sendToTarget();
             else if (iRetVal == Printer_GEN.SUCCESS)
@@ -1570,79 +1580,79 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private String getPrintText() {
         String str = "" + "    " + "Clinics On Cloud" + "" + "\n\n" +
-                     "Name: {name}\n" +
-                     "Age : {age}  Gender: {gender}\n" +
-                     "{currentDate}  {currentTime} \n" +
-                     "-----------------------\n" +
-                     "Height : {height} cm\n" +
-                     "Weight : {weight} kg\n" +
-                     "[Normal Range]:\n" +
-                     "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
-                     "BMI : {bmi}\n" +
-                     "[Normal Range]: \n" +
-                     "18.5 - 25\n" +
-                     "-----------------------\n" +
-                     "Body Fat : {bodyFat}\n" +
-                     "[Normal Range]: \n" +
-                     "{standardBodyFat}\n\n" +
-                     "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
-                     "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                     "[Normal Range]: \n" +
-                     "{subcutaneousFatRange}\n\n" +
-                     "Visceral Fat : {visceralFat}\n" +
-                     "[Normal Range]: <=9\n\n" +
-                     "Body Water : {bodyWater}\n" +
-                     "[Normal Range]: \n" +
-                     "{standardBodyWater}\n\n" +
-                     "Skeletal Muscle : {skeletalMuscle}\n" +
-                     "[Normal Range]: \n" +
-                     "{standardSkeletalMuscle}\n\n" +
-                     "Muscle Mass : {muscleMass}\n" +
-                     "[Normal Range]: \n" +
-                     "{standardMuscleMass}\n\n" +
-                     "Bone Mass : {boneMass}\n" +
-                     "[Normal Range]: \n" +
-                     "{standardBoneMass}\n\n" +
-                     "Protein : {protein}\n" +
-                     "[Normal Range]: \n" +
-                     "16-18(%) \n\n" +
-                     "BMR : {bmr}\n" +
-                     "[Normal Range]: \n " +
-                     "> ={standardMetabolism} Kcal\n\n" +
-                     "Physique: {physique}\n\n" +
-                     "Meta Age : {metaAge} yrs\n\n" +
-                     "Health Score : {healthScore}\n\n" +
-                     "-----------------------\n" +
-                     "Blood Glucose : {sugar} mg/dl\n" +
-                     "[Normal Range]: \n" +
-                     "{standardSugar}\n\n" +
-                     "-----------------------\n" +
-                     "Hemoglobin : {hemoglobin} g/dl\n" +
-                     "[Normal Range]: \n" +
-                     "{standardHemoglobin}\n\n" +
-                     "-----------------------\n" +
-                     "Blood Pressure : \n" +
-                     "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
-                     "Diastolic : {bloodPressureDiastolic} mmHg \n" +
-                     "[Normal Range]: \n" +
-                     "Systolic : 90-139mmHg\n" +
-                     "Diastolic : 60-89mmHg\n" +
-                     "-----------------------\n" +
-                     "Blood Oxygen : {bloodOxygen} %" + "\n" +
-                     "[Normal Range]: >94%\n" +
-                     "Pulse Rate: {pulseRate} bpm\n" +
-                     "[Normal Range]: \n" +
-                     "60-100bpm\n" +
-                     "-----------------------\n" +
-                     "Temperature : {temperature} F\n" +
-                     "[Normal Range]: 97-99 F\n" +
-                     "-----------------------\n" +
-                     "       Thank You\n" +
-                     "   Above results are\n" +
-                     "       indicative\n"+
-                     "  figure,don't follow it\n"+
-                     "   without consulting a\n"+
-                     "        doctor\n\n\n\n\n\n\n";
+                "Name: {name}\n" +
+                "Age : {age}  Gender: {gender}\n" +
+                "{currentDate}  {currentTime} \n" +
+                "-----------------------\n" +
+                "Height : {height} cm\n" +
+                "Weight : {weight} kg\n" +
+                "[Normal Range]:\n" +
+                "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
+                "BMI : {bmi}\n" +
+                "[Normal Range]: \n" +
+                "18.5 - 25\n" +
+                "-----------------------\n" +
+                "Body Fat : {bodyFat}\n" +
+                "[Normal Range]: \n" +
+                "{standardBodyFat}\n\n" +
+                "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
+                "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
+                "[Normal Range]: \n" +
+                "{subcutaneousFatRange}\n\n" +
+                "Visceral Fat : {visceralFat}\n" +
+                "[Normal Range]: <=9\n\n" +
+                "Body Water : {bodyWater}\n" +
+                "[Normal Range]: \n" +
+                "{standardBodyWater}\n\n" +
+                "Skeletal Muscle : {skeletalMuscle}\n" +
+                "[Normal Range]: \n" +
+                "{standardSkeletalMuscle}\n\n" +
+                "Muscle Mass : {muscleMass}\n" +
+                "[Normal Range]: \n" +
+                "{standardMuscleMass}\n\n" +
+                "Bone Mass : {boneMass}\n" +
+                "[Normal Range]: \n" +
+                "{standardBoneMass}\n\n" +
+                "Protein : {protein}\n" +
+                "[Normal Range]: \n" +
+                "16-18(%) \n\n" +
+                "BMR : {bmr}\n" +
+                "[Normal Range]: \n " +
+                "> ={standardMetabolism} Kcal\n\n" +
+                "Physique: {physique}\n\n" +
+                "Meta Age : {metaAge} yrs\n\n" +
+                "Health Score : {healthScore}\n\n" +
+                "-----------------------\n" +
+                "Blood Glucose : {sugar} mg/dl\n" +
+                "[Normal Range]: \n" +
+                "{standardSugar}\n\n" +
+                "-----------------------\n" +
+                "Hemoglobin : {hemoglobin} g/dl\n" +
+                "[Normal Range]: \n" +
+                "{standardHemoglobin}\n\n" +
+                "-----------------------\n" +
+                "Blood Pressure : \n" +
+                "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
+                "Diastolic : {bloodPressureDiastolic} mmHg \n" +
+                "[Normal Range]: \n" +
+                "Systolic : 90-139mmHg\n" +
+                "Diastolic : 60-89mmHg\n" +
+                "-----------------------\n" +
+                "Blood Oxygen : {bloodOxygen} %" + "\n" +
+                "[Normal Range]: >94%\n" +
+                "Pulse Rate: {pulseRate} bpm\n" +
+                "[Normal Range]: \n" +
+                "60-100bpm\n" +
+                "-----------------------\n" +
+                "Temperature : {temperature} F\n" +
+                "[Normal Range]: 97-99 F\n" +
+                "-----------------------\n" +
+                "       Thank You\n" +
+                "   Above results are\n" +
+                "       indicative\n" +
+                "  figure,don't follow it\n" +
+                "   without consulting a\n" +
+                "        doctor\n\n\n\n\n\n\n";
 
         str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
         str = str.replace("{age}", String.valueOf(age));
@@ -1714,4 +1724,89 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String geBloodPressurePreferenceData(String key) {
         return sharedPreferencesBloodPressure.getString(key, "");
     }
+
+    private class ConnSocketTask extends AsyncTask<String, String, Integer> {
+        /**
+         * Process waits prompt box
+         */
+        private ProgressDialog mpd = null;
+        /**
+         * Constants: connection fails
+         */
+        private static final int CONN_FAIL = 0x01;
+        /**
+         * Constant: the connection is established
+         */
+        private static final int CONN_SUCCESS = 0x02;
+
+        /**
+         * Thread start initialization
+         */
+        @Override
+        public void onPreExecute() {
+            mpd = new ProgressDialog(PrintPreviewActivity.this);
+            mpd.setMessage(getString(R.string.actMain_msg_device_connecting));
+            mpd.setCancelable(false);
+            mpd.setCanceledOnTouchOutside(false);
+            btnHome.setEnabled(false);
+            btnPrint.setEnabled(false);
+            if (!((Activity) context).isFinishing())
+                mpd.show();
+
+        }
+
+        /* Task of  performing in the background*/
+
+        @Override
+        protected Integer doInBackground(String... arg0) {
+            if (mGP.createConn(arg0[0])) {
+                SystemClock.sleep(2000);
+                return CONN_SUCCESS;
+            } else {
+                return CONN_FAIL;
+            }
+        }
+
+        /* This displays the status messages of in the dialog box */
+        @Override
+        public void onPostExecute(Integer result) {
+            if (mpd != null && mpd.isShowing())
+                mpd.dismiss();
+            if (CONN_SUCCESS == result) {
+
+                btnHome.setEnabled(true);
+                btnPrint.setEnabled(true);
+
+                printerActivation();
+            } else {
+                showReconnectPopup();
+            }
+        }
+    }
+
+    private void showReconnectPopup() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                context);
+        alertDialogBuilder.setTitle("Communication Lost!");
+        alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
+                .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        autoConnectPrinter();
+                    }
+                });
+        alertDialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+
+        /* create alert dialog */
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        /* show alert dialog */
+        if (!((Activity) context).isFinishing())
+            alertDialog.show();
+        alertDialogBuilder.setCancelable(false);
+    }
 }
+

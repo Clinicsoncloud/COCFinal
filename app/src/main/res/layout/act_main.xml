@@ -148,10 +148,12 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/actMain_ll_SelectedDevicesLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="150dp"
                 android:layout_weight="1"
+
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -176,7 +178,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dip"
-                        android:text="@string/actMain_device_info"
+                        android:text=""
                         android:textAppearance="?android:attr/textAppearanceMedium"
                         android:textColor="@color/white"
                         android:textSize="30sp" />
