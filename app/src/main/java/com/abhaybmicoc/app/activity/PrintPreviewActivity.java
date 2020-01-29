@@ -416,8 +416,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void getPulseResult() {
-        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE)) {
-            double pulseRate = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_PULSE, Constant.Fields.PULSE_RATE);
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.PULSE_RATE)) {
+            double pulseRate = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_BLOODPRESSURE, Constant.Fields.PULSE_RATE);
 
             if (pulseRate > 100)
                 pulseResult = "High";
@@ -1132,7 +1132,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             printDataListNew.add(new PrintData("Systolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""))));
             printDataListNew.add(new PrintData("Diastolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""))));
             printDataListNew.add(new PrintData("Pulse Oximeter", TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, ""))));
-            printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, ""))));
+            printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, ""))));
             printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, ""))));
             printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""))));
 
@@ -1180,7 +1180,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     params.put(Constant.Fields.GENDER, sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
                     params.put(Constant.Fields.BONE_MASS, sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""));
                     params.put(Constant.Fields.BODY_WATER, sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""));
-                    params.put(Constant.Fields.PULSE_RATE, sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, ""));
+                    params.put(Constant.Fields.PULSE_RATE, sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, ""));
                     params.put(Constant.Fields.MUSCLE_MASS, sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""));
                     params.put(Constant.Fields.HEMOGLOBIN, sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""));
                     params.put(Constant.Fields.HEALTH_SCORE, sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""));
@@ -1277,7 +1277,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                     else
                         params.put(Constant.Fields.BLOOD_OXYGEN_RANGE, "NA");
 
-                    if (!sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, "").equalsIgnoreCase(""))
+                    if (!sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "").equalsIgnoreCase(""))
                         params.put(Constant.Fields.PULSE_RATE_RANGE, "60-100 bpm");
                     else
                         params.put(Constant.Fields.PULSE_RATE_RANGE, "NA");
@@ -1691,7 +1691,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));
         str = str.replace("{bloodPressureDiastolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC));
         str = str.replace("{bloodOxygen}", getOximeterPreferenceData(Constant.Fields.BLOOD_OXYGEN));
-        str = str.replace("{pulseRate}", getOximeterPreferenceData(Constant.Fields.PULSE_RATE));
+        str = str.replace("{pulseRate}", geBloodPressurePreferenceData(Constant.Fields.PULSE_RATE));
         str = str.replace("{temperature}", getThermometerPreferenceData(Constant.Fields.TEMPERATURE));
 
         return str;
