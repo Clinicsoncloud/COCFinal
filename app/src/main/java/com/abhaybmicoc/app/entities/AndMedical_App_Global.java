@@ -46,7 +46,7 @@ public class AndMedical_App_Global extends Application {
 	@Override
 	public void onTerminate() {
 		super.onTerminate();
-		 
+
 		ADSharedPreferences.releaseInstance();
 	}
 

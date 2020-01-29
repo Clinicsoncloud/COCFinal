@@ -12,63 +12,71 @@
         android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:weightSum="2">
+
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:layout_weight="1"
             android:gravity="center"
-            android:layout_weight="1">
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/nameTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
             <TextView
                 android:id="@+id/dobTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="25sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_weight="1">
+            android:orientation="horizontal">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:orientation="vertical"
+                android:layout_weight="0.8"
                 android:gravity="center"
-                android:layout_weight="0.8">
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/heightTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
+
                 <TextView
                     android:id="@+id/genderTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="25sp"
-                    android:textColor="@color/white"/>
+                    android:textColor="@color/white"
+                    android:textSize="25sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_weight="0.2">
+                android:layout_weight="0.2"
+                android:gravity="center">
+
                 <ImageView
                     android:id="@+id/iv_download"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_cloud_download_black_24dp"/>
+                    android:src="@drawable/ic_cloud_download_black_24dp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -79,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/headerLL"
-        android:background="@color/white"/>
+        android:background="@color/white" />
 
     <LinearLayout
         android:id="@+id/topLL"
@@ -142,7 +150,7 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_below="@id/topLL"
-        android:background="@color/white"/>
+        android:background="@color/white" />
 
     <ListView
         android:id="@+id/lV"
@@ -208,6 +216,21 @@
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_Reconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/greenback"
+                android:gravity="center"
+                android:text="Reconnect"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
         </LinearLayout>
 
 

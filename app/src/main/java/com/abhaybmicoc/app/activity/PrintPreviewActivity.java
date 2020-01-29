@@ -114,6 +114,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     @BindView(R.id.printbtn)
     Button btnPrint;
 
+    @BindView(R.id.btn_Reconnect)
+    Button btnReconnect;
+
     private LinearLayout llprog;
     @BindView(R.id.buttonLL)
     LinearLayout buttonLL;
@@ -264,6 +267,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         });
 
         ivDownload.setOnClickListener(view -> downloadFile(fileName));
+
+        btnReconnect.setOnClickListener(view -> autoConnectPrinter());
     }
 
     private void initializeData() {
@@ -288,6 +293,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void autoConnectPrinter() {
+        mGP.closeConn();
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
@@ -929,11 +935,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void printerActivation() {
         try {
+            Log.e("PrinterActivation", ":0:");
+
             iWidth = getWindowManager().getDefaultDisplay().getWidth();
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
+
+            Log.e("PrinterActivation", ":ptrgen:" + ptrGen);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -1407,8 +1418,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         @Override
         protected Integer doInBackground(Integer... params) {
             try {
-                if (ptrGen == null) {printerActivation();}
-
                 ptrGen.iFlushBuf();
 
                 String empty = printerText;
@@ -1416,8 +1425,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
             } catch (Exception e) {
+                e.printStackTrace();
                 iRetVal = DEVICE_NOTCONNECTED;
-
                 // TODO: Handle exception
                 return iRetVal;
             }
@@ -1429,33 +1438,10 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         protected void onPostExecute(Integer result) {
 
             Log.e("result_PosstLog", ":" + result);
-            if (iRetVal == DEVICE_NOTCONNECTED)
-                ptrHandler.obtainMessage(1, "Device not connected").sendToTarget();
-            else if (iRetVal == Printer_GEN.SUCCESS)
-                ptrHandler.obtainMessage(1, "Printing Successfull").sendToTarget();
-            else if (iRetVal == Printer_GEN.PLATEN_OPEN)
-                ptrHandler.obtainMessage(1, "Platen open").sendToTarget();
-            else if (iRetVal == Printer_GEN.PAPER_OUT)
-                ptrHandler.obtainMessage(1, "Paper out").sendToTarget();
-            else if (iRetVal == Printer_GEN.IMPROPER_VOLTAGE)
-                ptrHandler.obtainMessage(1, "Printer at improper voltage").sendToTarget();
-            else if (iRetVal == Printer_GEN.FAILURE) {
-                ptrHandler.obtainMessage(1, "Print failed").sendToTarget();
-                PrintPreviewActivity.this.recreate();
-            } else if (iRetVal == Printer_GEN.PARAM_ERROR)
-                ptrHandler.obtainMessage(1, "Parameter error").sendToTarget();
-            else if (iRetVal == Printer_GEN.NO_RESPONSE)
-                ptrHandler.obtainMessage(1, "No response from Pride device").sendToTarget();
-            else if (iRetVal == Printer_GEN.DEMO_VERSION)
-                ptrHandler.obtainMessage(1, "Library in demo version").sendToTarget();
-            else if (iRetVal == Printer_GEN.INVALID_DEVICE_ID)
-                ptrHandler.obtainMessage(1, "Connected  device is not authenticated.").sendToTarget();
-            else if (iRetVal == Printer_GEN.NOT_ACTIVATED)
-                ptrHandler.obtainMessage(1, "Library not activated").sendToTarget();
-            else if (iRetVal == Printer_GEN.NOT_SUPPORTED)
-                ptrHandler.obtainMessage(1, "Not Supported").sendToTarget();
-            else
-                ptrHandler.obtainMessage(1, "Unknown Response from Device").sendToTarget();
+
+            if (result == -1) {
+                Toast.makeText(context, "Please Reconnectr the device...", Toast.LENGTH_SHORT).show();
+            }
 
             super.onPostExecute(result);
         }
@@ -1752,7 +1738,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             btnPrint.setEnabled(false);
             if (!((Activity) context).isFinishing())
                 mpd.show();
-
         }
 
         /* Task of  performing in the background*/
@@ -1770,8 +1755,12 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         /* This displays the status messages of in the dialog box */
         @Override
         public void onPostExecute(Integer result) {
+
+            Log.e("result_Connection", ":" + result);
+
             if (mpd != null && mpd.isShowing())
                 mpd.dismiss();
+
             if (CONN_SUCCESS == result) {
 
                 btnHome.setEnabled(true);

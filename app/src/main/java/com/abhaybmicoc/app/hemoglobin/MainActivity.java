@@ -2,7 +2,10 @@ package com.abhaybmicoc.app.hemoglobin;
 
 
 import android.Manifest;
+import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -39,6 +42,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.bluetooth.BluetoothGattCharacteristic;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.PrintPreviewActivity;
+import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
+import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -50,7 +56,10 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
+import com.prowesspride.api.Printer_GEN;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Map;
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +129,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private TextToSpeech textToSpeech;
 
+
+    public static AndMedical_App_Global mGP = null;
+    public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
+    public static BluetoothDevice mBDevice = null;
+
+    public static int iWidth;
+    public static Printer_GEN ptrGen;
     // endregion
 
     // region Events
@@ -216,7 +232,96 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         mScanning = false;
 
         updateConnectionStatus(connected);
+
+
+        connectToSavedPrinter();
+
     }
+
+    private void connectToSavedPrinter() {
+        SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
+        Log.e("Connect_Printer", " :0: ");
+
+        if (data.getString("NAME", "").length() > 0) {
+            Log.e("Connect_Printer", " :Name: " + data.getString("NAME", ""));
+
+            if (data.getString("BOND", "").equals(getString(R.string.actDiscovery_bond_nothing))) {
+
+                Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
+
+                mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
+
+                Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
+
+                autoConnectPrinter();
+            }
+        }
+    }
+
+    private void autoConnectPrinter() {
+        new ConnSocketTask().execute(mBDevice.getAddress());
+    }
+
+
+    private class ConnSocketTask extends AsyncTask<String, String, Integer> {
+        /**
+         * Process waits prompt box
+         */
+        private ProgressDialog mpd = null;
+        /**
+         * Constants: connection fails
+         */
+        private static final int CONN_FAIL = 0x01;
+        /**
+         * Constant: the connection is established
+         */
+        private static final int CONN_SUCCESS = 0x02;
+
+        /**
+         * Thread start initialization
+         */
+        @Override
+        public void onPreExecute() {
+        }
+
+        /* Task of  performing in the background*/
+
+        @Override
+        protected Integer doInBackground(String... arg0) {
+            if (mGP.createConn(arg0[0])) {
+                SystemClock.sleep(2000);
+                return CONN_SUCCESS;
+            } else {
+                return CONN_FAIL;
+            }
+        }
+
+        /* This displays the status messages of in the dialog box */
+        @Override
+        public void onPostExecute(Integer result) {
+
+            Log.e("Connect_result", ":" + result);
+            if (CONN_SUCCESS == result) {
+                printerActivation();
+            }
+        }
+    }
+
+    private void printerActivation() {
+        try {
+
+            Log.e("Connect_Printer", ":Activation:");
+            iWidth = getWindowManager().getDefaultDisplay().getWidth();
+            InputStream input = BluetoothComm.misIn;
+            OutputStream outstream = BluetoothComm.mosOut;
+            ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
+
+            Log.e("Connect_Printer", ":Activated:" + ptrGen);
+
+        } catch (Exception e) {
+        }
+    }
+
 
     @Override
     public void log(String message) {
@@ -263,6 +368,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         btnScan = findViewById(R.id.btn_scan);
         btnTest = findViewById(R.id.btn_test);
         btnConnect = findViewById(R.id.btn_connect);
+
+        btnConnect.setText("Connect");
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
 
         spinnerDevice = findViewById(R.id.sp_device_list);
@@ -336,8 +443,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         speakOut(txt);
 
         setUserInfo();
-
-        setDeviceConnectionTimeoutHandler();
 
         showProgressDialog();
 
@@ -563,6 +668,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             dialogConnectionProgress.dismiss();
 
             tvViewDevice.setText("Connected to : " + getStoredDeviceName());
+
+            btnConnect.setText("Connected");
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
         } else {
             COUNT_CONNECTION_TRY++;
@@ -584,6 +691,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     private void connect() {
         disconnectGattServer();
+
+        setDeviceConnectionTimeoutHandler();
 
         dialogConnectionProgress.show();
 
@@ -609,6 +718,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          */
 
         if (savedDeviceAlreadyExists()) {
+
+
             connect();
         } else {
             dialogConnectionProgress.show();
