@@ -182,20 +182,15 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         preferences = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         try {
-            Log.e("btLibrary", "btLibrary oncreate try");
             Act_GlobalPool.setup = new Setup();
             boolean activate = Act_GlobalPool.setup.blActivateLibrary(context, R.raw.licence_nodlg_prdgen);
+
             if (activate == true) {
-                Log.d(TAG, "Library Activated......");
                 btnComm.setVisibility(View.VISIBLE);
-                Toast.makeText(context, "Library Activated..!", Toast.LENGTH_SHORT).show();
             } else if (activate == false) {
-                Log.d(TAG, "Library Not Activated...");
                 btnComm.setVisibility(View.GONE);
-                Toast.makeText(context, "Library not activated..!", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            e.printStackTrace();
         }
         if (null == mBT) {
             Toast.makeText(this, "Bluetooth module not found", Toast.LENGTH_LONG).show();
@@ -280,11 +275,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         try {
 
             SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-            Log.e("SharedData", " :0: ");
 
             if (data.getString("NAME", "").length() > 0) {
-
-                Log.e("SharedData", " :1: " + data.getString("NAME", ""));
 
                 svScroll.setVisibility(View.VISIBLE);
                 scanLL.setVisibility(View.GONE);
@@ -301,7 +293,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 dlgShowDeviceInfo();
 
                 if (mhtDeviceInfo.get("BOND").equals(getString(R.string.actDiscovery_bond_nothing))) {
-                    Log.e("SharedData", " :2: " + mhtDeviceInfo.get("BOND"));
 
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.VISIBLE);
@@ -309,15 +300,13 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
                     onClickBtnPair(btnPair);
                 } else {
-                    Log.e("SharedData", " :3: " + mhtDeviceInfo.get("BOND"));
 
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
 
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
-                    startActivity(new Intent(Act_Main.this,PrintPreviewActivity.class));
-//                    onClickBtnConn(btnComm);
+                    startActivity(new Intent(Act_Main.this, PrintPreviewActivity.class));
                 }
             }
 
@@ -339,7 +328,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         mGP.closeConn();
         if (null != mBT && !blBleStatusBefore) {
         }
-//            mBT.disable();
     }
 
     @SuppressLint("StringFormatMatches")
@@ -379,17 +367,13 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 editor.putString("BOND", data.getStringExtra("BOND"));
                 editor.commit();
 
-
-                Log.e("DeviceConnect", " :0: " + data.getStringExtra("NAME") + "  :Bond:  " + data.getStringExtra("BOND"));
-
                 if (mhtDeviceInfo.get("BOND").equals(getString(R.string.actDiscovery_bond_nothing))) {
 
-                    Log.e("DeviceConnect", " :1: " + data.getStringExtra("NAME") + "  :Bond:  " + data.getStringExtra("BOND"));
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.VISIBLE);
                     btnComm.setVisibility(View.GONE);
                 } else {
-                    Log.e("DeviceConnect", " :2: " + data.getStringExtra("NAME") + "  :Bond:  " + data.getStringExtra("BOND"));
+
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     mBDevice = mBT.getRemoteDevice(mhtDeviceInfo.get("MAC"));
                     btnPair.setVisibility(View.GONE);
@@ -420,7 +404,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
      * @return void
      */
     public void onClickBtnConn(View v) {
-        Log.e(TAG, " 1 onClickBtnConn ConnSocketTask");
+
         if (scanLL.getVisibility() == View.VISIBLE) {
             scanLL.setVisibility(View.GONE);
             btIcon.setVisibility(View.VISIBLE);
@@ -440,19 +424,16 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
             } else {
                 speakOut(txt);
             }
 
         } else {
-            Log.e("TTS", "Initilization Failed!");
         }
     }
 
     private void speakOut(String textToSpeech) {
         String text = textToSpeech;
-//        String text = "StartActivity me aapka swagat hain kripaya next button click kre aur aage badhe";
         tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
@@ -566,10 +547,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
             }
             if (iWait > 0) {
                 //RET_BOND_OK
-                Log.e(TAG, "create Bond failed! RET_BOND_OK ");
             } else {
                 //RET_BOND_FAIL
-                Log.e(TAG, "create Bond failed! RET_BOND_FAIL ");
             }
             return (int) ((iWait > 0) ? RET_BOND_OK : RET_BOND_FAIL);
         }
@@ -589,11 +568,9 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 try {
                     BluetoothPair.removeBond(mBDevice);
                 } catch (Exception e) {
-                    Log.d(getString(R.string.app_name), "removeBond failed!");
                     e.printStackTrace();
                 }
                 btnPair.setEnabled(true);
-                Log.e(TAG, " 2 on Pairing ConnSocketTask");
                 new ConnSocketTask().execute(mBDevice.getAddress());
             }
         }
@@ -630,14 +607,10 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
         @Override
         protected Integer doInBackground(String... arg0) {
-            Log.e(TAG, "Do in background");
             if (mGP.createConn(arg0[0])) {
-                Log.e(TAG, "inside createconn[]");
-                Log.e(TAG, "conection_check" + CONN_SUCCESS);
                 SystemClock.sleep(2000);
                 return CONN_SUCCESS;
             } else {
-                Log.e(TAG, "inside else of mgp.createconnn");
                 return CONN_FAIL;
             }
         }
@@ -649,7 +622,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
             if (CONN_SUCCESS == result) {
                 btnComm.setVisibility(View.GONE);
-                Toast.makeText(mGP, "Bluetooth Connection Established successfully", Toast.LENGTH_SHORT).show();
                 funContinue();
             } else {
                 Toast.makeText(Act_Main.this, getString(R.string.actMain_msg_device_connect_fail), Toast.LENGTH_SHORT).show();
@@ -664,17 +636,12 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
                 if (data.getString("SerialNo", "").length() > 0) {
                     sDevicetype = data.getString("SerialNo", "");
-                    Log.e("data_after_continue", " : " + data);
-
-
-                    Log.e("PrintPreviewCall", "  :Funcountinue:  " + "   :SerialNo:   " + data.getString("SerialNo", ""));
 
                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                 } else {
 
-                    Log.i(TAG, "else of continue");
                     genGetSerialNo genSerial = new genGetSerialNo();
                     genSerial.execute(0);
 
@@ -689,19 +656,13 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 if (mGP.connection == true) {
                     try {
 
-                        Log.e(TAG, "checking connection");
-
                         SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
                         if (data.getString("SerialNo", "").length() > 0) {
                             sDevicetype = data.getString("SerialNo", "");
-
-                            Log.e("PrintPreviewCall", "  :Funcountinue:  " + "   :rgProtocol:   " + data.getString("SerialNo", ""));
-
                             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                             Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
                             startActivityForResult(printIntent, EXIT_ON_RETURN);
                         } else {
-                            Log.i(TAG, "getting serialNo");
                             genGetSerialNo genSerial = new genGetSerialNo();
                             genSerial.execute(0);
                         }
@@ -711,7 +672,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 }
             } else if (rbtnProtocol.getText().equals("Esc Sequence Protocol")) {
                 if (mGP.connection == true) {
-                    Log.e(TAG, "ESC Protocol");
 
                     escGetSerialNo escSerial = new escGetSerialNo();
                     escSerial.execute(0);
@@ -882,9 +842,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                         SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
                         if (data.getString("SerialNo", "").length() > 0) {
                             sDevicetype = data.getString("SerialNo", "");
-                            Log.e("data_after_continue", " : " + data.getString("SerialNo", ""));
                         } else {
-                            Log.i(TAG, "else of continue");
                             genGetSerialNo genSerial = new genGetSerialNo();
                             genSerial.execute(0);
 
@@ -898,19 +856,13 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     if (rbtnProtocol.getText().equals("General Protocol")) {
                         if (mGP.connection == true) {
                             try {
-
-                                Log.e(TAG, "checking connection");
                                 SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
                                 if (data.getString("SerialNo", "").length() > 0) {
                                     sDevicetype = data.getString("SerialNo", "");
-
-                                    Log.e("PrintPreviewCall", "  :Funcountinue:  " + "   :BtnCountinue:   " + data.getString("SerialNo", ""));
-
                                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
                                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                                 } else {
-                                    Log.i(TAG, "getting serialNo");
                                     genGetSerialNo genSerial = new genGetSerialNo();
                                     genSerial.execute(0);
                                 }
@@ -920,8 +872,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                         }
                     } else if (rbtnProtocol.getText().equals("Esc Sequence Protocol")) {
                         if (mGP.connection == true) {
-                            Log.e(TAG, "ESC Protocol");
-
                             escGetSerialNo escSerial = new escGetSerialNo();
                             escSerial.execute(0);
                         }
@@ -972,29 +922,22 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     input = BluetoothComm.misIn;
                     outstream = BluetoothComm.mosOut;
 
-                    Log.i(TAG, "" + prnEsc);
-                    Log.i("outstream", " outstream " + outstream);
-                    Log.i("input", " input " + input);
-
                     prnEsc = new Printer_ESC(Act_GlobalPool.setup, outstream, input);
-                    Log.e(TAG, "pirnter Esc is activated");
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
                 sDevicetype = prnEsc.sGetDeviceInfo(Printer_ESC.DEVICE_SERIAL_NUMBER);
-                Log.e(TAG, "ESC Get Serial Number  " + sDevicetype);
+
                 SharedPreferences objdoctor = getSharedPreferences("printer", MODE_PRIVATE);
                 SharedPreferences.Editor editor = objdoctor.edit();
                 editor.putString("SerialNo", sDevicetype);
                 editor.commit();
+
                 Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
-                Log.e(TAG, "ESC Exception in Serial No. API Result " + e);
             }
-            Log.i("serial_no", "" + sDevicetype);
+
             return sDevicetype;
         }
 
@@ -1048,43 +991,31 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                 try {
                     input = BluetoothComm.misIn;
                     outstream = BluetoothComm.mosOut;
-                    Log.e(TAG, "Printer Gen 1");
-                    Log.e("input_bg", "" + input);
-                    Log.e("output_bg", "" + outstream);
-                    Log.e("setup_bg", "" + Act_GlobalPool.setup);
-                    //prnGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
+
                     prnGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
-                    Log.e(TAG, "Printer Gen is activated");
                 } catch (Exception e) {
-                    Log.e(TAG, "Excep " + e);
-                    e.printStackTrace();
                 }
                 sDevicetype = prnGen.sGetSerialNumber();
-                Log.e(TAG, "GEN Get Serial Number Result " + sDevicetype);
+
                 SharedPreferences objdoctor = getSharedPreferences("printer", MODE_PRIVATE);
                 SharedPreferences.Editor editor = objdoctor.edit();
                 editor.putString("SerialNo", sDevicetype);
                 editor.commit();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
-                Log.e(TAG, "GEN Exception in Serial No. API Result " + e);
             }
 
-            Log.i("serial_no", "" + sDevicetype);
             return sDevicetype;
         }
 
         @Override
         protected void onPostExecute(String result) {
             // TODO Auto-generated method stub
-            {
-                Log.e("PrintPreviewCall", "  :genGetSerialNo:  ");
 
-                Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-                Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
-                startActivityForResult(protocol8a, EXIT_ON_RETURN);
-            }
+            Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
+            Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
+            startActivityForResult(protocol8a, EXIT_ON_RETURN);
+
             mpd.dismiss();
         }
     }
