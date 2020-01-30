@@ -92,6 +92,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     Runnable connectionTimeoutRunnable;
     private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 25;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -132,6 +134,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         setupUI();
         setupEvents();
         initializeData();
+        turnOnBluetooth();
     }
 
     @Override
@@ -164,6 +167,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     // endregion
 
     // region Initialization methods
+
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
+    }
 
     private void setupUI() {
         setContentView(R.layout.activity_pulse_oximeter_main);
