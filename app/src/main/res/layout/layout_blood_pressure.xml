@@ -193,96 +193,95 @@
                     android:fillViewport="true">
 
 
-                <LinearLayout
-                    android:id="@+id/linearlayout_bloodpressure"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
                     <LinearLayout
-                        android:id="@+id/layout_images"
+                        android:id="@+id/linearlayout_bloodpressure"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="visible">
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/LinearLayout"
+                            android:id="@+id/layout_images"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:weightSum="2">
+                            android:orientation="vertical"
+                            android:visibility="visible">
 
-                            <RelativeLayout
-                                android:layout_width="0dp"
-                                android:layout_height="400dp"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                            <LinearLayout
+                                android:id="@+id/LinearLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
 
-                                <ImageView
-                                    android:id="@+id/iv_bp_step2"
-                                    android:layout_width="300dp"
-                                    android:layout_height="300dp"
-                                    android:layout_centerInParent="true"
-                                    android:src="@drawable/start_bp_device" />
+                                <RelativeLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="400dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@id/iv_bp_step2"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_margin="10dp"
-                                    android:text="@string/bloodpressure_step2"
-                                    android:textSize="24sp" />
+                                    <ImageView
+                                        android:id="@+id/iv_bp_step2"
+                                        android:layout_width="300dp"
+                                        android:layout_height="300dp"
+                                        android:layout_centerInParent="true"
+                                        android:src="@drawable/start_bp_device" />
 
-                            </RelativeLayout>
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_below="@id/iv_bp_step2"
+                                        android:layout_centerHorizontal="true"
+                                        android:layout_margin="10dp"
+                                        android:text="@string/bloodpressure_step2"
+                                        android:textSize="24sp" />
+
+                                </RelativeLayout>
+
+                            </LinearLayout>
+
+                            <TextView
+                                android:id="@+id/tv_result_msg"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginBottom="@dimen/margin20"
+                                android:gravity="center"
+                                android:text="@string/bloodpressure_step3"
+                                android:textSize="@dimen/space25"
+                                android:visibility="gone" />
 
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/tv_result_msg"
+                        <include
+                            android:id="@+id/layout_bp"
+                            layout="@layout/display_data_layout_bloodpressure"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="@dimen/margin20"
+                            android:visibility="gone" />
+
+                        <Button
+                            android:id="@+id/btn_skip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="35dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/repeat"
                             android:gravity="center"
-                            android:visibility="gone"
-                            android:text="@string/bloodpressure_step3"
-                            android:textSize="@dimen/space25" />
+                            android:text="Skip"
+                            android:textColor="@color/white"
+                            android:textSize="35sp"
+                            android:textStyle="bold" />
 
                     </LinearLayout>
 
-                    <include
-                        android:id="@+id/layout_bp"
-                        layout="@layout/display_data_layout_bloodpressure"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
+                </ScrollView>
 
-                    <Button
-                        android:id="@+id/btn_skip"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="35dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/repeat"
-                        android:gravity="center"
-                        android:text="Skip"
-                        android:textColor="@color/white"
-                        android:textSize="35sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-            </ScrollView>
+            </LinearLayout>
 
         </LinearLayout>
-
-    </LinearLayout>
 
     </LinearLayout>
 

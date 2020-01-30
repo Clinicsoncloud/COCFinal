@@ -106,11 +106,11 @@
                     tools:ignore="Suspicious0dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="70dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:layout_margin="20dp"
-                        android:src="@drawable/icon_bp" />
+                        android:src="@drawable/bp_image" />
 
                 </LinearLayout>
 
@@ -187,11 +187,11 @@
                     tools:ignore="Suspicious0dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="70dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:layout_margin="20dp"
-                        android:src="@drawable/icon_bp" />
+                        android:src="@drawable/bp_image" />
 
                 </LinearLayout>
 
@@ -278,11 +278,11 @@
                     tools:ignore="Suspicious0dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="70dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:layout_margin="20dp"
-                        android:src="@drawable/icon_bp" />
+                        android:src="@drawable/pulse_image" />
 
                 </LinearLayout>
 

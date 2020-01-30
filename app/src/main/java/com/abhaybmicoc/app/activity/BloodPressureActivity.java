@@ -120,6 +120,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
     private TextView tvResultMsg;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     // endregion
 
     // region Events
@@ -131,6 +133,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         setupUI();
         setupEvents();
         initializeData();
+        turnOnBluetooth();
     }
 
     @Override
@@ -146,6 +149,15 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
         enableBluetooth();
     }
+
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
+    }
+
 
     private void setStepsViewVisiblity() {
         layoutSteps.setVisibility(View.VISIBLE);
@@ -1251,7 +1263,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
      *
      */
     private void skipNext() {
-        context.startActivity(new Intent(BloodPressureActivity.this,GlucoseScanListActivity.class));
+        context.startActivity(new Intent(BloodPressureActivity.this, GlucoseScanListActivity.class));
     }
 
     Runnable disableIndicationRunnable = new Runnable() {
