@@ -182,6 +182,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     }
 
     private void connectionToHemoglobinDevice() {
+        Log.e("ConnectingHB", " :0: ");
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
 
@@ -856,6 +857,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     @Override
     public void setConnected(boolean connected) {
         mScanning = false;
+        Log.e("ConnectingHB", " :3: " + connected);
 
         updateConnectionStatus(connected);
     }
@@ -890,6 +892,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
          */
 
         if (savedDeviceAlreadyExists()) {
+            Log.e("ConnectingHB", " :1: ");
+
             connect();
         }
     }
@@ -905,6 +909,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         isDeviceConnected = connected;
 
         if (!connected) {
+            Log.e("ConnectingHB", " :4: " + connected);
             connect();
         }
     }
@@ -928,6 +933,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      *
      */
     private void connect() {
+        Log.e("ConnectingHB", " :2: ");
+
         disconnectGattServer();
 
         BluetoothDevice device = getDevice(getStoredDeviceAddress());
@@ -958,7 +965,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private BluetoothDevice getDevice(String deviceName) {
         return bluetoothAdapter.getRemoteDevice(deviceName);
     }
-
 
     // endregion
 }

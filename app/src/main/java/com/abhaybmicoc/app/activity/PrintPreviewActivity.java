@@ -235,7 +235,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 
     @Override
@@ -972,7 +972,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void glucoseRange() {
         if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)"))
-            standardGlucose = "70-100mg/dl(Fasting)";
+            standardGlucose = "70-100 mg/dl(Fasting)";
         else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Post Prandial (After Meal)"))
             standardGlucose = "70-140 mg/dl(Post Meal)";
         else if (sharedPreferencesSugar.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Random (Not Sure)"))
@@ -1028,7 +1028,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardBodyWater = "45-60(%)";
         subcutaneousFat = "18.5-26.7(%)";
         standardSkeltonMuscle = "40-50(%)";
-        standardHemoglobin = "12.1-15.1gm/dl";
+        standardHemoglobin = "12-15gm/dl";
         standardBMR = " > = " + standardMetabolism + " kcal";
     }
 
@@ -1036,7 +1036,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         standardBodyFat = "11-21(%)";
         standardBodyWater = "55-65(%)";
         standardSkeltonMuscle = "49-59(%)";
-        standardHemoglobin = "13.8-17.2gm/dl";
+        standardHemoglobin = "13-17gm/dl";
 
         standardWeighRangeFrom = (0.90 * standardWeightMen);
         standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
@@ -1422,6 +1422,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
                 String empty = printerText;
 
+//                ptrGen.iAddData(Printer_GEN.FONT_SMALL_NORMAL, empty);
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
             } catch (Exception e) {
@@ -1440,7 +1441,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             Log.e("result_PosstLog", ":" + result);
 
             if (result == -1) {
-                Toast.makeText(context, "Please Reconnectr the device...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Please Reconnectr the device...", Toast.LENGTH_LONG).show();
             }
 
             super.onPostExecute(result);
@@ -1448,6 +1449,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     /* Handler to display UI response messages */
+    @SuppressLint("HandlerLeak")
     Handler ptrHandler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -1570,52 +1572,40 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 "Age : {age}  Gender: {gender}\n" +
                 "{currentDate}  {currentTime} \n" +
                 "-----------------------\n" +
-                "Height : {height} cm\n" +
-                "Weight : {weight} kg\n" +
-                "[Normal Range]:\n" +
-                "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
-                "BMI : {bmi}\n" +
-                "[Normal Range]: \n" +
-                "18.5 - 25\n" +
+                "Height: {height} cm\n" +
+                "Weight: {weight} kg\n" +
+                "[Normal Range]:\n" + "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
+                "BMI: {bmi} \n" +
+                "[Normal Range]:" + "18.5-25\n" +
                 "-----------------------\n" +
-                "Body Fat : {bodyFat}\n" +
-                "[Normal Range]: \n" +
-                "{standardBodyFat}\n\n" +
-                "Fat Free Weight : {fatFreeWeight} Kg" + "\n\n" +
-                "Subcutaneous Fat : {subcutaneousFat}%" + "\n" +
-                "[Normal Range]: \n" +
-                "{subcutaneousFatRange}\n\n" +
+                "Body Fat:{bodyFat}\n" +
+                "[Normal Range]:" + "{standardBodyFat}\n\n" +
+                "Fat Free Weight:{fatFreeWeight} Kg" + "\n\n" +
+                "Subcutaneous Fat: {subcutaneousFat}%" + "\n" +
+                "[Normal Range]:\n" + "{subcutaneousFatRange}\n\n" +
                 "Visceral Fat : {visceralFat}\n" +
-                "[Normal Range]: <=9\n\n" +
+                "[Normal Range]: <= 9\n\n" +
                 "Body Water : {bodyWater}\n" +
-                "[Normal Range]: \n" +
-                "{standardBodyWater}\n\n" +
+                "[Normal Range]:" + "{standardBodyWater}\n\n" +
                 "Skeletal Muscle : {skeletalMuscle}\n" +
-                "[Normal Range]: \n" +
-                "{standardSkeletalMuscle}\n\n" +
+                "[Normal Range]:" + "{standardSkeletalMuscle}\n\n" +
                 "Muscle Mass : {muscleMass}\n" +
-                "[Normal Range]: \n" +
-                "{standardMuscleMass}\n\n" +
+                "[Normal Range]:\n" + "{standardMuscleMass}\n\n" +
                 "Bone Mass : {boneMass}\n" +
-                "[Normal Range]: \n" +
-                "{standardBoneMass}\n\n" +
+                "[Normal Range]:" + "{standardBoneMass}\n\n" +
                 "Protein : {protein}\n" +
-                "[Normal Range]: \n" +
-                "16-18(%) \n\n" +
+                "[Normal Range]:" + "16-18(%) \n\n" +
                 "BMR : {bmr}\n" +
-                "[Normal Range]: \n " +
-                "> ={standardMetabolism} Kcal\n\n" +
+                "[Normal Range]:\n" + ">={standardMetabolism}Kcal\n\n" +
                 "Physique: {physique}\n\n" +
                 "Meta Age : {metaAge} yrs\n\n" +
                 "Health Score : {healthScore}\n\n" +
                 "-----------------------\n" +
                 "Blood Glucose : {sugar} mg/dl\n" +
-                "[Normal Range]: \n" +
-                "{standardSugar}\n\n" +
+                "[Normal Range]:\n" + "{standardSugar}mg/dl\n\n" +
                 "-----------------------\n" +
                 "Hemoglobin : {hemoglobin} g/dl\n" +
-                "[Normal Range]: \n" +
-                "{standardHemoglobin}\n\n" +
+                "[Normal Range]:\n" + "{standardHemoglobin}\n\n" +
                 "-----------------------\n" +
                 "Blood Pressure : \n" +
                 "Systolic : {bloodPressureSystolic} mmHg" + "\n" +
@@ -1625,10 +1615,9 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
                 "Diastolic : 60-89mmHg\n" +
                 "-----------------------\n" +
                 "Blood Oxygen : {bloodOxygen} %" + "\n" +
-                "[Normal Range]: >94%\n" +
+                "[Normal Range]: >94%\n\n" +
                 "Pulse Rate: {pulseRate} bpm\n" +
-                "[Normal Range]: \n" +
-                "60-100bpm\n" +
+                "[Normal Range]:" + "60-100bpm\n" +
                 "-----------------------\n" +
                 "Temperature : {temperature} F\n" +
                 "[Normal Range]: 97-99 F\n" +

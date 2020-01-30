@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private int COUNT_CONNECTION_TRY = 0;
     private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
-    private int DEVICE_CONNECTION_WAITING_TIME = 40000;
+    private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 30;
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -224,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 });
             }
         }.start();
-
     }
 
     @Override
@@ -233,9 +232,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         updateConnectionStatus(connected);
 
-
         connectToSavedPrinter();
-
     }
 
     private void connectToSavedPrinter() {
@@ -261,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void autoConnectPrinter() {
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
-
 
     private class ConnSocketTask extends AsyncTask<String, String, Integer> {
         /**
@@ -322,7 +318,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
     }
 
-
     @Override
     public void log(String message) {
 
@@ -351,6 +346,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onStop() {
         super.onStop();
+        sendMessage("U370");
         disconnectGattServer();
     }
 
@@ -371,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         btnConnect.setText("Connect");
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
+        btnConnect.setClickable(true);
 
         spinnerDevice = findViewById(R.id.sp_device_list);
 
@@ -446,6 +443,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         showProgressDialog();
 
+        turnOnBluetooth();
+
         requestPermission();
 
         connectOrShowScanDevice();
@@ -513,6 +512,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         BluetoothGattCharacteristic characteristic = BluetoothUtils.findEchoCharacteristic(mGatt);
         if (characteristic == null) {
             logError("Unable to find echo characteristic.");
+            sendMessage("U370");
             disconnectGattServer();
             return;
         }
@@ -671,6 +671,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
             btnConnect.setText("Connected");
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
+            btnConnect.setClickable(false);
+
         } else {
             COUNT_CONNECTION_TRY++;
 
@@ -718,8 +720,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          */
 
         if (savedDeviceAlreadyExists()) {
-
-
             connect();
         } else {
             dialogConnectionProgress.show();
@@ -749,6 +749,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
                 dialogConnectionProgress.dismiss();
 
+                sendMessage("U370");
                 stopBluetoothConnection();
             }
 
@@ -763,7 +764,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         isEchoInitialized = false;
 
         tvViewDevice.setText("Please check device and try again");
+        btnConnect.setText("Connect");
         btnConnect.setVisibility(View.VISIBLE);
+        btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
+        btnConnect.setClickable(true);
+
 
         if (mGatt != null) {
             try {
@@ -827,6 +832,14 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         dialogConnectionProgress = new ProgressDialog(MainActivity.this);
         dialogConnectionProgress.setMessage("Connecting...");
         dialogConnectionProgress.setCancelable(false);
+    }
+
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
