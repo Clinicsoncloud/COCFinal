@@ -254,7 +254,7 @@
                         android:background="@drawable/rectangle"
                         android:ems="10"
                         android:gravity="center"
-                        android:inputType="text"
+                        android:inputType="numberDecimal"
                         android:textColor="@color/white">
 
                         <requestFocus />

@@ -1,5 +1,12 @@
 package com.abhaybmicoc.app.actofit;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.location.LocationManager;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Toast;
@@ -88,13 +95,19 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     // region Events
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setupUI();
+
         setupEvents();
+
         initializeData();
+
+        requestGPSPermission();
+
     }
 
     private void readAndStoreData(Intent intent) {
@@ -116,7 +129,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float healthScore = intent.getFloatExtra("helthscore", 0f);
         float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
 
-        int height = Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,""));
+        int height = Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, ""));
 
         try {
 
@@ -266,6 +279,43 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         enableBluetooth();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
+
+            if (!statusOfGPS) {
+                Log.e("GPS_Permission", " Location providers: " + provider);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
+    }
+
     private void enableBluetooth() {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -291,8 +341,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat")
             Date initDate = null;
             try {
-                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH,""));
-                Log.e("initDate",""+initDate);
+                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+                Log.e("initDate", "" + initDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -300,7 +350,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String parsedDate = formatter.format(initDate);
 
-            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,"")));
+            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "")));
             intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
             intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));

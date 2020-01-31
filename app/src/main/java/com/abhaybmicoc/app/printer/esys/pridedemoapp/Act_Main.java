@@ -18,10 +18,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.speech.tts.TextToSpeech;
+import android.support.annotation.RequiresApi;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -156,9 +160,12 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.act_main);
+
+        requestGPSPermission();
 
         svScroll = (ScrollView) findViewById(R.id.scroll);
         svRadio = (ScrollView) findViewById(R.id.redioscroll);
@@ -312,6 +319,44 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
         } catch (Exception e) {
 
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
+
+            if (!statusOfGPS) {
+                Log.e("GPS_Permission", " Location providers: " + provider);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
         }
     }
 

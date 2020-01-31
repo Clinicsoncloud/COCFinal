@@ -1,7 +1,9 @@
 package com.abhaybmicoc.app.oximeter;
 
 import android.Manifest;
+import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
@@ -140,7 +142,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         setupEvents();
         initializeData();
         requestPermission();
+        requestGPSPermission();
         turnOnBluetooth();
+
     }
 
     @Override
@@ -183,6 +187,45 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             // TODO: Show message that we did not get permission to access bluetooth
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
+
+            if (!statusOfGPS) {
+                Log.e("GPS_Permission", " Location providers: " + provider);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
+    }
+
 
     /* Request enabling bluetooth if not enabled */
     private void turnOnBluetooth() {
