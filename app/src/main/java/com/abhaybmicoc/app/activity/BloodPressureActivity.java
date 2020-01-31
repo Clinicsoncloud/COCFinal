@@ -1,7 +1,9 @@
 package com.abhaybmicoc.app.activity;
 
 import android.Manifest;
+import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
@@ -65,6 +67,7 @@ import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
 public class BloodPressureActivity extends Activity implements TextToSpeech.OnInitListener {
@@ -126,6 +129,11 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
     private BluetoothAdapter bluetoothAdapter;
 
+    private Handler featchingDataTimeoutHandler;
+    private int FEATCHING_DATA_TIME = 1000 * 15;
+
+    private ProgressDialog progressDialog;
+
     // endregion
 
     // region Events
@@ -143,6 +151,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
         requestPermission();
 
+        requestGPSPermission();
+
         turnOnBluetooth();
     }
 
@@ -158,6 +168,44 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         super.onResume();
 
         enableBluetooth();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
+
+            if (!statusOfGPS) {
+                Log.e("GPS_Permission", " Location providers: " + provider);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -297,7 +345,22 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         fragmentTransaction.commit();
 
         deviceList = new ArrayList<BluetoothDevice>();
+
+        setDeviceConnectionTimeoutHandler();
+
     }
+
+    private void setDeviceConnectionTimeoutHandler() {
+        featchingDataTimeoutHandler = new Handler();
+
+        featchingDataTimeoutHandler.postDelayed(() -> {
+
+            progressDialog = Tools.progressDialog(BloodPressureActivity.this);
+            progressDialog.setMessage("Fetching data...");
+
+        }, FEATCHING_DATA_TIME);
+    }
+
 
     // endregion
 
@@ -592,6 +655,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         if (progress == null)
             return;
 
+        progressDialog.dismiss();
         TextView syncMessages = (TextView) progress.findViewById(R.id.syncMessages1);
 
         if (message == null)
@@ -816,6 +880,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
 
+
             insertObjectList.clear();
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_BP, true);
@@ -876,7 +941,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
 
-
             insertObjectList.clear();
             MeasuDataManager measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
             measuDataManager.syncMeasudata(MeasuDataManager.MEASU_DATA_TYPE_TH, true);
@@ -926,6 +990,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
             } //End of for loop , now add to database
             db.bpEntry(insertObjectList);
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
+
             insertObjectList.clear();
             bpMapList.clear();
             measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
@@ -973,6 +1038,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
             db.weighttrackentry(insertObjectList);
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
+
             insertObjectList.clear();
             wsMapList.clear();
             measuDataManager = ((AndMedical_App_Global) getApplication()).getMeasuDataManager();
@@ -1079,6 +1145,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
                 showIndicator(getResources().getString(R.string.indicator_start_receive));
                 BleReceivedService.getGatt().discoverServices();
+                progressDialog.dismiss();
 
                 setDateTimeDelay = Long.MIN_VALUE;
                 indicationDelay = Long.MIN_VALUE;
@@ -1290,6 +1357,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         @Override
         public void run() {
             setIndicatorMessage(getResources().getString(R.string.indicator_complete_receive));
+
             BluetoothGatt gatt = BleReceivedService.getGatt();
             if (BleReceivedService.getInstance() != null) {
                 boolean writeResult = BleReceivedService.getInstance().setIndication(gatt, false);
