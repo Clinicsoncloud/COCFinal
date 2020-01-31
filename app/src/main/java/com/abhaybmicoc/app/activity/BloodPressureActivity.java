@@ -1,5 +1,8 @@
 package com.abhaybmicoc.app.activity;
 
+import android.Manifest;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
@@ -72,6 +75,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     private String txt = "";
 
     private static final int REQUEST_ENABLE_BLUETOOTH = 1000;
+    private static final int REQUEST_FINE_LOCATION = 2;
 
     private boolean isTryingScan;
     private boolean isScanning = false;
@@ -126,13 +130,19 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
     // region Events
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setupUI();
+
         setupEvents();
+
         initializeData();
+
+        requestPermission();
+
         turnOnBluetooth();
     }
 
@@ -148,6 +158,16 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         super.onResume();
 
         enableBluetooth();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestPermission() {
+        try {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
     }
 
     /* Request enabling bluetooth if not enabled */
