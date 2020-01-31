@@ -1,5 +1,8 @@
 package com.abhaybmicoc.app.oximeter;
 
+import android.Manifest;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.Looper;
@@ -45,6 +48,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     private boolean flag = true;
     private static final int RECEIVE_SPO_PR = 1;
+    private static final int REQUEST_FINE_LOCATION = 2;
 
     private String txt = "";
     private String macAddress = "";
@@ -92,6 +96,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     Runnable connectionTimeoutRunnable;
     private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 25;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -125,6 +131,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     // region Events
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,6 +139,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         setupUI();
         setupEvents();
         initializeData();
+        requestPermission();
+        turnOnBluetooth();
     }
 
     @Override
@@ -164,6 +173,24 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     // endregion
 
     // region Initialization methods
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestPermission() {
+        try {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
+    }
+
+    /* Request enabling bluetooth if not enabled */
+    private void turnOnBluetooth() {
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
+    }
 
     private void setupUI() {
         setContentView(R.layout.activity_pulse_oximeter_main);
