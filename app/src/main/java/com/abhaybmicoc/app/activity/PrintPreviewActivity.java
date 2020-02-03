@@ -1593,6 +1593,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         SharedPreferences sharedPreferencesBiosense = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
         SharedPreferences sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         SharedPreferences sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+        SharedPreferences sharedPreferencesPersonalDate = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         objSugar.edit().clear().apply();
         objNewRecord.edit().clear().apply();
@@ -1609,6 +1610,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         sharedPreferencesPersonalData.edit().clear().apply();
         sharedPreferencesBloodPressure.edit().clear().apply();
         sharedPreferencesBloodPressure.edit().clear().apply();
+        sharedPreferencesPersonalDate.edit().clear().apply();
     }
 
     private String getPrintText() {
