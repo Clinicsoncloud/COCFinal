@@ -26,6 +26,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.R;
+import com.choicemmed.c208blelibrary.cmd.listener.C208DisconnectCommandListener;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -303,6 +304,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         tvMobileNumber.setText("Phone : " + shared.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
         bindDevice();
+
     }
 
     // endregion
@@ -384,8 +386,27 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private void bindDevice() {
         progressDialog = Tools.progressDialog(MainActivity.this);
         progressDialog.setMessage("Fetching data...");
-        progressDialog.setCancelable(false);
+        progressDialog.setCancelable(true);
         progressDialog.dismiss();
+
+        progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Log.e("Dismissed_Dialog", ":1:");
+                if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
+                    btnConnect.setText("Connect");
+                    btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+
+                    /*c208Invoker.disconnectDevice(new C208DisconnectCommandListener() {
+                        @Override
+                        public void onDisconnected() {
+                            Log.e("OnDisconnected_Log", "   :Logs:   ");
+                        }
+                    });*/
+
+                }
+            }
+        });
 
         tvPulseRate.setText("Pulse rate");
         tvBodyOxygen.setText("spo");
@@ -458,7 +479,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @Override
         public void onError(String message) {
 
-            showAlertDialog("Test Failure", "Test unsuccessful, try again.");
+            showAlertDialog("Reconnect", "Could not able to connect, try again.");
 
 //            Toast.makeText(context, "Test unsuccessful, try again.", Toast.LENGTH_SHORT).show();
             btnNext.setText("Skip");
@@ -487,10 +508,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             // This case will call when device is not active
             if (failMessage.equals("蓝牙绑定失败，请检查设备蓝牙是否可见！")) {
                 if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
-                    showAlertDialog("Connection Fail", "Device is not active, Check device and try again...");
+                    showAlertDialog("Reconnect", "Device is not active, Check device and try again...");
 
 //                Toast.makeText(context, "Device is not active, Check device and try again...", Toast.LENGTH_SHORT).show();
-
                     btnNext.setText("Skip");
                     progressDialog.dismiss();
 
@@ -505,10 +525,19 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                         progressDialog.show();
                     }
                 });
-                setDeviceConnectionTimeoutHandler();
+//                setDeviceConnectionTimeoutHandler();
             }
         }
     }
+
+    private class UnBindDeviceAdapter implements C208DisconnectCommandListener {
+
+        @Override
+        public void onDisconnected() {
+            Log.e("OnDisconnected_Log", "   :Logs:   ");
+        }
+    }
+
 
     private class ConnectDeviceAdapter implements C208ConnectDeviceListener {
         @Override
@@ -543,7 +572,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             } else if (failMessage.equals("蓝牙绑定失败，获取设备SN异常！")) {
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        setDeviceConnectionTimeoutHandler();
+//                        setDeviceConnectionTimeoutHandler();
                     }
                 });
             }
@@ -563,7 +592,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
                     btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
                     progressDialog.dismiss();
 
-                    showAlertDialog("Connectivity Lost!", "Device is not active, try again");
+                    showAlertDialog("Reconnect", "Device is not active, try again");
                 }
             };
 
@@ -595,13 +624,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         timeOutAlertDialog = timeOutAlertDialogBuilder.create();
         /* show alert dialog */
 
-
         if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
             if (!((Activity) context).isFinishing())
                 timeOutAlertDialog.show();
 
         }
-
     }
 
     private void writeData() {
