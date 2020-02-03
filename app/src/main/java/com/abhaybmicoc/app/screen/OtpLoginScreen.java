@@ -87,7 +87,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_otp_login_screen);
 
         btnLogin = findViewById(R.id.btn_login);
@@ -97,7 +97,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         etMobileNumber.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable arg0) {
@@ -120,7 +120,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         btnLogin.setOnClickListener(v -> doLogin());
     }
 
-    private void initializeData(){
+    private void initializeData() {
         textTopSpeech = new TextToSpeech(getApplicationContext(), this);
 
         speakOut(WELCOME_LOGIN_MESSAGE);
@@ -146,7 +146,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     // region Logical methods
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -156,7 +155,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textTopSpeech.setLanguage(Locale.US);
 
@@ -174,21 +173,21 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textTopSpeech != null) {
                 textTopSpeech.stop();
                 textTopSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
     /**
      *
      */
-    private void doLogin(){
+    private void doLogin() {
         if (Utils.getInstance().giveLocationPermission(this)) {
             if (etMobileNumber.getText().toString().equals("")) {
                 etMobileNumber.setError("Please Enter Mobile Number");
@@ -214,16 +213,15 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
         clearSharedPreference(ApiUtils.PREFERENCE_THERMOMETERDATA);
     }
 
-    private void clearSharedPreference(String preferenceName){
+    private void clearSharedPreference(String preferenceName) {
         getSharedPreferences(preferenceName, MODE_PRIVATE).edit().clear().commit();
     }
 
     /**
-     *
      * @param jsonResponse
      * @throws JSONException
      */
-    private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException{
+    private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
         SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
@@ -256,7 +254,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
@@ -269,12 +267,14 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
                     startActivity(objIntent);
+
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
                     finish();
                 }
