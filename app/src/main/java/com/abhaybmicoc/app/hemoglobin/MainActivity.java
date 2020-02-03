@@ -2,69 +2,70 @@ package com.abhaybmicoc.app.hemoglobin;
 
 
 import android.Manifest;
-import android.app.Activity;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.SystemClock;
-import android.util.Log;
-import android.os.Bundle;
-import android.view.View;
-import android.os.Handler;
-import android.widget.Toast;
-import android.os.ParcelUuid;
-import android.widget.Button;
-import android.content.Intent;
-import android.widget.Spinner;
-import android.app.AlertDialog;
-import android.widget.TextView;
-import android.content.Context;
-import android.widget.EditText;
-import android.app.ProgressDialog;
-import android.widget.LinearLayout;
-import android.widget.ArrayAdapter;
 import android.annotation.TargetApi;
-import android.speech.tts.TextToSpeech;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothManager;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
-import android.content.DialogInterface;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanSettings;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.ParcelUuid;
+import android.os.SystemClock;
+import android.speech.tts.TextToSpeech;
 import android.support.annotation.RequiresApi;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.bluetooth.BluetoothGattCharacteristic;
+import android.util.Log;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.activity.PrintPreviewActivity;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
+import com.abhaybmicoc.app.activity.HeightActivity;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
+import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
+import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
+import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
+import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.activity.BloodPressureActivity;
-import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.hemoglobin.util.BluetoothUtils;
-import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
-import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.prowesspride.api.Printer_GEN;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Map;
 
 import static com.abhaybmicoc.app.hemoglobin.Constants.SCAN_PERIOD;
 import static com.abhaybmicoc.app.hemoglobin.Constants.SERVICE_UUID;
@@ -76,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private int COUNT_CONNECTION_TRY = 0;
     private int COUNT_CONNECTION_MAXIMUM_TRY = 3;
-    private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 30;
+    private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 10;
+    private int STATR_TEST_ACTIVATION_TIME = 2000;
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private Handler mHandler;
     private Handler deviceConnectionTimeoutHandler;
+    private Handler deviceConnectionUpdate;
 
     private boolean mScanning;
     private boolean isDeviceConnected;
@@ -136,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     public static int iWidth;
     public static Printer_GEN ptrGen;
+
     // endregion
 
     // region Events
@@ -170,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     protected void onPause() {
         super.onPause();
         if (tvViewDisplay.getText().toString().contains("Test")) {
-            sendMessage("U370");
+//            sendMessage("U370");
             disconnectGattServer();
         }
 
@@ -212,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             }
         }.start();
 
-        //for toast msg
+        //for toast msg n
         new Thread() {
             public void run() {
                 MainActivity.this.runOnUiThread(new Runnable() {
@@ -230,9 +234,16 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void setConnected(boolean connected) {
         mScanning = false;
 
-        updateConnectionStatus(connected);
+        setStartTestTimerHandler(connected);
 
-        connectToSavedPrinter();
+//        connectToSavedPrinter();
+    }
+
+    private void setStartTestTimerHandler(boolean connected) {
+        deviceConnectionUpdate = new Handler(Looper.getMainLooper());
+        deviceConnectionUpdate.postDelayed(() -> {
+            updateConnectionStatus(connected);
+        }, STATR_TEST_ACTIVATION_TIME);
     }
 
     private void connectToSavedPrinter() {
@@ -321,20 +332,33 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     public void log(String message) {
 
+        Log.e("Log_Message_Log", ":" + message);
+
+        /*if (message.contains("Device service discovery unsuccessful, status ")) {
+            mGatt.discoverServices();
+        }*/
     }
 
     @Override
     public void logError(String message) {
+        Log.e("Log_Error_Log", ":" + message);
 
+        /*if (message.equals("Unable to find echo characteristic.")) {
+            mGatt.discoverServices();
+        }*/
     }
 
     @Override
     public void initializeTime() {
+        Log.e("initializeTime_Log", ":");
+
         isEchoInitialized = true;
     }
 
     @Override
     public void initializeEcho() {
+
+        Log.e("initializeEcho_Log", ":");
         isEchoInitialized = true;
     }
 
@@ -346,7 +370,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @Override
     protected void onStop() {
         super.onStop();
-        sendMessage("U370");
+//        sendMessage("U370");
         disconnectGattServer();
     }
 
@@ -447,6 +471,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         requestPermission();
 
+        // connection change and services discovered.
         connectOrShowScanDevice();
     }
 
@@ -504,6 +529,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      * @param msg
      */
     private void sendMessage(String msg) {
+
+        Log.e("isDeviceConnected_Log", " : " + isDeviceConnected + " :isEchoInitialized: " + isEchoInitialized);
+
         if (!isDeviceConnected || !isEchoInitialized) {
             showToast("Not Connected");
             return;
@@ -512,7 +540,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         BluetoothGattCharacteristic characteristic = BluetoothUtils.findEchoCharacteristic(mGatt);
         if (characteristic == null) {
             logError("Unable to find echo characteristic.");
-            sendMessage("U370");
+//            sendMessage("U370");
             disconnectGattServer();
             return;
         }
@@ -525,6 +553,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         characteristic.setValue(messageBytes);
         boolean success = mGatt.writeCharacteristic(characteristic);
+
+        Log.e("success_Log_New", ":" + success);
 
         if (success)
             showToast("MSG SENT");
@@ -576,8 +606,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     }
 
     public void switchOffDeviceAndMoveNext() {
-        sendMessage("U370");
-
+//        sendMessage("U370");
         disconnectGattServer();
 
         try {
@@ -644,8 +673,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         if (savedDeviceAlreadyExists()) {
             btnScan.setVisibility(View.GONE);
-            btnConnect.setVisibility(View.GONE);
-            connect();
+            btnConnect.setVisibility(View.VISIBLE);
+//            connect();
         } else {
             btnScan.setVisibility(View.VISIBLE);
         }
@@ -661,8 +690,12 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          */
 
         isDeviceConnected = connected;
+        Log.e("UpdateConnections_Log", ":" + connected);
 
         if (connected) {
+
+            Log.e("Update_Conneccted", ":" + connected);
+
             COUNT_CONNECTION_TRY = 0;
 
             dialogConnectionProgress.dismiss();
@@ -672,7 +705,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             btnConnect.setText("Connected");
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
             btnConnect.setClickable(false);
-
         } else {
             COUNT_CONNECTION_TRY++;
 
@@ -688,11 +720,29 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         }
     }
 
+    private boolean refreshDeviceCache(BluetoothGatt gatt) {
+        try {
+
+            Log.e("refreshDevice_Log", ":" + gatt);
+            BluetoothGatt localBluetoothGatt = gatt;
+            Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
+            Log.e("refreshDevice_Log", " :1:");
+            if (localMethod != null) {
+                boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
+                Log.e("refreshDevice_Log", " :1:" + bool);
+                return bool;
+            }
+        } catch (Exception localException) {
+            Log.e("REfreshDeviceCache", "An exception occured while refreshing device");
+        }
+        return false;
+    }
+
     /**
      *
      */
     private void connect() {
-        disconnectGattServer();
+//        disconnectGattServer();
 
         setDeviceConnectionTimeoutHandler();
 
@@ -702,10 +752,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         GattClientCallback gattClientCallback = new GattClientCallback(this);
 
-        mGatt = device.connectGatt(this, true, gattClientCallback);
+        mGatt = device.connectGatt(MainActivity.this, false, gattClientCallback);
 
         // TODO: Check state of connection
     }
+
 
     /**
      *
@@ -749,7 +800,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
                 dialogConnectionProgress.dismiss();
 
-                sendMessage("U370");
+//                sendMessage("U370");
                 stopBluetoothConnection();
             }
 
@@ -766,15 +817,17 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         tvViewDevice.setText("Please check device and try again");
         btnConnect.setText("Connect");
         btnConnect.setVisibility(View.VISIBLE);
+
         btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect1));
         btnConnect.setClickable(true);
 
-
         if (mGatt != null) {
+            Log.e("Disconnet_Gatt_Log", "True");
             try {
                 mGatt.disconnect();
                 mGatt.close();
-            } catch (RuntimeException ex) {
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -831,7 +884,16 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         dialogConnectionProgress = new ProgressDialog(MainActivity.this);
         dialogConnectionProgress.setMessage("Connecting...");
-        dialogConnectionProgress.setCancelable(false);
+        dialogConnectionProgress.setCancelable(true);
+
+
+        dialogConnectionProgress.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                Log.e("DialogClosed_Log", ":");
+
+            }
+        });
     }
 
     /* Request enabling bluetooth if not enabled */

@@ -63,8 +63,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener,
-        GattClientActionListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -178,20 +177,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         turnOnBluetooth();
 
-        connectionToHemoglobinDevice();
     }
-
-    private void connectionToHemoglobinDevice() {
-        Log.e("ConnectingHB", " :0: ");
-        BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
-
-        sharedPreferenceHBDevice = getSharedPreferences("device_data", MODE_PRIVATE);
-        sharedPreferencesDeviceHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
-
-        connectOrShowScanDevice();
-    }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -230,7 +216,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     protected void onStop() {
         super.onStop();
         syncLib.stopReceiver();
-        stopBluetoothConnection();
     }
 
     @Override
@@ -379,7 +364,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         editor.putString(Constant.Fields.GLUCOSE_TYPE, radioButtonId.getText().toString());
 
         editor.commit();
-
+//"370 & 371"
     }
 
     @Override
@@ -774,11 +759,17 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 Toast.makeText(context, "Please select any one type", Toast.LENGTH_SHORT).show();
             } else {
                 // one of the radio buttons is checked
+
+                syncLib.stopReceiver();
+
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         } else {
+
+            syncLib.stopReceiver();
+
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -813,7 +804,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
         } catch (Exception crap) {
             crap.printStackTrace();
-
         }
     }
 
@@ -842,128 +832,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             animation.setRepeatMode(Animation.REVERSE);
             batteryIcon.startAnimation(animation);
         }
-    }
-
-    @Override
-    public void log(String message) {
-
-    }
-
-    @Override
-    public void logError(String message) {
-
-    }
-
-    @Override
-    public void setConnected(boolean connected) {
-        mScanning = false;
-        Log.e("ConnectingHB", " :3: " + connected);
-
-        updateConnectionStatus(connected);
-    }
-
-    @Override
-    public void initializeTime() {
-        isEchoInitialized = true;
-    }
-
-    @Override
-    public void initializeEcho() {
-        isEchoInitialized = true;
-    }
-
-    @Override
-    public void disconnectGattServer() {
-        stopBluetoothConnection();
-    }
-
-    @Override
-    public void showToast(String msg) {
-
-    }
-
-    /**
-     *
-     */
-    private void connectOrShowScanDevice() {
-        /**
-         * On load, check if device is stored in local storage
-         * If yes, connect
-         */
-
-        if (savedDeviceAlreadyExists()) {
-            Log.e("ConnectingHB", " :1: ");
-
-            connect();
-        }
-    }
-
-    private void updateConnectionStatus(boolean connected) {
-        /**
-         * Store connection status in a variable
-         * If connected, hide connect button, show connection message
-         * If not connected
-         *   - If we have tried maximum times, show scan button
-         *   - Else try to connect again
-         */
-        isDeviceConnected = connected;
-
-        if (!connected) {
-            Log.e("ConnectingHB", " :4: " + connected);
-            connect();
-        }
-    }
-
-    private void stopBluetoothConnection() {
-
-        isDeviceConnected = false;
-        isEchoInitialized = false;
-
-        if (mGatt != null) {
-            try {
-                mGatt.disconnect();
-                mGatt.close();
-            } catch (RuntimeException ex) {
-            }
-        }
-    }
-
-
-    /**
-     *
-     */
-    private void connect() {
-        Log.e("ConnectingHB", " :2: ");
-
-        disconnectGattServer();
-
-        BluetoothDevice device = getDevice(getStoredDeviceAddress());
-
-        GattClientCallback gattClientCallback = new GattClientCallback(this);
-
-        mGatt = device.connectGatt(this, true, gattClientCallback);
-        // TODO: Check state of connection
-    }
-
-    /**
-     * @return
-     */
-    private boolean savedDeviceAlreadyExists() {
-        return !sharedPreferenceHBDevice.getString("deviceName", "").equals("");
-    }
-
-    /**
-     * @return
-     */
-    private String getStoredDeviceAddress() {
-        return sharedPreferenceHBDevice.getString("deviceAddress", "");
-    }
-
-    /**
-     * @return
-     */
-    private BluetoothDevice getDevice(String deviceName) {
-        return bluetoothAdapter.getRemoteDevice(deviceName);
     }
 
     // endregion

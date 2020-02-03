@@ -354,10 +354,10 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         featchingDataTimeoutHandler = new Handler();
 
         featchingDataTimeoutHandler.postDelayed(() -> {
-
-            progressDialog = Tools.progressDialog(BloodPressureActivity.this);
-            progressDialog.setMessage("Fetching data...");
-
+            if (!((Activity) context).isFinishing()) {
+                progressDialog = Tools.progressDialog(BloodPressureActivity.this);
+                progressDialog.setMessage("Fetching data...");
+            }
         }, FEATCHING_DATA_TIME);
     }
 
