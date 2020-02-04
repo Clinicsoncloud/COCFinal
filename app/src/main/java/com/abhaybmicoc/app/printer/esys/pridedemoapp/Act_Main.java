@@ -694,6 +694,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+                    printIntent.putExtra("is_PrinterConnected", "false");
                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                 } else {
 
@@ -716,6 +717,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                             sDevicetype = data.getString("SerialNo", "");
                             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                             Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+                            printIntent.putExtra("is_PrinterConnected", "false");
+
                             startActivityForResult(printIntent, EXIT_ON_RETURN);
                         } else {
                             genGetSerialNo genSerial = new genGetSerialNo();
@@ -916,6 +919,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                                     sDevicetype = data.getString("SerialNo", "");
                                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+                                    printIntent.putExtra("is_PrinterConnected", "false");
+
                                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                                 } else {
                                     genGetSerialNo genSerial = new genGetSerialNo();
@@ -1069,6 +1074,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
             Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
+            protocol8a.putExtra("is_PrinterConnected", "false");
+
             startActivityForResult(protocol8a, EXIT_ON_RETURN);
 
             mpd.dismiss();

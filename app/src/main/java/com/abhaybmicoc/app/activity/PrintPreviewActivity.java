@@ -324,13 +324,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         txtSpeak = "Please click on the print button to get your printout";
 
 
-        Log.e("PrinterConnected_Print", ":" + getIntent().getStringExtra("is_PrinterConnected"));
-        if (getIntent().getStringExtra("is_PrinterConnected").equals("false")) {
-            printerBond();
-            autoConnectPrinter();
-        } else {
-            printerActivation();
-        }
+        connectToSavedPrinter();
+
 
         gettingDataObjects();
         calculations();
@@ -342,6 +337,32 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         postData();
 
     }
+
+
+    private void connectToSavedPrinter() {
+        SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
+        Log.e("Connect_Printer", " :0: ");
+
+        if (data.getString("NAME", "").length() > 0) {
+            Log.e("Connect_Printer", " :Name: " + data.getString("NAME", ""));
+            Log.e("Connect_Printer_BOND", " :BOND: " + data.getString("BOND", ""));
+
+            Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
+
+            mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
+
+            Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
+
+            Log.e("PrinterConnected_Print", ":" + getIntent().getStringExtra("is_PrinterConnected"));
+            if (getIntent().getStringExtra("is_PrinterConnected").equals("false")) {
+                printerBond();
+                autoConnectPrinter();
+            } else {
+                printerActivation();
+            }
+        }
+    }
+
 
     private void autoConnectPrinter() {
         mGP.closeConn();

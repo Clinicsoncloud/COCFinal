@@ -455,7 +455,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         protected void onPreExecute() {
             super.onPreExecute();
             progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
+            progressDialog.setCancelable(true);
             progressDialog.setMessage("Connecting..");
             if (!((Activity) context).isFinishing())
                 progressDialog.show();
