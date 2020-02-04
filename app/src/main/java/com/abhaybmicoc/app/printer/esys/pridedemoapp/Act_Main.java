@@ -51,6 +51,7 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.PrintPreviewActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -313,7 +314,16 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     llSelectedDevicesLayout.setVisibility(View.VISIBLE);
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
-                    startActivity(new Intent(Act_Main.this, PrintPreviewActivity.class));
+
+                    Log.e("PrinterConnected_Act", ":" + getIntent().getStringExtra("is_PrinterConnected"));
+
+
+                    Intent intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+                    intent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
+                    startActivity(intent);
+
+
+//                    startActivity(new Intent(Act_Main.this, PrintPreviewActivity.class));
                 }
             }
 

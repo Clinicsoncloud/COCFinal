@@ -322,10 +322,16 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
         txtSpeak = "Please click on the print button to get your printout";
-        speakOut(txtSpeak);
 
-        printerBond();
-        autoConnectPrinter();
+
+        Log.e("PrinterConnected_Print", ":" + getIntent().getStringExtra("is_PrinterConnected"));
+        if (getIntent().getStringExtra("is_PrinterConnected").equals("false")) {
+            printerBond();
+            autoConnectPrinter();
+        } else {
+            printerActivation();
+        }
+
         gettingDataObjects();
         calculations();
         setNewList();
@@ -1486,7 +1492,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             Log.e("result_PosstLog", ":" + result);
 
             if (result == -1) {
-                Toast.makeText(context, "Please Reconnectr the device...", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Please Reconnect the device...", Toast.LENGTH_LONG).show();
             }
 
             super.onPostExecute(result);

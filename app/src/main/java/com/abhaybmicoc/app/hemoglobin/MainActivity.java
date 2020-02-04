@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     public static int iWidth;
     public static Printer_GEN ptrGen;
+    String is_PrinterConnected = "false";
 
     // endregion
 
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         setStartTestTimerHandler(connected);
 
-//        connectToSavedPrinter();
+        connectToSavedPrinter();
     }
 
     private void setStartTestTimerHandler(boolean connected) {
@@ -252,21 +253,22 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         if (data.getString("NAME", "").length() > 0) {
             Log.e("Connect_Printer", " :Name: " + data.getString("NAME", ""));
+            Log.e("Connect_Printer_BOND", " :BOND: " + data.getString("BOND", ""));
 
-            if (data.getString("BOND", "").equals(getString(R.string.actDiscovery_bond_nothing))) {
+            Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
 
-                Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
+            mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
 
-                mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
+            Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
 
-                Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
-
-                autoConnectPrinter();
-            }
+            autoConnectPrinter();
         }
     }
 
     private void autoConnectPrinter() {
+
+        mGP.closeConn();
+        Log.e("Connect_PrinterAdd", ":" + mBDevice.getAddress());
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
@@ -309,6 +311,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
             Log.e("Connect_result", ":" + result);
             if (CONN_SUCCESS == result) {
+
+                Log.e("Connect_Successresult", ":" + result);
+
+                is_PrinterConnected = "true";
                 printerActivation();
             }
         }
@@ -323,7 +329,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
 
-            Log.e("Connect_Printer", ":Activated:" + ptrGen);
+
+            Log.e("Connect_Printer", ":Activated:" + ptrGen + is_PrinterConnected);
 
         } catch (Exception e) {
         }
@@ -459,6 +466,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sharedPreferencesDevice = getSharedPreferences("device_data", MODE_PRIVATE);
         sharedPreferencesDeviceHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        mGP = ((AndMedical_App_Global) getApplicationContext());
 
         txt = "Please press the power button of device and click on scan button";
         speakOut(txt);
@@ -614,7 +623,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         } catch (NullPointerException e) {
         }
 
-        startActivity(new Intent(MainActivity.this, Act_Main.class));
+        Intent intent = new Intent(MainActivity.this, Act_Main.class);
+        intent.putExtra("is_PrinterConnected", is_PrinterConnected);
+        startActivity(intent);
+
+//        startActivity(new Intent(MainActivity.this, Act_Main.class));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
