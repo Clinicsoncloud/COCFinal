@@ -314,13 +314,12 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
      */
     private void setupEvents() {
         tvHeight.setOnClickListener(view -> context.startActivity(new Intent(this, HeightActivity.class)));
-        tvOximeter.setOnClickListener(view -> context.startActivity(new Intent(this, MainActivity.class)));
         tvWeight.setOnClickListener(view -> context.startActivity(new Intent(this, ActofitMainActivity.class)));
-        tvTemperature.setOnClickListener(view -> context.startActivity(new Intent(this, ThermometerScreen.class)));
+        tvOximeter.setOnClickListener(view -> context.startActivity(new Intent(this, MainActivity.class)));
 
         btnNext.setOnClickListener(v -> {
             try {
-                Intent objIntent = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+                Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
                 startActivity(objIntent);
                 finish();
             } catch (Exception e) {

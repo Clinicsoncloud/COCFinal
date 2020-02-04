@@ -28,6 +28,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -373,7 +374,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
      *
      */
     private void goNext() {
-        Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
+        Intent objIntent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(objIntent);
         finish();
     }

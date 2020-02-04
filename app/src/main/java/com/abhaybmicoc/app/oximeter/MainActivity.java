@@ -197,10 +197,9 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
-            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
 
             if (!statusOfGPS) {
-                Log.e("GPS_Permission", " Location providers: " + provider);
+
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
                 alertDialogBuilder.setTitle("GPS Disabled");
@@ -273,7 +272,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private void setupEvents() {
         tvHeight.setOnClickListener(view -> handleHeight());
         tvWeight.setOnClickListener(view -> handleWeight());
-        tvTemperature.setOnClickListener(view -> handleTemperature());
 
         btnRepeat.setOnClickListener(view -> handleRepeat());
         btnNext.setOnClickListener(v -> {
@@ -323,9 +321,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
             } else {
                 speakOut(txt);
             }
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
+        } else { }
     }
 
     /**
@@ -367,13 +363,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      *
      */
-    private void handleTemperature() {
-        context.startActivity(new Intent(this, ThermometerScreen.class));
-    }
-
-    /**
-     *
-     */
     private void handleRepeat() {
         tvBodyOxygenLabel.setVisibility(View.GONE);
         tvBodyOxygen.setText("spo");
@@ -392,18 +381,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         progressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                Log.e("Dismissed_Dialog", ":1:");
+
                 if (tvBodyOxygenLabel.getVisibility() == View.GONE) {
                     btnConnect.setText("Connect");
                     btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
-
-                    /*c208Invoker.disconnectDevice(new C208DisconnectCommandListener() {
-                        @Override
-                        public void onDisconnected() {
-                            Log.e("OnDisconnected_Log", "   :Logs:   ");
-                        }
-                    });*/
-
                 }
             }
         });
@@ -461,8 +442,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         @Override
         public void onDataResponse(int spo, int pr) {
             flag = false;
-
-            Log.e("data_Res_Log", "Received");
 
             Message message = new Message();
             message.arg1 = spo;
@@ -533,9 +512,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private class UnBindDeviceAdapter implements C208DisconnectCommandListener {
 
         @Override
-        public void onDisconnected() {
-            Log.e("OnDisconnected_Log", "   :Logs:   ");
-        }
+        public void onDisconnected() { }
     }
 
 
