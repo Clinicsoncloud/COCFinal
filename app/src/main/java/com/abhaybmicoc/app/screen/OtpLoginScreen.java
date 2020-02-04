@@ -41,6 +41,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private TextToSpeech textTopSpeech;
     private ProgressDialog progressDialog;
 
+    SharedPreferences sharedPreferencesPersonal;
+
     private String kiosk_id;
     private String WELCOME_LOGIN_MESSAGE = "Welcome to Clinics on Cloud Please Enter Mobile Number";
 
@@ -127,6 +129,10 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+            sharedPreferencesPersonal.edit().clear().apply();
+
             kiosk_id = sharedPreferencesActivator.getString("pinLock", "");
         } catch (Exception e) {
         }
@@ -222,7 +228,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
      * @throws JSONException
      */
     private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
-        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
         editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
@@ -253,8 +259,9 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                 JSONObject jsonResponse = new JSONObject(response);
 
+
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
@@ -267,7 +274,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
-                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);

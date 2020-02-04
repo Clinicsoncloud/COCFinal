@@ -262,7 +262,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
                 String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, ""));
                 headers.put("Authorization", bearer);
-
                 return headers;
             }
 
@@ -274,7 +273,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 params.put(Constant.Fields.EMAIL, etEmail.getText().toString());
                 params.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
                 params.put(Constant.Fields.GENDER, getSelectedGender());
-
                 return params;
             }
         };
