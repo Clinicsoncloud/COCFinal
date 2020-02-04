@@ -52,20 +52,6 @@
                     android:textColor="@color/white"
                     android:textSize="22sp" />
 
-
-                <TextView
-                    android:id="@+id/tv_header_tempreture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
-                    android:background="@drawable/repeat"
-                    android:gravity="center"
-                    android:padding="@dimen/pad5"
-                    android:text="Temperature"
-                    android:textColor="@color/white"
-                    android:textSize="22sp" />
-
                 <TextView
                     android:id="@+id/tv_header_pulseoximeter"
                     android:layout_width="wrap_content"
@@ -92,6 +78,18 @@
                     android:textColor="@color/white"
                     android:textSize="22sp" />
 
+                <TextView
+                    android:id="@+id/tv_header_tempreture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:background="@drawable/repeat"
+                    android:gravity="center"
+                    android:padding="@dimen/pad5"
+                    android:text="Temperature"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_header_bloodsugar"

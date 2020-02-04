@@ -90,13 +90,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private TextView tvMobile;
     private TextView tvHeight;
     private TextView tvWeight;
-    private TextView btnNext;
     private TextView tvBpMonitor;
     private TextView tvResultText;
     private TextView tvLogDisplay;
     private TextView offlineTitle;
     private TextView tvTemperature;
     private TextView tvResultTextNew;
+    private TextView tvPulseOximeter;
     private TextView tvConnectionLabel;
     private TextView tvConnectionStatus;
 
@@ -538,7 +538,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
         tvMobile = findViewById(R.id.tv_mobile_number);
-        btnNext = findViewById(R.id.tv_header_pulseoximeter);
+        tvPulseOximeter = findViewById(R.id.tv_header_pulseoximeter);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
         tvConnectionStatus = findViewById(R.id.tv_connection_status);
@@ -582,7 +582,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private void setupEvents() {
         tvHeight.setOnClickListener(this);
         tvWeight.setOnClickListener(this);
-        btnNext.setOnClickListener(this);
+        tvPulseOximeter.setOnClickListener(this);
         tvBpMonitor.setOnClickListener(this);
         tvTemperature.setOnClickListener(this);
 
