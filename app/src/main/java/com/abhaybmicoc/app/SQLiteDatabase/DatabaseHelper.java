@@ -105,7 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         String sql = "CREATE TABLE " + TABLE_NAME
                 + "(" + COLUMN_ID +
-                "INTEGER PRIMARY KEY AUTOINCREMENT , " + COLUMN_PATIENTID + "INTEGER NULL DEFAULT NULLS " +
+                "INTEGER PRIMARY KEY AUTOINCREMENT , " + COLUMN_PATIENTID + " INTEGER NULL DEFAULT NULLS " +
                 COLUMN_HEIGHT + "VARCHAR" + COLUMN_WEIGHT + "VARCHAR" + COLUMN_GENDER + " VARCHAR "+
                 COLUMN_BMI + "VARCHAR" + COLUMN_BMR + "VARCHAR" + COLUMN_META_AGE + "VARCHAR" +
                 COLUMN_HEALTH_SCORE + "VARCHAR"+ COLUMN_PHYSIQUE + "VARCHAR" + COLUMN_SUBCUTANEOUS + "VARCHAR" +
@@ -135,7 +135,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 UPDATED_AT_TIMESTAMP +"NULL DEFAULT NULL,"+
                 DELETED_AT_TIMESTAMP+ "NULL DEFAULT NULL,";
                 db.execSQL(sql);
-
     }
 
     @Override
