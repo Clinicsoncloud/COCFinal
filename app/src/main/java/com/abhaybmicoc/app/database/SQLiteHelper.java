@@ -4,10 +4,12 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.abhaybmicoc.app.utils.Constant;
+
 public class SQLiteHelper extends SQLiteOpenHelper {
 
     public SQLiteHelper(Context context) {
-        super(context, DataBaseConstants.DATABASE_NAME, null, DataBaseConstants.DATABASE_VERSION);
+        super(context, Constant.DatabaseDetails.DATABASE_NAME, null, Constant.DatabaseDetails.DATABASE_VERSION);
     }
 
     @Override
@@ -25,7 +27,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL("DROP TABLE IF EXISTS " + DataBaseConstants.TableNames.TBL_PARAMETERS);
+        db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.TBL_PARAMETERS);
 
         onCreate(db);
     }

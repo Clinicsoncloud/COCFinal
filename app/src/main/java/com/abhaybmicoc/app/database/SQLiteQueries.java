@@ -1,49 +1,89 @@
-/*
 package com.abhaybmicoc.app.database;
 
-*/
-/**
- * Class Name        :  <b>S    SQLiteQueries.java<b/>
- * Purpose           :  SQLiteQueries is class related of queries.
- * Developed By      :  <b>@Vaibhav VAdnere</b>
- * Created Date      :  <b>08-08-2019</b>
- * <p>
- * Modified Reason   :  <b></b>
- * Modified By       :  <b></b>
- * Modified Date     :  <b></b>
- * <p>
- *//*
-
-
+import com.abhaybmicoc.app.utils.Constant;
 
 public class SQLiteQueries {
 
     public static final String query_TBL_PARAMETERS = "create table IF NOT EXISTS "
-            + DataBaseConstants.TableNames.TBL_PARAMETERS + "("
-            + DataBaseConstants.Constants_TBL_PARAMETERS.ID + " INTEGER primary key AUTOINCREMENT,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.DAY_ID + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.ENTRY_TIME + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.START_TIME + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.TRIPID + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.TRUCK_ID + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.DRIVER_ID + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.TRAILERID + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.ODOMETER + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.CITY + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.STATE + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.DUTY_STATUS + " VARCHAR,"
+            + Constant.TableNames.TBL_PARAMETERS + "("
+            + Constant.Fields.LOCAL_ID + " INTEGER primary key AUTOINCREMENT,"
+            + Constant.Fields.PATIENT_ID + " VARCHAR,"
+            + Constant.Fields.BMI + " VARCHAR,"
+            + Constant.Fields.BMR + " VARCHAR,"
+            + Constant.Fields.SUGAR + " VARCHAR,"
+            + Constant.Fields.HEIGHT + " VARCHAR,"
+            + Constant.Fields.WEIGHT + " VARCHAR,"
+            + Constant.Fields.PROTEIN + " VARCHAR,"
+            + Constant.Fields.META_AGE + " VARCHAR,"
+            + Constant.Fields.BODY_FAT + " VARCHAR,"
+            + Constant.Fields.PHYSIQUE + " VARCHAR,"
+            + Constant.Fields.GENDER + " VARCHAR,"
+            + Constant.Fields.BONE_MASS + " VARCHAR,"
+            + Constant.Fields.BODY_WATER + " VARCHAR,"
+            + Constant.Fields.PULSE_RATE + " VARCHAR,"
+            + Constant.Fields.MUSCLE_MASS + " VARCHAR,"
+            + Constant.Fields.HEMOGLOBIN + " VARCHAR,"
+            + Constant.Fields.HEALTH_SCORE + " VARCHAR,"
+            + Constant.Fields.VISCERAL_FAT + " VARCHAR,"
+            + Constant.Fields.BLOOD_OXYGEN + " VARCHAR,"
+            + Constant.Fields.TEMPERATURE + " VARCHAR,"
+            + Constant.Fields.SKELETAL_MUSCLE + " VARCHAR,"
+            + Constant.Fields.FAT_FREE_WEIGHT + " VARCHAR,"
+            + Constant.Fields.SUBCUTANEOUS_FAT + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC + " VARCHAR,"
+            + Constant.Fields.WEIGHT_RANGE + " VARCHAR,"
+            + Constant.Fields.BMI_RANGE + " VARCHAR,"
+            + Constant.Fields.BODY_FAT_RANGE + " VARCHAR,"
+            + Constant.Fields.SUBCUTANEOUS_FAT_RANGE + " VARCHAR,"
+            + Constant.Fields.VISCERAL_FAT_RANGE + " VARCHAR,"
+            + Constant.Fields.BODY_WATER_RANGE + " VARCHAR,"
+            + Constant.Fields.SKELETAL_MUSCLE_RANGE + " VARCHAR,"
+            + Constant.Fields.PROTEIN_RANGE + " VARCHAR,"
+            + Constant.Fields.META_AGE_RANGE + " VARCHAR,"
+            + Constant.Fields.HEALTH_SCORE_RANGE + " VARCHAR,"
+            + Constant.Fields.BMR_RANGE + " VARCHAR,"
+            + Constant.Fields.PHYSIQUE_RANGE + " VARCHAR,"
+            + Constant.Fields.MUSCLE_MASS_RANGE + " VARCHAR,"
+            + Constant.Fields.BONE_MASS_RANGE + " VARCHAR,"
+            + Constant.Fields.TEMPERATURE_RANGE + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RANGE + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RANGE + " VARCHAR,"
+            + Constant.Fields.BLOOD_OXYGEN_RANGE + " VARCHAR,"
+            + Constant.Fields.PULSE_RATE_RANGE + " VARCHAR,"
+            + Constant.Fields.SUGAR_RANGE + " VARCHAR,"
+            + Constant.Fields.HEMOGLOBIN_RANGE + " VARCHAR,"
+            + Constant.Fields.HEIGHT_RESULT + " VARCHAR,"
+            + Constant.Fields.BMI_RESULT + " VARCHAR,"
+            + Constant.Fields.BMR_RESULT + " VARCHAR,"
+            + Constant.Fields.SUGAR_RESULT + " VARCHAR,"
+            + Constant.Fields.WEIGHT_REUSLT + " VARCHAR,"
+            + Constant.Fields.PROTEIN_RESULT + " VARCHAR,"
+            + Constant.Fields.META_AGE_RESULT + " VARCHAR,"
+            + Constant.Fields.BODY_FAT_RESULT + " VARCHAR,"
+            + Constant.Fields.PULSE_RATE_RESULT + " VARCHAR,"
+            + Constant.Fields.BONE_MASS_RESULT + " VARCHAR,"
+            + Constant.Fields.BLOOD_OXYGEN_RESULT + " VARCHAR,"
+            + Constant.Fields.BODY_WATER_RESULT + " VARCHAR,"
+            + Constant.Fields.HEMOGLOBIN_RESULT + " VARCHAR,"
+            + Constant.Fields.MUSCLE_MASS_RESULT + " VARCHAR,"
+            + Constant.Fields.TEMPERATURE_RESULT + " VARCHAR,"
+            + Constant.Fields.VISCERAL_FAT_RESULT + " VARCHAR,"
+            + Constant.Fields.FAT_FREE_WEIGHT_RESULT + " VARCHAR,"
+            + Constant.Fields.SUBCUTANEOUS_FAT_RESULT + " VARCHAR,"
+            + Constant.Fields.SKELETAL_MUSCLE_RESULT + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT + " VARCHAR,"
+            + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT + " VARCHAR,"
 
-            + DataBaseConstants.Constants_TBL_PARAMETERS.EVENT_TYPE + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.START_TIME_EPOCH + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.END_TIME_EPOCH + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.END_TIME + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.COMMENT + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.CTIME + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.SHIFT_STARTED + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.CYCLE_STARTED + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.DRIVER_SIGNATURE + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.UPDATE_TIME + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.IS_UPLOADED + " VARCHAR,"
-            + DataBaseConstants.Constants_TBL_PARAMETERS.PHPID + " VARCHAR" + ");";
+            + Constant.Fields.CREATED_BY + " VARCHAR,"
+            + Constant.Fields.UPDATED_BY + " VARCHAR,"
+            + Constant.Fields.DELETED_BY + " VARCHAR,"
+            + Constant.Fields.CREATED_AT + " VARCHAR,"
+            + Constant.Fields.UPDATED_AT + " VARCHAR,"
+            + Constant.Fields.DELETED_AT + " VARCHAR,"
+            + Constant.Fields.STATUS + " VARCHAR,"
 
-}*/
+
+            + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
+
+}

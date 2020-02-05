@@ -1,18 +1,31 @@
 package com.abhaybmicoc.app.utils;
 
 public class Constant {
-    public enum SlideMenu{
+    public enum SlideMenu {
         DASHBOARD,
         DEVICE_SETUP,
         LOGIN
     }
 
-    public static class Fields{
+    public static class DatabaseDetails {
+        public static final String DATABASE_NAME = "clinics_on_cloud";
+        public static final int DATABASE_VERSION = 1;
+    }
+
+    public static class Fields {
+
+        public static String internetIntent = "android.net.conn.CONNECTIVITY_CHANGE";
+
+        public static final String TBL_PARAMETERS = "tbl_parameters";
+
         public final static String ID = "id";
         public final static String OTP = "otp";
         public final static String TOKEN = "token";
         public final static String KIOSK_ID = "kiosk_id";
 
+
+        public static final String LOCAL_ID = "local_id";
+        public static final String PATIENT_ID = "patient_id";
         public final static String NAME = "name";
         public final static String EMAIL = "email";
         public final static String GENDER = "gender";
@@ -100,5 +113,23 @@ public class Constant {
         public final static String SKELETAL_MUSCLE_RESULT = "skeletonmuscleresult";
         public final static String BLOOD_PRESSURE_SYSTOLIC_RESULT = "systolicresult";
         public final static String BLOOD_PRESSURE_DIASTOLIC_RESULT = "bloodpressureresult";
+
+
+        public static final String CREATED_BY = "created_by";
+        public static final String UPDATED_BY = "updated_by";
+        public static final String DELETED_BY = "deleted_by";
+        public static final String CREATED_AT = "created_at";
+        public static final String UPDATED_AT = "updated_at";
+        public static final String DELETED_AT = "deleted_at";
+        public static final String STATUS = "status";
+
+        public static final String IS_UPLOADED = "is_uploaded";
+
     }
+
+    public static class TableNames {
+
+        public static final String TBL_PARAMETERS = "tbl_parameters";
+    }
+
 }
