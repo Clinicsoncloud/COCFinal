@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -140,7 +141,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     private void goNext() {
         clearData();
 
-        startActivity(new Intent(getApplicationContext(), ThermometerScreen.class));
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
 
         finish();
     }
