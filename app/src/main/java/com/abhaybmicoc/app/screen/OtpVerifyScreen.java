@@ -17,9 +17,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.activity.HeightActivity;
 
 import com.android.volley.VolleyError;
@@ -68,6 +68,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     @Override
     public void onBackPressed() {
         goToOtpLoginScreen();
+
+        clearPersonalInformation();
     }
 
     @Override
@@ -94,6 +96,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
         stopTextToSpeech();
     }
+
+
 
     @Override
     public void onInit(int status) {
@@ -128,12 +132,19 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         btnLogin.setOnClickListener(v -> {
             if (etMobileNumber.getText().toString().equals("")) {
                 etMobileNumber.setError("Please Enter Mobile Number");
+                etMobileNumber.requestFocus();
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
+                etMobileNumber.requestFocus();
             } else if (etName.getText().toString().equals("")) {
                 etName.setError("Please Enter Name");
+                etName.requestFocus();
             } else if (etDateOfBirth.getText().toString().equals("")) {
                 etDateOfBirth.setError("Please Select Date Of Birth");
+                etDateOfBirth.requestFocus();
+                Toast.makeText(context, "Please select Date Of Birth", Toast.LENGTH_SHORT).show();
+            }else if(rdGenderGroup.getCheckedRadioButtonId() == -1){
+                Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
                 postData();
             }
@@ -359,6 +370,13 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         RadioButton radioButton = rdGenderGroup.findViewById(radioButtonID);
         return radioButton.getText().toString();
     }
+
+    private void clearPersonalInformation() {
+
+        SharedPreferences.Editor sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA,MODE_PRIVATE).edit().clear();
+        sharedPreferencePersonalData.clear().apply();
+    }
+
 
     // endregion
 }

@@ -184,235 +184,243 @@
             android:layout_below="@+id/main"
             android:background="@drawable/line" />
 
-
-    </LinearLayout>
-
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="100dp"
-            android:orientation="vertical"
-            android:scrollbarAlwaysDrawVerticalTrack="true">
-            <TextView
-                android:id="@+id/login_title"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="visible"
-                android:layout_marginTop="22dp"
-                android:gravity="center_horizontal"
-                android:text=""
-                android:textColor="#fff"
-                android:textSize="26sp"
-                android:textStyle="bold" />
-
-            <ImageView
-                android:id="@+id/iv_strips"
-                android:layout_width="400dp"
-                android:layout_height="150dp"
-                android:layout_below="@+id/login_title"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="30dp"
-                android:src="@drawable/glocometer"
-                android:layout_marginRight="30dp"
-                android:padding="20dp"
-                android:textColor="@color/buttoncolor"
-                android:textSize="12sp"
-                android:scrollbars="vertical"
-                android:editable="false"
-                android:cursorVisible="false" />
-
-            <TextView
-                android:id="@+id/display"
-                android:layout_width="400dp"
-                android:layout_height="150dp"
-                android:layout_below="@+id/login_title"
-                android:layout_marginLeft="447dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="30dp"
-                android:layout_toRightOf="@id/iv_strips"
-                android:background="@drawable/orange"
-                android:cursorVisible="false"
-                android:editable="false"
-                android:padding="20dp"
-                android:text=""
-                android:gravity="center"
-                android:textAlignment="center"
-                android:scrollbars="vertical"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
-
+            android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/display"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="30dp"
-                android:elevation="4dp"
                 android:orientation="vertical"
-                android:padding="20dp"
-                android:id="@+id/mainrel">
+                android:scrollbarAlwaysDrawVerticalTrack="true">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="15dp">
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:textColor="@color/buttoncolor"
-                        android:textSize="18sp"
-                        android:text="Device:"/>
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.5"
-                        android:textSize="18sp"
-                        android:id="@+id/textdevice"
-                        android:textColor="@color/buttoncolor"
-                        android:text="NA"/>
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/login_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center_horizontal"
+                    android:text=""
+                    android:textColor="#fff"
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_strips"
+                    android:layout_width="400dp"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/login_title"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="30dp"
+                    android:cursorVisible="false"
+                    android:editable="false"
+                    android:padding="20dp"
+                    android:scrollbars="vertical"
+                    android:src="@drawable/glocometer"
+                    android:textColor="@color/buttoncolor"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/display"
+                    android:layout_width="400dp"
+                    android:layout_height="150dp"
+                    android:layout_below="@+id/login_title"
+                    android:layout_marginLeft="447dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="30dp"
+                    android:layout_toRightOf="@id/iv_strips"
+                    android:background="@drawable/orange"
+                    android:cursorVisible="false"
+                    android:editable="false"
+                    android:gravity="center"
+                    android:padding="20dp"
+                    android:scrollbars="vertical"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textSize="30sp" />
+
+
+                <RelativeLayout
+                    android:id="@+id/mainrel"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/display"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginRight="10dp"
+                    android:elevation="4dp"
                     android:orientation="vertical"
-                    android:layout_marginTop="30dp">
-                    <Button
-                        android:id="@+id/btn_scan"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Scan"
-                        android:textColor="#fff"
-                        android:textSize="18sp"
-                        android:layout_marginRight="2dp"
-                        android:shadowColor="#A8A8A8"
-                        android:shadowDx="0"
-                        android:shadowDy="0"
-                        android:visibility="gone"
-                        android:shadowRadius="5"
-                        android:onClick="scan"
-                        android:background="@drawable/buttonshape"/>
-                    <Spinner
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/sp_device_list"
-                        android:spinnerMode="dialog"
-                        android:prompt="@string/device"/>
-                    <Button
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Connect"
-                        android:textColor="#fff"
-                        android:textSize="18sp"
-                        android:id="@+id/btn_connect"
-                        android:shadowColor="#A8A8A8"
-                        android:layout_margin="3dp"
-                        android:shadowDx="0"
-                        android:shadowDy="0"
-                        android:shadowRadius="5"
-                        android:onClick="connect"/>
+                    android:padding="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp">
+                        android:layout_marginBottom="15dp">
 
-                        <Button
-                            android:layout_width="fill_parent"
+                        <TextView
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Test"
-                            android:textColor="#fff"
-                            android:textSize="18sp"
-                            android:background="@drawable/buttonshape"
                             android:layout_weight="0.5"
-                            android:shadowColor="#A8A8A8"
-                            android:shadowDx="0"
-                            android:shadowDy="0"
-                            android:layout_margin="3dp"
-                            android:shadowRadius="5"
-                            android:id="@+id/btn_test"/>
-                        <Button
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Next"
-                            android:textColor="#fff"
-                            android:textSize="18sp"
-                            android:layout_weight="0.5"
-                            android:layout_marginRight="2dp"
-                            android:layout_margin="3dp"
-                            android:shadowColor="#A8A8A8"
-                            android:shadowDx="0"
-                            android:shadowDy="0"
-                            android:shadowRadius="5"
-                            android:background="@drawable/buttonshape"
-                            android:id="@id/btn_next"/>
+                            android:text="Device:"
+                            android:textColor="@color/buttoncolor"
+                            android:textSize="18sp" />
 
+                        <TextView
+                            android:id="@+id/textdevice"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:text="NA"
+                            android:textColor="@color/buttoncolor"
+                            android:textSize="18sp" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp">
+                        android:layout_marginTop="30dp"
+                        android:orientation="vertical">
+
                         <Button
+                            android:id="@+id/btn_scan"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:text="Read Batch Code"
-                            android:textColor="#fff"
-                            android:textSize="14sp"
+                            android:layout_marginRight="2dp"
                             android:background="@drawable/buttonshape"
-                            android:layout_weight="0.5"
-                            android:layout_marginTop="2dp"
-                            android:shadowColor="#A8A8A8"
-                            android:shadowDx="0"
-                            android:shadowDy="0"
-                            android:visibility="gone"
-                            android:shadowRadius="5"
-                            android:onClick="readBatchCode"/>
-                        <Button
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Set Batch Code"
-                            android:textColor="#fff"
-                            android:textSize="14sp"
-                            android:background="@drawable/buttonshape"
-                            android:layout_weight="0.5"
-                            android:layout_marginTop="2dp"
+                            android:onClick="scan"
                             android:shadowColor="#A8A8A8"
                             android:shadowDx="0"
                             android:shadowDy="0"
                             android:shadowRadius="5"
-                            android:onClick="writeBatchCode"/>
+                            android:text="Scan"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:visibility="gone" />
+
+                        <Spinner
+                            android:id="@+id/sp_device_list"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:prompt="@string/device"
+                            android:spinnerMode="dialog" />
+
+                        <Button
+                            android:id="@+id/btn_connect"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="3dp"
+                            android:onClick="connect"
+                            android:shadowColor="#A8A8A8"
+                            android:shadowDx="0"
+                            android:shadowDy="0"
+                            android:shadowRadius="5"
+                            android:text="Connect"
+                            android:textColor="#fff"
+                            android:textSize="18sp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp">
+
+                            <Button
+                                android:id="@+id/btn_test"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_weight="0.5"
+                                android:background="@drawable/buttonshape"
+                                android:shadowColor="#A8A8A8"
+                                android:shadowDx="0"
+                                android:shadowDy="0"
+                                android:shadowRadius="5"
+                                android:text="Test"
+                                android:textColor="#fff"
+                                android:textSize="18sp" />
+
+                            <Button
+                                android:id="@id/btn_skip"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="3dp"
+                                android:layout_marginRight="2dp"
+                                android:layout_weight="0.5"
+                                android:background="@drawable/buttonshape"
+                                android:shadowColor="#A8A8A8"
+                                android:shadowDx="0"
+                                android:shadowDy="0"
+                                android:shadowRadius="5"
+                                android:text="Next"
+                                android:textColor="#fff"
+                                android:textSize="18sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="10dp">
+
+                            <Button
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:background="@drawable/buttonshape"
+                                android:onClick="readBatchCode"
+                                android:shadowColor="#A8A8A8"
+                                android:shadowDx="0"
+                                android:shadowDy="0"
+                                android:shadowRadius="5"
+                                android:text="Read Batch Code"
+                                android:textColor="#fff"
+                                android:textSize="14sp"
+                                android:visibility="gone" />
+
+                            <Button
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:layout_weight="0.5"
+                                android:background="@drawable/buttonshape"
+                                android:onClick="writeBatchCode"
+                                android:shadowColor="#A8A8A8"
+                                android:shadowDx="0"
+                                android:shadowDy="0"
+                                android:shadowRadius="5"
+                                android:text="Set Batch Code"
+                                android:textColor="#fff"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <Button
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:layout_weight="0.5"
+                            android:background="@drawable/buttonshape"
+                            android:onClick="readLastTest"
+                            android:shadowColor="#A8A8A8"
+                            android:shadowDx="0"
+                            android:shadowDy="0"
+                            android:shadowRadius="5"
+                            android:text="Read All Test"
+                            android:textColor="#fff"
+                            android:textSize="18sp"
+                            android:visibility="gone" />
                     </LinearLayout>
-                    <Button
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Read All Test"
-                        android:textColor="#fff"
-                        android:textSize="18sp"
-                        android:background="@drawable/buttonshape"
-                        android:layout_weight="0.5"
-                        android:layout_marginTop="20dp"
-                        android:shadowColor="#A8A8A8"
-                        android:shadowDx="0"
-                        android:shadowDy="0"
-                        android:shadowRadius="5"
-                        android:visibility="gone"
-                        android:onClick="readLastTest"/>
-                </LinearLayout>
+
+                </RelativeLayout>
+
 
             </RelativeLayout>
+        </ScrollView>
 
-
-        </RelativeLayout>
-    </android.support.v4.widget.NestedScrollView>
-
-
+    </LinearLayout>
 
 
 </RelativeLayout>

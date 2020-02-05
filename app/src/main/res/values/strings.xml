@@ -17,6 +17,7 @@
 
     <!--Actofit String-->
     <string name="subscription_over">Seems like your subscription is finished. Please Renew your subscription to continue.</string>
+    <string name="actofitScale_retest">Retest</string>
 
     <string name="side_menu_account_title">My Account</string>
     <string name="side_menu_account_title_guest">&quot;Guest\'s account&quot;</string>
@@ -266,6 +267,10 @@
 
     <!-- Blood Pressure -->
     <string name="bloodpressure_title">Blood Pressure</string>
+    <string name="bloodpressure_value">Value</string>
+    <string name="bloodpressure_step1">Step 1 - Please wear the cuff 2cm above the elbow</string>
+    <string name="bloodpressure_step2">Press the Device start Button wait 50 sec to get Results</string>
+    <string name="bloodpressure_step3">Please wait for Results</string>
     <string name="bloodpressure_title_systolic">Systolic</string>
     <string name="bloodpressure_title_diastolic">Diastolic</string>
     <string name="bloodpressure_title_pulse">Pulse</string>

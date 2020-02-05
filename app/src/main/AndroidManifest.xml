@@ -183,7 +183,7 @@
             android:theme="@style/AppThemeGlucose" />
 
         <activity
-            android:name="com.abhaybmicoc.app.activity.DashboardActivity"
+            android:name="com.abhaybmicoc.app.activity.BloodPressureActivity"
             android:finishOnTaskLaunch="true"
             android:theme="@android:style/Theme.NoTitleBar"/>
 

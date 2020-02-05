@@ -1,5 +1,8 @@
 package com.abhaybmicoc.app.thermometer;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.AsyncTask;
 import android.content.Intent;
@@ -10,6 +13,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -38,7 +42,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.OutputStream;
-import java.io.DataInputStream;
 import java.nio.charset.Charset;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
@@ -48,7 +51,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     Context context = ThermometerScreen.this;
 
-    private String str  = "";
+    private String str = "";
     private String strReceiveData = "";
 
     private String message;
@@ -96,6 +99,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     private TextToSpeech textToSpeech;
 
+    private Handler deviceConnectionTimeoutHandler;
+
+    private int DEVICE_CONNECTION_WAITING_TIME = 10000;
+
     private int connectTryCount = 0;
     private long CONNECT_TRY_PAUSE_MILLISECONDS = 5000;
     private int ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT = 1;
@@ -112,7 +119,6 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         setupEvents();
         initializeData();
         turnOnBluetooth();
-        storeBluetoothDevices();
     }
 
     @Override
@@ -123,14 +129,12 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         handleTemperatureResult(requestCode, resultCode, data);
-        finish();
+//        finish();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        connectToDevice();
     }
 
     @Override
@@ -152,10 +156,10 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     // region Initialization data
 
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.activity_main_temperature);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
+        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -177,7 +181,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
 
-        btnBaud = findViewById(R.id.btn_next);
+        btnBaud = findViewById(R.id.btn_skip);
 
         etTemperature.setVisibility(View.VISIBLE);
 
@@ -189,19 +193,20 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         spinner.setAdapter(adapterDevices);
     }
 
-    private void setupEvents(){
+    private void setupEvents() {
         /* Add event for top weight and height */
         tvHeight.setOnClickListener(view -> {
             context.startActivity(new Intent(this, HeightActivity.class));
+            finish();
         });
 
         tvWeight.setOnClickListener(view -> {
             context.startActivity(new Intent(this, ActofitMainActivity.class));
+            finish();
         });
 
         btnBaud.setOnClickListener(view -> handleBaud());
-        btnConnect.setOnClickListener(view -> connectToDevice());
-        btnGetTemperature.setOnClickListener(view -> getTemperature());
+        btnConnect.setOnClickListener(view -> turnOnBluetooth());
 
         // TODO: What this code is doing?
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -213,7 +218,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         });
     }
 
-    private void initializeData(){
+    private void initializeData() {
         sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         strConnect = (String) getText(R.string.connect);
@@ -225,7 +230,11 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
 
         if (strConnect.equals("Connect")) {
-            btnConnect.setText(strConnect);
+            btnConnect.setText("Connect");
+            btnConnect.setClickable(true);
+            btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+
+
         }
     }
 
@@ -233,17 +242,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
     // region Logical methods
 
-    private void turnBluetoothOff() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (bluetoothAdapter.isEnabled()) {
-            bluetoothAdapter.disable();
-        }
-    }
-
-    private void handleBaud(){
-        if(etTemperature.getText().length() > 0) {
-            if(etTemperature.getText().toString().indexOf(".") == etTemperature.getText().length() - 2 || etTemperature.getText().toString().contains(".")) {
+    private void handleBaud() {
+        if (etTemperature.getText().length() > 0) {
                 Intent objpulse = new Intent(getApplicationContext(), MainActivity.class);
 
                 SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
@@ -253,18 +254,16 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 try {
                     // turnBluetoothOff();
                 } catch (Exception e) {
-
                     Toast.makeText(ThermometerScreen.this, "Exception", Toast.LENGTH_SHORT).show();
                 }
-
+//                bluetoothAdapter.disable();
+//                bluetoothAdapter.cancelDiscovery();
                 startActivity(objpulse);
+                closeBluetooth();
                 finish();
-            }else{
-                Toast.makeText(context, "Please Enter temprature in valid format", Toast.LENGTH_SHORT).show();
-            }
-        }else{
-            Toast.makeText(ThermometerScreen.this, "Enter Manual Temprature", Toast.LENGTH_SHORT).show();
-            txtSpeak = "Please Enter Body Temprature Manually";
+        } else {
+            Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
+            txtSpeak = "Please Enter Body temperature Manually";
             speakOut(txtSpeak);
         }
     }
@@ -276,8 +275,8 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (strConnect.equals("Connect")) {
             turnOnBluetooth();
 
-            new ThermometerScreen.Connect(ThermometerScreen.this, null).execute(new String[]{sharedPreferenceBluetoothAddress.getString("hcthermometer", "")});
-            strEnabled = "false";
+            /*new Connect(ThermometerScreen.this, null).execute(new String[]{sharedPreferenceBluetoothAddress.getString("hcthermometer", "")});
+            strEnabled = "false";*/
             return;
         }
     }
@@ -300,85 +299,74 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void sendCommand() {
-        if (strConnect.equals("Connect")) {
-            Toast.makeText(ThermometerScreen.this, "Connecting to device...", Toast.LENGTH_SHORT).show();
-
-            connectToDevice();
-
-            return;
-        }
-
-        Toast.makeText(ThermometerScreen.this, "Device Ready", Toast.LENGTH_SHORT).show();
-
-        String env = "T";
-
-        try {
-            outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
-        } catch (IOException e) {
-            Toast.makeText(ThermometerScreen.this, strCannotSend, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     *
-     */
-    private void getTemperature(){
-        if (strConnect == "Connect") {
-            Toast.makeText(ThermometerScreen.this, "Connecting to device...", Toast.LENGTH_SHORT).show();
-
-            connectToDevice();
-
-            return;
-        }
-
-        Toast.makeText(ThermometerScreen.this, "Device Ready", Toast.LENGTH_SHORT).show();
-
-        String env = "T";
-        try {
-            outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
-        } catch (IOException e) {
-            Toast.makeText(ThermometerScreen.this, strCannotSend, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
-     *
-     */
     private void turnOnBluetooth() {
+
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (!bluetoothAdapter.isEnabled()) {
-            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-        }
+        btnConnect.setClickable(false);
+        btnConnect.setBackground(getResources().getDrawable(R.drawable.grayback));
+        btnConnect.setText("Connecting...");
+
+        Log.e("BluetoothAdapter_Log", ":" + bluetoothAdapter.isEnabled());
+//        if (!bluetoothAdapter.isEnabled()) {
+        startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+//        }
     }
 
     /**
-     *
+     * @param devices
      */
-    private void storeBluetoothDevices(){
-        Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
+    private void storeBluetoothDevices(Set<BluetoothDevice> devices) {
 
         if (devices != null && devices.size() > 0) {
             for (BluetoothDevice device : devices) {
                 if (device.getName().contains("THERMOMETER")) {
-                    listLinkedDevices.add(device.getName() + "\n" + device.getAddress());
-                    listDeviceAddresses.add(device.getAddress());
+
+                    Log.e("Devices_Found", "" + device.getName() + "   :   " + device.getAddress());
+
+
+                   /* listLinkedDevices.add(device.getName() + "\n" + device.getAddress());
+                    listDeviceAddresses.add(device.getAddress());*/
 
                     sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
 
-                    if(sharedPreferenceBluetoothAddress.getString("hcthermometer","").equalsIgnoreCase("")){
+                    if (sharedPreferenceBluetoothAddress.getString("hcthermometer", "").equalsIgnoreCase("")) {
                         editor.putString("hcthermometer", device.getAddress());
                         editor.commit();
                     }
+
+                    new Connect().execute(new String[]{device.getAddress()});
+
+                    setDeviceConnectionTimeoutHandler();
+
+
                 }
             }
         }
     }
 
+    private void setDeviceConnectionTimeoutHandler() {
+        deviceConnectionTimeoutHandler = new Handler();
+
+        deviceConnectionTimeoutHandler.postDelayed(() -> {
+//            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
+//                dialogConnectionProgress.dismiss();
+
+            if (progressDialog.isShowing()) {
+                progressDialog.dismiss();
+                bluetoothAdapter.cancelDiscovery();
+
+                btnConnect.setText("Connect");
+                btnConnect.setClickable(true);
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+            }
+//            }
+        }, DEVICE_CONNECTION_WAITING_TIME);
+    }
+
+
     /**
-     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -387,8 +375,12 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         if (resultCode == -1) {
             Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
 
-            if(devices != null && devices.size() > 0) {
-                listLinkedDevices = new ArrayList();
+            if (devices != null && devices.size() > 0) {
+
+                storeBluetoothDevices(devices);
+
+
+                /*listLinkedDevices = new ArrayList();
                 listDeviceAddresses = new ArrayList();
 
                 if (devices.size() > 0) {
@@ -399,7 +391,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 }
 
                 adapterDevices = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, listLinkedDevices);
-                spinner.setAdapter(adapterDevices);
+                spinner.setAdapter(adapterDevices);*/
 
                 Toast.makeText(this, strBluetoothTurnedOn, Toast.LENGTH_LONG).show();
             }
@@ -409,29 +401,34 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void freeConnections(){
-        closeBluetooth();
+    private void freeConnections() {
+//        closeBluetooth();
         stopTextToSpeech();
     }
 
     /**
      *
      */
-    private void closeBluetooth(){
-        if (strConnect.equals("Disconnect")) {
-            strEnabled = "false";
-            strConnect = "Connect";
-            btnConnect.setText(strConnect);
+    private void closeBluetooth() {
+//        if (strConnect.equals("Disconnect")) {
+        strEnabled = "false";
+        strConnect = "Connect";
 
-            try {
-                socket.close();
-            } catch (IOException e) {
-            }
+        btnConnect.setText(strConnect);
+        btnConnect.setClickable(true);
+        btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+
+        btnConnect.setClickable(true);
+        btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+
+        try {
+            socket.close();
+        } catch (IOException e) {
         }
+//        }
     }
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -439,10 +436,9 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -460,14 +456,14 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
-            System.out.println("onPauseException"+e.getMessage());
+        } catch (Exception e) {
+            System.out.println("onPauseException" + e.getMessage());
         }
     }
 
@@ -480,17 +476,18 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
         }
 
         /* synthetic */
-        Connect(ThermometerScreen ThermometerScreen, ThermometerScreen.Connect Connect) {
+        /*Connect(ThermometerScreen ThermometerScreen, ThermometerScreen.Connect Connect) {
             this();
-        }
+        }*/
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = new ProgressDialog(ThermometerScreen.this);
-            progressDialog.setCancelable(true);
+            progressDialog = new ProgressDialog(context);
+            progressDialog.setCancelable(false);
             progressDialog.setMessage("Connecting..");
-            progressDialog.show();
+            if (!((Activity) context).isFinishing())
+                progressDialog.show();
         }
 
         /* access modifiers changed from: protected */
@@ -502,7 +499,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
             bluetoothDevice = bluetoothAdapter.getRemoteDevice(params[0]);
             try {
                 socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                if(!socket.isConnected()){
+                if (!socket.isConnected()) {
                     socket.connect();
                 }
 
@@ -518,44 +515,53 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
         /* access modifiers changed from: protected */
         public void onPostExecute(String result) {
-            if(progressDialog.isShowing())
-                progressDialog.dismiss();
 
+            if (!((Activity) context).isFinishing()) {
+                if (progressDialog.isShowing())
+                    progressDialog.dismiss();
+
+            }
             String message = result;
             if (result.equals("Connected"))
                 message = strConnected;
 
             Toast.makeText(ThermometerScreen.this, message, Toast.LENGTH_SHORT).show();
 
+            Log.e("Connected_result", ":" + result);
+
             if (message.equals("Connected")) {
+                Log.e("Connected_result", " :1: " + result);
+
                 strConnect = "Disconnect";
                 estadoBoton2 = strDisconnect;
                 strEnabled = "true";
 //                sendCommand();
 
+
+                btnConnect.setText("Connected");
+                btnConnect.setClickable(false);
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
+
                 txtSpeak = "Device Ready to use, point the device To forehead and press button";
                 speakOut(txtSpeak);
 
-                new ThermometerScreen.Receiver().execute(new String[]{strEnabled});
+                new Receiver().execute(new String[]{strEnabled});
             } else {
-                if(connectTryCount > ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
-                    showCannotConnectToDevice();
-                }else{
-                    try{
-                        Thread.sleep(CONNECT_TRY_PAUSE_MILLISECONDS);
 
-                        /* Increase connection try count and try to connect */
-                        connectTryCount++;
+                Log.e("Connected_result", " :2: " + result);
 
-                        connectToDevice();
-                    }catch(Exception ex){
+                Toast.makeText(ThermometerScreen.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
-                        showCannotConnectToDevice();
-                    }
-                }
+                Log.e("ElseCase_Log", ":");
+                txtSpeak = "No Bluetooth Device Found Please Connect it Manually";
+                speakOut(txtSpeak);
+
+                btnConnect.setClickable(true);
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+                btnConnect.setText("Connect");
             }
 
-            btnConnect.setText(estadoBoton2);
+
         }
     }
 
@@ -580,7 +586,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 } catch (IOException e) {
                     message = "";
                     strEnabled = "false";
-                    ErrorUtils.logErrors(e,"HeightActivity.java","doInBackground()","Failed to read bytes data");
+                    ErrorUtils.logErrors(e, "HeightActivity.java", "doInBackground()", "Failed to read bytes data");
                 }
 
                 publishProgress(new String[]{message, strEnabled});
@@ -599,7 +605,7 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
 
             strReceiveData += str;
 
-            etTemperature.setText(""+strReceiveData);
+            etTemperature.setText("" + strReceiveData);
 
             strReceiveData = "";
 
@@ -607,19 +613,30 @@ public class ThermometerScreen extends AppCompatActivity implements TextToSpeech
                 strEnabled = "false";
                 strConnect = "Connect";
                 estadoBoton2 = strConnect;
+
+                btnConnect.setText("Connect");
+                btnConnect.setClickable(true);
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
             } else {
                 strEnabled = "true";
-                strConnect = "Disconnect";
+                strConnect = "Connected";
                 estadoBoton2 = strDisconnect;
+
+                btnConnect.setText("Connected");
+                btnConnect.setClickable(false);
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
             }
 
-            btnConnect.setText(estadoBoton2);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 
     // endregion

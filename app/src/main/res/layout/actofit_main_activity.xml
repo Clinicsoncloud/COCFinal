@@ -31,27 +31,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:background="@drawable/repeat"
+                    android:gravity="center"
                     android:padding="@dimen/pad5"
                     android:text="Height Scale"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_header_weight"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:background="@color/orange4"
-                    android:padding="@dimen/pad5"
                     android:gravity="center"
+                    android:padding="@dimen/pad5"
                     android:text="Weight Scale"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_margin="@dimen/pad10" />
-
+                    android:textSize="22sp" />
 
 
                 <TextView
@@ -59,39 +58,39 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:background="@drawable/repeat"
-                    android:text="Temperature"
+                    android:gravity="center"
                     android:padding="@dimen/pad5"
+                    android:text="Temperature"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_header_pulseoximeter"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:background="@drawable/repeat"
                     android:gravity="center"
+                    android:padding="@dimen/pad5"
                     android:text="Pulse Oximeter"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/repeat"
-                    android:padding="@dimen/pad5"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_header_bloodpressure"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:background="@drawable/repeat"
                     android:gravity="center"
+                    android:padding="@dimen/pad5"
                     android:text="BP Monitor"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/repeat"
-                    android:padding="@dimen/pad5"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
 
                 <TextView
@@ -99,26 +98,26 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:background="@drawable/repeat"
                     android:gravity="center"
+                    android:padding="@dimen/pad5"
                     android:text="Blood Sugar"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/repeat"
-                    android:padding="@dimen/pad5"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_header_hemoglobin"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:background="@drawable/repeat"
                     android:gravity="center"
+                    android:padding="@dimen/pad5"
                     android:text="Hemoglobin"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/repeat"
-                    android:padding="@dimen/pad5"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
             </LinearLayout>
 
@@ -128,60 +127,60 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:weightSum="4"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="4">
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:layout_weight="1"
                     android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Name : Ashok Songara"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_weight="1"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_age"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Age : 24"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
                     android:background="@drawable/rectangle"
+                    android:gravity="center"
+                    android:text="Age : 24"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Gender : Male"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/rectangle"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_mobile_number"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Phone : 7984507908"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/rectangle"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
 
             </LinearLayout>
@@ -197,8 +196,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="@dimen/pad10"
+                android:layout_marginTop="10dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -209,14 +208,13 @@
                     android:layout_marginTop="20dp"
                     android:text="UserId"
                     android:textColor="@color/white"
-                    android:visibility="gone"
                     android:textSize="30sp"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     tools:layout_editor_absoluteX="20dp" />
 
                 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/liner1_editpro1"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -224,6 +222,7 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/round_edittext"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/txt_edtpro_name">
 
                     <EditText
@@ -244,9 +243,9 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
                     android:text="NAME"
-                    android:visibility="gone"
                     android:textColor="@color/white"
                     android:textSize="30sp"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     tools:layout_editor_absoluteX="20dp" />
 
@@ -332,8 +331,7 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginRight="15dp"
                     android:orientation="horizontal"
-                    android:visibility="gone"
-                    >
+                    android:visibility="gone">
 
                     <RadioGroup
                         android:id="@+id/rdogrp"
@@ -386,9 +384,8 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/round_edittext"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_edtpro_dob"
                     android:visibility="gone"
-                    >
+                    app:layout_constraintTop_toBottomOf="@+id/txt_edtpro_dob">
 
                     <TextView
                         android:id="@+id/txt_sdob"
@@ -409,9 +406,9 @@
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
                     android:text="HEIGHT(cm)"
-                    android:visibility="gone"
                     android:textColor="@color/white"
                     android:textSize="30sp"
+                    android:visibility="gone"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/liner4_editpro"
                     tools:layout_editor_absoluteX="20dp" />
@@ -425,9 +422,8 @@
                     android:layout_marginRight="15dp"
                     android:background="@drawable/round_edittext"
                     android:orientation="vertical"
-                    app:layout_constraintTop_toBottomOf="@+id/txt_edtpro_hight"
                     android:visibility="gone"
-                    >
+                    app:layout_constraintTop_toBottomOf="@+id/txt_edtpro_hight">
 
                     <EditText
                         android:id="@+id/txtuheight"
@@ -479,17 +475,17 @@
 
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:src="@drawable/weightscale"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_marginTop="50dp"
-                    android:layout_height="wrap_content" />
+                    android:src="@drawable/weightscale" />
 
 
                 <Button
                     android:id="@+id/btn_smart_scale"
                     android:layout_width="300dp"
-                    android:layout_gravity="center"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginTop="40dp"
                     android:background="@drawable/round_btn_small"
                     android:text="Go To Smartscale"
@@ -513,44 +509,44 @@
                         android:id="@+id/btn_repeat"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_margin="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
                         android:background="@drawable/repeat"
+                        android:gravity="center"
                         android:text="REPEAT"
-                        android:visibility="gone"
                         android:textColor="@color/white"
                         android:textSize="35sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
+                    <Button
+                        android:id="@+id/btn_ski1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/repeat"
+                        android:gravity="center"
+                        android:text="SKIP"
+                        android:textColor="@color/white"
+                        android:textSize="35sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+
 
                     <Button
                         android:id="@+id/btn_skip"
                         android:layout_width="wrap_content"
                         android:layout_height="60dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/repeat"
-                        android:text="SKIP"
-                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/greenback"
                         android:gravity="center"
-                        android:visibility="gone"
-                        android:textColor="@color/white"
-                        android:textSize="35sp"
-                        android:textStyle="bold" />
-
-
-                    <Button
-                        android:id="@+id/btn_next"
-                        android:layout_width="wrap_content"
-                        android:layout_height="60dp"
-                        android:layout_margin="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/repeat"
-                        android:text="NEXT"
-                        android:layout_gravity="center_vertical"
-                        android:gravity="center"
+                        android:text="Skip"
                         android:textColor="@color/white"
                         android:textSize="35sp"
                         android:textStyle="bold" />

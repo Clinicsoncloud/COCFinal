@@ -2,7 +2,6 @@ package com.abhaybmicoc.app.actofit;
 
 import android.util.Log;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 import android.widget.Button;
 import android.widget.Switch;
@@ -17,10 +16,12 @@ import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
@@ -59,8 +60,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
 
-    private Button btnNext;
-    private Button btnRepeat;
+    private Button btnSkip;
     private Button btnSmartScale;
 
     private TextView tvAge;
@@ -72,13 +72,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     public static final int REQUSET_CODE = 1001;
 
-    private String gen;
     private String txtSpeak = "";
-    private String KEY_ERROR = "error";
-    private String KEY_MESSAGE = "message";
     public static final String TAG = "MainActivity";
 
     boolean isAthlete;
+    private BluetoothAdapter mBluetoothAdapter;
 
     /*
     RESULT_CANCELED = 101;
@@ -118,10 +116,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         float healthScore = intent.getFloatExtra("helthscore", 0f);
         float fatFreeWeight = intent.getFloatExtra("fatfreeweight", 0f);
 
-        int height = (int) Float.parseFloat(getIntent().getStringExtra("height"));
+        int height = Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,""));
 
         try {
-            sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
 
             SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
@@ -201,13 +198,14 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.actofit_main_activity);
 
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
+        actionBar.hide();
 
         etUserId = findViewById(R.id.txtuid);
         etHeight = findViewById(R.id.txtuheight);
@@ -226,16 +224,15 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         tvHeight = findViewById(R.id.tv_header_height);
         tvMobile = findViewById(R.id.tv_mobile_number);
 
-        btnNext = findViewById(R.id.btn_next);
-        btnRepeat = findViewById(R.id.btn_repeat);
+        btnSkip = findViewById(R.id.btn_skip);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
     }
 
     /**
      *
      */
-    private void setupEvents(){
-        btnNext.setOnClickListener(view -> goNext());
+    private void setupEvents() {
+        btnSkip.setOnClickListener(view -> goNext());
         btnSmartScale.setOnClickListener(view -> startSmartScale());
 
         etUserDateOfBirth.setOnClickListener(view -> editUserDateOfBirth());
@@ -249,7 +246,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void initializeData(){
+    private void initializeData() {
         txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
         speakOut(txtSpeak);
 
@@ -263,6 +260,18 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         } catch (Exception e) {
             // TODO: Handle exception here
         }
+
+        sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+
+        enableBluetooth();
+    }
+
+    private void enableBluetooth() {
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!mBluetoothAdapter.isEnabled()) {
+            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+        }
     }
 
     // endregion
@@ -270,7 +279,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void startSmartScale(){
+    private void startSmartScale() {
         boolean appInstalled = isAppInstalled("com.actofitSmartScale");
 
         if (appInstalled) {
@@ -282,7 +291,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat")
             Date initDate = null;
             try {
-                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(getIntent().getStringExtra(Constant.Fields.DATE_OF_BIRTH));
+                initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH,""));
+                Log.e("initDate",""+initDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -290,19 +300,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
             String parsedDate = formatter.format(initDate);
 
-            int height = 0;
-            String strHeight = getIntent().getStringExtra(Constant.Fields.HEIGHT);
-            if(strHeight != null){
-                try{
-                    height = Integer.parseInt(strHeight);
-                }
-                catch(Exception ex){
-                    height = 0;
-                    // TODO: Handle why cannot read height
-                }
-            }
-
-            intent.putExtra(Constant.Fields.HEIGHT, height);
+            intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT,"")));
             intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
             intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));
@@ -324,7 +322,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void goNext(){
+    private void goNext() {
         Intent objIntent = new Intent(getApplicationContext(), ThermometerScreen.class);
         startActivity(objIntent);
         finish();
@@ -333,21 +331,21 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void editUserDateOfBirth(){
+    private void editUserDateOfBirth() {
         final Calendar c = Calendar.getInstance();
 
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog.OnDateSetListener listener = (datePicker, year, month, day) ->{
-                Calendar calender = Calendar.getInstance();
-                calender.setTimeInMillis(0);
-                calender.set(year, month, day, 0, 0, 0);
+        DatePickerDialog.OnDateSetListener listener = (datePicker, year, month, day) -> {
+            Calendar calender = Calendar.getInstance();
+            calender.setTimeInMillis(0);
+            calender.set(year, month, day, 0, 0, 0);
 
-                Date selectedDate = calender.getTime();
-                String dateFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
-                etUserDateOfBirth.setText(dateFormatUS);
+            Date selectedDate = calender.getTime();
+            String dateFormatUS = EEEddMMMyyyyFormat.format(selectedDate);
+            etUserDateOfBirth.setText(dateFormatUS);
         };
 
         DatePickerDialog dpDialog = new DatePickerDialog(ActofitMainActivity.this, listener, year, month + 1, day);
@@ -356,15 +354,13 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     }
 
     /**
-     *
      * @param isAthlete
      */
-    private void updateIsAthlete(boolean isAthlete){
+    private void updateIsAthlete(boolean isAthlete) {
         this.isAthlete = isAthlete;
     }
 
     /**
-     *
      * @param text
      */
     private void speakOut(String text) {
@@ -372,10 +368,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     }
 
     /**
-     *
      * @param status
      */
-    private void startTextToSpeech(int status){
+    private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 
@@ -395,19 +390,18 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      *
      */
-    private void stopTextToSpeech(){
+    private void stopTextToSpeech() {
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
                 textToSpeech.shutdown();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("TTS", "Stopping text to speech Failed!");
         }
     }
 
     /**
-     *
      * @param uri
      * @return
      */
@@ -420,5 +414,12 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    @Override
+    public void onBackPressed() {
     }
 }

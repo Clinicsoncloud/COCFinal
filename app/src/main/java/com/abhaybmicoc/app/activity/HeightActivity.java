@@ -201,7 +201,7 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         strMissedConnection = (String) getText(R.string.missedConnection);
         strBluetoothTurnedOn = (String) getText(R.string.bluetoothTurnedOn);
 
-        btnNext = findViewById(R.id.btn_next);
+        btnNext = findViewById(R.id.btn_skip);
         btnClean = findViewById(R.id.btn_clean);
         btnConnect = findViewById(R.id.btn_connect);
         btnGetHeight = findViewById(R.id.btn_get_height);
