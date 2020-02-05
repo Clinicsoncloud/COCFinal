@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by ketan on 12/1/2020.
  */
 
-public class NetworkStateChecker{
+public class NetworkStateChecker {
 
   /*  //context and database helper object
     private Context context;
