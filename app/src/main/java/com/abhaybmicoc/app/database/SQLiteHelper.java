@@ -15,6 +15,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQLiteQueries.query_TBL_PARAMETERS);
+        db.execSQL(SQLiteQueries.query_TBL_PATIENTS);
     }
 
     @Override
@@ -28,6 +29,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.TBL_PARAMETERS);
+        db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.TBL_PATIENTS);
 
         onCreate(db);
     }

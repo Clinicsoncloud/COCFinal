@@ -130,6 +130,7 @@ public class Constant {
     public static class TableNames {
 
         public static final String TBL_PARAMETERS = "tbl_parameters";
+        public static final String TBL_PATIENTS = "tbl_patients";
     }
 
 }

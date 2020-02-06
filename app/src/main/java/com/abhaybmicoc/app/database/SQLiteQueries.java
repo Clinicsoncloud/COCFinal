@@ -86,4 +86,23 @@ public class SQLiteQueries {
 
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
+    public static final String query_TBL_PATIENTS = "create table IF NOT EXISTS "
+            + Constant.TableNames.TBL_PATIENTS + "("
+            + Constant.Fields.ID + " INTEGER primary key AUTOINCREMENT,"
+            + Constant.Fields.NAME + " VARCHAR,"
+            + Constant.Fields.EMAIL + " VARCHAR,"
+            + Constant.Fields.TOKEN + " VARCHAR,"
+            + Constant.Fields.GENDER + " VARCHAR,"
+            + Constant.Fields.DATE_OF_BIRTH + " VARCHAR,"
+            + Constant.Fields.MOBILE_NUMBER + " VARCHAR,"
+
+
+            + Constant.Fields.DELETED_BY + " VARCHAR,"
+            + Constant.Fields.CREATED_AT + " VARCHAR,"
+
+            + Constant.Fields.DELETED_AT + " VARCHAR,"
+            + Constant.Fields.STATUS + " VARCHAR,"
+
+            + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
+
 }
