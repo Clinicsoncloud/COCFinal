@@ -16,12 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.android.volley.Request;
@@ -30,18 +31,21 @@ import org.json.JSONObject;
 import org.json.JSONException;
 
 import java.util.Map;
-import java.util.Locale;
 import java.util.HashMap;
 
-public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class OtpLoginScreen extends AppCompatActivity {
+
+    //implements TextToSpeech.OnInitListener
+
     // region Variables
 
     private Button btnLogin;
     private EditText etMobileNumber;
-    private TextToSpeech textTopSpeech;
     private ProgressDialog progressDialog;
 
     SharedPreferences sharedPreferencesPersonal;
+
+    TextToSpeechService textToSpeechService;
 
     private String kiosk_id;
     private String WELCOME_LOGIN_MESSAGE = "Welcome to Clinics on Cloud Please Enter Mobile Number";
@@ -67,19 +71,14 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onPause() {
         super.onPause();
 
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        speakOut(WELCOME_LOGIN_MESSAGE);
-    }
-
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
+        textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
     }
 
     // endregion
@@ -123,9 +122,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     }
 
     private void initializeData() {
-        textTopSpeech = new TextToSpeech(getApplicationContext(), this);
 
-        speakOut(WELCOME_LOGIN_MESSAGE);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),WELCOME_LOGIN_MESSAGE);
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
@@ -150,45 +148,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     // endregion
 
     // region Logical methods
-
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textTopSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textTopSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("textTopSpeech", "This Language is not supported");
-            } else {
-                speakOut(WELCOME_LOGIN_MESSAGE);
-            }
-
-        } else {
-            Log.e("textTopSpeech", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        try {
-            if (textTopSpeech != null) {
-                textTopSpeech.stop();
-                textTopSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
 
     /**
      *

@@ -12,8 +12,9 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.Request;
+import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -27,7 +28,7 @@ import java.util.HashMap;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class PostVerifiedOtpScreen extends AppCompatActivity {
 
     // region Variables
 
@@ -42,6 +43,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private Button btnVerify;
     private TextToSpeech textToSpeech;
     private ProgressDialog progressDialog;
+
+    TextToSpeechService textToSpeechService;
 
     // endregion
 
@@ -60,7 +63,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     protected void onPause() {
         super.onPause();
 
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -71,13 +74,9 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     @Override
     protected void onResume() {
         super.onResume();
-        speakOut(OTP_MESSAGE);
+        textToSpeechService.speakOut(OTP_MESSAGE);
     }
 
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
-    }
 
     // endregion
 
@@ -103,8 +102,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     }
 
     private void initializeLogic(){
-        textToSpeech = new TextToSpeech(getApplicationContext(),this);
-        speakOut(OTP_MESSAGE);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), OTP_MESSAGE);
     }
 
     // endregion
@@ -114,44 +112,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     /**
      *
      */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
-     */
     private void goBack(){
         context.startActivity(new Intent(this,OtpLoginScreen.class));
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech(){
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        }catch (Exception e){
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
-
-    private void startTextToSpeech(int status){
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(OTP_MESSAGE);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
     }
 
     /**

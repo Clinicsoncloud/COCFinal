@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -40,7 +41,7 @@ import java.util.HashMap;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class OtpVerifyScreen extends AppCompatActivity{
     // region Variables
 
     private Context context = OtpVerifyScreen.this;
@@ -70,6 +71,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private BluetoothAdapter mBluetoothAdapter;
     private SharedPreferences sharedPreferencesPersonal;
 
+    TextToSpeechService textToSpeechService;
+
     // endregion
 
     // region Event methods
@@ -96,20 +99,13 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     protected void onResume() {
         super.onResume();
 
-        speakOut(FILL_REGISTRATION_MESSAGE);
+        textToSpeechService.speakOut(FILL_REGISTRATION_MESSAGE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        stopTextToSpeech();
-    }
-
-
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
+        textToSpeechService.stopTextToSpeech();
     }
 
     // endregion
@@ -170,7 +166,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),FILL_REGISTRATION_MESSAGE);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -188,8 +184,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         } catch (Exception e) {
             // TODO: Handle exception
         }
-
-        speakOut(FILL_REGISTRATION_MESSAGE);
     }
 
     // endregion
@@ -321,46 +315,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         SharedPreferences.Editor editor = sharedPreference.edit();
         editor.putString(key, value);
         editor.commit();
-    }
-
-    /**
-     *
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     *
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(FILL_REGISTRATION_MESSAGE);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        /* close the textToSpeech engine to avoid the runtime exception from it */
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
     }
 
     /**

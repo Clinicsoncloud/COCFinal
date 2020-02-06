@@ -4,14 +4,13 @@ import android.Manifest;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
+import android.view.View;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Handler;
 import android.app.Activity;
-import android.view.View;
 import android.widget.Toast;
 import android.widget.Button;
 import android.content.Intent;
@@ -22,11 +21,11 @@ import android.app.ProgressDialog;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.speech.tts.TextToSpeech;
-import android.bluetooth.BluetoothAdapter;
 import android.content.SharedPreferences;
+import android.bluetooth.BluetoothAdapter;
+import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
-import com.choicemmed.c208blelibrary.cmd.listener.C208DisconnectCommandListener;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -34,17 +33,17 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.choicemmed.c208blelibrary.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
-import com.abhaybmicoc.app.activity.BloodPressureActivity;
-import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.choicemmed.c208blelibrary.Device.C208Device;
+import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
 import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
 import com.choicemmed.c208blelibrary.cmd.listener.C208ConnectDeviceListener;
+import com.choicemmed.c208blelibrary.cmd.listener.C208DisconnectCommandListener;
 
-import java.util.Locale;
 
-public class MainActivity extends Activity implements TextToSpeech.OnInitListener {
+public class MainActivity extends Activity{
     // region Variables
 
     Context context = MainActivity.this;
@@ -53,7 +52,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private static final int RECEIVE_SPO_PR = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
 
-    private String txt = "";
     private String macAddress = "";
     private static final String TAG = "MainActivity";
     public static final String MAC_ADDRESS_KEY = "MAC_ADDRESS_KEY";
@@ -100,6 +98,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private int DEVICE_CONNECTION_WAITING_TIME = 1000 * 25;
 
     private BluetoothAdapter bluetoothAdapter;
+
+    TextToSpeechService textToSpeechService;
+
+    private String OXIMETER_MSG = "Put Finger inside the Device and Click Start Test Button";
+
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -151,18 +154,14 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onPause() {
         super.onPause();
-
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-    }
 
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
+        textToSpeechService.speakOut(OXIMETER_MSG);
     }
 
     @Override
@@ -241,11 +240,10 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         ViewUtils.inject(this);
 
         c208Invoker = new C208Invoker(this);
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
         macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
-        txt = "Put Finger inside the Device and Click Start Test Button";
-        speakOut(txt);
+        textToSpeechService.speakOut(OXIMETER_MSG);
 
         this.setFinishOnTouchOutside(false);
 
@@ -309,42 +307,6 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
 
     // region Logical methods
 
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-        } else { }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        /* close the textToSpeech engine to avoid the runtime exception from it */
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
-
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
 
     /**
      *

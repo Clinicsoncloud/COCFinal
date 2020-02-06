@@ -28,13 +28,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.oximeter.MainActivity;
-import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
-import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 
 import java.util.Date;
 import java.util.Locale;
@@ -42,7 +41,7 @@ import java.util.Calendar;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class ActofitMainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class ActofitMainActivity extends AppCompatActivity {
     // region Variables
 
     private Context context = ActofitMainActivity.this;
@@ -80,8 +79,10 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     public static final int REQUSET_CODE = 1001;
 
-    private String txtSpeak = "";
+    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
     public static final String TAG = "MainActivity";
+
+    TextToSpeechService textToSpeechService;
 
     boolean isAthlete;
     private BluetoothAdapter mBluetoothAdapter;
@@ -182,7 +183,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     protected void onPause() {
         super.onPause();
 
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -200,10 +201,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         }
     }
 
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
-    }
 
     // endregion
 
@@ -215,7 +212,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     private void setupUI() {
         setContentView(R.layout.actofit_main_activity);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
 
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
@@ -261,8 +258,7 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
      *
      */
     private void initializeData() {
-        txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
-        speakOut(txtSpeak);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -288,10 +284,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
-            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
 
             if (!statusOfGPS) {
-                Log.e("GPS_Permission", " Location providers: " + provider);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
                 alertDialogBuilder.setTitle("GPS Disabled");
                 alertDialogBuilder.setMessage("Kindly make sure device location is on.")
@@ -411,46 +405,6 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
         this.isAthlete = isAthlete;
     }
 
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-                // TODO: Handle this instead of logging
-            } else {
-                speakOut(txtSpeak);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-            // TODO: Handle this instead of logging
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            Log.e("TTS", "Stopping text to speech Failed!");
-        }
-    }
 
     /**
      * @param uri
