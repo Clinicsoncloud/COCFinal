@@ -690,6 +690,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 //            connect();
         } else {
             btnScan.setVisibility(View.VISIBLE);
+            btnConnect.setVisibility(View.GONE);
         }
     }
 
@@ -787,7 +788,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             connect();
         } else {
             dialogConnectionProgress.show();
-            btnConnect.setVisibility(View.GONE);
+            btnScan.setVisibility(View.GONE);
 
             String deviceName = spinnerDevice.getSelectedItem().toString();
             String deviceAddress = deviceName.substring(deviceName.length() - 17);
