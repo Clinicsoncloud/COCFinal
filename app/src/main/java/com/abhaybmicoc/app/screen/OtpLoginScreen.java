@@ -56,32 +56,7 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     // endregion
 
-    // region Events
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setupUI();
-        setupEvents();
-        initializeData();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        textToSpeechService.stopTextToSpeech();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
-    }
-
-    // endregion
 
     // region Initialization methods
 
@@ -143,6 +118,35 @@ public class OtpLoginScreen extends AppCompatActivity {
         etMobileNumber.setFilters(filterArray);
 
         clearDatabase();
+    }
+
+    // endregion
+
+    // region Events
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setupUI();
+        setupEvents();
+        initializeData();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        Log.e("onPause"," : "+textToSpeechService);
+        textToSpeechService.stopTextToSpeech();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Log.e("onResume"," : "+textToSpeechService);
+        textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
     }
 
     // endregion

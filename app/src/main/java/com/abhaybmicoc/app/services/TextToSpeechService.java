@@ -15,14 +15,16 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     String msg;
 
     public TextToSpeechService(Context context, String msg) {
+        Log.e("TextToSpeechService"," : ");
         this.context = context;
 
-        this.textToSpeech = new TextToSpeech(context, (TextToSpeech.OnInitListener) this);
+        this.textToSpeech = new TextToSpeech(context,this);
 
         this.msg = msg;
     }
 
     public void speakOut(String msg) {
+        Log.e("speakOut"," : ");
         Log.e("msg",""+msg);
         textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null);
     }
@@ -38,6 +40,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
     @Override
     public void onInit(int status) {
+        Log.e("onInit"," : ");
         if (status == TextToSpeech.SUCCESS) {
             int result = textToSpeech.setLanguage(Locale.US);
 

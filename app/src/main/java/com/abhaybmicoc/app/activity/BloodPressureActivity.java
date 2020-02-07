@@ -55,6 +55,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.gatt.ADGattUUID;
@@ -70,7 +71,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
-public class BloodPressureActivity extends Activity implements TextToSpeech.OnInitListener {
+public class BloodPressureActivity extends Activity{
     // region Variables
 
     private Context context = BloodPressureActivity.this;
@@ -120,7 +121,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     private ArrayList<BluetoothDevice> deviceList;
     ArrayList<String> pairedDeviceList = new ArrayList<String>();
 
-    private TextToSpeech textToSpeech;
     private BluetoothDevice bluetoothDevice;
     private BluetoothAdapter mBluetoothAdapter;
     private LinearLayout layoutSteps;
@@ -131,6 +131,10 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
     private Handler featchingDataTimeoutHandler;
     private int FEATCHING_DATA_TIME = 1000 * 15;
+
+    private String BLOOD_PRESSURE_MSG = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+
+    TextToSpeechService textToSpeechService;
 
     private ProgressDialog progressDialog;
 
@@ -178,10 +182,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
-            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
 
             if (!statusOfGPS) {
-                Log.e("GPS_Permission", " Location providers: " + provider);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
                 alertDialogBuilder.setTitle("GPS Disabled");
@@ -244,9 +246,7 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
             mIsSendCancel = true;
         }
 
-        stopTextToSpeech();
-
-//        setFrameResultVisibility();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -257,11 +257,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
                 doBindBleReceivedService();
             }
         }
-    }
-
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
     }
 
     // endregion
@@ -306,7 +301,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
 
         db.deleteBpData(this);
 
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
     }
 
     /**
@@ -331,8 +325,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
      *
      */
     private void initializeData() {
-        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
-        speakOut(txt);
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
@@ -364,45 +358,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     // endregion
 
     // region Logical methods
-
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
 
     /**
      * @param bytes

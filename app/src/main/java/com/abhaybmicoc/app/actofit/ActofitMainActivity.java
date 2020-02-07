@@ -212,8 +212,6 @@ public class ActofitMainActivity extends AppCompatActivity {
     private void setupUI() {
         setContentView(R.layout.actofit_main_activity);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
-
         actionBar = getSupportActionBar();
         actionBar.setTitle("Weight Measurement");
         actionBar.hide();

@@ -2,12 +2,12 @@ package com.abhaybmicoc.app.hemoglobin;
 
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothManager;
@@ -53,6 +53,7 @@ import com.abhaybmicoc.app.hemoglobin.util.StringUtils;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
@@ -70,7 +71,7 @@ import java.util.Map;
 import static com.abhaybmicoc.app.hemoglobin.Constants.SCAN_PERIOD;
 import static com.abhaybmicoc.app.hemoglobin.Constants.SERVICE_UUID;
 
-public class MainActivity extends AppCompatActivity implements GattClientActionListener, TextToSpeech.OnInitListener {
+public class MainActivity extends AppCompatActivity implements GattClientActionListener {
     // region Variables
 
     private Context context = MainActivity.this;
@@ -130,8 +131,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     ArrayList<String> deviceArrayList;
 
-    private TextToSpeech textToSpeech;
-
+    TextToSpeechService textToSpeechService;
 
     public static AndMedical_App_Global mGP = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public static int iWidth;
     public static Printer_GEN ptrGen;
     String is_PrinterConnected = "false";
+    private String HEMOGLOBIN_MSG = "Please press the power button of device and click on scan button";
 
     // endregion
 
@@ -159,16 +160,14 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void onBackPressed() {
     }
 
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
         checkBluetoothLe();
+
+        textToSpeechService.speakOut(HEMOGLOBIN_MSG);
     }
 
     @Override
@@ -179,9 +178,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             disconnectGattServer();
         }
 
-        if (textToSpeech != null) {
-            textToSpeech.shutdown();
-        }
+        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -249,18 +246,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private void connectToSavedPrinter() {
         SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-        Log.e("Connect_Printer", " :0: ");
 
         if (data.getString("NAME", "").length() > 0) {
-            Log.e("Connect_Printer", " :Name: " + data.getString("NAME", ""));
-            Log.e("Connect_Printer_BOND", " :BOND: " + data.getString("BOND", ""));
-
-            Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
-
             mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
-
-            Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
-
             autoConnectPrinter();
         }
     }
@@ -268,7 +256,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private void autoConnectPrinter() {
 
         mGP.closeConn();
-        Log.e("Connect_PrinterAdd", ":" + mBDevice.getAddress());
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
 
@@ -308,11 +295,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         /* This displays the status messages of in the dialog box */
         @Override
         public void onPostExecute(Integer result) {
-
-            Log.e("Connect_result", ":" + result);
             if (CONN_SUCCESS == result) {
-
-                Log.e("Connect_Successresult", ":" + result);
 
                 is_PrinterConnected = "true";
                 printerActivation();
@@ -322,15 +305,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private void printerActivation() {
         try {
-
-            Log.e("Connect_Printer", ":Activation:");
             iWidth = getWindowManager().getDefaultDisplay().getWidth();
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
-
-
-            Log.e("Connect_Printer", ":Activated:" + ptrGen + is_PrinterConnected);
 
         } catch (Exception e) {
         }
@@ -338,34 +316,19 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     @Override
     public void log(String message) {
-
-        Log.e("Log_Message_Log", ":" + message);
-
-        /*if (message.contains("Device service discovery unsuccessful, status ")) {
-            mGatt.discoverServices();
-        }*/
     }
 
     @Override
     public void logError(String message) {
-        Log.e("Log_Error_Log", ":" + message);
-
-        /*if (message.equals("Unable to find echo characteristic.")) {
-            mGatt.discoverServices();
-        }*/
     }
 
     @Override
     public void initializeTime() {
-        Log.e("initializeTime_Log", ":");
-
         isEchoInitialized = true;
     }
 
     @Override
     public void initializeEcho() {
-
-        Log.e("initializeEcho_Log", ":");
         isEchoInitialized = true;
     }
 
@@ -458,7 +421,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializeData() {
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),HEMOGLOBIN_MSG);
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
@@ -468,9 +432,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
-
-        txt = "Please press the power button of device and click on scan button";
-        speakOut(txt);
 
         setUserInfo();
 
@@ -496,50 +457,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     // region Logical methods
 
     /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
-
-    /**
      * @param msg
      */
     private void sendMessage(String msg) {
-
-        Log.e("isDeviceConnected_Log", " : " + isDeviceConnected + " :isEchoInitialized: " + isEchoInitialized);
 
         if (!isDeviceConnected || !isEchoInitialized) {
             showToast("Not Connected");
@@ -562,8 +482,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         characteristic.setValue(messageBytes);
         boolean success = mGatt.writeCharacteristic(characteristic);
-
-        Log.e("success_Log_New", ":" + success);
 
         if (success)
             showToast("MSG SENT");
@@ -704,11 +622,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
          */
 
         isDeviceConnected = connected;
-        Log.e("UpdateConnections_Log", ":" + connected);
 
         if (connected) {
-
-            Log.e("Update_Conneccted", ":" + connected);
 
             COUNT_CONNECTION_TRY = 0;
 
@@ -736,18 +651,13 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     private boolean refreshDeviceCache(BluetoothGatt gatt) {
         try {
-
-            Log.e("refreshDevice_Log", ":" + gatt);
             BluetoothGatt localBluetoothGatt = gatt;
             Method localMethod = localBluetoothGatt.getClass().getMethod("refresh", new Class[0]);
-            Log.e("refreshDevice_Log", " :1:");
             if (localMethod != null) {
                 boolean bool = ((Boolean) localMethod.invoke(localBluetoothGatt, new Object[0])).booleanValue();
-                Log.e("refreshDevice_Log", " :1:" + bool);
                 return bool;
             }
         } catch (Exception localException) {
-            Log.e("REfreshDeviceCache", "An exception occured while refreshing device");
         }
         return false;
     }
@@ -836,7 +746,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         btnConnect.setClickable(true);
 
         if (mGatt != null) {
-            Log.e("Disconnet_Gatt_Log", "True");
             try {
                 mGatt.disconnect();
                 mGatt.close();
@@ -904,7 +813,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         dialogConnectionProgress.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
-                Log.e("DialogClosed_Log", ":");
 
             }
         });

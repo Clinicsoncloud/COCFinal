@@ -43,6 +43,7 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintDataOld;
 import com.abhaybmicoc.app.model.PrintData;
@@ -85,7 +86,7 @@ import butterknife.ButterKnife;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
-public class PrintPreviewActivity extends Activity implements TextToSpeech.OnInitListener {
+public class PrintPreviewActivity extends Activity {
     // region Variables
 
     private Context context = PrintPreviewActivity.this;
@@ -198,7 +199,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String fatfreeweightResult = "";
 
     public static Printer_GEN ptrGen;
-    private TextToSpeech textToSpeech;
     private AndMedical_App_Global mGP = null;
     public static BluetoothDevice mBDevice = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
@@ -209,6 +209,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     private String TAG = "PrinPriviewActivity";
 
     DataBaseHelper dataBaseHelper;
+
+    private String PRINT_MSG = "Please click on the print button to get your printout";
+    private String RECEIPT_MSG = "Please click on the print button to get your printout";
+
+    TextToSpeechService textToSpeechService;
 
     // endregion
 
@@ -231,14 +236,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     protected void onResume() {
         super.onResume();
 
-        //reinitialization of the textToSpeech engine for voice command
-        textToSpeech = new TextToSpeech(this, this);
     }
 
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
-    }
 
     @Override
     protected void onDestroy() {
@@ -254,7 +253,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     protected void onPause() {
         super.onPause();
 
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -268,10 +267,8 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
-            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
 
             if (!statusOfGPS) {
-                Log.e("GPS_Permission", " Location providers: " + provider);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
                 alertDialogBuilder.setTitle("GPS Disabled");
@@ -313,8 +310,7 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
 
-            txtSpeak = "Please collect your result receipt";
-            speakOut(txtSpeak);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),RECEIPT_MSG);
         });
 
         ivDownload.setOnClickListener(view -> downloadFile(fileName));
@@ -323,16 +319,14 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     }
 
     private void initializeData() {
-        textToSpeech = new TextToSpeech(this, this);
 
         dataBaseHelper = new DataBaseHelper(context);
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        txtSpeak = "Please click on the print button to get your printout";
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
 
         connectToSavedPrinter();
-
 
         gettingDataObjects();
         calculations();
@@ -349,19 +343,11 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
 
     private void connectToSavedPrinter() {
         SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-        Log.e("Connect_Printer", " :0: ");
 
         if (data.getString("NAME", "").length() > 0) {
-            Log.e("Connect_Printer", " :Name: " + data.getString("NAME", ""));
-            Log.e("Connect_Printer_BOND", " :BOND: " + data.getString("BOND", ""));
-
-            Log.e("Connect_Printer", " :BOND: " + data.getString("BOND", ""));
 
             mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
 
-            Log.e("Connect_Printer", " :Address:  " + mBDevice.getAddress());
-
-            Log.e("PrinterConnected_Print", ":" + getIntent().getStringExtra("is_PrinterConnected"));
             if (getIntent().getStringExtra("is_PrinterConnected").equals("false")) {
                 printerBond();
                 autoConnectPrinter();
@@ -380,45 +366,6 @@ public class PrintPreviewActivity extends Activity implements TextToSpeech.OnIni
     // endregion
 
     // region Logical methods
-
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txtSpeak);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
 
     private void getResults() {
         if (SharedPreferenceService.isMalePatient(context)) {

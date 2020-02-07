@@ -31,6 +31,7 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.glucose.adapters.ScanList;
 import com.abhaybmicoc.app.glucose.models.ResultsModel;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 
 import org.maniteja.com.synclib.helper.Util;
 import org.maniteja.com.synclib.helper.HelperC;
@@ -39,7 +40,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ArrayList;
 
-public class GlucoseScanListActivity extends AppCompatActivity implements TextToSpeech.OnInitListener {
+public class GlucoseScanListActivity extends AppCompatActivity {
     // region Variables
 
     private int flag;
@@ -67,12 +68,15 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     private Toolbar toolBar;
     private RecyclerView recyclerView;
 
-    private TextToSpeech textToSpeech;
     private BluetoothAdapter mBluetoothAdapter;
 
     private List<ResultsModel> resultsListforAdapter = new ArrayList<>();
 
     private SharedPreferences sharedPreferencesDevice;
+
+    private String SCAN_MSG = "Please long press the device bluetooth button and click on Sync Plus";
+
+    TextToSpeechService textToSpeechService;
 
     // endregion
 
@@ -85,11 +89,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         setupUI();
         setupEvents();
         initializeData();
-    }
-
-    @Override
-    public void onInit(int status) {
-        startTextToSpeech(status);
     }
 
     @Override
@@ -114,7 +113,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         super.onPause();
 
         clearScan();
-        stopTextToSpeech();
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -225,20 +224,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
      */
     private void initializeData() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            /*if (this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("This app needs location access");
-                builder.setMessage("Please grant location access so this app can detect beacons.");
-                builder.setPositiveButton(android.R.string.ok, null);
-                builder.setOnDismissListener(dialog -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                    {
-                        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
-                    }
-                });
-                builder.show();
-            }*/
         }
 
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE))
@@ -257,8 +242,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
             return;
         }
 
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
-
         flag = getIntent().getIntExtra("flag", -1);
 
         ivScanImage.setVisibility(View.GONE);
@@ -268,8 +251,7 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
         deviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         autoConnectFlag = util.readboolean(HelperC.key_autoconnectflag, false);
 
-        txtSpeak = "Please long press the device bluetooth button and click on Sync Plus";
-        speakOut(txtSpeak);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_MSG);
 
         sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
 
@@ -375,46 +357,6 @@ public class GlucoseScanListActivity extends AppCompatActivity implements TextTo
     // endregion
 
     // region Logical methods
-
-    /**
-     * @param text
-     */
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
-
-    /**
-     * @param status
-     */
-    private void startTextToSpeech(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("TTS", "This Language is not supported");
-            } else {
-                speakOut(txtSpeak);
-            }
-
-        } else {
-            Log.e("TTS", "Initialization Failed!");
-        }
-    }
-
-    /**
-     *
-     */
-    private void stopTextToSpeech() {
-        /* close the textToSpeech engine to avoid the runtime exception from it */
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-    }
 
     /**
      *

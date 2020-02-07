@@ -107,11 +107,6 @@
         </activity>
 
         <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.PrintPriviewScreen"
-            android:label="@string/title_activity_print_priview_screen"
-            android:theme="@style/NoActionBar" />
-
-        <activity
             android:name="com.abhaybmicoc.app.screen.OtpVerifyScreen"
             android:label="@string/title_activity_otp_verify_screen"
             android:theme="@style/AppTheme"
@@ -159,37 +154,7 @@
             android:launchMode="standard"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
 
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GeneralPrinterActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscListActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscTextDataActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBMPPrintActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscPaperFeedActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscFontPropertesActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscBarcodeHeightActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" />
-
-        <activity
-            android:name="com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_EscChangeFontActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- hemoglobin -->
+        <!-- hemoglobin -->
 
         <activity
             android:name="com.abhaybmicoc.app.hemoglobin.MainActivity"

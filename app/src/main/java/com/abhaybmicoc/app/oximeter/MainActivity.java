@@ -1,10 +1,7 @@
 package com.abhaybmicoc.app.oximeter;
 
 import android.Manifest;
-import android.location.LocationManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.util.Log;
 import android.os.Bundle;
 import android.view.View;
 import android.os.Looper;
@@ -17,15 +14,18 @@ import android.content.Intent;
 import android.content.Context;
 import android.widget.TextView;
 import android.app.AlertDialog;
+import android.provider.Settings;
 import android.app.ProgressDialog;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.speech.tts.TextToSpeech;
+import android.location.LocationManager;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -35,7 +35,6 @@ import com.choicemmed.c208blelibrary.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
 import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
@@ -99,9 +98,10 @@ public class MainActivity extends Activity{
 
     private BluetoothAdapter bluetoothAdapter;
 
+    private String OXIMETER_MSG = "Put Finger inside the Device and Click Start Test Button";
+
     TextToSpeechService textToSpeechService;
 
-    private String OXIMETER_MSG = "Put Finger inside the Device and Click Start Test Button";
 
 
     @SuppressLint("HandlerLeak")
@@ -240,10 +240,8 @@ public class MainActivity extends Activity{
         ViewUtils.inject(this);
 
         c208Invoker = new C208Invoker(this);
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
-        macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
-        textToSpeechService.speakOut(OXIMETER_MSG);
+        macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
         this.setFinishOnTouchOutside(false);
 
@@ -298,6 +296,8 @@ public class MainActivity extends Activity{
         tvGender.setText("Gender : " + shared.getString(Constant.Fields.GENDER, ""));
         tvAge.setText("DOB : " + shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
         tvMobileNumber.setText("Phone : " + shared.getString(Constant.Fields.MOBILE_NUMBER, ""));
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
 
         bindDevice();
 

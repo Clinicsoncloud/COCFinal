@@ -24,7 +24,6 @@ import android.widget.RadioButton;
 import android.app.ProgressDialog;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
-import android.speech.tts.TextToSpeech;
 import android.content.DialogInterface;
 import android.view.animation.Animation;
 import android.support.v7.app.ActionBar;
@@ -41,6 +40,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.GattClientActionListener;
 import com.abhaybmicoc.app.hemoglobin.GattClientCallback;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
@@ -63,7 +63,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator, TextToSpeech.OnInitListener, View.OnClickListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator,View.OnClickListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -129,16 +129,10 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
     private SyncLib syncLib;
     private InputStream inputStream;
-    private TextToSpeech textToSpeech;
     private SerializeUUID serializeUUID;
     private Communicator communicator = this;
     private SharedPreferences sharedPreferencesPersonal;
     private SharedPreferences sharedPreferenceGlucoseDEvice;
-
-    private SharedPreferences sharedPreferenceHBDevice;
-    private SharedPreferences sharedPreferencesDeviceHemoglobin;
-
-    private BluetoothGatt mGatt;
 
     private Handler deviceConnectionTimeoutHandler;
     private ProgressDialog dialogConnectionProgress;
@@ -146,17 +140,18 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private int DEVICE_CONNECTION_WAITING_TIME = 10000;
     private int STATR_TEST_ACTIVATION_TIME = 2000;
 
-    private String textToSpeak;
     private String resultOfGlucose;
 
     private boolean isTestStarted = false;
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private boolean mScanning;
-    private boolean isDeviceConnected;
-    private boolean isEchoInitialized;
+    private String GLUCOSE_MSG = "Please click on start Test";
+    private String INSERT_STRIP_MSG = "Please insert the strip";
+    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    private String ADD_BLOOD_MSG = "Please add blood";
 
+    TextToSpeechService textToSpeechService;
 
     // endregion
 
@@ -236,8 +231,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if (text.equals("go")) {
-            textToSpeak = "Click on start Test";
-            speakOut(textToSpeak);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),"Click on start Test");
         }
 
         //already existed the return statement of the boolean method
@@ -248,15 +242,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     protected void onPause() {
         super.onPause();
         //close the text to speach object to avoid run time exception
-        try {
-            if (textToSpeech != null) {
-                textToSpeech.stop();
-                textToSpeech.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
 
+        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -268,8 +255,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeak = "Please Insert Strip";
-            speakOut(textToSpeak);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),INSERT_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -279,8 +265,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeak = "Please Add Blood";
-            speakOut(textToSpeak);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),ADD_BLOOD_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
@@ -291,8 +276,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeak = "Please insert the new strip";
-            speakOut(textToSpeak);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),INSERT_NEW_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -442,26 +426,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         }
     }
 
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = textToSpeech.setLanguage(Locale.US);
-
-            textToSpeech.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            } else {
-                speakOut(textToSpeak);
-            }
-
-        } else {
-        }
-    }
-
-    private void speakOut(String text) {
-        textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-    }
 
     @Override
     public void onClick(View view) {
@@ -552,8 +516,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         mView = findViewById(R.id.view_custom);
-
-        textToSpeech = new TextToSpeech(getApplicationContext(), this);
 
         btnReadData = findViewById(R.id.getData);
         btnWriteData = findViewById(R.id.btn_skip);
@@ -693,8 +655,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             llReadingsLayout.setVisibility(View.VISIBLE);
 
             btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
-            textToSpeak = "Please click on start Test";
-            speakOut(textToSpeak);
+
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),GLUCOSE_MSG);
+
         }, STATR_TEST_ACTIVATION_TIME);
     }
 

@@ -54,6 +54,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 
 import com.prowesspride.api.Setup;
@@ -70,7 +71,7 @@ import com.prowesspride.api.Printer_GEN;
  * communication modes calls.
  */
 
-public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
+public class Act_Main extends Activity {
     /**
      * CONST: scan device menu id
      */
@@ -113,7 +114,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     public SharedPreferences preferences;
     private LinearLayout scanLL;
 
-
     InputStream input;// = BluetoothComm.misIn;
     OutputStream outstream;
 
@@ -131,14 +131,14 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
             }
         }
     };
-    private TextToSpeech tts;
-    private String txt = "";
+
+    private String WAITING_MSG = "Please wait while Calculating Result";
+    private String SCAN_DEVICE_MSG = "Scan Printer for Connection";
+
+    TextToSpeechService textToSpeechService;
 
     @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
-        //Disable the back button
-    }
+    public void onBackPressed() { }
 
     @Override
     protected void onResume() {
@@ -149,16 +149,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
     protected void onPause() {
         super.onPause();
 
-        //close the tts engine to avoid runtime exception
-        try {
-            if (tts != null) {
-                tts.stop();
-                tts.shutdown();
-            }
-        } catch (Exception e) {
-            System.out.println("onPauseException" + e.getMessage());
-        }
-
+        textToSpeechService.stopTextToSpeech();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -182,10 +173,7 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
 
         llSelectedDevicesLayout.setVisibility(View.GONE);
 
-        tts = new TextToSpeech(getApplicationContext(), this);
-
-        txt = "Please Click on Connect Button";
-        speakOut(txt);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_DEVICE_MSG);
 
         preferences = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -315,15 +303,10 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
 
-                    Log.e("PrinterConnected_Act", ":" + getIntent().getStringExtra("is_PrinterConnected"));
-
-
                     Intent intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
                     intent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
                     startActivity(intent);
 
-
-//                    startActivity(new Intent(Act_Main.this, PrintPreviewActivity.class));
                 }
             }
 
@@ -340,10 +323,8 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
             boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
             String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
-            Log.e("provider_GPS", ":" + provider + "  :  " + statusOfGPS);
 
             if (!statusOfGPS) {
-                Log.e("GPS_Permission", " Location providers: " + provider);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                         context);
                 alertDialogBuilder.setTitle("GPS Disabled");
@@ -464,32 +445,11 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
             scanLL.setVisibility(View.GONE);
             btIcon.setVisibility(View.VISIBLE);
         }
-        txt = "Please wait while calculating your results";
-        speakOut(txt);
+
+        // waiting msg
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),WAITING_MSG);
+
         new ConnSocketTask().execute(mBDevice.getAddress());
-    }
-
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-
-            int result = tts.setLanguage(Locale.US);
-
-            tts.setSpeechRate(1);
-
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            } else {
-                speakOut(txt);
-            }
-
-        } else {
-        }
-    }
-
-    private void speakOut(String textToSpeech) {
-        String text = textToSpeech;
-        tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
     // Turn on Bluetooth of the device
@@ -860,90 +820,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
         helpdialog.show();
     }
 
-    //Enable a radio box based on serial number
-    public void addListenerOnButton() {
-        try {
-            rgProtocol = (RadioGroup) findViewById(R.id.radiogrp);
-            btnContinue = (Button) findViewById(R.id.btnDisplay);
-            final RadioButton radioesc = (RadioButton) findViewById(R.id.radioesc);
-            final RadioButton radioprotocol = (RadioButton) findViewById(R.id.radioprotocol);
-
-            btnContinue.setVisibility(View.VISIBLE);
-
-            radioprotocol.setClickable(true);
-            radioprotocol.setFocusable(true);
-            radioprotocol.setEnabled(true);
-            radioprotocol.setChecked(true);
-            radioesc.setClickable(true);
-            radioesc.setFocusable(true);
-            radioesc.setEnabled(true);
-            radioesc.setChecked(false);
-
-        } catch (Exception e) {
-            //String bt = "Selected Pride device does not contained serial number please select Manually";
-            //dlgShow(bt);
-        }
-
-        rgProtocol.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // TODO Auto-generated method stub
-            }
-        });
-
-
-        btnContinue.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    try {
-                        SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-                        if (data.getString("SerialNo", "").length() > 0) {
-                            sDevicetype = data.getString("SerialNo", "");
-                        } else {
-                            genGetSerialNo genSerial = new genGetSerialNo();
-                            genSerial.execute(0);
-
-                        }
-                    } catch (Exception e) {
-
-                    }
-                    // get selected radio button from radioGroup
-                    int selectedId = rgProtocol.getCheckedRadioButtonId();
-                    rbtnProtocol = (RadioButton) findViewById(selectedId);
-                    if (rbtnProtocol.getText().equals("General Protocol")) {
-                        if (mGP.connection == true) {
-                            try {
-                                SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
-                                if (data.getString("SerialNo", "").length() > 0) {
-                                    sDevicetype = data.getString("SerialNo", "");
-                                    Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-                                    Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
-                                    printIntent.putExtra("is_PrinterConnected", "false");
-
-                                    startActivityForResult(printIntent, EXIT_ON_RETURN);
-                                } else {
-                                    genGetSerialNo genSerial = new genGetSerialNo();
-                                    genSerial.execute(0);
-                                }
-                            } catch (Exception e) {
-
-                            }
-                        }
-                    } else if (rbtnProtocol.getText().equals("Esc Sequence Protocol")) {
-                        if (mGP.connection == true) {
-                            escGetSerialNo escSerial = new escGetSerialNo();
-                            escSerial.execute(0);
-                        }
-                    }
-                } catch (Exception e) {
-                    String str = "Please Select a choice";
-                    dlgShow(str);
-                }
-            }
-        });
-    }
-
     class escGetSerialNo extends AsyncTask<Integer, Integer, String> {
 
         /**
@@ -1007,8 +883,6 @@ public class Act_Main extends Activity implements TextToSpeech.OnInitListener {
             {
                 //SystemClock.sleep(2000);
                 Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-                Intent escprotocol = new Intent(getApplicationContext(), Act_EscListActivity.class);
-                startActivityForResult(escprotocol, EXIT_ON_RETURN);
             }
             mpd.dismiss();
         }
