@@ -143,14 +143,14 @@ public class ThermometerScreen extends AppCompatActivity {
     public void onPause() {
         super.onPause();
 
-//        textToSpeechService.stopTextToSpeech();
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-//        textToSpeechService.stopTextToSpeech();
         closeBluetooth();
     }
 

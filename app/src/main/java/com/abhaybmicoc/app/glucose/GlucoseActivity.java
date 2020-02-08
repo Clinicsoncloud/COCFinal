@@ -243,7 +243,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         super.onPause();
         //close the text to speach object to avoid run time exception
 
-        textToSpeechService.stopTextToSpeech();
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override

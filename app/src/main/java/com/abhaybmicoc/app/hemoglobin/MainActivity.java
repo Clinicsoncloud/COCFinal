@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     ArrayList<String> deviceArrayList;
 
+    private String HEMOGLOBIN_MSG = "Please long press the power button of device and click on connect button";
+
     TextToSpeechService textToSpeechService;
 
     public static AndMedical_App_Global mGP = null;
@@ -140,7 +142,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public static int iWidth;
     public static Printer_GEN ptrGen;
     String is_PrinterConnected = "false";
-    private String HEMOGLOBIN_MSG = "Please press the power button of device and click on scan button";
 
     // endregion
 
@@ -151,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        init();
         setupUI();
         setupEvents();
         initializeData();
@@ -235,6 +237,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         setStartTestTimerHandler(connected);
 
         connectToSavedPrinter();
+    }
+
+
+    private void init(){
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),HEMOGLOBIN_MSG);
     }
 
     private void setStartTestTimerHandler(boolean connected) {

@@ -147,6 +147,8 @@ public class BloodPressureActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        init();
+
         setupUI();
 
         setupEvents();
@@ -172,6 +174,10 @@ public class BloodPressureActivity extends Activity{
         super.onResume();
 
         enableBluetooth();
+    }
+
+    private void init() {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

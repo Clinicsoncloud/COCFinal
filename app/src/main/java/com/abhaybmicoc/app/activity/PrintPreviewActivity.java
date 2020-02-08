@@ -211,7 +211,8 @@ public class PrintPreviewActivity extends Activity {
     DataBaseHelper dataBaseHelper;
 
     private String PRINT_MSG = "Please click on the print button to get your printout";
-    private String RECEIPT_MSG = "Please click on the print button to get your printout";
+    private String RECONNECT_MSG = "Please click on the reconnect button to reconnect printer";
+    private String RECEIPT_MSG = "Please collect your result receipt";
 
     TextToSpeechService textToSpeechService;
 
@@ -307,10 +308,11 @@ public class PrintPreviewActivity extends Activity {
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
 
+            textToSpeechService = new TextToSpeechService(getApplicationContext(),RECEIPT_MSG);
+
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),RECEIPT_MSG);
         });
 
         ivDownload.setOnClickListener(view -> downloadFile(fileName));
@@ -324,7 +326,7 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
+//        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
 
         connectToSavedPrinter();
 
@@ -353,8 +355,13 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
+                speakOutPrint();
             }
         }
+    }
+
+    private void speakOutPrint() {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
     }
 
 
@@ -1946,6 +1953,8 @@ public class PrintPreviewActivity extends Activity {
                 btnHome.setEnabled(true);
                 btnPrint.setEnabled(true);
 
+                speakOut();
+
                 printerActivation();
             } else {
                 showReconnectPopup();
@@ -1953,7 +1962,13 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
+    private void speakOut() {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
+    }
+
     private void showReconnectPopup() {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),RECONNECT_MSG);
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         alertDialogBuilder.setTitle("Communication Lost!");

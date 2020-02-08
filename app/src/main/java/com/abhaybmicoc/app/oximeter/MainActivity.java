@@ -3,6 +3,7 @@ package com.abhaybmicoc.app.oximeter;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.os.Looper;
 import android.os.Message;
@@ -25,7 +26,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -35,6 +35,7 @@ import com.choicemmed.c208blelibrary.utils.LogUtils;
 import com.lidroid.xutils.view.annotation.ViewInject;
 import com.choicemmed.c208blelibrary.Device.C208Device;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.choicemmed.c208blelibrary.cmd.invoker.C208Invoker;
 import com.choicemmed.c208blelibrary.cmd.listener.C208BindDeviceListener;
@@ -98,11 +99,9 @@ public class MainActivity extends Activity{
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private String OXIMETER_MSG = "Put Finger inside the Device and Click Start Test Button";
+    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
 
     TextToSpeechService textToSpeechService;
-
-
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -151,6 +150,10 @@ public class MainActivity extends Activity{
 
     }
 
+    private void init() {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -161,7 +164,7 @@ public class MainActivity extends Activity{
     protected void onResume() {
         super.onResume();
 
-        textToSpeechService.speakOut(OXIMETER_MSG);
+        init();
     }
 
     @Override
@@ -297,8 +300,6 @@ public class MainActivity extends Activity{
         tvAge.setText("DOB : " + shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
         tvMobileNumber.setText("Phone : " + shared.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
-
         bindDevice();
 
     }
@@ -335,6 +336,7 @@ public class MainActivity extends Activity{
      *
      */
     private void bindDevice() {
+
         progressDialog = Tools.progressDialog(MainActivity.this);
         progressDialog.setMessage("Fetching data...");
         progressDialog.setCancelable(true);
