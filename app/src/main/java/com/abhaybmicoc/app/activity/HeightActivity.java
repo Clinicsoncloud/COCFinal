@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.activity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -330,7 +332,8 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
 
-            txtSpeak = "Please Enter Manual Height";
+//            txtSpeak = "Please Enter Manual Height";
+            txtSpeak = "कृपया स्वतः height टाका ";
             speakOut(txtSpeak);
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
@@ -360,7 +363,8 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
         btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
         btnConnect.setText("Connect");
 
-        txtSpeak = "No Bluetooth Device Found Please Connect it Manually";
+//        txtSpeak = "No Bluetooth Device Found Please Connect it Manually";
+        txtSpeak = "हाइट सेन्सर कनेक्ट झाला नाही मॅनुअल्ली कनेक्ट करा";
         speakOut(txtSpeak);
     }
 
@@ -374,9 +378,11 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
     /**
      * @param status
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
@@ -574,43 +580,20 @@ public class HeightActivity extends Activity implements TextToSpeech.OnInitListe
                 btnConnect.setClickable(false);
                 btnConnect.setText("Connected");
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
-                speakOut("Please stand below the height sensor and click get Height Button");
+                speakOut("हाइट सेन्सर च्या खाली थांबा आणि गेट हाइट वर क्लिक करा");
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
-
                 Toast.makeText(HeightActivity.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
-                Log.e("ElseCase_Log", ":");
-                txtSpeak = "No Bluetooth Device Found Please Connect it Manually";
+                txtSpeak = "हाइट सेन्सर कनेक्ट झाला नाही मॅनुअल्ली कनेक्ट करा";
                 speakOut(txtSpeak);
 
                 btnConnect.setClickable(true);
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
                 btnConnect.setText("Connect");
-            }/*else {
-                if (CONNECTION_TRY_COUNT > ALLOWED_BLUETOOTH_CONNECT_TRY_COUNT) {
-                    showCannotConnectToDevice();
-                } else {
-                    try {
-                        Thread.sleep(CONNECT_TRY_PAUSE_MILLISECONDS);
-
-                        // Increase connection try count and try to connect
-                        CONNECTION_TRY_COUNT++;
-
-//                        new Connect().execute(new String[]{getDeviceAddress()});
-
-//                        connectToDevice();
-                    } catch (Exception ex) {
-                        ErrorUtils.logErrors(ex, "HeightActivity.java", "onPostExecute()", "error while reconnecting");
-                        showCannotConnectToDevice();
-                    }
-                }
-            }*/
+            }
         }
-
-//            btnConnect.setText(state2);
-
     }
 
 // endregion

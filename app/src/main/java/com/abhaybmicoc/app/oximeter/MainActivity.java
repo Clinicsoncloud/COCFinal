@@ -1,6 +1,7 @@
 package com.abhaybmicoc.app.oximeter;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -53,7 +54,7 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     private static final int RECEIVE_SPO_PR = 1;
     private static final int REQUEST_FINE_LOCATION = 2;
 
-    private String txt = "";
+    private String txt = "pulse oximeter मध्ये बोट घाला आणि result ची वाट बघा";
     private String macAddress = "";
     private static final String TAG = "MainActivity";
     public static final String MAC_ADDRESS_KEY = "MAC_ADDRESS_KEY";
@@ -158,6 +159,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     @Override
     protected void onResume() {
         super.onResume();
+
+        speakOut(txt);
     }
 
     @Override
@@ -244,7 +247,8 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
         macAddress = SharePreferenceUtil.get(this, MAC_ADDRESS_KEY, "").toString();
 
-        txt = "Put Finger inside the Device and Click Start Test Button";
+//        txt = "Put Finger inside the Device and Click Start Test Button";
+        txt = "pulse oximeter मध्ये बोट घाला आणि result ची वाट बघा";
         speakOut(txt);
 
         this.setFinishOnTouchOutside(false);
@@ -312,9 +316,11 @@ public class MainActivity extends Activity implements TextToSpeech.OnInitListene
     /**
      * @param status
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");

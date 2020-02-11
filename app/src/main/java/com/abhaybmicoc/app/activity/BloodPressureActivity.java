@@ -1,6 +1,7 @@
 package com.abhaybmicoc.app.activity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
@@ -245,8 +246,6 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
         }
 
         stopTextToSpeech();
-
-//        setFrameResultVisibility();
     }
 
     @Override
@@ -331,7 +330,8 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
      *
      */
     private void initializeData() {
-        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+//        txt = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+        txt = "हातामध्ये cuff घाला आणि स्टार्ट बटण दाबा result ची वाट पहा";
         speakOut(txt);
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
@@ -375,9 +375,11 @@ public class BloodPressureActivity extends Activity implements TextToSpeech.OnIn
     /**
      * @param status
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");

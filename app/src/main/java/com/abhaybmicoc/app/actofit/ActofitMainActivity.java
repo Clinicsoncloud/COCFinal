@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.actofit;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -180,9 +181,9 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
 
     @Override
     protected void onPause() {
-        super.onPause();
-
         stopTextToSpeech();
+
+        super.onPause();
     }
 
     @Override
@@ -261,7 +262,8 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
      *
      */
     private void initializeData() {
-        txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
+//        txtSpeak = "Please Click on GoTo SmartScale, and stand on weight Scale";
+        txtSpeak = "गोटु smartscale बटण वर क्लिक करा आणि smartscale वर उभे रहा ";
         speakOut(txtSpeak);
 
         try {
@@ -421,9 +423,11 @@ public class ActofitMainActivity extends AppCompatActivity implements TextToSpee
     /**
      * @param status
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
