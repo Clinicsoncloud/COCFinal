@@ -220,7 +220,7 @@ public class OtpLoginScreen extends AppCompatActivity {
 
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
@@ -233,7 +233,7 @@ public class OtpLoginScreen extends AppCompatActivity {
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);

@@ -238,6 +238,8 @@ public class OtpVerifyScreen extends AppCompatActivity{
 
                         writeToPersonalSharedPreference(jsonObject);
 
+                        writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonObject.getJSONObject("data").getString(Constant.Fields.TOKEN));
+
                         Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                         startActivity(objIntent);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -278,6 +280,14 @@ public class OtpVerifyScreen extends AppCompatActivity{
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
+    }
+
+    private void writeToPersonalSharedPreference(String key, String value) {
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
     }
 
     // region Logical methods
