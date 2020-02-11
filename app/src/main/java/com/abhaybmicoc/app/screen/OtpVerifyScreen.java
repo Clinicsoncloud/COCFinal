@@ -1,5 +1,7 @@
 package com.abhaybmicoc.app.screen;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -51,6 +53,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private int selectedGenderId;
 
     private final String FILL_REGISTRATION_MESSAGE = "Please Enter Registration detail";
+    private final String MARATHI_FILL_REGISTRATION_MESSAGE = "कृपया आपली माहिती भरा";
 
     private Button btnLogin;
 
@@ -96,7 +99,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     protected void onResume() {
         super.onResume();
 
-        speakOut(FILL_REGISTRATION_MESSAGE);
+//        speakOut(FILL_REGISTRATION_MESSAGE);
+        speakOut(MARATHI_FILL_REGISTRATION_MESSAGE);
     }
 
     @Override
@@ -189,7 +193,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             // TODO: Handle exception
         }
 
-        speakOut(FILL_REGISTRATION_MESSAGE);
+//        speakOut(FILL_REGISTRATION_MESSAGE);
+        speakOut(MARATHI_FILL_REGISTRATION_MESSAGE);
     }
 
     // endregion
@@ -333,14 +338,16 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     /**
      *
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
-                speakOut(FILL_REGISTRATION_MESSAGE);
+//                speakOut(FILL_REGISTRATION_MESSAGE);
+                speakOut(MARATHI_FILL_REGISTRATION_MESSAGE);
             }
 
         } else {
@@ -400,7 +407,6 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         SharedPreferences.Editor sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE).edit().clear();
         sharedPreferencePersonalData.clear().apply();
     }
-
 
     // endregion
 }

@@ -1,5 +1,7 @@
 package com.abhaybmicoc.app.screen;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -34,6 +36,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     private Context context = PostVerifiedOtpScreen.this;
 
     private final String OTP_MESSAGE = "Please Enter Otp";
+    private final String MARATHI_OTP_MESSAGE = "कृपया आपला ओटीपी एंटर करा";
 
     private String kioskId;
     private String mobileNumber;
@@ -71,7 +74,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
     @Override
     protected void onResume() {
         super.onResume();
-        speakOut(OTP_MESSAGE);
+//        speakOut(OTP_MESSAGE);
+        speakOut(MARATHI_OTP_MESSAGE);
     }
 
     @Override
@@ -104,7 +108,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
     private void initializeLogic(){
         textToSpeech = new TextToSpeech(getApplicationContext(),this);
-        speakOut(OTP_MESSAGE);
+//        speakOut(OTP_MESSAGE);
+        speakOut(MARATHI_OTP_MESSAGE);
     }
 
     // endregion
@@ -139,14 +144,17 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status){
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("TTS", "This Language is not supported");
             } else {
-                speakOut(OTP_MESSAGE);
+//                speakOut(OTP_MESSAGE);
+                speakOut(MARATHI_OTP_MESSAGE);
             }
 
         } else {

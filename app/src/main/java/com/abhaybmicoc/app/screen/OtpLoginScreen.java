@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.screen;
 
+import android.os.Build;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.app.ProgressDialog;
+import android.annotation.TargetApi;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +47,8 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     private String kiosk_id;
     private String WELCOME_LOGIN_MESSAGE = "Welcome to Clinics on Cloud Please Enter Mobile Number";
+    private String HINDI_MSG = "Clinics on Cloud me aapka swagat hai please aapka mobile number type kare";
+    private String MARATHI_MSG = "क्लीनिकस ऑन क्लाऊड मध्ये आपलं स्वागत आहे,कृपया आपला मोबाईल नंबर एंटर करा";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
@@ -74,7 +78,9 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onResume() {
         super.onResume();
 
-        speakOut(WELCOME_LOGIN_MESSAGE);
+//        speakOut(WELCOME_LOGIN_MESSAGE);
+//        speakOut(HINDI_MSG);
+        speakOut(MARATHI_MSG);
     }
 
     @Override
@@ -125,7 +131,9 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     private void initializeData() {
         textTopSpeech = new TextToSpeech(getApplicationContext(), this);
 
-        speakOut(WELCOME_LOGIN_MESSAGE);
+//        speakOut(WELCOME_LOGIN_MESSAGE);
+//        speakOut(HINDI_MSG);
+        speakOut(MARATHI_MSG);
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
@@ -161,14 +169,20 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     /**
      *
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void startTextToSpeech(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textTopSpeech.setLanguage(Locale.US);
+//            int result = textTopSpeech.setLanguage(Locale.US);
+//            int result = textTopSpeech.setLanguage(Locale.forLanguageTag("hin"));
+
+            int result = textTopSpeech.setLanguage(Locale.forLanguageTag("mr"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("textTopSpeech", "This Language is not supported");
             } else {
-                speakOut(WELCOME_LOGIN_MESSAGE);
+//                speakOut(WELCOME_LOGIN_MESSAGE);
+//                speakOut(HINDI_MSG);
+                speakOut(MARATHI_MSG);
             }
 
         } else {
