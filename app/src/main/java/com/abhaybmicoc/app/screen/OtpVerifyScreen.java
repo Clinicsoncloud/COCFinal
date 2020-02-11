@@ -105,6 +105,7 @@ public class OtpVerifyScreen extends AppCompatActivity{
     @Override
     protected void onPause() {
         super.onPause();
+
         textToSpeechService.stopTextToSpeech();
     }
 

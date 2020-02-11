@@ -44,8 +44,6 @@ public class HeightActivity extends Activity {
     private String state = "Connect";
 
     private String state2;
-    private String txtSpeak;
-
     private String strEnabled;
     private String strConnect;
     private String strConnected;
@@ -173,9 +171,7 @@ public class HeightActivity extends Activity {
         btnConnect.setBackground(getResources().getDrawable(R.drawable.grayback));
         btnConnect.setText("Connecting...");
 
-//        if (!bluetoothAdapter.isEnabled()) {
         startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-//        }
     }
 
     // region Initialization methods

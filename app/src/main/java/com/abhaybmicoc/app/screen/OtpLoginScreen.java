@@ -1,6 +1,5 @@
 package com.abhaybmicoc.app.screen;
 
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
 import android.text.Editable;
@@ -10,7 +9,6 @@ import android.content.Context;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.app.ProgressDialog;
-import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
@@ -137,7 +135,6 @@ public class OtpLoginScreen extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        Log.e("onPause"," : "+textToSpeechService);
         textToSpeechService.stopTextToSpeech();
     }
 
@@ -145,7 +142,6 @@ public class OtpLoginScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Log.e("onResume"," : "+textToSpeechService);
         textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
     }
 
