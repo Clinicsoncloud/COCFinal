@@ -132,7 +132,8 @@ public class BloodPressureActivity extends Activity{
     private Handler featchingDataTimeoutHandler;
     private int FEATCHING_DATA_TIME = 1000 * 15;
 
-    private String BLOOD_PRESSURE_MSG = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+//    private String BLOOD_PRESSURE_MSG = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+    private String BLOOD_PRESSURE_MSG = "cuff हातात घाला कोपऱ्यापासून २ cm वरती आणि start बटण दाबा आणि result ची वाट बघा";
 
     TextToSpeechService textToSpeechService;
 

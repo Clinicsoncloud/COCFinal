@@ -99,7 +99,8 @@ public class MainActivity extends Activity{
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
+//    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
+    private String OXIMETER_MSG = "pulse oximeter मध्ये बोट घाला आणि result ची वाट पहा";
 
     TextToSpeechService textToSpeechService;
 

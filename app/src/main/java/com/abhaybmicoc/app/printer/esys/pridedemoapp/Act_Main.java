@@ -133,6 +133,7 @@ public class Act_Main extends Activity {
     };
 
     private String WAITING_MSG = "Please wait while Calculating Result";
+
     private String SCAN_DEVICE_MSG = "Scan Printer for Connection";
 
     TextToSpeechService textToSpeechService;

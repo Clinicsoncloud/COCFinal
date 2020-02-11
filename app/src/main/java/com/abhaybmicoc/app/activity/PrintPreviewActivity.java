@@ -210,9 +210,12 @@ public class PrintPreviewActivity extends Activity {
 
     DataBaseHelper dataBaseHelper;
 
-    private String PRINT_MSG = "Please click on the print button to get your printout";
-    private String RECONNECT_MSG = "Please click on the reconnect button to reconnect printer";
-    private String RECEIPT_MSG = "Please collect your result receipt";
+//    private String PRINT_MSG = "Please click on the print button to get your printout";
+    private String PRINT_MSG = "प्रिन्ट बटण वर क्लिक करा";
+//    private String RECONNECT_MSG = "Please click on the reconnect button to reconnect printer";
+    private String RECONNECT_MSG = "Reconnect बटण वर क्लिक करा प्रिंटर परत एकदा कनेक्ट करण्यासाठी";
+//    private String RECEIPT_MSG = "Please collect your result receipt";
+    private String RECEIPT_MSG = "तुमच्या result ची प्रिन्ट घ्या";
 
     TextToSpeechService textToSpeechService;
 

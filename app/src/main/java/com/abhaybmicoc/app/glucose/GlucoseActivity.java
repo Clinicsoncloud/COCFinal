@@ -146,10 +146,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private String GLUCOSE_MSG = "Please click on start Test";
-    private String INSERT_STRIP_MSG = "Please insert the strip";
-    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
-    private String ADD_BLOOD_MSG = "Please add blood";
+//    private String GLUCOSE_MSG = "Please click on start Test";
+    private String GLUCOSE_MSG = "टेस्ट चालू करा";
+//    private String INSERT_STRIP_MSG = "Please insert the strip";
+    private String INSERT_STRIP_MSG = "स्ट्रीप घाला";
+//    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    private String INSERT_NEW_STRIP_MSG = "नवीन स्ट्रीप घाला";
+//    private String ADD_BLOOD_MSG = "Please add blood";
+    private String ADD_BLOOD_MSG = "रक्त लावा";
 
     TextToSpeechService textToSpeechService;
 

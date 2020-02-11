@@ -51,7 +51,8 @@ public class OtpVerifyScreen extends AppCompatActivity{
     private int month;
     private int selectedGenderId;
 
-    private final String FILL_REGISTRATION_MESSAGE = "Please Enter Registration detail";
+//    private final String FILL_REGISTRATION_MESSAGE = "Please Enter Registration detail";
+    private final String FILL_REGISTRATION_MESSAGE = "कृपया आपली माहिती भरा";
 
     private Button btnLogin;
 

@@ -131,7 +131,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     ArrayList<String> deviceArrayList;
 
-    private String HEMOGLOBIN_MSG = "Please long press the power button of device and click on connect button";
+//    private String HEMOGLOBIN_MSG = "Please long press the power button of device and click on connect button";
+    private String HEMOGLOBIN_MSG = "hemoglobin device चे पॉवर बटण ५ सेकण्ड दाबून सोडा , आणि कनेक्ट बटण वर क्लिक करा";
 
     TextToSpeechService textToSpeechService;
 

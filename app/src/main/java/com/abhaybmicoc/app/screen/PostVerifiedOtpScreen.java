@@ -34,7 +34,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
 
     private Context context = PostVerifiedOtpScreen.this;
 
-    private final String OTP_MESSAGE = "Please Enter Otp";
+//    private final String OTP_MESSAGE = "Please Enter Otp";
+    private final String OTP_MESSAGE = "कृपया आपला otp एंटर करा ";
 
     private String kioskId;
     private String mobileNumber;

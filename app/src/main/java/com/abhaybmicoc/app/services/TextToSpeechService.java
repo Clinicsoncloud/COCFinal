@@ -1,6 +1,8 @@
 package com.abhaybmicoc.app.services;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.speech.tts.TextToSpeech;
 
 import java.util.Locale;
@@ -38,10 +40,12 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.US);
+//            int result = textToSpeech.setLanguage(Locale.US);
+            int result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
 
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
             } else {

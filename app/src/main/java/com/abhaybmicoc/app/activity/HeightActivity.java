@@ -81,9 +81,12 @@ public class HeightActivity extends Activity {
 
     private TextToSpeechService textToSpeechService;
 
-    private String SUCCESS_MSG = "Please stand below the height sensor and click get Height Button";
-    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
-    private String MANUAL_MSG = "Please Enter Manual Height";
+//    private String SUCCESS_MSG = "Please stand below the height sensor and click get Height Button";
+    private String SUCCESS_MSG = "height  सेन्सर च्या खाली उभे राहा आणि गेट height बटण वर क्लिक करा";
+//    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
+    private String FAILURE_MSG = "height सेन्सर कनेक्ट नाही झाला manually कनेक्ट करा";
+//    private String MANUAL_MSG = "Please Enter Manual Height";
+    private String MANUAL_MSG = "manually height एंटर करा";
     private String CONNECTING_MSG = "Please wait while connecting to Height Sensor";
 
     // endregion

@@ -46,7 +46,7 @@ public class OtpLoginScreen extends AppCompatActivity {
     TextToSpeechService textToSpeechService;
 
     private String kiosk_id;
-    private String WELCOME_LOGIN_MESSAGE = "Welcome to Clinics on Cloud Please Enter Mobile Number";
+    private String WELCOME_LOGIN_MESSAGE = "क्लीनिकस ऑन क्लाऊड मध्ये आपलं स्वागत आहे,कृपया आपला मोबाइलला नंबर एंटर करा";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 

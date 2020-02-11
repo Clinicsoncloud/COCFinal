@@ -108,9 +108,13 @@ public class ThermometerScreen extends AppCompatActivity {
 
     private int DEVICE_CONNECTION_WAITING_TIME = 10000;
 
-    private String SUCCESS_MSG = "Device Ready to use, point the device To forehead and press button";
-    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
-    private String MANUAL_MSG = "Please Enter Body temperature Manually";
+//    private String SUCCESS_MSG = "Device Ready to use, point the device To forehead and press button";
+    private String SUCCESS_MSG = "temprature सेन्सर कपाळावर ठेवा आणि सेन्सर चे बटण दाबा";
+//    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
+    private String FAILURE_MSG = "temprature सेन्सर कनेक्ट झाला नाही , manually कनेक्ट करा";
+
+//    private String MANUAL_MSG = "Please Enter Body temperature Manually";
+    private String MANUAL_MSG = "maually बॉडी temperature एंटर करा";
 
     TextToSpeechService textToSpeechService;
 
