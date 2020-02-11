@@ -198,6 +198,12 @@ public class ActofitMainActivity extends AppCompatActivity {
             Toast.makeText(ActofitMainActivity.this, "Cancelled!!!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == RESULT_CANCELED) {
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == 101){
+            Toast.makeText(context, "Your subscription has Expired", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == 102){
+            Toast.makeText(context, "No saved Device", Toast.LENGTH_SHORT).show();
+        }else if(requestCode == 100){
+            Toast.makeText(context, "Impedence Measurement Error from SmartScale", Toast.LENGTH_SHORT).show();
         }
     }
 
