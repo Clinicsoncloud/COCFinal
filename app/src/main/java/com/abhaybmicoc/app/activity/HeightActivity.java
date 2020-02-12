@@ -81,13 +81,9 @@ public class HeightActivity extends Activity {
 
     private TextToSpeechService textToSpeechService;
 
-//    private String SUCCESS_MSG = "Please stand below the height sensor and click get Height Button";
-    private String SUCCESS_MSG = "height  सेन्सर च्या खाली उभे राहा आणि गेट height बटण वर क्लिक करा";
-//    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
-    private String FAILURE_MSG = "height सेन्सर कनेक्ट नाही झाला manually कनेक्ट करा";
-//    private String MANUAL_MSG = "Please Enter Manual Height";
-    private String MANUAL_MSG = "manually height एंटर करा";
-    private String CONNECTING_MSG = "Please wait while connecting to Height Sensor";
+    private String SUCCESS_MSG = "";
+    private String FAILURE_MSG = "";
+    private String MANUAL_MSG = "";
 
     // endregion
 
@@ -126,7 +122,6 @@ public class HeightActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        textToSpeechService.speakOut(CONNECTING_MSG);
     }
 
     /* access modifiers changed from: protected */
@@ -198,6 +193,11 @@ public class HeightActivity extends Activity {
         btnConnect = findViewById(R.id.btn_connect);
         btnGetHeight = findViewById(R.id.btn_get_height);
 
+        SUCCESS_MSG = getResources().getString(R.string.height_success);
+        String FAILURE_MSG = getResources().getString(R.string.height_fail);
+        String MANUAL_MSG = getResources().getString(R.string.height_manually);
+
+
         // TODO: Rename from AUTO_CONNECT
         sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
         sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -229,7 +229,6 @@ public class HeightActivity extends Activity {
         tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
         tvMobileNumber.setText("Phone : " + sharedPreferencePersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), CONNECTING_MSG);
 
         turnOnBluetooth();
     }

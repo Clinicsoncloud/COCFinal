@@ -34,8 +34,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
 
     private Context context = PostVerifiedOtpScreen.this;
 
-//    private final String OTP_MESSAGE = "Please Enter Otp";
-    private final String OTP_MESSAGE = "कृपया आपला otp एंटर करा ";
+    private String OTP_MESSAGE = "" ;
 
     private String kioskId;
     private String mobileNumber;
@@ -93,6 +92,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
         btnVerify = findViewById(R.id.btn_verify);
         kioskId = getIntent().getStringExtra(Constant.Fields.KIOSK_ID);
         mobileNumber = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
+        OTP_MESSAGE =  getResources().getString(R.string.otp_msg);
     }
 
     /**

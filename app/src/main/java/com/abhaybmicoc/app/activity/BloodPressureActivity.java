@@ -132,8 +132,7 @@ public class BloodPressureActivity extends Activity{
     private Handler featchingDataTimeoutHandler;
     private int FEATCHING_DATA_TIME = 1000 * 15;
 
-//    private String BLOOD_PRESSURE_MSG = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
-    private String BLOOD_PRESSURE_MSG = "cuff हातात घाला कोपऱ्यापासून २ cm वरती आणि start बटण दाबा आणि result ची वाट बघा";
+    private String BLOOD_PRESSURE_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -273,6 +272,8 @@ public class BloodPressureActivity extends Activity{
     private void setupUI() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.layout_blood_pressure);
+
+        BLOOD_PRESSURE_MSG = getResources().getString(R.string.BloodPreeure_msg);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);

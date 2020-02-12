@@ -610,31 +610,32 @@
 
     <!--voice commands-->
 
-    <string name="mobile_no_msg">Welcome to Clinics on Cloud , Please Enter Mobile No</string>
-    <string name="otp_msg">Please Enter Otp</string>
-    <string name="registration_msg">Please Enter Registration Detail</string>
+    <string name="mobile_no_msg"></string>
+    <string name="otp_msg"></string>
+    <string name="registration_msg"></string>
+    <string name="height_success"></string>
+    <string name="height_fail"></string>
+    <string name="height_manually"></string>
 
-    <string name="height_success">Please stand below the height sensor and click on get height button</string>
-    <string name="height_fail">No Bluetooth Device found please connect it manually</string>
-    <string name="height_manually">Enter height manually</string>
+    <string name="actofit_msg"></string>
+    <string name="oximeter_msg"></string>
+    <string name="BloodPreeure_msg"></string>
+    <string name="temperature_success_msg"></string>
+    <string name="temperature_fail_msg"></string>
+    <string name="temperature_manually"></string>
 
-    <string name="actofit_msg">Please click on GoTo SmartScale and stand on wehing scale</string>
-    <string name="oximeter_msg">put finger inside the device and wait for result</string>
-    <string name="BloodPreeure_msg">Please insert hand to the cuff and press device start button and wait for result</string>
+    <string name="sync_scan_msg"></string>
+    <string name="start_test_msg"></string>
+    <string name="insert_strip_msg"></string>
+    <string name="add_blood_msg"></string>
+    <string name="new_strip_msg"></string>
 
-    <string name="temperature_success_msg">Device Ready to use point device to forehead and press button</string>
-    <string name="temperature_fail_msg">No bluetooth Device found please connect it manually</string>
-    <string name="temperature_manually">Enter body temperature manually</string>
+    <string name="hemoglobin_msg"></string>
+    <string name="print_msg"></string>
+    <string name="print_reconnect_msg"></string>
+    <string name="print_result_msg"></string>
 
-    <string name="sync_scan_msg">please long press device button</string>
-    <string name="start_test_msg">Please click on Start Test</string>
-    <string name="insert_strip_msg">Please Insert Strip</string>
-    <string name="add_blood_msg">Please Add Blood</string>
-    <string name="new_strip_msg">Please Insert New Strip</string>
 
-    <string name="hemoglobin_msg">Please long press device power button and click on connect button</string>
-    <string name="print_msg">Please click on print button</string>
-    <string name="print_reconnect_msg">Please click on Reconnect button to reconnect printer</string>
-    <string name="print_result_msg">Please collect your result receipt</string>
+
 
 </resources>
