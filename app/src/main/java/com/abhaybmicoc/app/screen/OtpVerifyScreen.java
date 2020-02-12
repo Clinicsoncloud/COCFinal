@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
+import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
@@ -29,6 +30,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
@@ -41,7 +43,7 @@ import java.util.HashMap;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-public class OtpVerifyScreen extends AppCompatActivity{
+public class OtpVerifyScreen extends AppCompatActivity {
     // region Variables
 
     private Context context = OtpVerifyScreen.this;
@@ -167,7 +169,7 @@ public class OtpVerifyScreen extends AppCompatActivity{
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),FILL_REGISTRATION_MESSAGE);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -227,57 +229,43 @@ public class OtpVerifyScreen extends AppCompatActivity{
     }
 
     private void postData() {
-        progressDialog = Tools.progressDialog(OtpVerifyScreen.this);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.PROFILE_URL,
-                response -> {
-                    try {
-                        progressDialog.dismiss();
+        Map<String, String> requestBodyParams = new HashMap<>();
+        requestBodyParams.put(Constant.Fields.NAME, etName.getText().toString());
+        requestBodyParams.put(Constant.Fields.EMAIL, etEmail.getText().toString());
+        requestBodyParams.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+        requestBodyParams.put(Constant.Fields.GENDER, getSelectedGender());
 
-                        JSONObject jsonObject = new JSONObject(response);
+        HashMap headersParams = new HashMap();
 
-                        writeToPersonalSharedPreference(jsonObject);
+        String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString("token", ""));
+        headersParams.put("Authorization", bearer);
 
-                        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
-                        startActivity(objIntent);
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-                        finish();
+        HttpService.accessWebServices(
+                context,
+                ApiUtils.PROFILE_URL,
+                requestBodyParams,
+                headersParams,
+                (response, error, status) -> handleAPIResponse(response, error, status));
 
+    }
 
-                    } catch (Exception e) {
-                        // TODO: Handle exception here
-                    }
-                },
-                volleyError -> {
-                    progressDialog.dismiss();
-                }) {
-            @Override
-            public Map getHeaders() {
-                HashMap headers = new HashMap();
+    private void handleAPIResponse(String response, VolleyError error, String status) {
+        if (status.equals("response")) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
 
-                String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, ""));
-                headers.put("Authorization", bearer);
-                return headers;
+                writeToPersonalSharedPreference(jsonObject);
+
+                Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                startActivity(objIntent);
+                finish();
+            } catch (Exception e) {
+                // TODO: Handle exception
             }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put(Constant.Fields.NAME, etName.getText().toString());
-                params.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-                params.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
-                params.put(Constant.Fields.GENDER, getSelectedGender());
-                return params;
-            }
-        };
-
-        AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
-                90000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-        ));
+        } else if (status.equals("error")) {
+            Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     // region Logical methods

@@ -12,13 +12,16 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
@@ -37,6 +40,7 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     // region Variables
 
+    private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
     private ProgressDialog progressDialog;
@@ -53,7 +57,6 @@ public class OtpLoginScreen extends AppCompatActivity {
     private SharedPreferences sharedPreferencesActivator;
 
     // endregion
-
 
 
     // region Initialization methods
@@ -96,7 +99,7 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),WELCOME_LOGIN_MESSAGE);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
@@ -210,14 +213,28 @@ public class OtpLoginScreen extends AppCompatActivity {
      *
      */
     private void GenerateOTP() {
-        progressDialog = Tools.progressDialog(OtpLoginScreen.this);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.LOGIN_URL, response -> {
+        Map<String, String> headerParams = new HashMap<>();
+        Map<String, String> requestBodyParams = new HashMap<>();
+
+        requestBodyParams.put("kiosk_id", kiosk_id);
+        requestBodyParams.put("mobile", etMobileNumber.getText().toString());
+
+
+        HttpService.accessWebServices(
+                context,
+                ApiUtils.LOGIN_URL,
+                requestBodyParams,
+                headerParams,
+                (response, error, status) -> handleAPIResponse(response, error, status));
+
+    }
+
+    private void handleAPIResponse(String response, VolleyError error, String status) {
+        if (status.equals("response")) {
             try {
-                progressDialog.dismiss();
 
                 JSONObject jsonResponse = new JSONObject(response);
-
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
@@ -240,32 +257,17 @@ public class OtpLoginScreen extends AppCompatActivity {
 
                     startActivity(objIntent);
 
-                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-
                     finish();
                 }
-
-            } catch (JSONException e) {
-
+            } catch (Exception e) {
+                // TODO: Handle exception
             }
-        }, volleyError -> {
-            progressDialog.dismiss();
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params;
-
-                params = new HashMap<>();
-                params.put(Constant.Fields.KIOSK_ID, kiosk_id);
-                params.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
-
-                return params;
-            }
-        };
-
-        AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
-        stringRequest.setRetryPolicy(new DefaultRetryPolicy(90000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        } else if (status.equals("error")) {
+            Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+            // TODO: Handle error
+        }
     }
+
 
     // endregion
 }
