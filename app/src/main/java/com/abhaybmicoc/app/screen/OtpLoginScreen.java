@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.screen;
 
+import android.content.ContentValues;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
@@ -36,10 +38,12 @@ import java.util.HashMap;
 public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.OnInitListener {
     // region Variables
 
+    private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
     private TextToSpeech textTopSpeech;
     private ProgressDialog progressDialog;
+    private DataBaseHelper dataBaseHelper;
 
     SharedPreferences sharedPreferencesPersonal;
 
@@ -124,6 +128,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
     private void initializeData() {
         textTopSpeech = new TextToSpeech(getApplicationContext(), this);
+        dataBaseHelper = new DataBaseHelper(context);
 
         speakOut(WELCOME_LOGIN_MESSAGE);
 
@@ -195,13 +200,36 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
      */
     private void doLogin() {
         if (Utils.getInstance().giveLocationPermission(this)) {
+
             if (etMobileNumber.getText().toString().equals("")) {
                 etMobileNumber.setError("Please Enter Mobile Number");
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
-                GenerateOTP();
+                if (Utils.isOnline(context)) {
+                    GenerateOTP();
+                } else {
+                    savePatient();
+                }
             }
+        }
+    }
+
+    private void savePatient() {
+        try {
+            ContentValues patientContentValues = new ContentValues();
+
+            patientContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
+            patientContentValues.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PATIENTS, patientContentValues);
+
+            Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+            objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+            objIntent.putExtra("connectivity", "offline");
+            startActivity(objIntent);
+
+        } catch (Exception e) {
         }
     }
 
@@ -251,6 +279,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
      *
      */
     private void GenerateOTP() {
+
         progressDialog = Tools.progressDialog(OtpLoginScreen.this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, ApiUtils.LOGIN_URL, response -> {
@@ -262,7 +291,6 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
                     Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
-
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 

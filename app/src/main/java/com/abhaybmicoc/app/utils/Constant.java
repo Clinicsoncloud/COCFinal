@@ -16,7 +16,6 @@ public class Constant {
 
         public static String internetIntent = "android.net.conn.CONNECTIVITY_CHANGE";
 
-        public static final String TBL_PARAMETERS = "tbl_parameters";
 
         public final static String ID = "id";
         public final static String OTP = "otp";

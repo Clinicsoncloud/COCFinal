@@ -197,6 +197,8 @@ public class PostVerifiedOtpScreen extends AppCompatActivity implements TextToSp
 
                         Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                         objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, mobileNumber);
+                        objIntent.putExtra("connectivity", "online");
+
                         startActivity(objIntent);
                     } catch (JSONException e) {
                         e.printStackTrace();

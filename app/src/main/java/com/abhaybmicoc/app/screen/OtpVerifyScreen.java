@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.screen;
 
+import android.content.ContentValues;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
@@ -26,6 +28,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
+import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.toolbox.StringRequest;
@@ -70,6 +73,9 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
     private BluetoothAdapter mBluetoothAdapter;
     private SharedPreferences sharedPreferencesPersonal;
 
+    private String strConnectivity = "", strMobileNo = "";
+    private DataBaseHelper dataBaseHelper;
+
     // endregion
 
     // region Event methods
@@ -87,8 +93,9 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         setContentView(R.layout.activity_otp_verify_screen);
 
         setupUI();
-        setupEvents();
+        getIntentData();
         initializeData();
+        setupEvents();
         enableBluetooth();
     }
 
@@ -134,6 +141,11 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         etMobileNumber = findViewById(R.id.et_mobile_number);
     }
 
+    private void getIntentData() {
+        strConnectivity = getIntent().getStringExtra("connectivity");
+        strMobileNo = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
+    }
+
     private void setupEvents() {
         etDateOfBirth.setOnClickListener(v -> showDateOfBirthPicker());
 
@@ -154,7 +166,16 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             } else if (rdGenderGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
-                postData();
+                if (Utils.isOnline(context)) {
+                    if (strConnectivity.equals("online"))
+                        postData();
+                    else
+                        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+                } else {
+                    updatePatientInfo();
+                }
+
+
             }
         });
 
@@ -171,12 +192,13 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
         textToSpeech = new TextToSpeech(getApplicationContext(), this);
+        dataBaseHelper = new DataBaseHelper(context);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
             etName.setText(sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
-            etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
+            etMobileNumber.setText(strMobileNo);
             etDateOfBirth.setText(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
             if (sharedPreferencesPersonal.getString(Constant.Fields.EMAIL, "").equalsIgnoreCase("null"))
@@ -231,6 +253,7 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
         dpDialog.show();
     }
 
+
     private void postData() {
         progressDialog = Tools.progressDialog(OtpVerifyScreen.this);
 
@@ -241,13 +264,13 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
 
                         JSONObject jsonObject = new JSONObject(response);
 
-                        writeToPersonalSharedPreference(jsonObject);
+                        Log.e("Post_jsonObject", ":" + jsonObject);
+//                        writeToPersonalSharedPreference(jsonObject);
 
                         Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                         startActivity(objIntent);
                         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
                         finish();
-
 
                     } catch (Exception e) {
                         // TODO: Handle exception here
@@ -284,6 +307,43 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
         ));
     }
+
+    private void updatePatientInfo() {
+
+        try {
+            ContentValues patientContentValues = new ContentValues();
+
+            patientContentValues.put(Constant.Fields.NAME, etName.getText().toString());
+            patientContentValues.put(Constant.Fields.EMAIL, etEmail.getText().toString());
+            patientContentValues.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+            patientContentValues.put(Constant.Fields.GENDER, getSelectedGender());
+
+            dataBaseHelper.updatePatientInfo(Constant.TableNames.TBL_PATIENTS, patientContentValues, strMobileNo);
+
+            String patient_id = dataBaseHelper.lastInsertID(Constant.Fields.PATIENT_ID, Constant.TableNames.TBL_PATIENTS);
+
+            JSONObject resObject = new JSONObject();
+            JSONObject dataObject = new JSONObject();
+            JSONObject patientObject = new JSONObject();
+
+            patientObject.put(Constant.Fields.PATIENT_ID, patient_id);
+            patientObject.put(Constant.Fields.NAME, etName.getText().toString());
+            patientObject.put(Constant.Fields.EMAIL, etEmail.getText().toString());
+            patientObject.put(Constant.Fields.TOKEN, "");
+            patientObject.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+            patientObject.put(Constant.Fields.MOBILE_NUMBER, getSelectedGender());
+
+            dataObject.put("patient", patientObject);
+            resObject.put(",data", dataObject);
+
+            Log.e("res_jsonObject", ":" + resObject);
+//            writeToPersonalSharedPreference(resObject);
+
+
+        } catch (Exception e) {
+        }
+    }
+
 
     // region Logical methods
 
