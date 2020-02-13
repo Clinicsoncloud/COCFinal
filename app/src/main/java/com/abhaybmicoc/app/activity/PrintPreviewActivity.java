@@ -1503,7 +1503,7 @@ public class PrintPreviewActivity extends Activity {
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
-            HttpService.accessWebServices(
+            HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
                     requestBodyParams,
                     mapHeadersParams,
