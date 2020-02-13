@@ -541,31 +541,31 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-                if (printData.getCurr_value() > 17.2) {
+                if (printData.getCurr_value() > 17) {
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                } else if (printData.getCurr_value() <= 17.2 && printData.getCurr_value() >= 13.8) {
+                } else if (printData.getCurr_value() <= 17 && printData.getCurr_value() >= 13) {
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                } else if (printData.getCurr_value() < 13.8) {
+                } else if (printData.getCurr_value() < 13) {
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
                 }
 
-                viewHolder.rangeTV.setText("13.8 - 17.2 g/dl");
+                viewHolder.rangeTV.setText("13 - 17 g/dl");
             } else {
-                if (printData.getCurr_value() > 15.1) {
+                if (printData.getCurr_value() > 15) {
                     viewHolder.resultTV.setText("High");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
-                } else if (printData.getCurr_value() <= 15.1 && printData.getCurr_value() >= 12.1) {
+                } else if (printData.getCurr_value() <= 15 && printData.getCurr_value() >= 12) {
                     viewHolder.resultTV.setText("Standard");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
-                } else if (printData.getCurr_value() < 12.1) {
+                } else if (printData.getCurr_value() < 12) {
                     viewHolder.resultTV.setText("Low");
                     viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.sky_blue));
                 }
 
-                viewHolder.rangeTV.setText("12.1 - 15.1 g/dl");
+                viewHolder.rangeTV.setText("12 - 15 g/dl");
             }
         }
     }
