@@ -80,7 +80,7 @@ public class ActofitMainActivity extends AppCompatActivity {
     public static final int REQUSET_CODE = 1001;
 
 //    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
-    private String SMARTSCALE_MSG = "Go To  smartScale बटण वर क्लिक करा आणि smartscale वर उभे राहा";
+    private String SMARTSCALE_MSG = "";
     public static final String TAG = "MainActivity";
 
     TextToSpeechService textToSpeechService;
@@ -236,6 +236,8 @@ public class ActofitMainActivity extends AppCompatActivity {
 
         btnSkip = findViewById(R.id.btn_skip);
         btnSmartScale = findViewById(R.id.btn_smart_scale);
+
+        SMARTSCALE_MSG = getResources().getString(R.string.actofit_msg);
     }
 
     /**

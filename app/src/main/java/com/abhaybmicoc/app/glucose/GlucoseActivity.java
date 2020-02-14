@@ -147,13 +147,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
     private BluetoothAdapter bluetoothAdapter;
 
 //    private String GLUCOSE_MSG = "Please click on start Test";
-    private String GLUCOSE_MSG = "टेस्ट चालू करा";
+    private String GLUCOSE_MSG = "";
 //    private String INSERT_STRIP_MSG = "Please insert the strip";
-    private String INSERT_STRIP_MSG = "स्ट्रीप घाला";
+    private String INSERT_STRIP_MSG = "";
 //    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
-    private String INSERT_NEW_STRIP_MSG = "नवीन स्ट्रीप घाला";
+    private String INSERT_NEW_STRIP_MSG = "";
 //    private String ADD_BLOOD_MSG = "Please add blood";
-    private String ADD_BLOOD_MSG = "रक्त लावा";
+    private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -475,6 +475,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
+
+        GLUCOSE_MSG = getResources().getString(R.string.start_test_msg);
+
+        INSERT_STRIP_MSG = getResources().getString(R.string.insert_strip_msg);
+
+        INSERT_NEW_STRIP_MSG = getResources().getString(R.string.new_strip_msg);
+
+        ADD_BLOOD_MSG = getResources().getString(R.string.add_blood_msg);
 
         toolbar = findViewById(R.id.layout_toolbar);
         toolbar.setNavigationIcon(null);

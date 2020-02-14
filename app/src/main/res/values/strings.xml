@@ -610,8 +610,8 @@
 
     <!--voice commands-->
 
-    <string name="mobile_no_msg">Welcome to Clinics on Cloud , Please Enter Mobile No</string>
-    <string name="otp_msg">Please Enter Otp</string>
+    <string name="mobile_no_msg">Welcome to Clinics on Cloud , Please Enter Mobile Number</string>
+    <string name="otp_msg">Please Enter OTP</string>
     <string name="registration_msg">Please Enter Registration Detail</string>
 
     <string name="height_success">Please stand below the height sensor and click on get height button</string>

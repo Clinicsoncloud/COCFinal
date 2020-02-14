@@ -41,7 +41,7 @@ import java.util.HashMap;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-public class OtpVerifyScreen extends AppCompatActivity{
+public class OtpVerifyScreen extends AppCompatActivity {
     // region Variables
 
     private Context context = OtpVerifyScreen.this;
@@ -106,7 +106,8 @@ public class OtpVerifyScreen extends AppCompatActivity{
     protected void onPause() {
         super.onPause();
 
-        textToSpeechService.stopTextToSpeech();
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     // endregion
@@ -169,7 +170,7 @@ public class OtpVerifyScreen extends AppCompatActivity{
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),FILL_REGISTRATION_MESSAGE);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);

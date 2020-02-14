@@ -62,7 +62,7 @@ public class OtpLoginScreen extends AppCompatActivity {
     TextToSpeechService textToSpeechService;
 
     private String kiosk_id;
-    private String WELCOME_LOGIN_MESSAGE = "क्लीनिकस ऑन क्लाऊड मध्ये आपलं स्वागत आहे,कृपया आपला मोबाइलला नंबर एंटर करा";
+    private String WELCOME_LOGIN_MESSAGE = "";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
@@ -85,6 +85,8 @@ public class OtpLoginScreen extends AppCompatActivity {
         rgLanguage = findViewById(R.id.rg_language);
         rbEnglish = findViewById(R.id.rb_english);
         rbHindi = findViewById(R.id.rb_hindi);
+
+        WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }
 
     /**

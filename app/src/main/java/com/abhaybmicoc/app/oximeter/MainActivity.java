@@ -100,7 +100,8 @@ public class MainActivity extends Activity{
     private BluetoothAdapter bluetoothAdapter;
 
 //    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
-    private String OXIMETER_MSG = "pulse oximeter मध्ये बोट घाला आणि result ची वाट पहा";
+//    private String OXIMETER_MSG = "pulse oximeter मध्ये बोट घाला आणि result ची वाट पहा";
+    private String OXIMETER_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -250,6 +251,8 @@ public class MainActivity extends Activity{
         this.setFinishOnTouchOutside(false);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        OXIMETER_MSG = getResources().getString(R.string.oximeter_msg);
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);

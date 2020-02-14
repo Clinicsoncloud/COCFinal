@@ -108,13 +108,9 @@ public class ThermometerScreen extends AppCompatActivity {
 
     private int DEVICE_CONNECTION_WAITING_TIME = 10000;
 
-//    private String SUCCESS_MSG = "Device Ready to use, point the device To forehead and press button";
-    private String SUCCESS_MSG = "temprature सेन्सर कपाळावर ठेवा आणि सेन्सर चे बटण दाबा";
-//    private String FAILURE_MSG = "No Bluetooth Device Found Please Connect it Manually";
-    private String FAILURE_MSG = "temprature सेन्सर कनेक्ट झाला नाही , manually कनेक्ट करा";
-
-//    private String MANUAL_MSG = "Please Enter Body temperature Manually";
-    private String MANUAL_MSG = "maually बॉडी temperature एंटर करा";
+    private String SUCCESS_MSG = "";
+    private String FAILURE_MSG = "";
+    private String MANUAL_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -168,6 +164,10 @@ public class ThermometerScreen extends AppCompatActivity {
         sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         etTemperature = findViewById(R.id.et_temprature);
+
+        SUCCESS_MSG = getResources().getString(R.string.temperature_success_msg);
+        FAILURE_MSG = getResources().getString(R.string.temperature_fail_msg);
+        MANUAL_MSG = getResources().getString(R.string.temperature_manually);
 
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
@@ -470,6 +470,7 @@ public class ThermometerScreen extends AppCompatActivity {
 
                 //failure msg
                 textToSpeechService = new TextToSpeechService(getApplicationContext(),FAILURE_MSG);
+                textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));

@@ -147,9 +147,10 @@ public class BloodPressureActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        init();
 
         setupUI();
+
+        init();
 
         setupEvents();
 

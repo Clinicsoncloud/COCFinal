@@ -75,7 +75,7 @@ public class GlucoseScanListActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferencesDevice;
 
 //    private String SCAN_MSG = "Please long press the device bluetooth button";
-    private String SCAN_MSG = "sync प्लस device चे बटण ५ सेकण्ड दाबून ठेवा";
+    private String SCAN_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -179,6 +179,8 @@ public class GlucoseScanListActivity extends AppCompatActivity {
      */
     private void setupUI() {
         setContentView(R.layout.activity_scan_list);
+
+        SCAN_MSG = getResources().getString(R.string.sync_scan_msg);
 
         /* Setup toolbar */
         toolBar = findViewById(R.id.layout_toolbar);
