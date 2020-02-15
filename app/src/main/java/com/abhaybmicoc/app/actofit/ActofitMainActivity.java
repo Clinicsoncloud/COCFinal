@@ -191,12 +191,15 @@ public class ActofitMainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUSET_CODE && resultCode == RESULT_OK) {
+            Log.e("requestCode :"+data,"resultCode :"+resultCode);
             if (data != null) {
                 readAndStoreData(data);
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
+            Log.e("data :"+data,"resultCode :"+resultCode);
             Toast.makeText(ActofitMainActivity.this, "Cancelled!!!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == RESULT_CANCELED) {
+            Log.e("data  "," : "+data);
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
