@@ -20,7 +20,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
     private TextToSpeech textToSpeech;
 
-    private String msg;
+    private String message;
 
     private boolean isInitialize = false;
 
@@ -32,13 +32,14 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
         this.textToSpeech = new TextToSpeech(context, this);
 
-        this.msg = msg;
+        this.message = msg;
     }
 
-    public void speakOut(String msg) {
-        Log.e("speakOut", " : ");
-        if (isInitialize)
-            textToSpeech.speak(msg, TextToSpeech.QUEUE_FLUSH, null);
+    public void speakOut(String message) {
+        if(isInitialize) {
+            Log.e("speakOut", " : ");
+            textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
+        }
     }
 
     public void stopTextToSpeech() {
@@ -58,6 +59,8 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
         if (status == TextToSpeech.SUCCESS) {
             int result;
 
+            isInitialize = true;
+
             sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
 
             Log.e("My_Selected_Lang", ":" + sharedPreferenceLanguage.getString("my_lan", ""));
@@ -73,9 +76,8 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("inside_langerror"," : ");
             } else {
-                Log.e("inside_else"," : speakOut_isInitialize");
-                isInitialize = true;
-                speakOut(msg);
+                Log.e("inside_else"," : speakOut_isInitialize"+isInitialize);
+                speakOut(message);
             }
         }
     }

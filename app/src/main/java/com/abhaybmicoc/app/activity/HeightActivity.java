@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-public class HeightActivity extends Activity{
+public class HeightActivity extends Activity {
     // region Variables
 
     private Context context;
@@ -103,14 +103,10 @@ public class HeightActivity extends Activity{
         super.onCreate(savedInstanceState);
 
         setupUI();
-        init();
         setupEvents();
         initializeData();
     }
 
-    private void init() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
-    }
 
     private String getDeviceAddress() {
         return sharedPreferenceBluetoothAddress.getString("hcbluetooth", "");
@@ -130,7 +126,6 @@ public class HeightActivity extends Activity{
     public void onResume() {
         super.onResume();
 
-        init();
     }
 
     /* access modifiers changed from: protected */
@@ -138,7 +133,8 @@ public class HeightActivity extends Activity{
         super.onPause();
 
         /* close the textToSpeech engine to avoide the runtime exception from it */
-        textToSpeechService.stopTextToSpeech();
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -327,8 +323,8 @@ public class HeightActivity extends Activity{
     private void gotoNext() {
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
-           textToSpeechService = new TextToSpeechService(getApplicationContext(),MANUAL_MSG);
-           textToSpeechService.speakOut(MANUAL_MSG);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), MANUAL_MSG);
+            textToSpeechService.speakOut(MANUAL_MSG);
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
@@ -355,7 +351,6 @@ public class HeightActivity extends Activity{
         editor.putString(key, value);
         editor.commit();
     }
-
 
 
     // endregion
@@ -484,16 +479,14 @@ public class HeightActivity extends Activity{
                 tv_ConnectedText.setText("Connected");
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
 
-                textToSpeechService = null;
-
-                textToSpeechService = new TextToSpeechService(getApplicationContext(),SUCCESS_MSG);
+                textToSpeechService = new TextToSpeechService(getApplicationContext(), SUCCESS_MSG);
                 textToSpeechService.speakOut(SUCCESS_MSG);
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
                 Toast.makeText(HeightActivity.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
-                textToSpeechService = new TextToSpeechService(getApplicationContext(),FAILURE_MSG);
+                textToSpeechService = new TextToSpeechService(getApplicationContext(), FAILURE_MSG);
                 textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);
