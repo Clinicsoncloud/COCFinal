@@ -71,7 +71,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
-public class BloodPressureActivity extends Activity{
+public class BloodPressureActivity extends Activity {
     // region Variables
 
     private Context context = BloodPressureActivity.this;
@@ -132,7 +132,7 @@ public class BloodPressureActivity extends Activity{
     private Handler featchingDataTimeoutHandler;
     private int FEATCHING_DATA_TIME = 1000 * 15;
 
-    private String BLOOD_PRESSURE_MSG = "please insert hand to the cuf and tight it properly,and then start Machine and click start Button";
+    private String BLOOD_PRESSURE_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -147,7 +147,6 @@ public class BloodPressureActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        init();
 
         setupUI();
 
@@ -167,6 +166,9 @@ public class BloodPressureActivity extends Activity{
         super.onDestroy();
 
         clearDataAndServices();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -174,10 +176,6 @@ public class BloodPressureActivity extends Activity{
         super.onResume();
 
         enableBluetooth();
-    }
-
-    private void init() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -251,8 +249,6 @@ public class BloodPressureActivity extends Activity{
         if (!mIsSendCancel) {
             mIsSendCancel = true;
         }
-
-        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -272,6 +268,8 @@ public class BloodPressureActivity extends Activity{
     private void setupUI() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.layout_blood_pressure);
+
+        BLOOD_PRESSURE_MSG = getResources().getString(R.string.BloodPreeure_msg);
 
         tvHeight = findViewById(R.id.tv_header_height);
         tvWeight = findViewById(R.id.tv_header_weight);
@@ -332,7 +330,7 @@ public class BloodPressureActivity extends Activity{
      */
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), BLOOD_PRESSURE_MSG);
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));

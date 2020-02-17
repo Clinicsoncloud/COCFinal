@@ -212,9 +212,9 @@ public class PrintPreviewActivity extends Activity {
 
     DataBaseHelper dataBaseHelper;
 
-    private String PRINT_MSG = "Please click on the print button to get your printout";
-    private String RECONNECT_MSG = "Please click on the reconnect button to reconnect printer";
-    private String RECEIPT_MSG = "Please collect your result receipt";
+    private String PRINT_MSG = "";
+    private String RECONNECT_MSG = "";
+    private String RECEIPT_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -256,7 +256,6 @@ public class PrintPreviewActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -302,6 +301,10 @@ public class PrintPreviewActivity extends Activity {
 
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
+
+        PRINT_MSG = getResources().getString(R.string.print_msg);
+        RECONNECT_MSG = getResources().getString(R.string.print_reconnect_msg);
+        RECEIPT_MSG = getResources().getString(R.string.print_result_msg);
     }
 
     private void setupEvents() {
@@ -310,7 +313,7 @@ public class PrintPreviewActivity extends Activity {
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), RECEIPT_MSG);
+            textToSpeechService.speakOut(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
@@ -328,7 +331,7 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-//        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
 
         connectToSavedPrinter();
 
@@ -357,15 +360,11 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-                speakOutPrint();
+
+                textToSpeechService.speakOut(PRINT_MSG);
             }
         }
     }
-
-    private void speakOutPrint() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
-    }
-
 
     private void autoConnectPrinter() {
         mGP.closeConn();
@@ -1341,7 +1340,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues,"");
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues, "");
 
         } catch (Exception e) {
         }
@@ -1950,7 +1949,7 @@ public class PrintPreviewActivity extends Activity {
                 btnHome.setEnabled(true);
                 btnPrint.setEnabled(true);
 
-                speakOut();
+                textToSpeechService.speakOut(PRINT_MSG);
 
                 printerActivation();
             } else {
@@ -1959,12 +1958,8 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
-    private void speakOut() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
-    }
-
     private void showReconnectPopup() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), RECONNECT_MSG);
+        textToSpeechService.speakOut(RECONNECT_MSG);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);

@@ -1,41 +1,39 @@
 package com.abhaybmicoc.app.screen;
 
+
+import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.text.Editable;
-import android.content.Intent;
-import android.widget.EditText;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.HttpService;
-import com.abhaybmicoc.app.utils.Tools;
-import com.abhaybmicoc.app.utils.Utils;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
-import com.android.volley.DefaultRetryPolicy;
+import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.abhaybmicoc.app.services.TextToSpeechService;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
-import com.android.volley.Request;
-
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class OtpLoginScreen extends AppCompatActivity {
 
@@ -46,16 +44,26 @@ public class OtpLoginScreen extends AppCompatActivity {
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
+
+    private RadioGroup rgLanguage;
+    private RadioButton rbEnglish;
+    private RadioButton rbHindi;
+    private RadioButton radioButtonId;
+
+    private int selectedId;
+
     private ProgressDialog progressDialog;
+
 
     SharedPreferences sharedPreferencesPersonal;
 
     private DataBaseHelper dataBaseHelper;
+    SharedPreferences sharedPreferenceLanguage;
 
     TextToSpeechService textToSpeechService;
 
     private String kiosk_id;
-    private String WELCOME_LOGIN_MESSAGE = "Welcome to Clinics on Cloud Please Enter Mobile Number";
+    private String WELCOME_LOGIN_MESSAGE = "";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
@@ -74,6 +82,12 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
+
+        rgLanguage = findViewById(R.id.rg_language);
+        rbEnglish = findViewById(R.id.rb_english);
+        rbHindi = findViewById(R.id.rb_hindi);
+
+        WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }
 
     /**
@@ -100,7 +114,38 @@ public class OtpLoginScreen extends AppCompatActivity {
         });
 
         btnLogin.setOnClickListener(v -> doLogin());
+
+        rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+
+                selectedId = rgLanguage.getCheckedRadioButtonId();
+                radioButtonId = findViewById(selectedId);
+
+                if (i == R.id.rb_english) {
+                    setLocale("en");
+                } else if (i == R.id.rb_hindi) {
+                    setLocale("hi");
+                }
+            }
+        });
     }
+
+
+    private void setLocale(String lang) {
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+        //saving data to shared preference
+        SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
+        editor.putString("my_lan", lang);
+        editor.apply();
+    }
+
 
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
@@ -110,6 +155,7 @@ public class OtpLoginScreen extends AppCompatActivity {
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
 
             sharedPreferencesPersonal.edit().clear().apply();
 

@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
     ArrayList<String> deviceArrayList;
 
-    private String HEMOGLOBIN_MSG = "Please long press the power button of device and click on connect button";
+    private String HEMOGLOBIN_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -152,7 +152,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        init();
         setupUI();
         setupEvents();
         initializeData();
@@ -168,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         super.onResume();
 
         checkBluetoothLe();
-
-        textToSpeechService.speakOut(HEMOGLOBIN_MSG);
     }
 
     @Override
@@ -179,8 +176,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 //            sendMessage("U370");
             disconnectGattServer();
         }
-
-        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -239,10 +234,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         connectToSavedPrinter();
     }
 
-
-    private void init(){
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),HEMOGLOBIN_MSG);
-    }
 
     private void setStartTestTimerHandler(boolean connected) {
         deviceConnectionUpdate = new Handler(Looper.getMainLooper());
@@ -360,6 +351,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     private void setupUI() {
         setContentView(R.layout.new_try_hemoglobin);
+
+        HEMOGLOBIN_MSG = getResources().getString(R.string.hemoglobin_msg);
 
         btnNext = findViewById(R.id.btn_skip);
         btnScan = findViewById(R.id.btn_scan);

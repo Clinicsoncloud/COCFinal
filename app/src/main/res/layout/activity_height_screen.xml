@@ -41,7 +41,6 @@
             android:textSize="22sp" />
 
 
-
         <TextView
             android:id="@+id/tv_header_pulseoximeter"
             android:layout_width="wrap_content"
@@ -212,6 +211,12 @@
                 android:padding="@dimen/pad15"
                 android:text="Connecting..."
                 android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_ConnectedText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
         </RelativeLayout>
 
         <LinearLayout

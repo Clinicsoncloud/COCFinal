@@ -146,10 +146,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
     private BluetoothAdapter bluetoothAdapter;
 
-    private String GLUCOSE_MSG = "Please click on start Test";
-    private String INSERT_STRIP_MSG = "Please insert the strip";
-    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
-    private String ADD_BLOOD_MSG = "Please add blood";
+//    private String GLUCOSE_MSG = "Please click on start Test";
+    private String GLUCOSE_MSG = "";
+//    private String INSERT_STRIP_MSG = "Please insert the strip";
+    private String INSERT_STRIP_MSG = "";
+//    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    private String INSERT_NEW_STRIP_MSG = "";
+//    private String ADD_BLOOD_MSG = "Please add blood";
+    private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -243,8 +247,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         super.onPause();
         //close the text to speach object to avoid run time exception
 
-        if(textToSpeechService != null)
-            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -256,7 +258,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),INSERT_STRIP_MSG);
+            textToSpeechService.speakOut(INSERT_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -266,7 +268,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),ADD_BLOOD_MSG);
+            textToSpeechService.speakOut(ADD_BLOOD_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
@@ -277,7 +279,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),INSERT_NEW_STRIP_MSG);
+            textToSpeechService.speakOut(INSERT_NEW_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -472,6 +474,14 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         LayoutInflater mInflater = LayoutInflater.from(this);
         View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
 
+        GLUCOSE_MSG = getResources().getString(R.string.start_test_msg);
+
+        INSERT_STRIP_MSG = getResources().getString(R.string.insert_strip_msg);
+
+        INSERT_NEW_STRIP_MSG = getResources().getString(R.string.new_strip_msg);
+
+        ADD_BLOOD_MSG = getResources().getString(R.string.add_blood_msg);
+
         toolbar = findViewById(R.id.layout_toolbar);
         toolbar.setNavigationIcon(null);
         toolbar.setContentInsetsAbsolute(0, 0);
@@ -578,6 +588,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
      *
      */
     private void initializeData() {
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
+
         util = new Util(this, this);
 
         mConnected = false;
@@ -657,7 +670,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
             btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),GLUCOSE_MSG);
+            textToSpeechService.speakOut(GLUCOSE_MSG);
 
         }, STATR_TEST_ACTIVATION_TIME);
     }

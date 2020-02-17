@@ -26,4 +26,5 @@ public class ApiUtils {
     public static String PREFERENCE_HEMOGLOBIN = "Hemoglobin";
     public static String PREFERENCE_NEWRECORD = "actofit_auto";
     public static String PREFERENCE_THERMOMETERDATA = "thermometer";
+    public static String PREFERENCE_LANGUAGE= "language";
 }
