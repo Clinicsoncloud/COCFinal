@@ -62,9 +62,12 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setupUI();
         setupEvents();
         initializeData();
+
+        Log.e("SavedData_Login", ":" + dataBaseHelper.getOfflineData());
     }
 
     @Override
@@ -222,7 +225,7 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
             patientContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
             patientContentValues.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PATIENTS, patientContentValues);
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PATIENTS, patientContentValues, etMobileNumber.getText().toString());
 
             Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
             objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
@@ -288,13 +291,28 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
                 JSONObject jsonResponse = new JSONObject(response);
 
+                Log.e("Login_jsonResponse", ":" + jsonResponse);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+
+                    Log.e("Login_jsonResponse", ":Patient:" + jsonResponse);
+
+                    writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
+
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
+                    objIntent.putExtra("connectivity", "online");
+                    startActivity(objIntent);
+
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+
+
+                    /*Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
-                    startActivity(objIntent);
+                    startActivity(objIntent);*/
 
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
@@ -302,12 +320,21 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    /*Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
 
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
 
+                    startActivity(objIntent);*/
+
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
+                    objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
+
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+
 
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
@@ -334,6 +361,14 @@ public class OtpLoginScreen extends AppCompatActivity implements TextToSpeech.On
 
         AndMedical_App_Global.getInstance().addToRequestQueue(stringRequest);
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(90000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+    }
+
+    private void writeToPersonalSharedPreference(String key, String value) {
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
     }
 
     // endregion

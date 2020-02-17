@@ -265,12 +265,8 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
                         JSONObject jsonObject = new JSONObject(response);
 
                         Log.e("Post_jsonObject", ":" + jsonObject);
-//                        writeToPersonalSharedPreference(jsonObject);
+                        writeToPersonalSharedPreference(jsonObject);
 
-                        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
-                        startActivity(objIntent);
-                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-                        finish();
 
                     } catch (Exception e) {
                         // TODO: Handle exception here
@@ -334,10 +330,10 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
             patientObject.put(Constant.Fields.MOBILE_NUMBER, getSelectedGender());
 
             dataObject.put("patient", patientObject);
-            resObject.put(",data", dataObject);
+            resObject.put("data", dataObject);
 
             Log.e("res_jsonObject", ":" + resObject);
-//            writeToPersonalSharedPreference(resObject);
+            writeToPersonalSharedPreference(resObject);
 
 
         } catch (Exception e) {
@@ -359,17 +355,32 @@ public class OtpVerifyScreen extends AppCompatActivity implements TextToSpeech.O
      * @throws JSONException
      */
     private void writeToPersonalSharedPreference(JSONObject jsonObject) throws JSONException {
-        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.NAME));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.EMAIL));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.TOKEN));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.DATE_OF_BIRTH));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.MOBILE_NUMBER));
+        try {
+            SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        editor.commit();
+            if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.ID))
+                writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
+            if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.PATIENT_ID))
+                writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.PATIENT_ID));
+
+            writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.NAME));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.EMAIL));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.TOKEN));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.DATE_OF_BIRTH));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.MOBILE_NUMBER));
+
+            editor.commit();
+
+            Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+            startActivity(objIntent);
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+            finish();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

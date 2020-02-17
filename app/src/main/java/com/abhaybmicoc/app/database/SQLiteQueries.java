@@ -6,7 +6,7 @@ public class SQLiteQueries {
 
     public static final String query_TBL_PARAMETERS = "create table IF NOT EXISTS "
             + Constant.TableNames.TBL_PARAMETERS + "("
-            + Constant.Fields.LOCAL_ID + " INTEGER primary key AUTOINCREMENT,"
+            + Constant.Fields.PARAMETER_ID + " INTEGER primary key AUTOINCREMENT,"
             + Constant.Fields.PATIENT_ID + " VARCHAR,"
             + Constant.Fields.BMI + " VARCHAR,"
             + Constant.Fields.BMR + " VARCHAR,"
@@ -95,14 +95,10 @@ public class SQLiteQueries {
             + Constant.Fields.GENDER + " VARCHAR,"
             + Constant.Fields.DATE_OF_BIRTH + " VARCHAR,"
             + Constant.Fields.MOBILE_NUMBER + " VARCHAR,"
-
-
             + Constant.Fields.DELETED_BY + " VARCHAR,"
             + Constant.Fields.CREATED_AT + " VARCHAR,"
-
             + Constant.Fields.DELETED_AT + " VARCHAR,"
             + Constant.Fields.STATUS + " VARCHAR,"
-
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
 }

@@ -24,6 +24,7 @@ public class Constant {
 
 
         public static final String LOCAL_ID = "local_id";
+        public static final String PARAMETER_ID = "parameter_id";
         public static final String PATIENT_ID = "patient_id";
         public final static String NAME = "name";
         public final static String EMAIL = "email";
@@ -113,7 +114,6 @@ public class Constant {
         public final static String BLOOD_PRESSURE_SYSTOLIC_RESULT = "systolicresult";
         public final static String BLOOD_PRESSURE_DIASTOLIC_RESULT = "bloodpressureresult";
 
-
         public static final String CREATED_BY = "created_by";
         public static final String UPDATED_BY = "updated_by";
         public static final String DELETED_BY = "deleted_by";
@@ -123,7 +123,6 @@ public class Constant {
         public static final String STATUS = "status";
 
         public static final String IS_UPLOADED = "is_uploaded";
-
     }
 
     public static class TableNames {
