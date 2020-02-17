@@ -254,7 +254,6 @@ public class PrintPreviewActivity extends Activity {
     protected void onPause() {
         super.onPause();
 
-        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -312,7 +311,7 @@ public class PrintPreviewActivity extends Activity {
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
 
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),RECEIPT_MSG);
+            textToSpeechService.speakOut(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
@@ -330,7 +329,7 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-//        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
 
         connectToSavedPrinter();
 
@@ -359,13 +358,10 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-                speakOutPrint();
+
+                textToSpeechService.speakOut(PRINT_MSG);
             }
         }
-    }
-
-    private void speakOutPrint() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
     }
 
 
@@ -1957,7 +1953,7 @@ public class PrintPreviewActivity extends Activity {
                 btnHome.setEnabled(true);
                 btnPrint.setEnabled(true);
 
-                speakOut();
+                textToSpeechService.speakOut(PRINT_MSG);
 
                 printerActivation();
             } else {
@@ -1967,11 +1963,10 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void speakOut() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),PRINT_MSG);
     }
 
     private void showReconnectPopup() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),RECONNECT_MSG);
+        textToSpeechService.speakOut(RECONNECT_MSG);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);

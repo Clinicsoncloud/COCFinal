@@ -43,7 +43,7 @@ import com.choicemmed.c208blelibrary.cmd.listener.C208ConnectDeviceListener;
 import com.choicemmed.c208blelibrary.cmd.listener.C208DisconnectCommandListener;
 
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity {
     // region Variables
 
     Context context = MainActivity.this;
@@ -99,7 +99,7 @@ public class MainActivity extends Activity{
 
     private BluetoothAdapter bluetoothAdapter;
 
-//    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
+    //    private String OXIMETER_MSG = "Put Finger inside the Device and wait for the Result";
 //    private String OXIMETER_MSG = "pulse oximeter मध्ये बोट घाला आणि result ची वाट पहा";
     private String OXIMETER_MSG = "";
 
@@ -152,21 +152,18 @@ public class MainActivity extends Activity{
 
     }
 
-    private void init() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),OXIMETER_MSG);
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-        textToSpeechService.stopTextToSpeech();
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        init();
+        textToSpeechService.speakOut(OXIMETER_MSG);
     }
 
     @Override
@@ -177,6 +174,14 @@ public class MainActivity extends Activity{
     protected void onStop() {
         super.onStop();
         c208Invoker = new C208Invoker(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     // endregion
@@ -299,6 +304,9 @@ public class MainActivity extends Activity{
     }
 
     private void initializeData() {
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), OXIMETER_MSG);
+
         tvName.setText("Name : " + shared.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + shared.getString(Constant.Fields.GENDER, ""));
         tvAge.setText("DOB : " + shared.getString(Constant.Fields.DATE_OF_BIRTH, ""));
@@ -480,7 +488,8 @@ public class MainActivity extends Activity{
     private class UnBindDeviceAdapter implements C208DisconnectCommandListener {
 
         @Override
-        public void onDisconnected() { }
+        public void onDisconnected() {
+        }
     }
 
 

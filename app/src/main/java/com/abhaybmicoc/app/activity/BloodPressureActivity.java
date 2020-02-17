@@ -71,7 +71,7 @@ import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
-public class BloodPressureActivity extends Activity{
+public class BloodPressureActivity extends Activity {
     // region Variables
 
     private Context context = BloodPressureActivity.this;
@@ -150,8 +150,6 @@ public class BloodPressureActivity extends Activity{
 
         setupUI();
 
-        init();
-
         setupEvents();
 
         initializeData();
@@ -168,6 +166,9 @@ public class BloodPressureActivity extends Activity{
         super.onDestroy();
 
         clearDataAndServices();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -175,10 +176,6 @@ public class BloodPressureActivity extends Activity{
         super.onResume();
 
         enableBluetooth();
-    }
-
-    private void init() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -252,8 +249,6 @@ public class BloodPressureActivity extends Activity{
         if (!mIsSendCancel) {
             mIsSendCancel = true;
         }
-
-        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -335,7 +330,7 @@ public class BloodPressureActivity extends Activity{
      */
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),BLOOD_PRESSURE_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), BLOOD_PRESSURE_MSG);
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));

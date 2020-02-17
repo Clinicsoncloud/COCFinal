@@ -27,22 +27,23 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     private SharedPreferences sharedPreferenceLanguage;
 
     public TextToSpeechService(Context context, String msg) {
-        Log.e("constructo", " : ");
         this.context = context;
 
         this.textToSpeech = new TextToSpeech(context, this);
-
         this.message = msg;
+        Log.e("constructor_TxtSpeach", " : " + msg);
     }
 
     public void speakOut(String message) {
-        if(isInitialize) {
-            Log.e("speakOut", " : ");
+        if (isInitialize) {
+            Log.e("speakOut_message", " : " + message);
             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 
     public void stopTextToSpeech() {
+
+        Log.e("Stopped_TextSpeach", ":" + textToSpeech);
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
@@ -67,16 +68,16 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
             if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
 
-                Log.e("inside_english"," : ");
+                Log.e("inside_english", " : ");
                 result = textToSpeech.setLanguage(Locale.US);
             } else {
-                Log.e("inside_hindi"," : ");
+                Log.e("inside_hindi", " : ");
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
             }
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("inside_langerror"," : ");
+                Log.e("inside_langerror", " : ");
             } else {
-                Log.e("inside_else"," : speakOut_isInitialize"+isInitialize);
+                Log.e("inside_else", " : speakOut_isInitialize" + isInitialize);
                 speakOut(message);
             }
         }

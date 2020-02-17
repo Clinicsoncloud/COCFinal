@@ -1,30 +1,30 @@
 package com.abhaybmicoc.app.actofit;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.location.LocationManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Toast;
+import android.app.Activity;
 import android.widget.Button;
 import android.widget.Switch;
 import android.content.Intent;
 import android.content.Context;
+import android.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.RadioGroup;
+import android.provider.Settings;
 import android.widget.RadioButton;
 import android.app.DatePickerDialog;
+import android.location.LocationManager;
+import android.content.DialogInterface;
 import android.annotation.SuppressLint;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
@@ -79,7 +79,7 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     public static final int REQUSET_CODE = 1001;
 
-//    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
+    //    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
     private String SMARTSCALE_MSG = "";
     public static final String TAG = "MainActivity";
 
@@ -184,7 +184,6 @@ public class ActofitMainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -427,5 +426,13 @@ public class ActofitMainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 }

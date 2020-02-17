@@ -142,9 +142,6 @@ public class ThermometerScreen extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-
-        if(textToSpeechService != null)
-            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -211,8 +208,12 @@ public class ThermometerScreen extends AppCompatActivity {
             finish();
         });
 
-        tvPulseOximeter.setOnClickListener(view -> {handleOximeter();});
-        tvBloodPressure.setOnClickListener(view -> {handleBloodPressure();});
+        tvPulseOximeter.setOnClickListener(view -> {
+            handleOximeter();
+        });
+        tvBloodPressure.setOnClickListener(view -> {
+            handleBloodPressure();
+        });
 
         btnBaud.setOnClickListener(view -> handleBaud());
         btnConnect.setOnClickListener(view -> turnOnBluetooth());
@@ -233,11 +234,14 @@ public class ThermometerScreen extends AppCompatActivity {
     }
 
     private void handleOximeter() {
-        context.startActivity(new Intent(this,MainActivity.class));
+        context.startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
     private void initializeData() {
+
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+
         sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         strConnect = (String) getText(R.string.connect);
@@ -264,18 +268,18 @@ public class ThermometerScreen extends AppCompatActivity {
 
     private void handleBaud() {
         if (etTemperature.getText().length() > 0) {
-                Intent objpulse = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+            Intent objpulse = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
 
-                SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
-                editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());
-                editor.commit();
+            SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
+            editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());
+            editor.commit();
 
-                startActivity(objpulse);
-                closeBluetooth();
-                finish();
+            startActivity(objpulse);
+            closeBluetooth();
+            finish();
         } else {
             Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),MANUAL_MSG);
+            textToSpeechService.speakOut(MANUAL_MSG);
         }
     }
 
@@ -386,7 +390,8 @@ public class ThermometerScreen extends AppCompatActivity {
 
         try {
             socket.close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
     }
 
     // endregion
@@ -455,7 +460,7 @@ public class ThermometerScreen extends AppCompatActivity {
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
 
                 //success msg
-                textToSpeechService = new TextToSpeechService(getApplicationContext(),SUCCESS_MSG);
+                textToSpeechService.speakOut(SUCCESS_MSG);
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
@@ -469,7 +474,6 @@ public class ThermometerScreen extends AppCompatActivity {
                 Toast.makeText(ThermometerScreen.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
                 //failure msg
-                textToSpeechService = new TextToSpeechService(getApplicationContext(),FAILURE_MSG);
                 textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);
@@ -551,6 +555,14 @@ public class ThermometerScreen extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     // endregion

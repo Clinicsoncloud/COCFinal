@@ -125,16 +125,11 @@ public class HeightActivity extends Activity {
     /* access modifiers changed from: protected */
     public void onResume() {
         super.onResume();
-
     }
 
     /* access modifiers changed from: protected */
     public void onPause() {
         super.onPause();
-
-        /* close the textToSpeech engine to avoide the runtime exception from it */
-        if (textToSpeechService != null)
-            textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -166,6 +161,9 @@ public class HeightActivity extends Activity {
     /* access modifiers changed from: protected */
     public void onDestroy() {
         super.onDestroy();
+
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     /* Request enabling bluetooth if not enabled */
@@ -227,6 +225,7 @@ public class HeightActivity extends Activity {
 
     private void initializeData() {
         btnClean.setText("Clean");
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
 
         etBluetoothLogs.setFocusable(false);
         etBluetoothLogs.setText(">:Bluetooth Terminal\n");
@@ -323,7 +322,7 @@ public class HeightActivity extends Activity {
     private void gotoNext() {
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), MANUAL_MSG);
+//            textToSpeechService = new TextToSpeechService(getApplicationContext(), MANUAL_MSG);
             textToSpeechService.speakOut(MANUAL_MSG);
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
@@ -479,14 +478,12 @@ public class HeightActivity extends Activity {
                 tv_ConnectedText.setText("Connected");
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
 
-                textToSpeechService = new TextToSpeechService(getApplicationContext(), SUCCESS_MSG);
                 textToSpeechService.speakOut(SUCCESS_MSG);
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
                 Toast.makeText(HeightActivity.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
-                textToSpeechService = new TextToSpeechService(getApplicationContext(), FAILURE_MSG);
                 textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);

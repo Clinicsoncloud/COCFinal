@@ -153,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         super.onCreate(savedInstanceState);
 
         setupUI();
-        init();
         setupEvents();
         initializeData();
     }
@@ -168,8 +167,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         super.onResume();
 
         checkBluetoothLe();
-
-        textToSpeechService.speakOut(HEMOGLOBIN_MSG);
     }
 
     @Override
@@ -179,8 +176,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 //            sendMessage("U370");
             disconnectGattServer();
         }
-
-        textToSpeechService.stopTextToSpeech();
     }
 
 
@@ -239,10 +234,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         connectToSavedPrinter();
     }
 
-
-    private void init(){
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),HEMOGLOBIN_MSG);
-    }
 
     private void setStartTestTimerHandler(boolean connected) {
         deviceConnectionUpdate = new Handler(Looper.getMainLooper());
