@@ -1,6 +1,8 @@
 package com.abhaybmicoc.app.screen;
 
+import android.content.ContentValues;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.text.Editable;
 import android.content.Intent;
@@ -15,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
@@ -46,6 +49,8 @@ public class OtpLoginScreen extends AppCompatActivity {
     private ProgressDialog progressDialog;
 
     SharedPreferences sharedPreferencesPersonal;
+
+    private DataBaseHelper dataBaseHelper;
 
     TextToSpeechService textToSpeechService;
 
@@ -98,6 +103,7 @@ public class OtpLoginScreen extends AppCompatActivity {
     }
 
     private void initializeData() {
+        dataBaseHelper = new DataBaseHelper(context);
 
         textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
 
@@ -162,8 +168,31 @@ public class OtpLoginScreen extends AppCompatActivity {
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
-                GenerateOTP();
+                if (Utils.isOnline(context)) {
+                    GenerateOTP();
+                } else {
+                    savePatient();
+                }
             }
+        }
+    }
+
+
+    private void savePatient() {
+        try {
+            ContentValues patientContentValues = new ContentValues();
+
+            patientContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
+            patientContentValues.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PATIENTS, patientContentValues, etMobileNumber.getText().toString());
+
+            Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+            objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+            objIntent.putExtra("connectivity", "offline");
+            startActivity(objIntent);
+
+        } catch (Exception e) {
         }
     }
 
@@ -205,6 +234,16 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     }
 
+
+    private void writeToPersonalSharedPreference(String key, String value) {
+        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(key, value);
+        editor.commit();
+    }
+
+
     // endregion
 
     // region API methods
@@ -237,11 +276,12 @@ public class OtpLoginScreen extends AppCompatActivity {
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
+                    writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
-
+                    objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
 
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -250,12 +290,13 @@ public class OtpLoginScreen extends AppCompatActivity {
                 } else {
                     writePersonalSharedPreferences(jsonResponse);
 
-                    Intent objIntent = new Intent(getApplicationContext(), PostVerifiedOtpScreen.class);
-
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
-
+                    objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
+
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
                     finish();
                 }

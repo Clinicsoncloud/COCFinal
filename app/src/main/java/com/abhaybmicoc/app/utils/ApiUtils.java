@@ -8,6 +8,7 @@ public class ApiUtils {
     public static String PROFILE_URL = PROTOCOL + SERVER_URL + "/api/v1/profile";
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";
     public static String VERIFY_OTP_URL = PROTOCOL + SERVER_URL + "/api/v1/login/verify";
+    public static String SYNC_OFFLINE_DATA_URL = PROTOCOL + SERVER_URL + "/api/v1/offline/sync";
 
     /* api for downloading pdf */
     public static String DOWNLOAD_PDF_URL = PROTOCOL + SERVER_URL + "/pdfs/";

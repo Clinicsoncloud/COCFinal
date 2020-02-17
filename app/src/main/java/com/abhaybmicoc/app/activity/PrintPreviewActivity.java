@@ -1339,8 +1339,9 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
+            paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues);
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues,"");
 
         } catch (Exception e) {
         }

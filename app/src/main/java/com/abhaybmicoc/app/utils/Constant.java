@@ -24,7 +24,7 @@ public class Constant {
         public final static String KIOSK_ID = "kiosk_id";
 
 
-        public static final String LOCAL_ID = "local_id";
+        public static final String PARAMETER_ID = "parameter_id";
         public static final String PATIENT_ID = "patient_id";
         public final static String NAME = "name";
         public final static String EMAIL = "email";
@@ -130,6 +130,7 @@ public class Constant {
     public static class TableNames {
 
         public static final String TBL_PARAMETERS = "tbl_parameters";
+        public static final String TBL_PATIENTS = "tbl_patients";
     }
 
 }
