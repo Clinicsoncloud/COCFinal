@@ -58,6 +58,10 @@ public class ActofitMainActivity extends AppCompatActivity {
     private RadioButton radioFemale;
     private RadioGroup radioGroupGender;
 
+    private int SUBSCRIPTION_OVER = 101;
+    private int NO_SAVED_DEVICE = 102;
+    private int IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE = 100;
+
     android.support.v7.app.ActionBar actionBar;
 
     private int day, month, year;
@@ -183,12 +187,13 @@ public class ActofitMainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        Log.e("requestCode_Log", ":" + requestCode + "   :resultCode:    " + resultCode + "    :data:   " + data);
 
         if (requestCode == REQUSET_CODE && resultCode == RESULT_OK) {
             if (data != null) {
@@ -196,11 +201,16 @@ public class ActofitMainActivity extends AppCompatActivity {
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
             Toast.makeText(ActofitMainActivity.this, "Cancelled!!!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == REQUSET_CODE && resultCode == SUBSCRIPTION_OVER) {
+            Toast.makeText(ActofitMainActivity.this, "Subscription over!!!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == REQUSET_CODE && resultCode == NO_SAVED_DEVICE) {
+            Toast.makeText(ActofitMainActivity.this, "Device is not saved!!!", Toast.LENGTH_SHORT).show();
+        } else if (requestCode == REQUSET_CODE && resultCode == IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE) {
+            Toast.makeText(ActofitMainActivity.this, "Impedance measurement error from smart scale!!!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == RESULT_CANCELED) {
             Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     // endregion
 
