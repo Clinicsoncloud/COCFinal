@@ -70,9 +70,11 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
                 Log.e("inside_english", " : ");
                 result = textToSpeech.setLanguage(Locale.US);
-            } else {
+            } else if (sharedPreferenceLanguage.getString("my_lan","").equals("hi")) {
                 Log.e("inside_hindi", " : ");
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
+            }else {
+                result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
             }
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("inside_langerror", " : ");

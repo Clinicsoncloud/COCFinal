@@ -46,8 +46,10 @@ public class OtpLoginScreen extends AppCompatActivity {
     private EditText etMobileNumber;
 
     private RadioGroup rgLanguage;
-    private RadioButton rbEnglish;
+
     private RadioButton rbHindi;
+    private RadioButton rbEnglish;
+    private RadioButton rbMarathi;
     private RadioButton radioButtonId;
 
     private int selectedId;
@@ -86,6 +88,7 @@ public class OtpLoginScreen extends AppCompatActivity {
         rgLanguage = findViewById(R.id.rg_language);
         rbEnglish = findViewById(R.id.rb_english);
         rbHindi = findViewById(R.id.rb_hindi);
+        rbHindi = findViewById(R.id.rb_marathi);
 
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }

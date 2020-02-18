@@ -73,6 +73,18 @@
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
+            <RadioButton
+                android:id="@+id/rb_marathi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/white"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Marathi"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
         </RadioGroup>
 
         <Button
