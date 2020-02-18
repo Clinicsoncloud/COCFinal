@@ -1,10 +1,9 @@
 package com.abhaybmicoc.app.services;
 
+import android.os.IBinder;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.IBinder;
-import android.util.Log;
 
 import java.util.Timer;
 
@@ -17,8 +16,6 @@ public class ConnectivityService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        timer.scheduleAtFixedRate(new sendLocationDataTask(), 1000, 1000 * 5);
-        //return super.onStartCommand(intent, flags, startId);
         return START_STICKY;
     }
 
@@ -40,16 +37,10 @@ public class ConnectivityService extends Service {
      * Called when The service is no longer used and is being destroyed
      */
     @Override
-    public void onDestroy() {
-        Log.e("onDestroy", "service");
-		/*if(updateLocationReceiver!=null)
-		this.unregisterReceiver(updateLocationReceiver);*/
-    }
+    public void onDestroy() { }
 
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
-
 }

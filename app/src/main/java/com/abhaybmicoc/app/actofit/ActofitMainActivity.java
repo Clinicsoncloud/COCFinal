@@ -1,7 +1,6 @@
 package com.abhaybmicoc.app.actofit;
 
 import android.os.Build;
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.app.Activity;
@@ -16,10 +15,9 @@ import android.widget.RadioGroup;
 import android.provider.Settings;
 import android.widget.RadioButton;
 import android.app.DatePickerDialog;
-import android.location.LocationManager;
 import android.content.DialogInterface;
 import android.annotation.SuppressLint;
-import android.speech.tts.TextToSpeech;
+import android.location.LocationManager;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.bluetooth.BluetoothAdapter;
@@ -62,8 +60,6 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     private int day, month, year;
 
-    private TextToSpeech textToSpeech;
-
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
 
@@ -79,7 +75,6 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     public static final int REQUSET_CODE = 1001;
 
-    //    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
     private String SMARTSCALE_MSG = "";
     public static final String TAG = "MainActivity";
 
@@ -337,7 +332,6 @@ public class ActofitMainActivity extends AppCompatActivity {
             Date initDate = null;
             try {
                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
-                Log.e("initDate", "" + initDate);
             } catch (ParseException e) {
                 e.printStackTrace();
             }

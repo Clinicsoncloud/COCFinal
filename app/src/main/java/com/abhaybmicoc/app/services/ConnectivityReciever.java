@@ -1,28 +1,21 @@
 package com.abhaybmicoc.app.services;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
+import android.content.Context;
 import android.net.NetworkInfo;
-import android.util.Log;
-import android.widget.Toast;
+import android.net.ConnectivityManager;
+import android.content.BroadcastReceiver;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.screen.OtpVerifyScreen;
+import com.android.volley.VolleyError;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
-import com.android.volley.VolleyError;
+import com.abhaybmicoc.app.database.DataBaseHelper;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
-
 
 public class ConnectivityReciever extends BroadcastReceiver {
 
@@ -45,11 +38,8 @@ public class ConnectivityReciever extends BroadcastReceiver {
                 networkInfo = connectivityManager.getActiveNetworkInfo();
             }
             if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
-                Log.e("receiver_Log_Receiver", ":True:" + networkInfo.isConnectedOrConnecting());
                 getOfflineRecords();
-            } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
-                Log.e("receiver_Log_Receiver", ":FAlse:");
-            }
+            } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) { }
         }
     }
 

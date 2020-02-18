@@ -1,11 +1,7 @@
 package com.abhaybmicoc.app.activity;
 
-import android.Manifest;
-import android.location.LocationManager;
 import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
+import android.Manifest;
 import android.os.Bundle;
 import android.view.View;
 import android.os.IBinder;
@@ -19,6 +15,7 @@ import android.content.Context;
 import android.app.AlertDialog;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.provider.Settings;
 import android.app.ProgressDialog;
 import android.view.WindowManager;
 import android.app.FragmentManager;
@@ -27,6 +24,7 @@ import android.content.IntentFilter;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.app.FragmentTransaction;
+import android.location.LocationManager;
 import android.bluetooth.BluetoothGatt;
 import android.speech.tts.TextToSpeech;
 import android.bluetooth.BluetoothDevice;
@@ -36,6 +34,7 @@ import android.content.SharedPreferences;
 import android.view.View.OnClickListener;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.support.annotation.RequiresApi;
 import android.graphics.drawable.ColorDrawable;
 import android.bluetooth.BluetoothAdapter.LeScanCallback;
 
@@ -395,7 +394,6 @@ public class BloodPressureActivity extends Activity {
      *
      */
     private void doStartService() {
-        Log.e("inside", "doStartService");
         Intent intent1 = new Intent(this, BleReceivedService.class);
         startService(intent1);
         if (!mIsBleReceiver) {
@@ -409,7 +407,6 @@ public class BloodPressureActivity extends Activity {
      *
      */
     private void doStopService() {
-        Log.e("inside", "doStopService");
         if (mIsBleReceiver) {
             unregisterReceiver(bleServiceReceiver);
             mIsBleReceiver = false;
@@ -440,10 +437,8 @@ public class BloodPressureActivity extends Activity {
                     //Check if its 651 or 352
                     if (name.contains("651")) {
                         //This is BP
-                        Log.e("bpDevice_condition", "");
                         if (!pairingDevices.contains("bpDevice")) {
                             pairedDeviceList.add("bpDevice");
-                            Log.e("bpDevice_condition", "");
                         }
 
                     } else if (name.contains("352")) {
@@ -579,7 +574,6 @@ public class BloodPressureActivity extends Activity {
             bindService(new Intent(BloodPressureActivity.this,
                     BleReceivedService.class), mBleReceivedServiceConnection, Context.BIND_AUTO_CREATE);
             isBindBleReceivedService = true;
-            Log.e("inside_condition", "dobindBleReceivedService");
         }
     }
 
@@ -1090,11 +1084,8 @@ public class BloodPressureActivity extends Activity {
         public void onReceive(Context context, Intent intent) {
             Bundle intentBundle = intent.getExtras();
             String type = intent.getExtras().getString(BleReceivedService.EXTRA_TYPE);
-            Log.e("onReceive_intentAction", "" + intent.getExtras().getString(BleReceivedService.EXTRA_TYPE));
-            Log.e("onReceive_Type", " = " + BleReceivedService.EXTRA_TYPE);
             if (BleReceivedService.TYPE_GATT_CONNECTED.equals(type)) {
                 linearContainer.setVisibility(View.VISIBLE);
-                Log.e("inside", "onReceive_GATT_CONNECTED");
                 try {
                     pd.dismiss();
                 } catch (Exception e) {
@@ -1108,7 +1099,6 @@ public class BloodPressureActivity extends Activity {
                 setDateTimeDelay = Long.MIN_VALUE;
                 indicationDelay = Long.MIN_VALUE;
             } else if (BleReceivedService.TYPE_GATT_DISCONNECTED.equals(type)) {
-                Log.e("inside", "onReceive_GATT_DISCONNECTED");
                 dismissIndicator();
                 if (shouldStartConnectDevice) {
                     linearContainer.setVisibility(View.VISIBLE);
@@ -1129,7 +1119,6 @@ public class BloodPressureActivity extends Activity {
                     }, 80L);
                 }
             } else if (BleReceivedService.TYPE_GATT_ERROR.equals(type)) {
-                Log.e("inside", "onReceive_GATT_ERROR");
                 int status = intent.getExtras().getInt(BleReceivedService.EXTRA_STATUS);
                 if (status == 19) {
                     showAlertDialog();
@@ -1139,7 +1128,6 @@ public class BloodPressureActivity extends Activity {
                     if (BleReceivedService.getInstance() != null) {
                         if (!BleReceivedService.getInstance().isConnectedDevice()) {
                             shouldStartConnectDevice = false;
-                            Log.e("inside", "shouldStartConnectDevice" + shouldStartConnectDevice);
                             dismissIndicator();
                             doStartLeScan();
                             linearContainer.setVisibility(View.VISIBLE);
@@ -1160,7 +1148,6 @@ public class BloodPressureActivity extends Activity {
                 }
             } else {
                 if (BleReceivedService.TYPE_GATT_SERVICES_DISCOVERED.equals(type)) {
-                    Log.e("inside", "onReceive_GATT_DISCOVERED");
                     if (shouldStartConnectDevice) {
                         if (BleReceivedService.getInstance() != null) {
 

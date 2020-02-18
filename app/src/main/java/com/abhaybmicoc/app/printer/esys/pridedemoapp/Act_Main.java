@@ -3,59 +3,54 @@ package com.abhaybmicoc.app.printer.esys.pridedemoapp;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Hashtable;
-import java.util.Locale;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.provider.Settings;
-import android.speech.tts.TextToSpeech;
-import android.support.annotation.RequiresApi;
 import android.text.Html;
-import android.text.method.LinkMovementMethod;
-import android.util.Log;
-import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.app.Dialog;
 import android.view.Window;
+import android.app.Activity;
+import android.widget.Toast;
+import android.view.Display;
+import android.os.AsyncTask;
+import android.view.KeyEvent;
+import android.widget.Button;
+import android.content.Intent;
+import android.os.SystemClock;
+import android.content.Context;
+import android.app.AlertDialog;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
+import android.provider.Settings;
+import android.widget.ProgressBar;
+import android.app.ProgressDialog;
+import android.widget.RadioButton;
+import android.widget.LinearLayout;
+import android.content.IntentFilter;
+import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.location.LocationManager;
 import android.view.animation.Animation;
+import android.content.BroadcastReceiver;
+import android.bluetooth.BluetoothDevice;
+import android.content.SharedPreferences;
+import android.view.View.OnClickListener;
+import android.bluetooth.BluetoothAdapter;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.support.annotation.RequiresApi;
+import android.text.method.LinkMovementMethod;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.activity.PrintPreviewActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
-import com.abhaybmicoc.app.services.TextToSpeechService;
-import com.abhaybmicoc.app.utils.ApiUtils;
 
 import com.prowesspride.api.Setup;
 import com.prowesspride.api.Printer_ESC;
@@ -78,45 +73,56 @@ public class Act_Main extends Activity {
     public static AndMedical_App_Global mGP = null;
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
     public static BluetoothDevice mBDevice = null;
+
     private TextView mtvDeviceInfo = null;
     private TextView tvScanbt;
+
     private LinearLayout mllDeviceCtrl = null;
     private LinearLayout llSelectedDevicesLayout = null;
+    private LinearLayout llprog;
+    private LinearLayout scanLL;
+
     private Button btnPair = null;
     private Button btnComm = null;
     private Button btnBack, btnScanbt, btnContinue;
+
     public static final byte REQUEST_DISCOVERY = 0x01;
     public static final byte REQUEST_ABOUT = 0x05;
+
     public static final int EXIT_ON_RETURN = 21;
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
-    private boolean mblBonded = false;
+
     public static Printer_GEN prnGen;
     public static Printer_ESC prnEsc;
-    public static boolean blResetBtnEnable = false;
-    public final static String EXTRA_DEVICE_TYPE = "android.bluetooth.device.extra.DEVICE_TYPE";
+
+    private boolean mblBonded = false;
     private boolean blBleStatusBefore = false;
+
     final Context context = this;
-    public Dialog dlgRadioBtn, dlgSupport;
-    public static ProgressDialog prgDialog;
+
+    public Dialog dlgSupport;
+
     private String sTo, sSubject, sMessage, sDevicetype;
+
     private EditText edtTo, edtSubject, edtMessage;
+
     private ScrollView svScroll, svRadio;
+
     private RadioGroup rgProtocol;
     private RadioButton rbtnProtocol;
+
     ScaleAnimation scale;
-    public static String TAG = "Act_Main";
-    Context contextGlb;
-    public Dialog dlgCustomdialog;
-    public ProgressBar pbProgress;
-    private LinearLayout llprog;
+
     private Button btnOk, btIcon;
     int iRetVal;
+
     public SharedPreferences preferences;
-    private LinearLayout scanLL;
 
     InputStream input;// = BluetoothComm.misIn;
     OutputStream outstream;
 
+    public static String TAG = "Act_Main";
+    public final static String EXTRA_DEVICE_TYPE = "android.bluetooth.device.extra.DEVICE_TYPE";
 
     private BroadcastReceiver _mPairingRequest = new BroadcastReceiver() {
         @Override
@@ -139,7 +145,8 @@ public class Act_Main extends Activity {
     TextToSpeechService textToSpeechService;
 
     @Override
-    public void onBackPressed() { }
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onResume() {
@@ -174,7 +181,7 @@ public class Act_Main extends Activity {
 
         llSelectedDevicesLayout.setVisibility(View.GONE);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_DEVICE_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), SCAN_DEVICE_MSG);
 
         preferences = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -448,7 +455,7 @@ public class Act_Main extends Activity {
         }
 
         // waiting msg
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),WAITING_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), WAITING_MSG);
 
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
@@ -553,7 +560,6 @@ public class Act_Main extends Activity {
                 BluetoothPair.createBond(mBDevice);
                 mblBonded = false;
             } catch (Exception e1) {
-                Log.d(getString(R.string.app_name), "create Bond failed!");
                 e1.printStackTrace();
                 return RET_BOND_FAIL;
             }

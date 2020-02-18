@@ -1,16 +1,17 @@
 package com.abhaybmicoc.app.database;
 
-import android.database.Cursor;
 import android.util.Log;
+import android.database.Cursor;
 import android.content.Context;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONException;
 
 public class DataBaseHelper {
     public static SQLiteDatabase sqLiteDatabase;
@@ -47,7 +48,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp_Log", "Insert " + table + " Details Fail");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"DataBaseHelper","saveToLocalTable","save to local table failed");
         }
     }
 
@@ -61,7 +62,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp", "Update " + table + " Details Fail");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"DataBaseHelper","updatePatientInfo","updating patient info failed");
         }
     }
 
@@ -100,7 +101,7 @@ public class DataBaseHelper {
                 }
                 return jArray;
             } catch (JSONException e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"DataBaseHelper","getOfflineData","getting offline data failed");
             }
         }
 

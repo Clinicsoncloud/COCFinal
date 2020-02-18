@@ -2,8 +2,8 @@ package com.abhaybmicoc.app.printer.esys.pridedemoapp;
 
 import android.app.Application;
 
-import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.prowesspride.api.Setup;
+import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 
 public class Act_GlobalPool extends Application {
     /**

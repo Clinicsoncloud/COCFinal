@@ -1,18 +1,16 @@
 package com.abhaybmicoc.app.screen;
 
-import android.content.ContentValues;
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 import android.widget.EditText;
 import android.widget.DatePicker;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioButton;
 import android.app.ProgressDialog;
 import android.app.DatePickerDialog;
-import android.speech.tts.TextToSpeech;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -72,7 +70,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
-    private TextToSpeech textToSpeech;
     private BluetoothAdapter mBluetoothAdapter;
     private SharedPreferences sharedPreferencesPersonal;
 

@@ -1,6 +1,5 @@
 package com.abhaybmicoc.app.adapter;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.content.Context;
@@ -227,13 +226,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             SharedPreferences.Editor objectShared = sharedPreferencesPersonal.edit();
 
-            Log.e("standardWeightMen", " : " + standardWeightMen);
-            Log.e("standardWeightFemale", " : " + standardWeightFemale);
-
             if (sharedPreferencesPersonal.getString("gender", "").equals("male")) {
-
-                Log.e("standardWeightMenFF", " : " + (0.90 * standardWeightMen));
-                Log.e("standardWeightFemaleFF", " : " + (1.09 * standardWeightMen));
 
                 double standardWeighRangeFrom = (0.90 * standardWeightMen);
                 standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
@@ -1295,6 +1288,5 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }else
             return 0;
     }
-
     // endregion
 }

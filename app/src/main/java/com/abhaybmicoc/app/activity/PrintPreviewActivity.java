@@ -1,12 +1,7 @@
 package com.abhaybmicoc.app.activity;
 
-import android.content.ContentValues;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,17 +21,20 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.ListView;
 import android.widget.ImageView;
+import android.provider.Settings;
 import android.app.ProgressDialog;
 import android.widget.ProgressBar;
 import android.widget.LinearLayout;
 import android.app.DownloadManager;
-import android.speech.tts.TextToSpeech;
-import android.content.DialogInterface;
+import android.content.ContentValues;
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
+import android.location.LocationManager;
 import android.bluetooth.BluetoothDevice;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.bluetooth.BluetoothAdapter;
+import android.support.annotation.RequiresApi;
 import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
@@ -54,17 +52,13 @@ import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
-import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.utils.Utils;
-import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.abhaybmicoc.app.utils.Utils;
+import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import com.prowesspride.api.Printer_GEN;
-import com.prowesspride.api.Setup;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -77,7 +71,6 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.util.ArrayList;
@@ -970,16 +963,12 @@ public class PrintPreviewActivity extends Activity {
 
     private void printerActivation() {
         try {
-            Log.e("PrinterActivation", ":0:");
-
             iWidth = getWindowManager().getDefaultDisplay().getWidth();
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
-
-            Log.e("PrinterActivation", ":ptrgen:" + ptrGen);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","printerActivation","Activation of printer failed");
         }
     }
 
@@ -1630,8 +1619,6 @@ public class PrintPreviewActivity extends Activity {
         @Override
         protected void onPostExecute(Integer result) {
 
-            Log.e("result_PosstLog", ":" + result);
-
             if (result == -1) {
                 Toast.makeText(context, "Please Reconnect the device...", Toast.LENGTH_LONG).show();
             }
@@ -1939,8 +1926,6 @@ public class PrintPreviewActivity extends Activity {
         @Override
         public void onPostExecute(Integer result) {
 
-            Log.e("result_Connection", ":" + result);
-
             if (mpd != null && mpd.isShowing())
                 mpd.dismiss();
 
@@ -1985,4 +1970,3 @@ public class PrintPreviewActivity extends Activity {
         alertDialogBuilder.setCancelable(false);
     }
 }
-

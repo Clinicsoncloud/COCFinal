@@ -1,23 +1,23 @@
 package com.abhaybmicoc.app.screen;
 
 
-import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+import android.widget.Button;
 import android.text.Editable;
+import android.content.Intent;
+import android.content.Context;
+import android.widget.EditText;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+import android.app.ProgressDialog;
+import android.widget.RadioButton;
+import android.content.ContentValues;
+import android.content.res.Configuration;
+import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
+import android.view.inputmethod.InputMethodManager;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;

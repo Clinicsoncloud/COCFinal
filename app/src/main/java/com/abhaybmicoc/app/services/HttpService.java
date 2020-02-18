@@ -2,7 +2,6 @@ package com.abhaybmicoc.app.services;
 
 import java.util.Map;
 
-import android.util.Log;
 import android.app.Activity;
 import android.content.Context;
 import android.app.ProgressDialog;
@@ -30,7 +29,6 @@ public class HttpService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("onResponse", "" + response);
                         if (!((Activity) context).isFinishing()) {
                             loading.dismiss();
                         }
@@ -40,13 +38,10 @@ public class HttpService {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("onErrorResponse", "" + error);
                         responseListner.onProcessFinish("", error, "error");
 
                         if (loading != null && loading.isShowing()) {
                             loading.dismiss();
-//                        if (loading != null)
-
                         }
                     }
                 }) {
@@ -73,9 +68,6 @@ public class HttpService {
 
             @Override
             public void retry(VolleyError error) throws VolleyError {
-                //Toast.makeText(context, "" + error, Toast.LENGTH_SHORT).show();
-                Log.e("onErrorResponse", "" + error);
-//                responseListner.onError(error);
                 responseListner.onProcessFinish("", error, "error");
             }
         });
@@ -135,17 +127,13 @@ public class HttpService {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
-                        Log.e("onResponse", "" + response);
                         responseListner.onProcessFinish(String.valueOf(response), null, "response");
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("onErrorResponse", "" + error);
                 responseListner.onProcessFinish("", error, "error");
-
             }
         }) {
             protected JSONObject getJsonObject() {
@@ -166,8 +154,6 @@ public class HttpService {
 
             @Override
             public void retry(VolleyError error) throws VolleyError {
-                //Toast.makeText(context, "" + error, Toast.LENGTH_SHORT).show();
-                Log.e("onErrorResponse", "" + error);
                 responseListner.onProcessFinish("", error, "error");
             }
         });

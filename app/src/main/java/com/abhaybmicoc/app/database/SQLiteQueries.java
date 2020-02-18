@@ -100,6 +100,4 @@ public class SQLiteQueries {
             + Constant.Fields.DELETED_AT + " VARCHAR,"
             + Constant.Fields.STATUS + " VARCHAR,"
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
-
-
 }

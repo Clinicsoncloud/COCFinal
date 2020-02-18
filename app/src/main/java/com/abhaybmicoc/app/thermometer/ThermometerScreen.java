@@ -1,21 +1,20 @@
 package com.abhaybmicoc.app.thermometer;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.content.Intent;
 import android.content.Context;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 
-import android.os.Handler;
-import android.util.Log;
 import android.view.View;
+import android.os.Handler;
 import android.widget.Toast;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -28,24 +27,22 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
-import com.abhaybmicoc.app.activity.BloodPressureActivity;
-import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
-import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.utils.Constant;
-import com.abhaybmicoc.app.utils.ErrorUtils;
+import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.activity.BloodPressureActivity;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.Locale;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
@@ -58,7 +55,6 @@ public class ThermometerScreen extends AppCompatActivity {
     private String strReceiveData = "";
 
     private String message;
-    private String txtSpeak;
     private String strConnect;
     private String strEnabled;
     private String strConnected;
@@ -339,8 +335,6 @@ public class ThermometerScreen extends AppCompatActivity {
         deviceConnectionTimeoutHandler = new Handler();
 
         deviceConnectionTimeoutHandler.postDelayed(() -> {
-//            if (dialogConnectionProgress != null && dialogConnectionProgress.isShowing()) {
-//                dialogConnectionProgress.dismiss();
 
             if (progressDialog.isShowing()) {
                 progressDialog.dismiss();
@@ -350,7 +344,6 @@ public class ThermometerScreen extends AppCompatActivity {
                 btnConnect.setClickable(true);
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
             }
-//            }
         }, DEVICE_CONNECTION_WAITING_TIME);
     }
 

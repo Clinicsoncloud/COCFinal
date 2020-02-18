@@ -17,7 +17,6 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 
 public class DisplayRecordScreen extends AppCompatActivity implements View.OnClickListener {
     // region Variables

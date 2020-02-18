@@ -1,7 +1,6 @@
 package com.abhaybmicoc.app.glucose;
 
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,7 +13,6 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.view.GestureDetector;
-import android.speech.tts.TextToSpeech;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +35,6 @@ import org.maniteja.com.synclib.helper.Util;
 import org.maniteja.com.synclib.helper.HelperC;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.ArrayList;
 
 public class GlucoseScanListActivity extends AppCompatActivity {
@@ -122,7 +119,6 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         switch (requestCode) {
             case PERMISSION_REQUEST_COARSE_LOCATION: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //Log.d(TAG, "coarse location permission granted");
                 } else {
                     showNoLocationAccessDialog();
                 }
@@ -267,8 +263,6 @@ public class GlucoseScanListActivity extends AppCompatActivity {
          * If yes, connect
          * If no, show scan button
          */
-
-        Log.e("DeviceSaved_ScanLog", ":" + savedDeviceAlreadyExists() + "    : Devicename :    " + getStoredDeviceName() + "   : DeviceAddress :   " + getStoredDeviceAddress());
 
         if (savedDeviceAlreadyExists()) {
             btnScan.setVisibility(View.GONE);

@@ -465,8 +465,6 @@ public class HeightActivity extends Activity {
 
             Toast.makeText(HeightActivity.this, result, Toast.LENGTH_SHORT).show();
 
-            Log.e("result_Logs", ":" + result);
-
             if (result.equals(strConnected)) {
 
                 strEnabled = "true";
