@@ -3,6 +3,7 @@ package com.abhaybmicoc.app.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
 
 
@@ -28,6 +30,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
     DataBaseHelper dataBaseHelper;
     Context mContext;
+    SharedPreferences sharedPreferencesOffline;
 
 
     @Override
@@ -35,6 +38,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
         mContext = context;
         dataBaseHelper = new DataBaseHelper(mContext);
+        sharedPreferencesOffline = mContext.getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
 
         String action = intent.getAction();
         if (action.equalsIgnoreCase(internetIntent)) {
@@ -72,7 +76,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             JSONObject dataObject = new JSONObject();
             dataObject.put("data", dataArray);
 
-            HttpService.accessWebServicesJSON(
+            HttpService.accessWebServicesJSONNoDialog(
                     mContext, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                     (response, error, status) -> handleAPIResponse(response, error, status));
         } catch (Exception e) {
@@ -114,6 +118,14 @@ public class ConnectivityReciever extends BroadcastReceiver {
                     parameterId = parameterId + "," + parameterIdArray.getString(j);
                 }
             }
+
+
+            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+
+//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
+            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+
+            editor.commit();
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 

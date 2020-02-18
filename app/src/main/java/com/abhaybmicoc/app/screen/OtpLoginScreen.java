@@ -8,19 +8,27 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -28,6 +36,7 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.VolleyError;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,12 +59,14 @@ public class OtpLoginScreen extends AppCompatActivity {
     private RadioButton rbHindi;
     private RadioButton radioButtonId;
 
+
     private int selectedId;
 
     private ProgressDialog progressDialog;
 
 
     SharedPreferences sharedPreferencesPersonal;
+    SharedPreferences sharedPreferencesOffline;
 
     private DataBaseHelper dataBaseHelper;
     SharedPreferences sharedPreferenceLanguage;
@@ -68,6 +79,16 @@ public class OtpLoginScreen extends AppCompatActivity {
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
     private SharedPreferences sharedPreferencesActivator;
+
+    private FloatingActionButton fabMenuOptions;
+    private CardView cvOfflineDataStatus;
+    private Button btnSynch;
+    private TextView tvNoOfRecords, tvNoOfUploadedRecords;
+
+    private Animation slideUpAnimation;
+
+    private boolean menuOptionsClicked = false;
+
 
     // endregion
 
@@ -86,6 +107,12 @@ public class OtpLoginScreen extends AppCompatActivity {
         rgLanguage = findViewById(R.id.rg_language);
         rbEnglish = findViewById(R.id.rb_english);
         rbHindi = findViewById(R.id.rb_hindi);
+
+        fabMenuOptions = findViewById(R.id.fab_menuOptions);
+        cvOfflineDataStatus = findViewById(R.id.cv_OfflineDataStatus);
+        btnSynch = findViewById(R.id.btn_Synch);
+        tvNoOfRecords = findViewById(R.id.tv_no_of_records);
+        tvNoOfUploadedRecords = findViewById(R.id.tv_no_of_uploaded_records);
 
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }
@@ -115,6 +142,10 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> doLogin());
 
+        fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
+        btnSynch.setOnClickListener(v -> getOfflineRecords());
+
+
         rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -129,6 +160,137 @@ public class OtpLoginScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showOfflineDataStatus() {
+
+        Log.e("menuOptionsClicked_Clicked", ":" + menuOptionsClicked + "   : DateTime :   " + DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+
+        if (menuOptionsClicked) {
+            cvOfflineDataStatus.setVisibility(View.GONE);
+            menuOptionsClicked = false;
+
+        } else {
+            cvOfflineDataStatus.setVisibility(View.VISIBLE);
+            cvOfflineDataStatus.startAnimation(slideUpAnimation);
+//            overridePendingTransition(R.anim.push_left_out, R.anim.out_to_left);
+            menuOptionsClicked = true;
+            setOfflineDataStatus();
+        }
+    }
+
+    private void setOfflineDataStatus() {
+
+        JSONArray dataArray = dataBaseHelper.getOfflineData();
+
+        if (dataArray != null && dataArray.length() > 0) {
+            tvNoOfRecords.setText(String.valueOf(dataArray.length()));
+            btnSynch.setVisibility(View.VISIBLE);
+        } else {
+            tvNoOfRecords.setText("0");
+            btnSynch.setVisibility(View.GONE);
+        }
+
+        Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
+
+        String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
+
+        if (uploaded_Count != null && !uploaded_Count.equals(""))
+            tvNoOfUploadedRecords.setText(sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
+        else
+            tvNoOfUploadedRecords.setText("0");
+
+    }
+
+    private void getOfflineRecords() {
+
+        try {
+            JSONArray dataArray = dataBaseHelper.getOfflineData();
+
+            if (dataArray != null && dataArray.length() > 0) {
+                uploadOfflineRecords(dataArray);
+            } else {
+                setOfflineDataStatus();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadOfflineRecords(JSONArray dataArray) {
+
+        try {
+
+            if (Utils.isOnline(context)) {
+
+                JSONObject dataObject = new JSONObject();
+                dataObject.put("data", dataArray);
+
+                HttpService.accessWebServicesJSON(
+                        context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
+                        (response, error, status) -> handleOfflineAPIResponse(response, error, status));
+            } else {
+                Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
+
+        try {
+            updateLocalStatus(response);
+        } catch (Exception e) {
+            // TODO: Handle exception
+            e.printStackTrace();
+        }
+    }
+
+    private void updateLocalStatus(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+
+            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
+            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+
+            String patientId = "";
+            String parameterId = "";
+
+            for (int i = 0; i < patientIdArray.length(); i++) {
+                if (patientId.equals("")) {
+                    patientId = patientIdArray.getString(i);
+                } else {
+                    patientId = patientId + "," + patientIdArray.getString(i);
+                }
+            }
+
+            for (int j = 0; j < parameterIdArray.length(); j++) {
+                if (parameterId.equals("")) {
+                    parameterId = parameterIdArray.getString(j);
+                } else {
+                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                }
+            }
+
+
+            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+
+//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
+            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+            editor.commit();
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+
+
+            setOfflineDataStatus();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -150,12 +312,17 @@ public class OtpLoginScreen extends AppCompatActivity {
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
 
+        slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(),
+                R.anim.out_to_right);
+
         textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+            sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
+
 
             sharedPreferencesPersonal.edit().clear().apply();
 

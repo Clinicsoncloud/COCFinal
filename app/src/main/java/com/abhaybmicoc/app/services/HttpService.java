@@ -130,6 +130,65 @@ public class HttpService {
 
     public static void accessWebServicesJSON(final Context context, String url, final JSONObject jsonObject,
                                              final VolleyResponse responseListner) {
+        final ProgressDialog loading = ProgressDialog.show(context, "Loading.....", "Please wait...", true);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        Log.e("onResponse", "" + response);
+                        if (!((Activity) context).isFinishing()) {
+                            loading.dismiss();
+                        }
+                        responseListner.onProcessFinish(String.valueOf(response), null, "response");
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onErrorResponse", "" + error);
+                responseListner.onProcessFinish("", error, "error");
+
+                if (loading != null && loading.isShowing()) {
+                    loading.dismiss();
+//                        if (loading != null)
+
+                }
+
+            }
+        }) {
+            protected JSONObject getJsonObject() {
+                return jsonObject;
+            }
+        };
+
+        jsonObjectRequest.setRetryPolicy(new RetryPolicy() {
+            @Override
+            public int getCurrentTimeout() {
+                return 50000;
+            }
+
+            @Override
+            public int getCurrentRetryCount() {
+                return 50000;
+            }
+
+            @Override
+            public void retry(VolleyError error) throws VolleyError {
+                //Toast.makeText(context, "" + error, Toast.LENGTH_SHORT).show();
+                Log.e("onErrorResponse", "" + error);
+                responseListner.onProcessFinish("", error, "error");
+            }
+        });
+
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        requestQueue.add(jsonObjectRequest);
+    }
+
+
+    public static void accessWebServicesJSONNoDialog(final Context context, String url, final JSONObject jsonObject,
+                                                     final VolleyResponse responseListner) {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 new Response.Listener<JSONObject>() {
@@ -175,5 +234,7 @@ public class HttpService {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsonObjectRequest);
     }
+
+
 }
 

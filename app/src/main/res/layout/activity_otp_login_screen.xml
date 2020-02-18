@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bgapp"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingStart="300dp"
-    android:paddingEnd="300dp"
+    android:background="@drawable/bgapp"
     tools:context=".screen.OtpVerifyScreen">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="300dp"
+        android:layout_marginEnd="300dp"
         android:focusableInTouchMode="true"
-        android:layout_height="wrap_content">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="300dp"
-            android:layout_weight="5"
-            android:src="@mipmap/applogo"
+            android:layout_height="200dp"
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:layout_height="200dp" />
+            android:layout_weight="5"
+            android:src="@mipmap/applogo" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:background="@drawable/rectangle"
-            android:layout_margin="20dp"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:hint="Enter Mobile Number"
-            android:paddingLeft="10dp"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:imeOptions="actionDone"
             android:id="@+id/et_mobile_number"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:hint="Enter Mobile Number"
+            android:imeOptions="actionDone"
             android:inputType="number"
-            android:layout_height="50dp" />
+            android:paddingLeft="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25sp" />
 
         <RadioGroup
             android:id="@+id/rg_language"
@@ -51,13 +51,13 @@
                 android:id="@+id/rb_english"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:buttonTint="@color/white"
-                android:layout_weight="1"
+                android:checked="true"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="English"
-                android:checked="true"
                 android:textColor="@color/white"
                 android:textSize="25sp" />
 
@@ -65,8 +65,8 @@
                 android:id="@+id/rb_hindi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/white"
                 android:layout_weight="1"
+                android:buttonTint="@color/white"
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Hindi"
@@ -78,16 +78,186 @@
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:background="@drawable/greenbg"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
             android:layout_margin="20dp"
+            android:background="@drawable/greenbg"
+            android:gravity="center"
             android:text="Login"
             android:textColor="@color/white"
             android:textSize="25sp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_height="50dp" />
-
+            android:textStyle="bold" />
 
     </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+
+
+    <FrameLayout
+        android:id="@+id/fl_floatingBtnLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true">
+
+
+        <!--<com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/badge"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="right|top"
+            android:elevation="7dp"
+            app:nbMaxTextLength="2" />-->
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_menuOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:backgroundTint="@color/transparent_color"
+            android:src="@drawable/list_menu_icon" />
+    </FrameLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cv_OfflineDataStatus"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fl_floatingBtnLayout"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/margin20"
+        android:visibility="gone"
+        app:cardBackgroundColor="#374752"
+        app:cardCornerRadius="20dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:padding="@dimen/pad10"
+                    android:text="No. of Pending records "
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_no_of_records"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:paddingLeft="24dp"
+                    android:paddingTop="@dimen/pad10"
+                    android:paddingRight="@dimen/pad10"
+                    android:paddingBottom="@dimen/pad10"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:padding="@dimen/pad10"
+                    android:text="No. of Patients"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="@dimen/pad10"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:padding="@dimen/pad10"
+                    android:text="Last Synck"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=":"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/tv_no_of_uploaded_records"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:padding="@dimen/pad10"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_Synch"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/greenbg"
+                android:gravity="center"
+                android:text="Synch"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+</RelativeLayout>

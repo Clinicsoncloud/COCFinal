@@ -82,6 +82,7 @@ public class DataBaseHelper {
 
         Cursor cursor = null;
         JSONArray jArray = new JSONArray();
+        Log.e("OfflineData_Query", "SELECT tp.* , tparm.* from `" + Constant.TableNames.TBL_PATIENTS + "` AS tp LEFT JOIN `" + Constant.TableNames.TBL_PARAMETERS + "` as tparm ON tp.patient_id = tparm.patient_id");
         cursor = sqLiteDatabase.rawQuery("SELECT tp.* , tparm.* from `" + Constant.TableNames.TBL_PATIENTS + "` AS tp LEFT JOIN `" + Constant.TableNames.TBL_PARAMETERS + "` as tparm ON tp.patient_id = tparm.patient_id", null);
 
         JSONObject json = null;
@@ -103,6 +104,7 @@ public class DataBaseHelper {
                 e.printStackTrace();
             }
         }
+        Log.e("OfflineData_Array", ":" + jArray.length());
 
         if (jArray.length() > 0)
             return jArray;

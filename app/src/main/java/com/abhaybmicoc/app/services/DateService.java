@@ -1,15 +1,20 @@
 package com.abhaybmicoc.app.services;
 
 import android.annotation.SuppressLint;
+import android.util.Log;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DateService {
+
+
+    public static final String DATE_FORMAT = "dd-MMM-yyyy hh:mm:ss";
+
     /**
-     *
      * @param dateOfBirth
      * @return
      */
@@ -41,7 +46,7 @@ public class DateService {
         return age;
     }
 
-    public static String formatDateFromString(String date, String fromDatePattern, String toDatePattern){
+    public static String formatDateFromString(String date, String fromDatePattern, String toDatePattern) {
         String formattedDate;
 
         @SuppressLint("SimpleDateFormat")
@@ -57,4 +62,15 @@ public class DateService {
 
         return formattedDate;
     }
+
+    public static String getCurrentDateTime(String format) {
+
+        DateFormat dateFormatter = new SimpleDateFormat(format);
+        dateFormatter.setLenient(false);
+        Date today = new Date();
+        String s = dateFormatter.format(today);
+        Log.e("today_Date", "" + s);
+        return s;
+    }
+
 }
