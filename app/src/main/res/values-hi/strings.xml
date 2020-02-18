@@ -612,6 +612,7 @@
 
     <string name="mobile_no_msg">क्लीनिकस ऑन क्लाऊड मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
     <string name="otp_msg">क्रिपया अपना ओ टी पी डाले</string>
+    <!--<string name="registration_msg">कृपया आपली माहिती भरा</string>-->
     <string name="registration_msg">क्रिपया अपनी जानकारी भरे</string>
     <string name="height_fail">height  सेन्सर नही मिला क्रिपया manually कनेक्ट करे</string>
     <string name="height_success">height सेन्सर के नीचे खडे रहे और गेट height बटण दबाये </string>

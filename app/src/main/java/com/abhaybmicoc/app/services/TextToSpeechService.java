@@ -1,16 +1,15 @@
 package com.abhaybmicoc.app.services;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.os.Build;
+import android.content.Context;
+import android.annotation.TargetApi;
+import android.speech.tts.TextToSpeech;
+import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 
 import java.util.Locale;
-
 
 import static android.content.Context.MODE_PRIVATE;
 

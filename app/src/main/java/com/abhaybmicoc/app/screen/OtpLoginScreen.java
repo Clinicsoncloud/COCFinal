@@ -129,6 +129,8 @@ public class OtpLoginScreen extends AppCompatActivity {
                     setLocale("en");
                 } else if (i == R.id.rb_hindi) {
                     setLocale("hi");
+                }else if (i == R.id.rb_marathi){
+                    setLocale("mar");
                 }
             }
         });
