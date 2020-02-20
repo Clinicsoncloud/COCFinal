@@ -81,6 +81,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
     private String strConnectivity = "", strMobileNo = "";
     private DataBaseHelper dataBaseHelper;
 
+    private BluetoothAdapter bluetoothAdapter;
+
     // endregion
 
     // region Event methods
@@ -190,6 +192,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     private void initializeData() {
+
 
         dataBaseHelper = new DataBaseHelper(context);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -380,9 +383,11 @@ public class OtpVerifyScreen extends AppCompatActivity {
      */
     public void enableBluetooth() {
         this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!this.mBluetoothAdapter.isEnabled()) {
+
+        mBluetoothAdapter.enable();
+        /*if (!this.mBluetoothAdapter.isEnabled()) {
             startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-        }
+        }*/
     }
 
     /**

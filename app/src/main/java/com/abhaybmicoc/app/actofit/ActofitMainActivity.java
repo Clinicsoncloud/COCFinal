@@ -64,6 +64,9 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     android.support.v7.app.ActionBar actionBar;
 
+    String KEY_ERROR = "error";
+    String KEY_MESSAGE = "message";
+
     private int day, month, year;
 
     private TextToSpeech textToSpeech;
@@ -193,22 +196,27 @@ public class ActofitMainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        Log.e("requestCode_Log", ":" + requestCode + "   :resultCode:    " + resultCode + "    :data:   " + data);
-
         if (requestCode == REQUSET_CODE && resultCode == RESULT_OK) {
             if (data != null) {
                 readAndStoreData(data);
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
-            Toast.makeText(ActofitMainActivity.this, "Cancelled!!!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == REQUSET_CODE && resultCode == SUBSCRIPTION_OVER) {
+            if (data != null) {
+                handleError(data);
+            }
+        }
+    }
+
+    private void handleError(Intent data) {
+        int errorCode = data.getIntExtra(KEY_ERROR, 0);
+        String errorMSg = data.getStringExtra(KEY_MESSAGE);
+
+        if (errorCode == SUBSCRIPTION_OVER) {
             Toast.makeText(ActofitMainActivity.this, "Subscription over!!!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == REQUSET_CODE && resultCode == NO_SAVED_DEVICE) {
+        } else if (errorCode == NO_SAVED_DEVICE) {
             Toast.makeText(ActofitMainActivity.this, "Device is not saved!!!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == REQUSET_CODE && resultCode == IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE) {
+        } else if (errorCode == IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE) {
             Toast.makeText(ActofitMainActivity.this, "Impedance measurement error from smart scale!!!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == RESULT_CANCELED) {
-            Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -324,9 +332,10 @@ public class ActofitMainActivity extends AppCompatActivity {
     private void enableBluetooth() {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-        }
+//        mBluetoothAdapter.enable();
+//        if (!mBluetoothAdapter.isEnabled()) {
+        startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+//        }
     }
 
     // endregion
@@ -444,5 +453,6 @@ public class ActofitMainActivity extends AppCompatActivity {
 
         if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
+
     }
 }

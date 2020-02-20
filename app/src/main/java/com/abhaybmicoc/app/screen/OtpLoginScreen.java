@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.screen;
 
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -68,6 +69,8 @@ public class OtpLoginScreen extends AppCompatActivity {
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
 
     private SharedPreferences sharedPreferencesActivator;
+
+    private BluetoothAdapter bluetoothAdapter;
 
     // endregion
 
@@ -149,8 +152,13 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
-
         textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        if (!bluetoothAdapter.isEnabled())
+            bluetoothAdapter.enable();
+
+
+
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
