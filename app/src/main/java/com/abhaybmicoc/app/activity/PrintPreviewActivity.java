@@ -241,10 +241,12 @@ public class PrintPreviewActivity extends Activity {
 
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if (mBT.isEnabled())
+            mBT.disable();
     }
 
     @Override
@@ -1729,6 +1731,7 @@ public class PrintPreviewActivity extends Activity {
         newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         startActivity(newIntent);
+        finish();
     }
 
     private void clearDatabase() {

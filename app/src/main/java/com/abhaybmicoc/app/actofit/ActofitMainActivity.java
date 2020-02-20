@@ -58,7 +58,14 @@ public class ActofitMainActivity extends AppCompatActivity {
     private RadioButton radioFemale;
     private RadioGroup radioGroupGender;
 
+    private int SUBSCRIPTION_OVER = 101;
+    private int NO_SAVED_DEVICE = 102;
+    private int IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE = 100;
+
     android.support.v7.app.ActionBar actionBar;
+
+    String KEY_ERROR = "error";
+    String KEY_MESSAGE = "message";
 
     private int day, month, year;
 
@@ -183,7 +190,6 @@ public class ActofitMainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     @Override
@@ -195,12 +201,24 @@ public class ActofitMainActivity extends AppCompatActivity {
                 readAndStoreData(data);
             }
         } else if (requestCode == REQUSET_CODE && resultCode == RESULT_CANCELED) {
-            Toast.makeText(ActofitMainActivity.this, "Cancelled!!!", Toast.LENGTH_SHORT).show();
-        } else if (requestCode == RESULT_CANCELED) {
-            Toast.makeText(ActofitMainActivity.this, "Your Subscription has Expired!!!", Toast.LENGTH_SHORT).show();
+            if (data != null) {
+                handleError(data);
+            }
         }
     }
 
+    private void handleError(Intent data) {
+        int errorCode = data.getIntExtra(KEY_ERROR, 0);
+        String errorMSg = data.getStringExtra(KEY_MESSAGE);
+
+        if (errorCode == SUBSCRIPTION_OVER) {
+            Toast.makeText(ActofitMainActivity.this, "Subscription over!!!", Toast.LENGTH_SHORT).show();
+        } else if (errorCode == NO_SAVED_DEVICE) {
+            Toast.makeText(ActofitMainActivity.this, "Device is not saved!!!", Toast.LENGTH_SHORT).show();
+        } else if (errorCode == IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE) {
+            Toast.makeText(ActofitMainActivity.this, "Impedance measurement error from smart scale!!!", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     // endregion
 
@@ -314,9 +332,10 @@ public class ActofitMainActivity extends AppCompatActivity {
     private void enableBluetooth() {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!mBluetoothAdapter.isEnabled()) {
-            startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
-        }
+//        mBluetoothAdapter.enable();
+//        if (!mBluetoothAdapter.isEnabled()) {
+        startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+//        }
     }
 
     // endregion
@@ -434,5 +453,6 @@ public class ActofitMainActivity extends AppCompatActivity {
 
         if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
+
     }
 }

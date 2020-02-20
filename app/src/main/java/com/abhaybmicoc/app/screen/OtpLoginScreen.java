@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.screen;
 
 
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -89,6 +90,7 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private boolean menuOptionsClicked = false;
 
+    private BluetoothAdapter bluetoothAdapter;
 
     // endregion
 
@@ -164,7 +166,6 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private void showOfflineDataStatus() {
 
-        Log.e("menuOptionsClicked_Clicked", ":" + menuOptionsClicked + "   : DateTime :   " + DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
         if (menuOptionsClicked) {
             cvOfflineDataStatus.setVisibility(View.GONE);
@@ -312,10 +313,13 @@ public class OtpLoginScreen extends AppCompatActivity {
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
 
-        slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.out_to_right);
+        slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out_to_right);
 
         textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        bluetoothAdapter.enable();
+
 
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
