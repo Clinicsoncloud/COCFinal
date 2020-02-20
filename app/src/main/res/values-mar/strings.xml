@@ -610,32 +610,30 @@
 
     <!--voice commands-->
 
-    <string name="mobile_no_msg">Welcome to Clinics on Cloud , Please Enter Mobile Number</string>
-    <string name="otp_msg">Please Enter OTP</string>
-    <string name="registration_msg">Please Enter Registration Detail</string>
+    <string name="mobile_no_msg">क्लीनिकस ऑन क्लाऊड मध्ये आपलं स्वागत आहे कृपया आपला मोबाईल नंबर टाका</string>
+    <string name="otp_msg">कृपया आपला ओ टी पी टाका </string>
+    <string name="registration_msg">कृपया आपली माहिती भरा</string>
+    <string name="height_fail">कृपया उंची मोजमाप करणारा सेन्सर कनेक्ट झाला नाही स्वतः कनेक्ट करा</string>
+    <string name="height_success">कृपया सेन्सर खाली उभे रहा आणि गेट height बटण वर क्लिक करा</string>
+    <string name="height_manually">कृपया स्वतः height टाका</string>
 
-    <string name="height_success">Please stand below the height sensor and click on get height button</string>
-    <string name="height_fail">No Bluetooth Device found please connect it manually</string>
-    <string name="height_manually">Enter height manually</string>
+    <string name="actofit_msg">कृपया  गो टू  smartscale बटण वर क्लिक करा आणि वेहिंग scale वर उभे रहा</string>
+    <string name="oximeter_msg">कृपया आपले बोट मशीन मध्ये घाला आणि result ची वाट पहा</string>
+    <string name="BloodPreeure_msg">कृपया blood pressure चा कफ्फ हातामध्ये घाला आणि मशीन चे स्टार्ट बटण दाबा</string>
+    <string name="temperature_fail_msg">कृपया temperature सेन्सर कनेक्ट झाला नाही manually कनेक्ट करा </string>
+    <string name="temperature_success_msg">कृपया temperature मशीन कपाळावर ठेवा आणि बटण दाबा</string>
+    <string name="temperature_manually">ककृपया manually temperature टाका</string>
 
-    <string name="actofit_msg">Please click on GoTo SmartScale and stand on wehing scale</string>
-    <string name="oximeter_msg">put finger inside the device and wait for result</string>
-    <string name="BloodPreeure_msg">Please insert hand to the cuff and press device start button and wait for result</string>
+    <string name="sync_scan_msg">कृपया sync प्लस device चे बटण दाबून ठेवा</string>
+    <string name="start_test_msg">कृपया टेस्ट स्टार्ट करा</string>
+    <string name="insert_strip_msg">ककृपया स्ट्रीप टाका</string>
+    <string name="add_blood_msg">कृपया ब्लड टाका </string>
+    <string name="new_strip_msg">कृपया नवीन स्ट्रीप टाका</string>
 
-    <string name="temperature_success_msg">Device Ready to use point device to forehead and press button</string>
-    <string name="temperature_fail_msg">No bluetooth Device found please connect it manually</string>
-    <string name="temperature_manually">Enter body temperature manually</string>
-
-    <string name="sync_scan_msg">please long press device button</string>
-    <string name="start_test_msg">Please click on Start Test</string>
-    <string name="insert_strip_msg">Please Insert Strip</string>
-    <string name="add_blood_msg">Please Add Blood</string>
-    <string name="new_strip_msg">Please Insert New Strip</string>
-
-    <string name="hemoglobin_msg">Please long press device power button and click on connect button</string>
-    <string name="print_msg">Please click on print button</string>
-    <string name="print_reconnect_msg">Please click on Reconnect button to reconnect printer</string>
-    <string name="print_result_msg">Please collect your result receipt</string>
+    <string name="hemoglobin_msg">कृपया आपले हेमोग्लोबीन device चे पॉवर बटण थोड्या वेळ दाबून सोडा</string>
+    <string name="print_msg">कृपया प्रिन्ट बटण दाबा</string>
+    <string name="print_reconnect_msg">कृपया प्रिन्टर कनेक्ट नाही झाला reconnect बटण वर क्लिक करा आणि पुन्हा प्रिन्टर कनेक्ट करा</string>
+    <string name="print_result_msg">कृपया तुमच्या result ची प्रिन्ट घ्या</string>
 
     <string name="country_prompt">Preferred Language</string>
 

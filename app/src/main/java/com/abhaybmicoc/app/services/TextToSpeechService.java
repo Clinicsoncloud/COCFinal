@@ -61,12 +61,13 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
             isInitialize = true;
 
+            result = textToSpeech.setLanguage(Locale.US);
+
             sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
 
             Log.e("My_Selected_Lang", ":" + sharedPreferenceLanguage.getString("my_lan", ""));
 
             if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
-
                 Log.e("inside_english", " : ");
                 result = textToSpeech.setLanguage(Locale.US);
             } else if (sharedPreferenceLanguage.getString("my_lan","").equals("hi")) {
@@ -74,6 +75,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
             }else {
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
+                textToSpeech.setPitch(1.0f);
             }
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("inside_langerror", " : ");

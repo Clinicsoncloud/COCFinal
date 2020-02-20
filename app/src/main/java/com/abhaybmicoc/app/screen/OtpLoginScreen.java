@@ -12,11 +12,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
@@ -54,6 +57,8 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private int selectedId;
 
+    private Spinner spnLanguages;
+
     private ProgressDialog progressDialog;
 
 
@@ -85,10 +90,12 @@ public class OtpLoginScreen extends AppCompatActivity {
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
 
-        rgLanguage = findViewById(R.id.rg_language);
+        spnLanguages = findViewById(R.id.spinner_language);
+
+        /*rgLanguage = findViewById(R.id.rg_language);
         rbEnglish = findViewById(R.id.rb_english);
         rbHindi = findViewById(R.id.rb_hindi);
-        rbHindi = findViewById(R.id.rb_marathi);
+        rbMarathi = findViewById(R.id.rb_marathi);*/
 
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }
@@ -118,22 +125,22 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> doLogin());
 
-        rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        /*rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
 
                 selectedId = rgLanguage.getCheckedRadioButtonId();
                 radioButtonId = findViewById(selectedId);
 
-                if (i == R.id.rb_english) {
+               *//* if (i == R.id.rb_english) {
                     setLocale("en");
                 } else if (i == R.id.rb_hindi) {
                     setLocale("hi");
                 }else if (i == R.id.rb_marathi){
                     setLocale("mar");
-                }
+                }*//*
             }
-        });
+        });*/
     }
 
 
