@@ -617,14 +617,14 @@
     <string name="height_success">कृपया सेन्सर खाली उभे रहा आणि गेट height बटण वर क्लिक करा</string>
     <string name="height_manually">कृपया स्वतः height टाका</string>
 
-    <string name="actofit_msg">कृपया  गो टू  smartscale बटण वर क्लिक करा आणि वेहिंग scale वर उभे रहा</string>
+    <string name="actofit_msg">कृपया गोटू smartscale बटण वर क्लिक करा आणि वेहिंग scale वर उभे रहा</string>
     <string name="oximeter_msg">कृपया आपले बोट मशीन मध्ये घाला आणि result ची वाट पहा</string>
     <string name="BloodPreeure_msg">कृपया blood pressure चा कफ्फ हातामध्ये घाला आणि मशीन चे स्टार्ट बटण दाबा</string>
     <string name="temperature_fail_msg">कृपया temperature सेन्सर कनेक्ट झाला नाही manually कनेक्ट करा </string>
     <string name="temperature_success_msg">कृपया temperature मशीन कपाळावर ठेवा आणि बटण दाबा</string>
     <string name="temperature_manually">ककृपया manually temperature टाका</string>
 
-    <string name="sync_scan_msg">कृपया sync प्लस device चे बटण दाबून ठेवा</string>
+    <string name="sync_scan_msg">कृपया sync प्लस डिव्हाइस चे बटण दाबून ठेवा</string>
     <string name="start_test_msg">कृपया टेस्ट स्टार्ट करा</string>
     <string name="insert_strip_msg">ककृपया स्ट्रीप टाका</string>
     <string name="add_blood_msg">कृपया ब्लड टाका </string>
