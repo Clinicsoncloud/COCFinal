@@ -125,22 +125,37 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> doLogin());
 
-        /*rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        spnLanguages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-
-                selectedId = rgLanguage.getCheckedRadioButtonId();
-                radioButtonId = findViewById(selectedId);
-
-               *//* if (i == R.id.rb_english) {
-                    setLocale("en");
-                } else if (i == R.id.rb_hindi) {
-                    setLocale("hi");
-                }else if (i == R.id.rb_marathi){
-                    setLocale("mar");
-                }*//*
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // your code here
+                setLanguageSelection(position);
             }
-        });*/
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+                Toast.makeText(context, "Nothing Selected", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+    }
+
+    /**
+     *
+     * @param position
+     */
+    private void setLanguageSelection(int position) {
+        if(position == 0){
+            setLocale("en");
+            Toast.makeText(context, "English selected", Toast.LENGTH_SHORT).show();
+        }else if(position == 1){
+            setLocale("hi");
+            Toast.makeText(context, "Hindi Selected", Toast.LENGTH_SHORT).show();
+        }else if(position == 2){
+            setLocale("mar");
+            Toast.makeText(context, "Marathi Selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
