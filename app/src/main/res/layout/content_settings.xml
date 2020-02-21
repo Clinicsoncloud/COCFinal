@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.SettingsActivity"
+    tools:showIn="@layout/activity_settings">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="120dp"
+        android:orientation="horizontal">
+
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_ConnectedDevicesList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="40dp" />
+        </RelativeLayout>
+
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/white" />
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="5">
+
+            <LinearLayout
+
+                android:id="@+id/ll_DeviceDetailsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="40dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_SelectedDevice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|center_horizontal"
+                    android:layout_marginTop="40dp"
+                    android:gravity="center"
+                    android:text=""
+                    android:textSize="25dp" />
+
+                <LinearLayout
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/margin20"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text="Device Name"
+                        android:textSize="25dp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text=":"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/tv_DeviceName"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text=""
+                        android:textSize="25dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text="Device Address"
+                        android:textSize="25dp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text=":"
+                        android:textSize="25sp" />
+
+                    <TextView
+                        android:id="@+id/tv_DeviceAddress"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="@dimen/pad10"
+                        android:text=""
+                        android:textSize="25dp" />
+
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_RemoveDevice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/buttonshapeconnect1"
+                        android:padding="@dimen/pad15"
+                        android:text="Remove"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/space25"
+                        android:textStyle="bold" />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_DeviceNotConnected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="top|center_horizontal"
+                android:layout_marginTop="60dp"
+                android:gravity="center"
+                android:text="No Device is connected!!!!"
+                android:textSize="45dp"
+                android:visibility="gone" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -9,13 +9,22 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -28,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
@@ -45,7 +55,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class OtpLoginScreen extends AppCompatActivity {
+public class OtpLoginScreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //implements TextToSpeech.OnInitListener
 
@@ -91,6 +101,10 @@ public class OtpLoginScreen extends AppCompatActivity {
     private boolean menuOptionsClicked = false;
 
     private BluetoothAdapter bluetoothAdapter;
+
+    private DrawerLayout drawer;
+    private Toolbar toolbar;
+    private NavigationView navigationView;
 
     // endregion
 
@@ -166,18 +180,16 @@ public class OtpLoginScreen extends AppCompatActivity {
 
     private void showOfflineDataStatus() {
 
-
-        if (menuOptionsClicked) {
+        /*if (menuOptionsClicked) {
             cvOfflineDataStatus.setVisibility(View.GONE);
             menuOptionsClicked = false;
-
-        } else {
-            cvOfflineDataStatus.setVisibility(View.VISIBLE);
-            cvOfflineDataStatus.startAnimation(slideUpAnimation);
+        } else {*/
+        cvOfflineDataStatus.setVisibility(View.VISIBLE);
+        cvOfflineDataStatus.startAnimation(slideUpAnimation);
 //            overridePendingTransition(R.anim.push_left_out, R.anim.out_to_left);
-            menuOptionsClicked = true;
-            setOfflineDataStatus();
-        }
+        menuOptionsClicked = true;
+        setOfflineDataStatus();
+//        }
     }
 
     private void setOfflineDataStatus() {
@@ -320,7 +332,6 @@ public class OtpLoginScreen extends AppCompatActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothAdapter.enable();
 
-
         try {
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -353,8 +364,28 @@ public class OtpLoginScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setupUI();
+        setupNavigationDrawer();
         setupEvents();
         initializeData();
+    }
+
+    private void setupNavigationDrawer() {
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View hView = navigationView.getHeaderView(0);
+
+
     }
 
     @Override
@@ -476,14 +507,12 @@ public class OtpLoginScreen extends AppCompatActivity {
         requestBodyParams.put("kiosk_id", kiosk_id);
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
 
-
         HttpService.accessWebServices(
                 context,
                 ApiUtils.LOGIN_URL,
                 requestBodyParams,
                 headerParams,
                 (response, error, status) -> handleAPIResponse(response, error, status));
-
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
@@ -526,6 +555,49 @@ public class OtpLoginScreen extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+        switch (menuItem.getItemId()) {
+
+            case R.id.nav_offline_sync:
+                showOfflineDataStatus();
+                break;
+
+
+            case R.id.nav_setting:
+                startActivity(new Intent(context, SettingsActivity.class));
+                finish();
+                break;
+
+
+        }
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            View v = getCurrentFocus();
+            if (v instanceof EditText) {
+                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+            }
+
+            cvOfflineDataStatus.setVisibility(View.GONE);
+
+            /*if (v instanceof AutoCompleteTextView) {
+                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }*/
+
+        }
+        return super.dispatchTouchEvent(event);
+    }
 
     // endregion
 }

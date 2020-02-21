@@ -250,7 +250,7 @@ public class ThermometerScreen extends AppCompatActivity {
         strCannotSend = (String) getText(R.string.cannotSend);
         strBluetoothTurnedOn = (String) getText(R.string.bluetoothTurnedOn);
 
-        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.THERMOMETER_AUTO_CONNECT, MODE_PRIVATE);
 
         if (strConnect.equals("Connect")) {
             btnConnect.setText("Connect");
@@ -319,11 +319,12 @@ public class ThermometerScreen extends AppCompatActivity {
             for (BluetoothDevice device : devices) {
                 if (device.getName().contains("THERMOMETER")) {
 
-                    sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+                    sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.THERMOMETER_AUTO_CONNECT, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
 
                     if (sharedPreferenceBluetoothAddress.getString("hcthermometer", "").equalsIgnoreCase("")) {
                         editor.putString("hcthermometer", device.getAddress());
+                        editor.putString("hcthermometerName", device.getName());
                         editor.commit();
                     }
 

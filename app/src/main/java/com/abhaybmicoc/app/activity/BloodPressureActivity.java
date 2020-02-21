@@ -445,13 +445,11 @@ public class BloodPressureActivity extends Activity {
                             pairedDeviceList.add("bpDevice");
                             Log.e("bpDevice_condition", "");
                         }
-
                     } else if (name.contains("352")) {
                         //This is weight scale
                         if (!pairingDevices.contains("wsDevice")) {
                             pairedDeviceList.add("wsDevice");
                         }
-
                     }
                 } else if (name.contains("UW-302")) {
                     //This is activity tracker

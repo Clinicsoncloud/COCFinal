@@ -16,6 +16,7 @@ public class ApiUtils {
     public static String PREFERENCE_PULSE = "pulse";
     public static String PREFERENCE_URL = "abhayBmi";
     public static String AUTO_CONNECT = "hcbluetooth";
+    public static String THERMOMETER_AUTO_CONNECT = "thermometerbluetooth";
     public static String GLUCOSE_DATA = "glucoseData";
     public static String PREFERENCE_ACTOFIT = "actofit";
     public static String PREFERENCE_HEIGHTDATA = "height";

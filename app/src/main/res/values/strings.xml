@@ -15,6 +15,10 @@
     <string name="side_menu_settings">Setting</string>
     <string name="side_menu_version">Version</string>
 
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <!--Actofit String-->
     <string name="subscription_over">Seems like your subscription is finished. Please Renew your subscription to continue.</string>
     <string name="actofitScale_retest">Retest</string>
@@ -636,5 +640,7 @@
     <string name="print_msg">Please click on print button</string>
     <string name="print_reconnect_msg">Please click on Reconnect button to reconnect printer</string>
     <string name="print_result_msg">Please collect your result receipt</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
 
 </resources>

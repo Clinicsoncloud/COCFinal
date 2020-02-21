@@ -15,6 +15,9 @@
     <string name="side_menu_settings">Setting</string>
     <string name="side_menu_version">Version</string>
 
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <!--Actofit String-->
     <string name="subscription_over">Seems like your subscription is finished. Please Renew your subscription to continue.</string>
     <string name="actofitScale_retest">Retest</string>
