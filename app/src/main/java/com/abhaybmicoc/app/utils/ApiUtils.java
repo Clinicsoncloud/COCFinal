@@ -29,4 +29,10 @@ public class ApiUtils {
     public static String PREFERENCE_THERMOMETERDATA = "thermometer";
     public static String PREFERENCE_LANGUAGE = "language";
     public static String PREFERENCE_OFFLINE = "offline";
+
+    public static String PREFERENCE_ACTOFIT_COUNTER = "preference_actofit_counter";
+    public static String PREFERENCE_OXIMETER_COUNTER = "preference_oximeter_counter";
+    public static String PREFERENCE_SUGAR_COUNTER = "preference_sugar_counter";
+
+
 }

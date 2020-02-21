@@ -28,12 +28,14 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.oxygen.data.Const;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.utils.Tools;
 
 import java.util.Date;
 import java.util.Locale;
@@ -73,6 +75,7 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferencesUsageCounter;
 
     private Button btnSkip;
     private Button btnSmartScale;
@@ -94,6 +97,10 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     boolean isAthlete;
     private BluetoothAdapter mBluetoothAdapter;
+
+    int actofit_Counter = 0;
+
+
 
     /*
     RESULT_CANCELED = 101;
@@ -205,6 +212,8 @@ public class ActofitMainActivity extends AppCompatActivity {
                 handleError(data);
             }
         }
+
+        updateUsageCounter();
     }
 
     private void handleError(Intent data) {
@@ -218,6 +227,7 @@ public class ActofitMainActivity extends AppCompatActivity {
         } else if (errorCode == IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE) {
             Toast.makeText(ActofitMainActivity.this, "Impedance measurement error from smart scale!!!", Toast.LENGTH_SHORT).show();
         }
+
     }
 
     // endregion
@@ -280,6 +290,19 @@ public class ActofitMainActivity extends AppCompatActivity {
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            sharedPreferencesUsageCounter = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT_COUNTER, MODE_PRIVATE);
+
+
+            if (!sharedPreferencesUsageCounter.getString(Constant.Fields.ACTOFIT_COUNTER, "").equals(""))
+                actofit_Counter = Integer.parseInt(sharedPreferencesUsageCounter.getString(Constant.Fields.ACTOFIT_COUNTER, ""));
+            else
+                actofit_Counter = 0;
+
+            Log.e("actofit_Counter_Log", ":" + actofit_Counter);
+
+            if (actofit_Counter >= Constant.Fields.DEFAULT_ACTOFIT_COUNTER)
+                Tools.showCounterDilog(context, sharedPreferencesUsageCounter);
+
 
             tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
@@ -381,6 +404,20 @@ public class ActofitMainActivity extends AppCompatActivity {
             tvAge.setText("DOB : " + sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
             tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         }
+    }
+
+
+    private void updateUsageCounter() {
+        SharedPreferences.Editor editor = sharedPreferencesUsageCounter.edit();
+
+        if (sharedPreferencesUsageCounter.getString(Constant.Fields.ACTOFIT_COUNTER, "").equals("")) {
+            actofit_Counter = 1;
+        } else {
+            actofit_Counter = actofit_Counter + 1;
+        }
+
+        editor.putString(Constant.Fields.ACTOFIT_COUNTER, String.valueOf(actofit_Counter));
+        editor.commit();
     }
 
     /**

@@ -47,6 +47,7 @@ import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.utils.Tools;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator,View.OnClickListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, View.OnClickListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -146,16 +147,19 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
     private BluetoothAdapter bluetoothAdapter;
 
-//    private String GLUCOSE_MSG = "Please click on start Test";
+    //    private String GLUCOSE_MSG = "Please click on start Test";
     private String GLUCOSE_MSG = "";
-//    private String INSERT_STRIP_MSG = "Please insert the strip";
+    //    private String INSERT_STRIP_MSG = "Please insert the strip";
     private String INSERT_STRIP_MSG = "";
-//    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    //    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
     private String INSERT_NEW_STRIP_MSG = "";
-//    private String ADD_BLOOD_MSG = "Please add blood";
+    //    private String ADD_BLOOD_MSG = "Please add blood";
     private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
+
+    private SharedPreferences sharedPreferencesUsageCounter;
+    int sugar_Counter = 0;
 
     // endregion
 
@@ -235,7 +239,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if (text.equals("go")) {
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),"Click on start Test");
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "Click on start Test");
         }
 
         //already existed the return statement of the boolean method
@@ -589,12 +593,23 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
      */
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
 
         util = new Util(this, this);
 
         mConnected = false;
         sharedPreferenceGlucoseDEvice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
+
+        sharedPreferencesUsageCounter = getSharedPreferences(ApiUtils.PREFERENCE_SUGAR_COUNTER, MODE_PRIVATE);
+
+        if (!sharedPreferencesUsageCounter.getString(Constant.Fields.SUGAR_COUNTER, "").equals(""))
+            sugar_Counter = Integer.parseInt(sharedPreferencesUsageCounter.getString(Constant.Fields.SUGAR_COUNTER, ""));
+        else
+            sugar_Counter = 0;
+
+        Log.e("sugar_Counter_Log", ":" + sugar_Counter);
+        if (sugar_Counter >= Constant.Fields.DEFAULT_SUGAR_COUNTER)
+            Tools.showCounterDilog(context, sharedPreferencesUsageCounter);
 
         final Intent intent = getIntent();
 
@@ -623,6 +638,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
         setDeviceConnectionTimeoutHandler();
     }
+
 
     private void setDeviceConnectionTimeoutHandler() {
         deviceConnectionTimeoutHandler = new Handler();
@@ -671,6 +687,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
 
             textToSpeechService.speakOut(GLUCOSE_MSG);
+
+            updateUsageCounter();
 
         }, STATR_TEST_ACTIVATION_TIME);
     }
@@ -782,6 +800,19 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         } catch (Exception crap) {
             crap.printStackTrace();
         }
+    }
+
+    private void updateUsageCounter() {
+        SharedPreferences.Editor editor = sharedPreferencesUsageCounter.edit();
+
+        if (sharedPreferencesUsageCounter.getString(Constant.Fields.SUGAR_COUNTER, "").equals("")) {
+            sugar_Counter = 1;
+        } else {
+            sugar_Counter = sugar_Counter + 1;
+        }
+
+        editor.putString(Constant.Fields.SUGAR_COUNTER, String.valueOf(sugar_Counter));
+        editor.commit();
     }
 
     /**

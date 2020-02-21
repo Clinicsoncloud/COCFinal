@@ -1,15 +1,25 @@
 package com.abhaybmicoc.app.utils;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
+import com.abhaybmicoc.app.R;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.regex.Matcher;
@@ -17,6 +27,7 @@ import java.util.regex.Pattern;
 
 
 public class Tools {
+
     private static float getAPIVerison() {
 
         Float f = null;
@@ -42,7 +53,7 @@ public class Tools {
         return progressDialog;
     }
 
-    public static ProgressDialog progressDialog1(Context context){
+    public static ProgressDialog progressDialog1(Context context) {
 
         ProgressDialog pd = new ProgressDialog(context);
         pd.setIndeterminate(false);
@@ -52,7 +63,8 @@ public class Tools {
         pd.show();
         return pd;
     }
-    public static KProgressHUD kHudDialog(Context context){
+
+    public static KProgressHUD kHudDialog(Context context) {
 
         KProgressHUD pd = KProgressHUD.create(context)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
@@ -64,7 +76,6 @@ public class Tools {
                 .show();
         return pd;
     }
-
 
 
     public static Snackbar showSnackbar(View view, String message) {
@@ -102,5 +113,55 @@ public class Tools {
         return toast;
 
     }
+
+    public static void showCounterDilog(Context context, SharedPreferences sharedPreferencesUsageCounter) {
+
+
+        final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        Dialog counterDilog = new android.app.Dialog(context);
+        counterDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        counterDilog.setContentView(R.layout.counter_dilog_layout);
+        layoutParams.copyFrom(counterDilog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        counterDilog.getWindow().setLayout(layoutParams.width, layoutParams.height);
+        counterDilog.setCanceledOnTouchOutside(true);
+
+
+        final ImageView ivCloseDilog;
+        CheckBox cbBatteriesChanged;
+
+        cbBatteriesChanged = counterDilog.findViewById(R.id.cb_BatteriesChanged);
+        ivCloseDilog = counterDilog.findViewById(R.id.iv_CloseDilog);
+
+
+        cbBatteriesChanged.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+                Log.e("Checked_Dilog", ":" + b);
+                if (b) {
+                    sharedPreferencesUsageCounter.edit().clear().apply();
+                    counterDilog.dismiss();
+                }
+            }
+        });
+
+
+        ivCloseDilog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                counterDilog.dismiss();
+            }
+        });
+
+        counterDilog.show();
+        counterDilog.getWindow().setAttributes(layoutParams);
+
+
+    }
+
 
 }

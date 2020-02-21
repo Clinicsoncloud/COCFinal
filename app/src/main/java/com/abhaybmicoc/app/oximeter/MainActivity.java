@@ -105,6 +105,9 @@ public class MainActivity extends Activity {
 
     TextToSpeechService textToSpeechService;
 
+    private SharedPreferences sharedPreferencesUsageCounter;
+    int oximeter_Counter = 0;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -256,6 +259,15 @@ public class MainActivity extends Activity {
         this.setFinishOnTouchOutside(false);
 
         shared = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+        sharedPreferencesUsageCounter = getSharedPreferences(ApiUtils.PREFERENCE_OXIMETER_COUNTER, MODE_PRIVATE);
+
+        if (!sharedPreferencesUsageCounter.getString(Constant.Fields.OXIMETER_COUNTER, "").equals(""))
+            oximeter_Counter = Integer.parseInt(sharedPreferencesUsageCounter.getString(Constant.Fields.OXIMETER_COUNTER, ""));
+        else
+            oximeter_Counter = 0;
+
+        if (oximeter_Counter >= Constant.Fields.DEFAULT_OXMETER_COUNTER)
+            Tools.showCounterDilog(context, sharedPreferencesUsageCounter);
 
         OXIMETER_MSG = getResources().getString(R.string.oximeter_msg);
 
@@ -478,6 +490,8 @@ public class MainActivity extends Activity {
                         btnConnect.setText("Connected");
                         btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
                         progressDialog.show();
+
+                        updateUsageCounter();
                     }
                 });
 //                setDeviceConnectionTimeoutHandler();
@@ -531,6 +545,19 @@ public class MainActivity extends Activity {
                 });
             }
         }
+    }
+
+    private void updateUsageCounter() {
+        SharedPreferences.Editor editor = sharedPreferencesUsageCounter.edit();
+
+        if (sharedPreferencesUsageCounter.getString(Constant.Fields.OXIMETER_COUNTER, "").equals("")) {
+            oximeter_Counter = 1;
+        } else {
+            oximeter_Counter = oximeter_Counter + 1;
+        }
+
+        editor.putString(Constant.Fields.OXIMETER_COUNTER, String.valueOf(oximeter_Counter));
+        editor.commit();
     }
 
     private void setDeviceConnectionTimeoutHandler() {

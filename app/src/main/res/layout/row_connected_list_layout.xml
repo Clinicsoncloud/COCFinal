@@ -13,7 +13,7 @@
         android:background="@drawable/rectangle_blue"
         android:gravity="center_vertical"
         android:paddingLeft="40dp"
-        android:text="aslashlgdasbnjskals"
+        android:text=""
         android:textSize="25sp" />
 
 </RelativeLayout>

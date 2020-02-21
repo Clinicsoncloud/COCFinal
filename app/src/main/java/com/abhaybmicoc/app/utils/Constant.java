@@ -126,6 +126,13 @@ public class Constant {
 
         public static final String IS_UPLOADED = "is_uploaded";
 
+        public static final String ACTOFIT_COUNTER = "actofit_counter";
+        public static final String OXIMETER_COUNTER = "oximeter_counter";
+        public static final String SUGAR_COUNTER = "sugar_counter";
+        public static final int DEFAULT_ACTOFIT_COUNTER = 400;
+        public static final int DEFAULT_OXMETER_COUNTER = 400;
+        public static final int DEFAULT_SUGAR_COUNTER = 400;
+
     }
 
     public static class TableNames {
