@@ -274,8 +274,8 @@ public class ThermometerScreen extends AppCompatActivity {
             editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());
             editor.commit();
 
-            startActivity(objpulse);
             closeBluetooth();
+            startActivity(objpulse);
             finish();
         } else {
             Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
@@ -390,7 +390,8 @@ public class ThermometerScreen extends AppCompatActivity {
         btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
 
         try {
-            socket.close();
+            if (socket != null && socket.isConnected())
+                socket.close();
         } catch (IOException e) {
         }
     }
