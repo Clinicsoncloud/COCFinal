@@ -238,7 +238,6 @@ public class PrintPreviewActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     @Override
@@ -349,7 +348,6 @@ public class PrintPreviewActivity extends Activity {
 
     }
 
-
     private void connectToSavedPrinter() {
         SharedPreferences data = getSharedPreferences("printer", MODE_PRIVATE);
 
@@ -358,6 +356,10 @@ public class PrintPreviewActivity extends Activity {
             mBDevice = mBT.getRemoteDevice(data.getString("MAC", ""));
 
             if (getIntent().getStringExtra("is_PrinterConnected").equals("false")) {
+
+                btnPrint.setBackground(getResources().getDrawable(R.drawable.grayback));
+                btnPrint.setEnabled(false);
+
                 printerBond();
                 autoConnectPrinter();
             } else {
@@ -972,14 +974,17 @@ public class PrintPreviewActivity extends Activity {
 
     private void printerActivation() {
         try {
-            Log.e("PrinterActivation", ":0:");
-
             iWidth = getWindowManager().getDefaultDisplay().getWidth();
             InputStream input = BluetoothComm.misIn;
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
 
-            Log.e("PrinterActivation", ":ptrgen:" + ptrGen);
+            btnReconnect.setBackground(getResources().getDrawable(R.drawable.grayback));
+            btnReconnect.setEnabled(false);
+
+            btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnPrint.setEnabled(true);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1341,6 +1346,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
+            paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
             dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues, "");
 
@@ -1512,18 +1518,21 @@ public class PrintPreviewActivity extends Activity {
                     (response, error, status) -> handleAPIResponse(response, error, status));
 
         } else {
+            btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnHome.setEnabled(true);
             Toast.makeText(context, "No Internet connection, Please Try again", Toast.LENGTH_SHORT).show();
         }
     }
-
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
         if (status.equals("response")) {
             try {
                 readFileName(response);
 
-                Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
+                btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
+                btnHome.setEnabled(true);
 
+                Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 // TODO: Handle exception
             }
@@ -1632,10 +1641,15 @@ public class PrintPreviewActivity extends Activity {
         @Override
         protected void onPostExecute(Integer result) {
 
-            Log.e("result_PosstLog", ":" + result);
-
             if (result == -1) {
                 Toast.makeText(context, "Please Reconnect the device...", Toast.LENGTH_LONG).show();
+
+                btnPrint.setBackground(getResources().getDrawable(R.drawable.grayback));
+                btnPrint.setEnabled(false);
+
+                btnReconnect.setBackground(getResources().getDrawable(R.drawable.greenback));
+                btnReconnect.setEnabled(true);
+
             }
 
             super.onPostExecute(result);
@@ -1920,7 +1934,6 @@ public class PrintPreviewActivity extends Activity {
             mpd.setMessage(getString(R.string.actMain_msg_device_connecting));
             mpd.setCancelable(false);
             mpd.setCanceledOnTouchOutside(false);
-            btnHome.setEnabled(false);
             btnPrint.setEnabled(false);
             if (!((Activity) context).isFinishing())
                 mpd.show();
@@ -1942,15 +1955,13 @@ public class PrintPreviewActivity extends Activity {
         @Override
         public void onPostExecute(Integer result) {
 
-            Log.e("result_Connection", ":" + result);
-
             if (mpd != null && mpd.isShowing())
                 mpd.dismiss();
 
             if (CONN_SUCCESS == result) {
 
-                btnHome.setEnabled(true);
-                btnPrint.setEnabled(true);
+                btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
+                btnPrint.setEnabled(false);
 
                 textToSpeechService.speakOut(PRINT_MSG);
 

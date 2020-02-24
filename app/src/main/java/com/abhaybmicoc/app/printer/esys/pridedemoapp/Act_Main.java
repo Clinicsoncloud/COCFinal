@@ -139,7 +139,8 @@ public class Act_Main extends Activity {
     TextToSpeechService textToSpeechService;
 
     @Override
-    public void onBackPressed() { }
+    public void onBackPressed() {
+    }
 
     @Override
     protected void onResume() {
@@ -174,7 +175,7 @@ public class Act_Main extends Activity {
 
         llSelectedDevicesLayout.setVisibility(View.GONE);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_DEVICE_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), SCAN_DEVICE_MSG);
 
         preferences = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
@@ -307,12 +308,10 @@ public class Act_Main extends Activity {
                     Intent intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
                     intent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
                     startActivity(intent);
-
                 }
             }
 
         } catch (Exception e) {
-
         }
     }
 
@@ -448,7 +447,7 @@ public class Act_Main extends Activity {
         }
 
         // waiting msg
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),WAITING_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), WAITING_MSG);
 
         new ConnSocketTask().execute(mBDevice.getAddress());
     }
@@ -655,7 +654,7 @@ public class Act_Main extends Activity {
 
                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
-                    printIntent.putExtra("is_PrinterConnected", "false");
+                    printIntent.putExtra("is_PrinterConnected", "true");
                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                 } else {
 
@@ -678,7 +677,7 @@ public class Act_Main extends Activity {
                             sDevicetype = data.getString("SerialNo", "");
                             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                             Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
-                            printIntent.putExtra("is_PrinterConnected", "false");
+                            printIntent.putExtra("is_PrinterConnected", "true");
 
                             startActivityForResult(printIntent, EXIT_ON_RETURN);
                         } else {
@@ -686,12 +685,10 @@ public class Act_Main extends Activity {
                             genSerial.execute(0);
                         }
                     } catch (Exception e) {
-
                     }
                 }
             } else if (rbtnProtocol.getText().equals("Esc Sequence Protocol")) {
                 if (mGP.connection == true) {
-
                     escGetSerialNo escSerial = new escGetSerialNo();
                     escSerial.execute(0);
                 }
@@ -949,7 +946,7 @@ public class Act_Main extends Activity {
 
             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
             Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
-            protocol8a.putExtra("is_PrinterConnected", "false");
+            protocol8a.putExtra("is_PrinterConnected", "true");
 
             startActivityForResult(protocol8a, EXIT_ON_RETURN);
 
