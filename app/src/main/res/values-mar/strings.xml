@@ -633,7 +633,7 @@
     <string name="hemoglobin_msg">कृपया आपले हेमोग्लोबीन device चे पॉवर बटण थोड्या वेळ दाबून सोडा</string>
     <string name="print_msg">कृपया प्रिन्ट बटण दाबा</string>
     <string name="print_reconnect_msg">कृपया प्रिन्टर कनेक्ट नाही झाला reconnect बटण वर क्लिक करा आणि पुन्हा प्रिन्टर कनेक्ट करा</string>
-    <string name="print_result_msg">कृपया तुमच्या result ची प्रिन्ट घ्या</string>
+    <string name="print_result_msg">कृपया तुमच्या result ची पावती घ्या</string>
 
     <string name="country_prompt">Preferred Language</string>
 

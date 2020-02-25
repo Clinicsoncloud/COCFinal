@@ -12,9 +12,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -34,28 +36,23 @@ import com.android.volley.VolleyError;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class OtpLoginScreen extends AppCompatActivity {
+public class OtpLoginScreen extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     //implements TextToSpeech.OnInitListener
 
     // region Variables
 
+    //    String[] languages = {"English", "Hindi", "Marathi"};
+    ArrayList languages;
+
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
-
-    private RadioGroup rgLanguage;
-
-    private RadioButton rbHindi;
-    private RadioButton rbEnglish;
-    private RadioButton rbMarathi;
-    private RadioButton radioButtonId;
-
-    private int selectedId;
 
     private Spinner spnLanguages;
 
@@ -92,15 +89,11 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         spnLanguages = findViewById(R.id.spinner_language);
 
-        /*rgLanguage = findViewById(R.id.rg_language);
-        rbEnglish = findViewById(R.id.rb_english);
-        rbHindi = findViewById(R.id.rb_hindi);
-        rbMarathi = findViewById(R.id.rb_marathi);*/
-
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
     }
 
     /**
+     *
      *
      */
     private void setupEvents() {
@@ -125,35 +118,24 @@ public class OtpLoginScreen extends AppCompatActivity {
 
         btnLogin.setOnClickListener(v -> doLogin());
 
-        spnLanguages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                // your code here
-                setLanguageSelection(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-                Toast.makeText(context, "Nothing Selected", Toast.LENGTH_SHORT).show();
-            }
-
-        });
+        spnLanguages.setOnItemSelectedListener(this);
     }
 
     /**
-     *
      * @param position
      */
     private void setLanguageSelection(int position) {
-        if(position == 0){
+        if (position == 0) {
             setLocale("en");
+            spnLanguages.setSelection(0);
             Toast.makeText(context, "English selected", Toast.LENGTH_SHORT).show();
-        }else if(position == 1){
+        } else if (position == 1) {
             setLocale("hi");
+            spnLanguages.setSelection(1);
             Toast.makeText(context, "Hindi Selected", Toast.LENGTH_SHORT).show();
-        }else if(position == 2){
+        } else if (position == 2) {
             setLocale("mar");
+            spnLanguages.setSelection(2);
             Toast.makeText(context, "Marathi Selected", Toast.LENGTH_SHORT).show();
         }
     }
@@ -196,6 +178,17 @@ public class OtpLoginScreen extends AppCompatActivity {
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(MOBILE_NUMBER_MAX_LENGTH);
         etMobileNumber.setFilters(filterArray);
+
+
+        languages = new ArrayList();
+        languages.add("English");
+        languages.add("Hindi");
+        languages.add("Marathi");
+
+        ArrayAdapter<String> aa = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, languages);
+        aa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Setting the ArrayAdapter data on the Spinner
+        spnLanguages.setAdapter(aa);
 
         clearDatabase();
     }
@@ -345,7 +338,6 @@ public class OtpLoginScreen extends AppCompatActivity {
     private void handleAPIResponse(String response, VolleyError error, String status) {
         if (status.equals("response")) {
             try {
-
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
@@ -380,6 +372,18 @@ public class OtpLoginScreen extends AppCompatActivity {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
             // TODO: Handle error
         }
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        Log.e("SpinnerSelected", ":" + spnLanguages.getSelectedItem());
+
+        setLanguageSelection(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Toast.makeText(context, "Nothing selected yet", Toast.LENGTH_SHORT).show();
     }
 
 

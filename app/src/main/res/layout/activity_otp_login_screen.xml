@@ -1,122 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bgapp"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bgapp"
     android:paddingStart="300dp"
     android:paddingEnd="300dp"
     tools:context=".screen.OtpVerifyScreen">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:focusableInTouchMode="true"
-        android:layout_height="wrap_content">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="300dp"
-            android:layout_weight="5"
-            android:src="@mipmap/applogo"
+            android:layout_height="200dp"
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:layout_height="200dp" />
+            android:layout_weight="5"
+            android:src="@mipmap/applogo" />
 
         <EditText
-            android:layout_width="match_parent"
-            android:background="@drawable/rectangle"
-            android:layout_margin="20dp"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:hint="Enter Mobile Number"
-            android:paddingLeft="10dp"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:imeOptions="actionDone"
             android:id="@+id/et_mobile_number"
-            android:inputType="number"
-            android:layout_height="50dp" />
-<!--
-        <RadioGroup
-            android:id="@+id/rg_language"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal">
+            android:layout_height="50dp"
+            android:layout_margin="20dp"
+            android:background="@drawable/rectangle"
+            android:gravity="center"
+            android:hint="Enter Mobile Number"
+            android:imeOptions="actionDone"
+            android:inputType="number"
+            android:paddingLeft="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25sp" />
+        <!--
+                <RadioGroup
+                    android:id="@+id/rg_language"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="30dp"
+                    android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/rb_english"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                android:buttonTint="@color/white"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="English"
-                android:checked="true"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+                    <RadioButton
+                        android:id="@+id/rb_english"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:buttonTint="@color/white"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="English"
+                        android:checked="true"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
 
-            <RadioButton
-                android:id="@+id/rb_hindi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/white"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Hindi"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+                    <RadioButton
+                        android:id="@+id/rb_hindi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/white"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Hindi"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
 
-            <RadioButton
-                android:id="@+id/rb_marathi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:buttonTint="@color/white"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:text="Marathi"
-                android:textColor="@color/white"
-                android:textSize="25sp" />
+                    <RadioButton
+                        android:id="@+id/rb_marathi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/white"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="10dp"
+                        android:text="Marathi"
+                        android:textColor="@color/white"
+                        android:textSize="25sp" />
 
-        </RadioGroup>-->
-
+                </RadioGroup>-->
 
         <Spinner
             android:id="@+id/spinner_language"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/language_arrays"
-            android:prompt="@string/country_prompt"
-            android:background="@drawable/rectangle"
             android:layout_margin="20dp"
-            android:textColorHint="@color/white"
-            android:textColor="@color/white"
-            android:paddingLeft="10dp"
-            android:textSize="25sp"
-            android:theme="@style/languageSpinnerItemStyle"
-            android:textAlignment="center"
+            android:background="@drawable/rectangle"
             android:gravity="center"
-            android:imeOptions="actionDone"/>
+            android:imeOptions="actionDone"
+            android:paddingLeft="10dp"
+            android:prompt="@string/country_prompt"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25sp"
+            android:theme="@style/languageSpinnerItemStyle" />
 
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
-            android:background="@drawable/greenbg"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
             android:layout_margin="20dp"
+            android:background="@drawable/greenbg"
+            android:gravity="center"
             android:text="Login"
             android:textColor="@color/white"
             android:textSize="25sp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_height="50dp" />
+            android:textStyle="bold" />
 
 
     </LinearLayout>
