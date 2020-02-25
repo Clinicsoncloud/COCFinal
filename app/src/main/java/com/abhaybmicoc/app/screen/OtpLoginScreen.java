@@ -26,6 +26,8 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
@@ -33,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -108,6 +111,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private Toolbar toolbar;
     private NavigationView navigationView;
 
+
+    final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+    android.app.Dialog changeLanguageDilog;
+
+    ArrayList<String> languagesList;
+
     // endregion
 
 
@@ -130,6 +139,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         tvNoOfUploadedRecords = findViewById(R.id.tv_no_of_uploaded_records);
 
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
+
+        changeLanguageDilog = new android.app.Dialog(context);
+        changeLanguageDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
 
     /**
@@ -354,6 +366,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         filterArray[0] = new InputFilter.LengthFilter(MOBILE_NUMBER_MAX_LENGTH);
         etMobileNumber.setFilters(filterArray);
 
+
+        languagesList = new ArrayList<>();
+        languagesList.add("English");
+        languagesList.add("Hindi");
+        languagesList.add("Marathi");
+
         clearDatabase();
     }
 
@@ -572,10 +590,75 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 finish();
                 break;
 
+            case R.id.nav_language:
+
+                showLanguageDilog();
+
+                break;
+
 
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void showLanguageDilog() {
+        changeLanguageDilog.setContentView(R.layout.select_language_dilog);
+        layoutParams.copyFrom(changeLanguageDilog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        changeLanguageDilog.getWindow().setLayout(layoutParams.width, layoutParams.height);
+        changeLanguageDilog.setCanceledOnTouchOutside(false);
+
+        final Spinner spnSelectLanguage = changeLanguageDilog.findViewById(R.id.spn_SelectLanguage);
+        final ImageView icCloseDilog = changeLanguageDilog.findViewById(R.id.ic_CloseDilog);
+        final Button btnChangeLanguage = changeLanguageDilog.findViewById(R.id.btn_ChangeLanguage);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_item, languagesList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnSelectLanguage.setAdapter(dataAdapter);
+
+
+        if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
+            spnSelectLanguage.setSelection(0);
+        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
+            spnSelectLanguage.setSelection(1);
+        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
+            spnSelectLanguage.setSelection(2);
+        }
+
+        spnSelectLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                setLanguageSelection(i);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        btnChangeLanguage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeLanguageDilog.dismiss();
+            }
+        });
+
+        icCloseDilog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeLanguageDilog.dismiss();
+            }
+        });
+
+        changeLanguageDilog.show();
+        changeLanguageDilog.getWindow().setAttributes(layoutParams);
+
     }
 
 

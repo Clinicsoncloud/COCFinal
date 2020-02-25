@@ -65,41 +65,6 @@
                 android:textColorHint="@color/white"
                 android:textSize="25sp" />
 
-            <RadioGroup
-                android:id="@+id/rg_language"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="30dp"
-                android:orientation="horizontal">
-
-                <RadioButton
-                    android:id="@+id/rb_english"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/white"
-                    android:buttonTint="@color/white"
-                    android:checked="true"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="English"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-                <RadioButton
-                    android:id="@+id/rb_hindi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:buttonTint="@color/white"
-                    android:gravity="center"
-                    android:padding="10dp"
-                    android:text="Hindi"
-                    android:textColor="@color/white"
-                    android:textSize="25sp" />
-
-            </RadioGroup>
 
             <Button
                 android:id="@+id/btn_login"

@@ -66,14 +66,14 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
             if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
                 Log.e("inside_english", " : ");
                 result = textToSpeech.setLanguage(Locale.US);
-            } else if (sharedPreferenceLanguage.getString("my_lan","").equals("hi")) {
+            } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
                 Log.e("inside_hindi", " : ");
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
-                textToSpeech.setPitch(0.5f);
+                textToSpeech.setPitch(1f);
                 textToSpeech.setSpeechRate(1.8f);
-            }else {
+            } else {
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
-                textToSpeech.setPitch(0.5f);
+                textToSpeech.setPitch(1f);
                 textToSpeech.setSpeechRate(1.8f);
             }
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
