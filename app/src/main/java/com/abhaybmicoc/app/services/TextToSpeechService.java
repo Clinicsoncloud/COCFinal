@@ -1,16 +1,15 @@
 package com.abhaybmicoc.app.services;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.os.Build;
+import android.content.Context;
+import android.annotation.TargetApi;
+import android.speech.tts.TextToSpeech;
+import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 
 import java.util.Locale;
-
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -59,20 +58,23 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
         Log.e("onInit", " : ");
         if (status == TextToSpeech.SUCCESS) {
             int result;
-
             isInitialize = true;
-
             sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
 
             Log.e("My_Selected_Lang", ":" + sharedPreferenceLanguage.getString("my_lan", ""));
 
             if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
-
                 Log.e("inside_english", " : ");
                 result = textToSpeech.setLanguage(Locale.US);
-            } else {
+            } else if (sharedPreferenceLanguage.getString("my_lan","").equals("hi")) {
                 Log.e("inside_hindi", " : ");
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
+                textToSpeech.setPitch(0.5f);
+                textToSpeech.setSpeechRate(1.8f);
+            }else {
+                result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
+                textToSpeech.setPitch(0.5f);
+                textToSpeech.setSpeechRate(1.8f);
             }
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Log.e("inside_langerror", " : ");

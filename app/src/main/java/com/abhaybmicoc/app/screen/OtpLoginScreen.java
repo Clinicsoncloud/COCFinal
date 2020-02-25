@@ -29,10 +29,13 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,27 +54,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class OtpLoginScreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
+
     //implements TextToSpeech.OnInitListener
 
     // region Variables
+
 
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
 
-    private RadioGroup rgLanguage;
-    private RadioButton rbEnglish;
-    private RadioButton rbHindi;
-    private RadioButton radioButtonId;
-
 
     private int selectedId;
+
 
     private ProgressDialog progressDialog;
 
@@ -120,9 +122,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
 
-        rgLanguage = findViewById(R.id.rg_language);
-        rbEnglish = findViewById(R.id.rb_english);
-        rbHindi = findViewById(R.id.rb_hindi);
 
         fabMenuOptions = findViewById(R.id.fab_menuOptions);
         cvOfflineDataStatus = findViewById(R.id.cv_OfflineDataStatus);
@@ -162,20 +161,23 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         btnSynch.setOnClickListener(v -> getOfflineRecords());
 
 
-        rgLanguage.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//        spnLanguages.setOnItemSelectedListener(this);
+    }
 
-                selectedId = rgLanguage.getCheckedRadioButtonId();
-                radioButtonId = findViewById(selectedId);
-
-                if (i == R.id.rb_english) {
-                    setLocale("en");
-                } else if (i == R.id.rb_hindi) {
-                    setLocale("hi");
-                }
-            }
-        });
+    /**
+     * @param position
+     */
+    private void setLanguageSelection(int position) {
+        if (position == 0) {
+            setLocale("en");
+            Toast.makeText(context, "English selected", Toast.LENGTH_SHORT).show();
+        } else if (position == 1) {
+            setLocale("hi");
+            Toast.makeText(context, "Hindi Selected", Toast.LENGTH_SHORT).show();
+        } else if (position == 2) {
+            setLocale("mar");
+            Toast.makeText(context, "Marathi Selected", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showOfflineDataStatus() {
@@ -518,7 +520,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void handleAPIResponse(String response, VolleyError error, String status) {
         if (status.equals("response")) {
             try {
-
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
@@ -556,6 +557,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     @Override
+
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
@@ -598,6 +600,18 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
         return super.dispatchTouchEvent(event);
     }
+
+    /*public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        Log.e("SpinnerSelected", ":" + spnLanguages.getSelectedItem());
+
+        setLanguageSelection(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Toast.makeText(context, "Nothing selected yet", Toast.LENGTH_SHORT).show();
+    }*/
+
 
     // endregion
 }

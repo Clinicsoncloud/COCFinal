@@ -256,7 +256,6 @@ public class PrintPreviewActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
 
@@ -364,7 +363,6 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-
                 textToSpeechService.speakOut(PRINT_MSG);
             }
         }

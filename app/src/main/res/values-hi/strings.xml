@@ -616,7 +616,7 @@
     <string name="mobile_no_msg">क्लीनिकस ऑन क्लाऊड मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
     <string name="otp_msg">क्रिपया अपना ओ टी पी डाले</string>
     <string name="registration_msg">क्रिपया अपनी जानकारी भरे</string>
-    <string name="height_fail">height  सेन्सर नही मिला क्रिपया manually कनेक्ट करे</string>
+    <string name="height_fail">height सेन्सर नही मिला क्रिपया स्वयं कनेक्ट करे</string>
     <string name="height_success">height सेन्सर के नीचे खडे रहे और गेट height बटण दबाये </string>
     <string name="height_manually">क्रिपया height डाले </string>
 
@@ -628,14 +628,23 @@
     <string name="temperature_manually">क्रिपया temperature डाले</string>
 
     <string name="sync_scan_msg">क्रिपया अपनी सिन्क प्लस मशीन का बटण दबा के रखे</string>
-    <string name="start_test_msg">क्रिपया टेस्ट स्टार्ट करें </string>
+    <string name="start_test_msg">क्रिपया टेस्ट स्टार्ट करें</string>
     <string name="insert_strip_msg">क्रिपया स्ट्रीप डाले</string>
-    <string name="add_blood_msg">क्रिपया अपना खून डाले </string>
-    <string name="new_strip_msg">क्रिपया नयी स्ट्रीप डाले </string>
+    <string name="add_blood_msg">क्रिपया अपना खून डाले</string>
+    <string name="new_strip_msg">क्रिपया नयी स्ट्रीप डाले</string>
 
     <string name="hemoglobin_msg">क्रिपया अपनी hemoglobin मशीन का पावर बटण दबा के रखे</string>
     <string name="print_msg">क्रिपया प्रिन्ट बटण दबाये </string>
     <string name="print_reconnect_msg">क्रिपया प्रिंटर दोबारा कनेक्ट करणे के लिये reconnect बटण दबाये</string>
     <string name="print_result_msg">क्रिपया अपनी परिणाम कि परची लें </string>
+
+
+    <string name="country_prompt">Preferred Language</string>
+
+    <string-array name="language_arrays">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Marathi</item>
+    </string-array>
 
 </resources>
