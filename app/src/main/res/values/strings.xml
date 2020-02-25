@@ -506,8 +506,8 @@
     <string name="getdata">Get Data</string>
     <string name="canceled">Canceled!</string>
     <string name="connected">Connected</string>
-    <string name="stoptest">Stop the Test</string>
-    <string name="starttest">Start the Test</string>
+    <string name="stoptest">Stop Test</string>
+    <string name="starttest">Start Test</string>
     <string name="restartTest">Restart Test</string>
     <string name="scandevices">Scan Devices</string>
     <string name="disconnected">Disconnected</string>
