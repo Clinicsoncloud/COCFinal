@@ -412,7 +412,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     protected void onPause() {
         super.onPause();
 
-        textToSpeechService.stopTextToSpeech();
+//        textToSpeechService.stopTextToSpeech();
     }
 
     @Override

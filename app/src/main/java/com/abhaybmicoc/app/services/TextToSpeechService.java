@@ -51,9 +51,12 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result;
+            int result = 0;
             isInitialize = true;
             sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+
+            Log.e("sharedPreference_Lang_text", " : " + sharedPreferenceLanguage.getString("my_lan", ""));
+            Log.e("sharedPreference_Result", " : " + result);
 
             if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
                 result = textToSpeech.setLanguage(Locale.US);
@@ -61,11 +64,12 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
                 textToSpeech.setPitch(1f);
                 textToSpeech.setSpeechRate(1.8f);
-            } else {
+            } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
                 result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
                 textToSpeech.setPitch(1f);
                 textToSpeech.setSpeechRate(1.8f);
             }
+
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
             } else {
                 speakOut(message);
