@@ -162,8 +162,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        textToSpeechService.speakOut(OXIMETER_MSG);
     }
 
     @Override

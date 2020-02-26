@@ -331,7 +331,7 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
 
         connectToSavedPrinter();
 
@@ -363,7 +363,7 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-                textToSpeechService.speakOut(PRINT_MSG);
+
             }
         }
     }
@@ -982,6 +982,9 @@ public class PrintPreviewActivity extends Activity {
 
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
+
+            Log.e("printerActivation"," : textToSpeech");
+            textToSpeechService.speakOut(PRINT_MSG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -1960,8 +1963,6 @@ public class PrintPreviewActivity extends Activity {
 
                 btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
                 btnPrint.setEnabled(false);
-
-                textToSpeechService.speakOut(PRINT_MSG);
 
                 printerActivation();
             } else {
