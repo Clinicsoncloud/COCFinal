@@ -50,7 +50,6 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInit(int status) {
-        Log.e("onInit", " : ");
         if (status == TextToSpeech.SUCCESS) {
             int result;
             isInitialize = true;
