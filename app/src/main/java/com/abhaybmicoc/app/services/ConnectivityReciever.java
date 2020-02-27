@@ -119,7 +119,6 @@ public class ConnectivityReciever extends BroadcastReceiver {
                 }
             }
 
-
             SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
 
 //            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
@@ -127,9 +126,9 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
             editor.commit();
 
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
         } catch (Exception e) {
             e.printStackTrace();
         }

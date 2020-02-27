@@ -4,8 +4,8 @@ import com.abhaybmicoc.app.utils.Constant;
 
 public class SQLiteQueries {
 
-    public static final String query_TBL_PARAMETERS = "create table IF NOT EXISTS "
-            + Constant.TableNames.TBL_PARAMETERS + "("
+    public static final String QUERY_TBL_PARAMETERS = "create table IF NOT EXISTS "
+            + Constant.TableNames.PARAMETERS + "("
             + Constant.Fields.PARAMETER_ID + " INTEGER primary key AUTOINCREMENT,"
             + Constant.Fields.PATIENT_ID + " VARCHAR,"
             + Constant.Fields.BMI + " VARCHAR,"
@@ -85,8 +85,8 @@ public class SQLiteQueries {
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
 
-    public static final String query_TBL_PATIENTS = "create table IF NOT EXISTS "
-            + Constant.TableNames.TBL_PATIENTS + "("
+    public static final String QUERY_TBL_PATIENTS = "create table IF NOT EXISTS "
+            + Constant.TableNames.PATIENTS + "("
             + Constant.Fields.PATIENT_ID + " INTEGER primary key AUTOINCREMENT,"
             + Constant.Fields.NAME + " VARCHAR,"
             + Constant.Fields.KIOSK_ID + " VARCHAR,"
@@ -101,5 +101,18 @@ public class SQLiteQueries {
             + Constant.Fields.STATUS + " VARCHAR,"
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
+
+    public static final String QUERY_GET_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
+            + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
+            + "parameters.* from `"
+            + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
+            + Constant.TableNames.PARAMETERS + "` as parameters "
+            + "ON patients.patient_id = parameters.patient_id";
+
+
+    public static String QUERY_GET_LAST_INSERTED_PATIENT_ID = "SELECT " + Constant.Fields.PATIENT_ID
+            + " from " + Constant.TableNames.PATIENTS
+            + " order by " + Constant.Fields.PATIENT_ID
+            + " desc limit 1";
 
 }

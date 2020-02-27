@@ -24,57 +24,52 @@ public class DataBaseHelper {
         sqLiteDatabase = sqLiteHelper.getReadableDatabase();
     }
 
-    public void saveToLocalTable(String table, ContentValues contentValues, String mobile_No) {
+    public Long saveToLocalTable(String table, ContentValues contentValues, String mobile_No) {
+        long count = 0;
         try {
-            if (table.equals(Constant.TableNames.TBL_PATIENTS)) {
-                Cursor c;
-                c = sqLiteDatabase.rawQuery("Select * from " + table + " where  mobile ='" + mobile_No + "' ", null);
+            count = sqLiteDatabase.insert(table, null, contentValues);
 
-                int count = c.getColumnCount();
-                if (c != null) {
-                    if (c.moveToFirst()) {
-                        c.close();
-                        return;
-                    } else {
-                        c.close();
-                    }
-                }
-            }
-            long count1 = sqLiteDatabase.insert(table, null, contentValues);
-            if (count1 != -1) {
+            if (count != -1) {
                 Log.v("DataHelp_Log", "Insert " + table + " Details Successfully");
             } else {
                 Log.v("DataHelp_Log", "Insert " + table + " Details Fail");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return count;
     }
 
-
-    public void updatePatientInfo(String table, ContentValues contentValues, String mobile_no) {
+    public void updatePatientInfo(String table, ContentValues contentValues, String patient_id) {
         try {
-            long count1 = sqLiteDatabase.update(table, contentValues, "mobile ='" + mobile_no + "' ", null);
+            long count1 = sqLiteDatabase.update(table, contentValues, "patient_id ='" + patient_id + "' ", null);
+
             if (count1 != -1) {
                 Log.v("DataHelp", "Update " + table + " Details Successfully");
             } else {
                 Log.v("DataHelp", "Update " + table + " Details Fail");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public String lastInsertID(String key, String tbl_name) {
+    public String getLastInsertPatientID() {
 
         Cursor cursor = null;
-        cursor = sqLiteDatabase.rawQuery("SELECT " + key + " from " + tbl_name + " order by " + key + " desc limit 1", null);
+
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_LAST_INSERTED_PATIENT_ID, null);
+
         String id = "0";
+
         if (cursor.moveToNext()) {
             for (int i = 0; i < cursor.getColumnCount(); i++) {
                 id = cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i)));
             }
         }
+
         return id;
     }
 
@@ -82,13 +77,12 @@ public class DataBaseHelper {
 
         Cursor cursor = null;
         JSONArray jArray = new JSONArray();
-        Log.e("OfflineData_Query", "SELECT tp.* , tparm.* from `" + Constant.TableNames.TBL_PATIENTS + "` AS tp LEFT JOIN `" + Constant.TableNames.TBL_PARAMETERS + "` as tparm ON tp.patient_id = tparm.patient_id");
-        cursor = sqLiteDatabase.rawQuery("SELECT tp.* , tparm.* from `" + Constant.TableNames.TBL_PATIENTS + "` AS tp LEFT JOIN `" + Constant.TableNames.TBL_PARAMETERS + "` as tparm ON tp.patient_id = tparm.patient_id", null);
+
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_OFFLINE_DATA, null);
 
         JSONObject json = null;
 
         if (cursor.getCount() != 0) {
-
             try {
                 while (cursor.moveToNext()) {
                     json = new JSONObject();
@@ -96,15 +90,15 @@ public class DataBaseHelper {
                     for (int i = 0; i < cursor.getColumnCount(); i++) {
                         json.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i))));
                     }
-                    jArray.put(json);
 
+                    jArray.put(json);
                 }
+
                 return jArray;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
-        Log.e("OfflineData_Array", ":" + jArray.length());
 
         if (jArray.length() > 0)
             return jArray;
@@ -112,9 +106,10 @@ public class DataBaseHelper {
         return null;
     }
 
-
     public void deleteTable_data(String tbl_name, String key, String ids) {
+
         sqLiteDatabase.execSQL("delete from " + tbl_name + " WHERE " + key + " IN (" + ids + ")");
+
     }
 
 }

@@ -78,10 +78,11 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
     TextToSpeechService textToSpeechService;
 
-    private String strConnectivity = "", strMobileNo = "";
+    private String strConnectivity = "", strMobileNo = "", token = "";
     private DataBaseHelper dataBaseHelper;
 
     private BluetoothAdapter bluetoothAdapter;
+    private String patient_id = "";
 
     // endregion
 
@@ -145,11 +146,12 @@ public class OtpVerifyScreen extends AppCompatActivity {
         FILL_REGISTRATION_MESSAGE = getString(R.string.registration_msg);
     }
 
-
     private void getIntentData() {
         strConnectivity = getIntent().getStringExtra("connectivity");
         strMobileNo = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
+        patient_id = getIntent().getStringExtra(Constant.Fields.PATIENT_ID);
     }
+
 
     private void setupEvents() {
         etDateOfBirth.setOnClickListener(v -> showDateOfBirthPicker());
@@ -171,13 +173,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
             } else if (rdGenderGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
+
+                updatePatientInfo();
+
                 if (Utils.isOnline(context)) {
                     if (strConnectivity.equals("online"))
                         postData();
                     else
                         Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
-                } else {
-                    updatePatientInfo();
                 }
 
             }
@@ -203,6 +206,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
+            token = sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, "");
             etName.setText(sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
             etDateOfBirth.setText(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
@@ -267,7 +271,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
         HashMap headersParams = new HashMap();
 
-        String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString("token", ""));
+        String bearer = "Bearer ".concat(token);
         headersParams.put("Authorization", bearer);
 
         HttpService.accessWebServices(
@@ -276,7 +280,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 requestBodyParams,
                 headersParams,
                 (response, error, status) -> handleAPIResponse(response, error, status));
-
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
@@ -286,6 +289,10 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
                 writeToPersonalSharedPreference(jsonObject);
 
+                Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                startActivity(objIntent);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+                finish();
 
             } catch (Exception e) {
                 // TODO: Handle exception
@@ -305,9 +312,9 @@ public class OtpVerifyScreen extends AppCompatActivity {
             patientContentValues.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
             patientContentValues.put(Constant.Fields.GENDER, getSelectedGender());
 
-            dataBaseHelper.updatePatientInfo(Constant.TableNames.TBL_PATIENTS, patientContentValues, strMobileNo);
+            dataBaseHelper.updatePatientInfo(Constant.TableNames.PATIENTS, patientContentValues, patient_id);
 
-            String patient_id = dataBaseHelper.lastInsertID(Constant.Fields.PATIENT_ID, Constant.TableNames.TBL_PATIENTS);
+//            String patient_id = dataBaseHelper.lastInsertID(Constant.Fields.PATIENT_ID, Constant.TableNames.PATIENTS);
 
             JSONObject resObject = new JSONObject();
             JSONObject dataObject = new JSONObject();
@@ -348,8 +355,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
         SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.ID))
-            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
+//        if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.ID))
+//            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
         if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.PATIENT_ID))
             writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.PATIENT_ID));
 
@@ -361,10 +368,12 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
         editor.commit();
 
-        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
-        startActivity(objIntent);
-        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-        finish();
+        if (!Utils.isOnline(context)) {
+            Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+            startActivity(objIntent);
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+            finish();
+        }
     }
 
     /**

@@ -142,6 +142,7 @@ public class PrintPreviewActivity extends Activity {
     private SharedPreferences sharedPreferencesThermometer;
     private SharedPreferences sharedPreferencesPersonalData;
     private SharedPreferences sharedPreferencesBloodPressure;
+    private SharedPreferences sharedPreferencesOffline;
 
     private ImageView ivDownload;
 
@@ -343,7 +344,7 @@ public class PrintPreviewActivity extends Activity {
         getPrintData();
         getResults();
         saveDataToLocal();
-        postData();
+//        postData();
 
     }
 
@@ -1346,11 +1347,96 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues, "");
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
+
+            btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnHome.setEnabled(true);
+
+            getOfflineRecords();
 
         } catch (Exception e) {
         }
     }
+
+    private void getOfflineRecords() {
+        try {
+            JSONArray dataArray = dataBaseHelper.getOfflineData();
+
+            if (dataArray != null && dataArray.length() > 0) {
+                uploadOfflineRecords(dataArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadOfflineRecords(JSONArray dataArray) {
+        try {
+            if (Utils.isOnline(context)) {
+
+                JSONObject dataObject = new JSONObject();
+                dataObject.put("data", dataArray);
+
+                HttpService.accessWebServicesJSON(
+                        context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
+                        (response, error, status) -> handleOfflineAPIResponse(response, error, status));
+
+            } else {
+                Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
+        try {
+            updateLocalStatus(response);
+        } catch (Exception e) {
+            // TODO: Handle exception
+            e.printStackTrace();
+        }
+    }
+
+    private void updateLocalStatus(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+
+            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
+            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+
+            String patientId = "";
+            String parameterId = "";
+
+            for (int i = 0; i < patientIdArray.length(); i++) {
+                if (patientId.equals("")) {
+                    patientId = patientIdArray.getString(i);
+                } else {
+                    patientId = patientId + "," + patientIdArray.getString(i);
+                }
+            }
+
+            for (int j = 0; j < parameterIdArray.length(); j++) {
+                if (parameterId.equals("")) {
+                    parameterId = parameterIdArray.getString(j);
+                } else {
+                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                }
+            }
+
+            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+
+            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+
+            editor.commit();
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void postData() {
 
@@ -1562,6 +1648,7 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+        sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
     }
 
 
