@@ -597,11 +597,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnSelectLanguage.setAdapter(dataAdapter);
 
-        if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
+        if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
             spnSelectLanguage.setSelection(0);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("hi")) {
             spnSelectLanguage.setSelection(1);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("mar")) {
             spnSelectLanguage.setSelection(2);
         }
 
