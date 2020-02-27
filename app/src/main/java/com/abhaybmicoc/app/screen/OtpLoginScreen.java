@@ -427,6 +427,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     // region Logical methods
 
     /**
+     * 1.check the location permission
+     * 2.check the mobile number is empty or not
+     * 3.check mobile number is valid or not
+     * 4.a.check for network connection
+     * 4.b.if network available generate otp
+     * 4.c.if network not available save patient locally
      *
      */
     private void doLogin() {
@@ -445,7 +451,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
     }
 
-
+    /**
+     * save patient data locally
+     */
     private void savePatient() {
         try {
             ContentValues patientContentValues = new ContentValues();
@@ -631,14 +639,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         spnSelectLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                 setLanguageSelection(i);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                Toast.makeText(context, "No preffered Language selected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -664,37 +670,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
         if (event.getAction() == KeyEvent.ACTION_UP) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
                 InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-
             }
-
             cvOfflineDataStatus.setVisibility(View.GONE);
-
-            /*if (v instanceof AutoCompleteTextView) {
-                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            }*/
-
         }
         return super.dispatchTouchEvent(event);
     }
-
-    /*public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        Log.e("SpinnerSelected", ":" + spnLanguages.getSelectedItem());
-
-        setLanguageSelection(position);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast.makeText(context, "Nothing selected yet", Toast.LENGTH_SHORT).show();
-    }*/
-
 
     // endregion
 }
