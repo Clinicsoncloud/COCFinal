@@ -25,6 +25,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
     Context mContext;
     SharedPreferences sharedPreferencesOffline;
 
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
