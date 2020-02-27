@@ -567,19 +567,14 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 showOfflineDataStatus();
                 break;
 
-
             case R.id.nav_setting:
                 startActivity(new Intent(context, SettingsActivity.class));
                 finish();
                 break;
 
             case R.id.nav_language:
-
                 showLanguageDilog();
-
                 break;
-
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -601,7 +596,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 android.R.layout.simple_spinner_item, languagesList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnSelectLanguage.setAdapter(dataAdapter);
-
 
         if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
             spnSelectLanguage.setSelection(0);
@@ -639,9 +633,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         changeLanguageDilog.show();
         changeLanguageDilog.getWindow().setAttributes(layoutParams);
-
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -655,6 +647,5 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
         return super.dispatchTouchEvent(event);
     }
-
     // endregion
 }

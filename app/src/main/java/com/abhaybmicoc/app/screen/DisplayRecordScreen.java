@@ -174,14 +174,14 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         //saving data to shared preference
         SharedPreferences.Editor editor = sharedPreferencesLanguage.edit();
-        editor.putString("my_lan", lang);
+        editor.putString("language", lang);
         editor.apply();
     }
 
     private void initializeData() {
         sharedPreferencesLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
 
-        setLocale(sharedPreferencesLanguage.getString("my_lan", ""));
+        setLocale(sharedPreferencesLanguage.getString("language", ""));
 
         new Handler().postDelayed(() -> {
             textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
