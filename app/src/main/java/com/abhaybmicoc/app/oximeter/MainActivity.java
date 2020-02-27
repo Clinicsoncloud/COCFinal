@@ -26,6 +26,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -193,6 +194,7 @@ public class MainActivity extends Activity {
                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"MainActivityOximeter","requestPermission","failed to requestPermission");
         }
     }
 
@@ -230,6 +232,7 @@ public class MainActivity extends Activity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"MainActivityOximeter","requestGPSPermission","failed to requestGPSPermission");
         }
     }
 
@@ -550,6 +553,7 @@ public class MainActivity extends Activity {
 
             deviceConnectionTimeoutHandler.postDelayed(connectionTimeoutRunnable, DEVICE_CONNECTION_WAITING_TIME);
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"MainActivityOximeter","setDeviceConnectionTimeoutHandler","failed to setDeviceConnectionTimeoutHandler");
         }
     }
 

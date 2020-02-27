@@ -3,6 +3,8 @@ package com.abhaybmicoc.app.services;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.abhaybmicoc.app.utils.ErrorUtils;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,7 @@ public class DateService {
         try {
             date = sdf.parse(dateOfBirth);
         } catch (ParseException e) {
+            ErrorUtils.logErrors(e,"DateService","getAgeFromStringDate","failed to getAgeFromStringDate");
             return 0;
         }
 
@@ -58,6 +61,7 @@ public class DateService {
             Date parsedDate = inputDateFormat.parse(date);
             formattedDate = formatter.format(parsedDate);
         } catch (ParseException e) {
+            ErrorUtils.logErrors(e,"DateService","formatDateFromString","failed to formatDateFromString");
             return null;
         }
 

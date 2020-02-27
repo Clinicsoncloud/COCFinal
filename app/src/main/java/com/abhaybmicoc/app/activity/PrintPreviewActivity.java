@@ -55,6 +55,7 @@ import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
@@ -294,6 +295,7 @@ public class PrintPreviewActivity extends Activity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"PrintPreviewActivity","requestGPSPermission","failed to get requestGPSPermission doinBackground");
         }
     }
 
@@ -967,6 +969,7 @@ public class PrintPreviewActivity extends Activity {
 
         } catch (Exception e) {
             // TODO: Handle exception here
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","printerBond","failed to get printerBond");
         }
     }
 
@@ -987,8 +990,7 @@ public class PrintPreviewActivity extends Activity {
             textToSpeechService.speakOut(PRINT_MSG);
 
         } catch (Exception e) {
-            e.printStackTrace();
-        }
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","printerActivation","failed to get printerActivation");       }
     }
 
     // endregion
@@ -1192,12 +1194,11 @@ public class PrintPreviewActivity extends Activity {
 
             lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","setNewList","failed to get setNewList");
         }
     }
 
     private void saveDataToLocal() {
-
         try {
             ContentValues paramsContentValues = new ContentValues();
 
@@ -1352,6 +1353,7 @@ public class PrintPreviewActivity extends Activity {
             dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues, "");
 
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","saveDataToLocal","failed to saveDataToLocal");
         }
     }
 
@@ -1536,6 +1538,7 @@ public class PrintPreviewActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 // TODO: Handle exception
+                ErrorUtils.logErrors(e,"PrintPreviewActivity","handleAPIResponse","failed to handleAPIResponse");
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
@@ -1553,6 +1556,7 @@ public class PrintPreviewActivity extends Activity {
             fileName = dataObject.getString("file");
         } catch (JSONException e) {
             // TODO: Handle exception here
+            ErrorUtils.logErrors(e,"PrintPreviewActivity","readFileName","failed to readFileName");
         }
     }
 
@@ -1630,7 +1634,7 @@ public class PrintPreviewActivity extends Activity {
                 ptrGen.iAddData(Printer_GEN.FONT_LARGE_NORMAL, empty);
                 iRetVal = ptrGen.iStartPrinting(1);
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"PrintPreviewActivity","EnterTextAsyc","failed to EnterTextAsyc doinBackground");
                 iRetVal = DEVICE_NOTCONNECTED;
                 // TODO: Handle exception
                 return iRetVal;
@@ -1668,6 +1672,7 @@ public class PrintPreviewActivity extends Activity {
                         tvMessage.setText("" + msg.obj);
                     } catch (Exception e) {
                         // TODO: handle exception
+                        ErrorUtils.logErrors(e,"PrintPreviewActivity","Handler","failed to Handler doinBackground");
                     }
                     break;
                 case 2:

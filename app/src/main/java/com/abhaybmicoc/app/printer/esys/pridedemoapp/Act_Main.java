@@ -57,6 +57,7 @@ import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothPair;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.prowesspride.api.Setup;
 import com.prowesspride.api.Printer_ESC;
 import com.prowesspride.api.Printer_GEN;
@@ -189,6 +190,7 @@ public class Act_Main extends Activity {
                 btnComm.setVisibility(View.GONE);
             }
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"Act_Main","onCreate","failed to activate printer");
         }
         if (null == mBT) {
             Toast.makeText(this, "Bluetooth module not found", Toast.LENGTH_LONG).show();
@@ -312,6 +314,7 @@ public class Act_Main extends Activity {
             }
 
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"Act_Main","onCreate","failed to autoconnect printer");
         }
     }
 
@@ -348,6 +351,7 @@ public class Act_Main extends Activity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"Act_Main","requestGPSPermission","failed to get requestGPSPermission");
         }
     }
 
@@ -553,7 +557,7 @@ public class Act_Main extends Activity {
                 mblBonded = false;
             } catch (Exception e1) {
                 Log.d(getString(R.string.app_name), "create Bond failed!");
-                e1.printStackTrace();
+                ErrorUtils.logErrors(e1,"Act_Main","PairTaskDoInBackground","failed to PairTask doinBackground");
                 return RET_BOND_FAIL;
             }
             while (!mblBonded && iWait > 0) {
@@ -583,7 +587,7 @@ public class Act_Main extends Activity {
                 try {
                     BluetoothPair.removeBond(mBDevice);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    ErrorUtils.logErrors(e,"Act_Main","PairTaskOnPostExecution","failed to PairTask onPostExcecution");
                 }
                 btnPair.setEnabled(true);
                 new ConnSocketTask().execute(mBDevice.getAddress());
@@ -663,7 +667,7 @@ public class Act_Main extends Activity {
 
                 }
             } catch (Exception e) {
-
+                ErrorUtils.logErrors(e,"Act_Main","funContinue","failed to funContinue");
             }
             // get selected radio button from radioGroup
             int selectedId = rgProtocol.getCheckedRadioButtonId();
@@ -685,6 +689,7 @@ public class Act_Main extends Activity {
                             genSerial.execute(0);
                         }
                     } catch (Exception e) {
+                        ErrorUtils.logErrors(e,"Act_Main","funContinuePrinterConnection","failed to connect PrinterConnection");
                     }
                 }
             } else if (rbtnProtocol.getText().equals("Esc Sequence Protocol")) {
@@ -694,8 +699,7 @@ public class Act_Main extends Activity {
                 }
             }
         } catch (Exception e) {
-            String str = "Please Select a choice";
-//			dlgShow(str);
+            ErrorUtils.logErrors(e,"Act_Main","funContinue","failed to function continue");
         }
 
     }
@@ -717,6 +721,7 @@ public class Act_Main extends Activity {
                     BluetoothComm.mosOut = null;
                     BluetoothComm.misIn = null;
                 } catch (NullPointerException e) {
+                    ErrorUtils.logErrors(e,"Act_Main","dlgExit","failed to dialogExit");
                 }
                 System.gc();
                 finish();
@@ -858,6 +863,7 @@ public class Act_Main extends Activity {
 
                     prnEsc = new Printer_ESC(Act_GlobalPool.setup, outstream, input);
                 } catch (Exception e) {
+                    ErrorUtils.logErrors(e,"Act_Main","escGetSerialNo","failed to escGetSerialNo");
                 }
 
                 sDevicetype = prnEsc.sGetDeviceInfo(Printer_ESC.DEVICE_SERIAL_NUMBER);
@@ -870,6 +876,7 @@ public class Act_Main extends Activity {
                 Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_SHORT).show();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
+                ErrorUtils.logErrors(e,"Act_Main","escGetSerialNo","failed to escGetSerialNo");
             }
 
             return sDevicetype;
@@ -926,6 +933,7 @@ public class Act_Main extends Activity {
 
                     prnGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
                 } catch (Exception e) {
+                    ErrorUtils.logErrors(e,"Act_Main","genGetSerialNo","failed to genGetSerialNo");
                 }
                 sDevicetype = prnGen.sGetSerialNumber();
 
@@ -935,6 +943,7 @@ public class Act_Main extends Activity {
                 editor.commit();
             } catch (Exception e) {
                 // TODO Auto-generated catch block
+                ErrorUtils.logErrors(e,"Act_Main","genGetSerialNo","failed to genGetSerialNo");
             }
 
             return sDevicetype;

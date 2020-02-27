@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.Locale;
 
@@ -45,6 +46,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
                 textToSpeech.shutdown();
             }
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"TextToSpeechService","stopTextToSpeechService","failed to stopTextToSpeechService");
         }
     }
 

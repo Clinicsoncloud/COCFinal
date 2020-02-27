@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.interfaces.RvClickListener;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import org.json.JSONArray;
 
@@ -88,10 +89,12 @@ public class ConnectedDevicesListAdapter extends RecyclerView.Adapter<ConnectedD
                     try {
                         rvClickListener.rv_click(position, 0, dataArray.getJSONObject(position).getString("device_name"));
                     } catch (Exception e) {
+                        ErrorUtils.logErrors(e,"ConnectedDevicesListAdapter","onBindViewHolder","failed to onBindViewHolder");
                     }
                 }
             });
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"ConnectedDevicesListAdapter","onBindViewHolder","failed to onBindViewHolder");
         }
 
     }

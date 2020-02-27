@@ -50,6 +50,7 @@ import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.VolleyError;
 
@@ -225,7 +226,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 setOfflineDataStatus();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"OtpLoginScreen","getOfflineRecords","failed to get offline records");
         }
     }
 
@@ -242,6 +243,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"OtpLoginScreen","uploadOfflineRecords","failed to upload offline records");
         }
     }
 
@@ -251,7 +253,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             updateLocalStatus(response);
         } catch (Exception e) {
             // TODO: Handle exception
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"OtpLoginScreen","handleOfflineAPIResponse","failed to handleOfflineAPIResponse");
         }
     }
 
@@ -292,7 +294,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             setOfflineDataStatus();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"OtpLoginScreen","updateLocalStatus","failed to updateLocalStatus");
         }
 
     }
@@ -332,6 +334,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
             kiosk_id = sharedPreferencesActivator.getString("pinLock", "");
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"OtpLoginScreen","initializeData","failed to initializeData");
         }
 
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -444,6 +447,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             startActivity(objIntent);
 
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"OtpLoginScreen","savePatient","failed to savePatient");
         }
     }
 
@@ -550,6 +554,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 }
             } catch (Exception e) {
                 // TODO: Handle exception
+                ErrorUtils.logErrors(e,"OtpLoginScreen","handleAPIResponse","failed to handleAPIResponse");
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();

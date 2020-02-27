@@ -393,6 +393,7 @@ public class ThermometerScreen extends AppCompatActivity {
             if (socket != null && socket.isConnected())
                 socket.close();
         } catch (IOException e) {
+            ErrorUtils.logErrors(e,"ThermometerScreen","closeBluetooth","failed to closeBluetooth");
         }
     }
 
@@ -432,7 +433,7 @@ public class ThermometerScreen extends AppCompatActivity {
 
                 return "Connected";
             } catch (Exception e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"ThermometerScreen","ConnectdoinBackground","failed to connect");
                 return "";
             }
         }
@@ -506,7 +507,7 @@ public class ThermometerScreen extends AppCompatActivity {
                 } catch (IOException e) {
                     message = "";
                     strEnabled = "false";
-                    ErrorUtils.logErrors(e, "HeightActivity.java", "doInBackground()", "Failed to read bytes data");
+                    ErrorUtils.logErrors(e, "ThermometerScreen", "ReceiverdoInBackground()", "Failed to read bytes data");
                 }
 
                 publishProgress(new String[]{message, strEnabled});

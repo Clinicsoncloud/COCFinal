@@ -68,6 +68,7 @@ import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
@@ -211,6 +212,7 @@ public class BloodPressureActivity extends Activity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"BloodPressureActivity","requestGPSPermission","failed to get requestGPSPermission");
         }
     }
 
@@ -221,6 +223,7 @@ public class BloodPressureActivity extends Activity {
                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"BloodPressureActivity","requestPermission","failed to get requestPermission");
         }
     }
 
@@ -321,6 +324,7 @@ public class BloodPressureActivity extends Activity {
                 startActivity(objIntent);
                 finish();
             } catch (Exception e) {
+                ErrorUtils.logErrors(e,"BloodPressureActivity","setupEvents","failed setupEvents");
             }
         });
     }
@@ -386,7 +390,7 @@ public class BloodPressureActivity extends Activity {
             convertedDate = formatter.parse(date);
             timestamp = convertedDate.getTime();
         } catch (ParseException e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"BloodPressureActivity","convertDateToMilliSeconds","failed to convertDateToMilliSeconds");
         }
         return timestamp;
     }
@@ -1037,7 +1041,7 @@ public class BloodPressureActivity extends Activity {
                                 try {
                                     Thread.sleep(50);
                                 } catch (InterruptedException e) {
-                                    e.printStackTrace();
+                                    ErrorUtils.logErrors(e,"BloodPressureActivity","LeScanCallback","failed to LeScanCallback");
                                 }
 
                                 BleReceivedService.getInstance().connectDevice(device);
@@ -1063,7 +1067,7 @@ public class BloodPressureActivity extends Activity {
                                         try {
                                             Thread.sleep(200);
                                         } catch (InterruptedException e) {
-                                            e.printStackTrace();
+                                            ErrorUtils.logErrors(e,"BloodPressureActivity","LeScanCallback","failed to LeScanCallback");
                                         }
                                         BleReceivedService.getInstance().connectDevice(device);
 
@@ -1096,7 +1100,7 @@ public class BloodPressureActivity extends Activity {
                 try {
                     pd.dismiss();
                 } catch (Exception e) {
-
+                    ErrorUtils.logErrors(e,"BloodPressureActivity","BroadcastReceiver","failed to BroadcastReceiver");
                 }
 
                 showIndicator(getResources().getString(R.string.indicator_start_receive));
@@ -1113,7 +1117,7 @@ public class BloodPressureActivity extends Activity {
                     try {
                         pd.dismiss();
                     } catch (Exception e) {
-
+                        ErrorUtils.logErrors(e,"BloodPressureActivity","BroadCastReceiver","failed to get broadcastReceiver");
                     }
                     BleReceivedService.getInstance().disconnectDevice();
                     uiThreadHandler.postDelayed(new Runnable() {
@@ -1144,6 +1148,7 @@ public class BloodPressureActivity extends Activity {
                             try {
                                 pd.dismiss();
                             } catch (Exception e) {
+                                ErrorUtils.logErrors(e,"BloodPressureActivity","BroadCastReceiver","failed to get broadcastReceiver");
                             }
                         } else {
                             BluetoothGatt gatt = BleReceivedService.getGatt();
@@ -1174,7 +1179,7 @@ public class BloodPressureActivity extends Activity {
                                         try {
                                             pd.dismiss();
                                         } catch (Exception e) {
-
+                                            ErrorUtils.logErrors(e,"BloodPressureActivity","BroadCastReceiver","failed to get broadcastReceiver");
                                         }
                                     }
                                 }, 500L);

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -41,6 +42,7 @@ public class SharedPreferenceService {
         try {
             return (int)Double.parseDouble(value);
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"SharedPreferenceService","getInteger","failed to getInteger");
             return 0;
         }
     }
@@ -55,6 +57,7 @@ public class SharedPreferenceService {
         try {
             return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"SharedPreferenceService","getDouble","failed to getDouble");
             return 0;
         }
     }

@@ -30,7 +30,6 @@ public class HttpService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.e("onResponse", "" + response);
                         if (!((Activity) context).isFinishing()) {
                             loading.dismiss();
                         }
@@ -40,7 +39,6 @@ public class HttpService {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("onErrorResponse", "" + error);
                         responseListner.onProcessFinish("", error, "error");
 
                         if (loading != null && loading.isShowing()) {
@@ -74,7 +72,6 @@ public class HttpService {
             @Override
             public void retry(VolleyError error) throws VolleyError {
                 //Toast.makeText(context, "" + error, Toast.LENGTH_SHORT).show();
-                Log.e("onErrorResponse", "" + error);
 //                responseListner.onError(error);
                 responseListner.onProcessFinish("", error, "error");
             }

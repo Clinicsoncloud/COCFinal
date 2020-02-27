@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,7 +48,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp_Log", "Insert " + table + " Details Fail");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"DataBaseHelper","saveToLocalTable","failed to saveLocalTable");
         }
     }
 
@@ -61,7 +62,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp", "Update " + table + " Details Fail");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"DataBaseHelper","updatePatientInfo","failed to updatePatientInfo");
         }
     }
 
@@ -101,7 +102,7 @@ public class DataBaseHelper {
                 }
                 return jArray;
             } catch (JSONException e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"DataBaseHelper","getOfflineData","failed to getOfflineData");
             }
         }
         Log.e("OfflineData_Array", ":" + jArray.length());

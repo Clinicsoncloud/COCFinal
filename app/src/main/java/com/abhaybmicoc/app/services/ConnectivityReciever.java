@@ -14,6 +14,7 @@ import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.screen.OtpVerifyScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
@@ -66,7 +67,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"ConnectivityReciver","getOfflineRecords","failed to getOfflineRecords");
         }
     }
 
@@ -80,6 +81,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
                     mContext, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                     (response, error, status) -> handleAPIResponse(response, error, status));
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"ConnectivityReciver","uploadOfflineRecords","failed to uploadOfflineRecords");
         }
     }
 
@@ -89,7 +91,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             updateLocalStatus(response);
         } catch (Exception e) {
             // TODO: Handle exception
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"ConnectivityReciver","handleAPIResponse","failed to handleAPIResponse");
         }
     }
 
@@ -131,7 +133,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
         } catch (Exception e) {
-            e.printStackTrace();
+            ErrorUtils.logErrors(e,"ConnectivityReciver","updateLocalStatus","failed to updateLocalStatus");
         }
 
     }

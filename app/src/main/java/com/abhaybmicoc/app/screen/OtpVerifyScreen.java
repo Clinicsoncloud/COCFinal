@@ -25,6 +25,7 @@ import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -192,8 +193,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     private void initializeData() {
-
-
         dataBaseHelper = new DataBaseHelper(context);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
@@ -215,6 +214,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
             initializeGender();
         } catch (Exception e) {
             // TODO: Handle exception
+            ErrorUtils.logErrors(e,"OtpVerifyScreen","initializeData","failed to initializeData");
         }
     }
 
@@ -289,6 +289,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             } catch (Exception e) {
                 // TODO: Handle exception
+                ErrorUtils.logErrors(e,"OtpVerifyScreen","handleAPIResponse","failed to handleAPIResponse");
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
@@ -327,6 +328,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
 
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"OtpVerifyScreen","updatePatientInfo","failed to updatePatientInfo");
         }
     }
 

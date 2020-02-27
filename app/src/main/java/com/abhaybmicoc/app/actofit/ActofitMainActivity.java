@@ -34,6 +34,7 @@ import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.Date;
 import java.util.Locale;
@@ -164,6 +165,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             editor.commit();
         } catch (Exception e) {
             // TODO: Handle exception here
+            ErrorUtils.logErrors(e,"ActofitMainActivity","readAndStoreData","failed to read and store data");
         }
 
         Intent intent1 = new Intent(ActofitMainActivity.this, DisplayRecordScreen.class);
@@ -277,7 +279,6 @@ public class ActofitMainActivity extends AppCompatActivity {
      *
      */
     private void initializeData() {
-
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
@@ -288,6 +289,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         } catch (Exception e) {
             // TODO: Handle exception here
+            ErrorUtils.logErrors(e,"ActofitMainActivity","initializeData","failed to initializeData");
         }
 
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
@@ -327,6 +329,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
+            ErrorUtils.logErrors(ex,"ActofitMainActivity","requestGPSPermission","failed to get gps permission");
         }
     }
 
@@ -357,9 +360,8 @@ public class ActofitMainActivity extends AppCompatActivity {
             Date initDate = null;
             try {
                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
-                Log.e("initDate", "" + initDate);
             } catch (ParseException e) {
-                e.printStackTrace();
+                ErrorUtils.logErrors(e,"ActofitMainActivity","starSmartScale","Failed");
             }
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -436,6 +438,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            ErrorUtils.logErrors(e,"ActofitMainActivity","isAppInstalled","App is not installed");
         }
 
         return false;
@@ -466,8 +469,5 @@ public class ActofitMainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
-        if (textToSpeechService != null)
-            textToSpeechService.stopTextToSpeech();
     }
 }

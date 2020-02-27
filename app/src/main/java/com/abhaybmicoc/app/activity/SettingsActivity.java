@@ -18,6 +18,7 @@ import com.abhaybmicoc.app.adapter.ConnectedDevicesListAdapter;
 import com.abhaybmicoc.app.interfaces.RvClickListener;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
+import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -107,6 +108,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
             setConnectedDevicesAdapter();
 
         } catch (Exception e) {
+            ErrorUtils.logErrors(e,"settingsActivity","initializeData","failed to initializeData");
         }
     }
 
@@ -158,6 +160,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
                     devicesArray.getJSONObject(i).put("is_selected", "0");
 
             } catch (Exception e) {
+                ErrorUtils.logErrors(e,"settingsActivity","updateArray","failed to updateArray");
             }
         }
         setConnectedDevicesAdapter();
