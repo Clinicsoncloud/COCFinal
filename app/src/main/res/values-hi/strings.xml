@@ -613,7 +613,7 @@
 
     <!--voice commands-->
 
-    <string name="mobile_no_msg">क्लीनिकस ऑन क्लाऊड मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
+    <string name="mobile_no_msg">cleeneeks on cloud मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
     <string name="otp_msg">क्रिपया अपना ओ टी पी डाले</string>
     <string name="registration_msg">क्रिपया अपनी जानकारी भरे</string>
     <string name="height_fail">height सेन्सर नही मिला क्रिपया स्वयं कनेक्ट करे</string>

@@ -82,13 +82,13 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     private int setLanguage(){
         int result = -1;
 
-        if (sharedPreferenceLanguage.getString("my_language", "").equals("en")) {
+        if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
             result = textToSpeech.setLanguage(Locale.US);
-        } else if (sharedPreferenceLanguage.getString("my_language", "").equals("hi")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("hi")) {
             result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
             textToSpeech.setPitch(1f);
             textToSpeech.setSpeechRate(1.8f);
-        } else if (sharedPreferenceLanguage.getString("my_language", "").equals("mar")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("mar")) {
             result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
             textToSpeech.setPitch(1f);
             textToSpeech.setSpeechRate(1.8f);

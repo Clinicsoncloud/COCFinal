@@ -171,9 +171,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
         btnSynch.setOnClickListener(v -> getOfflineRecords());
-
-
-//        spnLanguages.setOnItemSelectedListener(this);
     }
 
     /**
@@ -193,23 +190,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void showOfflineDataStatus() {
-
-        /*if (menuOptionsClicked) {
-            cvOfflineDataStatus.setVisibility(View.GONE);
-            menuOptionsClicked = false;
-        } else {*/
         cvOfflineDataStatus.setVisibility(View.VISIBLE);
         cvOfflineDataStatus.startAnimation(slideUpAnimation);
-//            overridePendingTransition(R.anim.push_left_out, R.anim.out_to_left);
+
         menuOptionsClicked = true;
         setOfflineDataStatus();
-//        }
     }
 
     private void setOfflineDataStatus() {
-
         JSONArray dataArray = dataBaseHelper.getOfflineData();
-
         if (dataArray != null && dataArray.length() > 0) {
             tvNoOfRecords.setText(String.valueOf(dataArray.length()));
             btnSynch.setVisibility(View.VISIBLE);
@@ -217,9 +206,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             tvNoOfRecords.setText("0");
             btnSynch.setVisibility(View.GONE);
         }
-
         Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
-
         String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
 
         if (uploaded_Count != null && !uploaded_Count.equals(""))
@@ -230,27 +217,21 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void getOfflineRecords() {
-
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
-
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
             } else {
                 setOfflineDataStatus();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void uploadOfflineRecords(JSONArray dataArray) {
-
         try {
-
             if (Utils.isOnline(context)) {
-
                 JSONObject dataObject = new JSONObject();
                 dataObject.put("data", dataArray);
 
@@ -300,17 +281,13 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 }
             }
 
-
             SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-
-//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
             editor.commit();
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
-
 
             setOfflineDataStatus();
 
@@ -322,7 +299,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
 
     private void setLocale(String lang) {
-
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -331,7 +307,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         //saving data to shared preference
         SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
-        editor.putString("my_language", lang);
+        editor.putString("language", lang);
         editor.apply();
     }
 
@@ -433,7 +409,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
      * 4.a.check for network connection
      * 4.b.if network available generate otp
      * 4.c.if network not available save patient locally
-     *
      */
     private void doLogin() {
         if (Utils.getInstance().giveLocationPermission(this)) {
