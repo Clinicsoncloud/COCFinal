@@ -6,6 +6,7 @@ import android.content.Context;
 import android.annotation.TargetApi;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
+import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 
@@ -51,29 +52,47 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = 0;
-            isInitialize = true;
-            sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
-
-            Log.e("sharedPreference_Lang_text", " : " + sharedPreferenceLanguage.getString("my_lan", ""));
-            Log.e("sharedPreference_Result", " : " + result);
-
-            if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
-                result = textToSpeech.setLanguage(Locale.US);
-            } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
-                result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
-                textToSpeech.setPitch(1f);
-                textToSpeech.setSpeechRate(1.8f);
-            } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
-                result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
-                textToSpeech.setPitch(1f);
-                textToSpeech.setSpeechRate(1.8f);
-            }
-
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            } else {
-                speakOut(message);
-            }
+            initializeLanguage();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initializeLanguage(){
+        /**
+         * 1. Get preferred language
+         * 2. Check if language is initialized
+         * 3.a. If language initialized, speak default message
+         * 3.b. If language not initialized, log error
+         */
+        isInitialize = true;
+        sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+
+        int result = setLanguage();
+
+        if (isLanguageSelected(result)) {
+            speakOut(message);
+        }
+    }
+
+    private boolean isLanguageSelected(int result){
+        return result != -1 && result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private int setLanguage(){
+        int result = -1;
+
+        if (sharedPreferenceLanguage.getString("my_language", "").equals("en")) {
+            result = textToSpeech.setLanguage(Locale.US);
+        } else if (sharedPreferenceLanguage.getString("my_language", "").equals("hi")) {
+            result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
+            textToSpeech.setPitch(1f);
+            textToSpeech.setSpeechRate(1.8f);
+        } else if (sharedPreferenceLanguage.getString("my_language", "").equals("mar")) {
+            result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
+            textToSpeech.setPitch(1f);
+            textToSpeech.setSpeechRate(1.8f);
+        }
+        return result;
     }
 }

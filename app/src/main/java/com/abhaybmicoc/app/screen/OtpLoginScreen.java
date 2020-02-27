@@ -331,7 +331,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         //saving data to shared preference
         SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
-        editor.putString("my_lan", lang);
+        editor.putString("my_language", lang);
         editor.apply();
     }
 
