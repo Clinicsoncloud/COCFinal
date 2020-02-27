@@ -7,11 +7,8 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.screen.OtpVerifyScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.android.volley.VolleyError;
@@ -19,19 +16,14 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
-
 
 public class ConnectivityReciever extends BroadcastReceiver {
 
     DataBaseHelper dataBaseHelper;
     Context mContext;
     SharedPreferences sharedPreferencesOffline;
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -121,7 +113,6 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
             SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
 
-//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
             editor.commit();
@@ -132,7 +123,5 @@ public class ConnectivityReciever extends BroadcastReceiver {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 }
