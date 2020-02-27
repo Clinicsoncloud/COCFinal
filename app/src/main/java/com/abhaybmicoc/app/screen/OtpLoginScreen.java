@@ -311,7 +311,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         editor.apply();
     }
 
-
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
 
@@ -341,7 +340,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(MOBILE_NUMBER_MAX_LENGTH);
         etMobileNumber.setFilters(filterArray);
-
 
         languagesList = new ArrayList<>();
         languagesList.add("English");
@@ -380,22 +378,24 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
         View hView = navigationView.getHeaderView(0);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-//        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
     }
 
     // endregion
