@@ -9,7 +9,7 @@ import android.view.Window;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.services.ConnectivityService;
+import com.abhaybmicoc.app.services.OfflineSyncService;
 
 /*
  * Splash Activity
@@ -62,7 +62,7 @@ public class SplashActivity extends Activity {
     }
 
     private void startServices() {
-        startService(new Intent(context, ConnectivityService.class));
+        startService(new Intent(context, OfflineSyncService.class));
     }
 
     @Override

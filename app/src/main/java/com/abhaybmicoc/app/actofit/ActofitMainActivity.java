@@ -165,7 +165,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             editor.commit();
         } catch (Exception e) {
             // TODO: Handle exception here
-            ErrorUtils.logErrors(e,"ActofitMainActivity","readAndStoreData","failed to read and store data");
+            ErrorUtils.logErrors(context,e,"ActofitMainActivity","readAndStoreData",""+e.getMessage());
         }
 
         Intent intent1 = new Intent(ActofitMainActivity.this, DisplayRecordScreen.class);
@@ -289,7 +289,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             tvMobile.setText("Phone : " + sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
         } catch (Exception e) {
             // TODO: Handle exception here
-            ErrorUtils.logErrors(e,"ActofitMainActivity","initializeData","failed to initializeData");
+            ErrorUtils.logErrors(context,e,"ActofitMainActivity","initializeData",""+e.getMessage());
         }
 
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
@@ -329,7 +329,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
-            ErrorUtils.logErrors(ex,"ActofitMainActivity","requestGPSPermission","failed to get gps permission");
+            ErrorUtils.logErrors(context,ex,"ActofitMainActivity","requestGPSPermission",""+ ex.getMessage());
         }
     }
 
@@ -361,7 +361,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             try {
                 initDate = new SimpleDateFormat("yyyy-MM-dd").parse(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
             } catch (ParseException e) {
-                ErrorUtils.logErrors(e,"ActofitMainActivity","starSmartScale","Failed");
+                ErrorUtils.logErrors(context,e,"ActofitMainActivity","starSmartScale",""+e.getMessage());
             }
 
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
@@ -427,7 +427,6 @@ public class ActofitMainActivity extends AppCompatActivity {
         this.isAthlete = isAthlete;
     }
 
-
     /**
      * @param uri
      * @return
@@ -438,7 +437,7 @@ public class ActofitMainActivity extends AppCompatActivity {
             pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
-            ErrorUtils.logErrors(e,"ActofitMainActivity","isAppInstalled","App is not installed");
+            ErrorUtils.logErrors(context,e,"ActofitMainActivity","isAppInstalled",""+e.getMessage());
         }
 
         return false;

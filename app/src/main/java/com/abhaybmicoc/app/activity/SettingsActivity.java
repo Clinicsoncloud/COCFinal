@@ -108,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
             setConnectedDevicesAdapter();
 
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"settingsActivity","initializeData","failed to initializeData");
+            ErrorUtils.logErrors(context,e,"settingsActivity","initializeData",""+e.getMessage());
         }
     }
 
@@ -160,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
                     devicesArray.getJSONObject(i).put("is_selected", "0");
 
             } catch (Exception e) {
-                ErrorUtils.logErrors(e,"settingsActivity","updateArray","failed to updateArray");
+                ErrorUtils.logErrors(context,e,"settingsActivity","updateArray",""+e.getMessage());
             }
         }
         setConnectedDevicesAdapter();

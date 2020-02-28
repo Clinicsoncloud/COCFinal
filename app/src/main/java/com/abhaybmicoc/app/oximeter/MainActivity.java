@@ -194,7 +194,7 @@ public class MainActivity extends Activity {
                     Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
-            ErrorUtils.logErrors(ex,"MainActivityOximeter","requestPermission","failed to requestPermission");
+            ErrorUtils.logErrors(context,ex,"MainActivityOximeter","requestPermission",""+ ex.getMessage());
         }
     }
 
@@ -232,7 +232,7 @@ public class MainActivity extends Activity {
             }
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
-            ErrorUtils.logErrors(ex,"MainActivityOximeter","requestGPSPermission","failed to requestGPSPermission");
+            ErrorUtils.logErrors(context,ex,"MainActivityOximeter","requestGPSPermission",""+ex.getMessage());
         }
     }
 
@@ -553,7 +553,7 @@ public class MainActivity extends Activity {
 
             deviceConnectionTimeoutHandler.postDelayed(connectionTimeoutRunnable, DEVICE_CONNECTION_WAITING_TIME);
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"MainActivityOximeter","setDeviceConnectionTimeoutHandler","failed to setDeviceConnectionTimeoutHandler");
+            ErrorUtils.logErrors(context,e,"MainActivityOximeter","setDeviceConnectionTimeoutHandler",""+e.getMessage());
         }
     }
 

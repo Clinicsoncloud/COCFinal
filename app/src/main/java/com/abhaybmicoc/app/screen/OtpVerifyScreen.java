@@ -214,7 +214,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
             initializeGender();
         } catch (Exception e) {
             // TODO: Handle exception
-            ErrorUtils.logErrors(e,"OtpVerifyScreen","initializeData","failed to initializeData");
+            ErrorUtils.logErrors(context,e,"OtpVerifyScreen","initializeData",""+e.getMessage());
         }
     }
 
@@ -289,7 +289,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             } catch (Exception e) {
                 // TODO: Handle exception
-                ErrorUtils.logErrors(e,"OtpVerifyScreen","handleAPIResponse","failed to handleAPIResponse");
+                ErrorUtils.logErrors(context,e,"OtpVerifyScreen","handleAPIResponse",""+e.getMessage());
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
@@ -328,7 +328,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
 
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"OtpVerifyScreen","updatePatientInfo","failed to updatePatientInfo");
+            ErrorUtils.logErrors(context,e,"OtpVerifyScreen","updatePatientInfo",""+e.getMessage());
         }
     }
 

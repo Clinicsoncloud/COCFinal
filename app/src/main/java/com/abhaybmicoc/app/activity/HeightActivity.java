@@ -147,7 +147,7 @@ public class HeightActivity extends Activity {
             try {
                 socket.close();
             } catch (IOException e) {
-                ErrorUtils.logErrors(e, "HeightActivity", "onStop()", "Not connected");
+                ErrorUtils.logErrors(context,e, "HeightActivity", "onStop", ""+e.getMessage());
             }
         }
     }
@@ -304,7 +304,7 @@ public class HeightActivity extends Activity {
                 outputStreamHeightReceiver.write(env.getBytes(Charset.forName("UTF-8")));
             }
         } catch (IOException e) {
-            ErrorUtils.logErrors(e, "HeightActivity", "getHeight()", "Get height failed");
+            ErrorUtils.logErrors(context,e, "HeightActivity", "getHeight", ""+e.getMessage());
             Toast.makeText(HeightActivity.this, strCannotSend, Toast.LENGTH_SHORT).show();
         }
     }
@@ -377,7 +377,7 @@ public class HeightActivity extends Activity {
                 } catch (IOException e) {
                     message = "";
                     strEnabled = "false";
-                    ErrorUtils.logErrors(e, "HeightActivity", "doInBackground()", "Failed to read bytes data");
+                    ErrorUtils.logErrors(context,e, "HeightActivity", "doInBackground()", ""+e.getMessage());
                 }
 
                 publishProgress(new String[]{message, strEnabled});
@@ -399,7 +399,7 @@ public class HeightActivity extends Activity {
                     etManualHeight.setText(String.valueOf(adjustedHeight));
                 }
             } catch (Exception e) {
-                ErrorUtils.logErrors(e, "HeightActivity", "onProgressUpdate()", "Failed to adjust height");
+                ErrorUtils.logErrors(context,e, "HeightActivity", "onProgressUpdate()", ""+e.getMessage());
             }
 
             if (params[1].equals("false")) {
@@ -452,7 +452,7 @@ public class HeightActivity extends Activity {
 
                 return strConnected;
             } catch (Exception e) {
-                ErrorUtils.logErrors(e, "HeightActivity", "doInBackground", "failed to connect with socket");
+                ErrorUtils.logErrors(context,e, "HeightActivity", "doInBackground", ""+e.getMessage());
                 return "";
             }
         }

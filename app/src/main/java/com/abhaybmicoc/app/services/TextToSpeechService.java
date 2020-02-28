@@ -46,7 +46,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
                 textToSpeech.shutdown();
             }
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"TextToSpeechService","stopTextToSpeechService","failed to stopTextToSpeechService");
+            ErrorUtils.logErrors(context,e,"TextToSpeechService","stopTextToSpeechService",""+e.getMessage());
         }
     }
 

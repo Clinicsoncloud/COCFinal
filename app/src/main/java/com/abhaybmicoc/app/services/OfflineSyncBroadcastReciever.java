@@ -27,12 +27,11 @@ import static android.content.Context.MODE_PRIVATE;
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
 
 
-public class ConnectivityReciever extends BroadcastReceiver {
+public class OfflineSyncBroadcastReciever extends BroadcastReceiver {
 
     DataBaseHelper dataBaseHelper;
     Context mContext;
     SharedPreferences sharedPreferencesOffline;
-
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -52,6 +51,8 @@ public class ConnectivityReciever extends BroadcastReceiver {
             if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
                 Log.e("receiver_Log_Receiver", ":True:" + networkInfo.isConnectedOrConnecting());
                 getOfflineRecords();
+                getErrorLogs();
+
             } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                 Log.e("receiver_Log_Receiver", ":FAlse:");
             }
@@ -59,7 +60,6 @@ public class ConnectivityReciever extends BroadcastReceiver {
     }
 
     private void getOfflineRecords() {
-
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
             if (dataArray != null && dataArray.length() > 0) {
@@ -67,7 +67,18 @@ public class ConnectivityReciever extends BroadcastReceiver {
             }
 
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"ConnectivityReciver","getOfflineRecords","failed to getOfflineRecords");
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "getOfflineRecords", "" + e.getMessage());
+        }
+    }
+
+    private void getErrorLogs() {
+        try {
+            JSONArray logsArray = dataBaseHelper.getErrorLogsData();
+            if (logsArray != null && logsArray.length() > 0) {
+                uploadErrorLogsRecord(logsArray);
+            }
+        } catch (Exception e) {
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "getOfflineRecords", "" + e.getMessage());
         }
     }
 
@@ -77,11 +88,12 @@ public class ConnectivityReciever extends BroadcastReceiver {
             JSONObject dataObject = new JSONObject();
             dataObject.put("data", dataArray);
 
+            Log.e("Error_dataArray", ":" + dataArray);
             HttpService.accessWebServicesJSONNoDialog(
                     mContext, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                     (response, error, status) -> handleAPIResponse(response, error, status));
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"ConnectivityReciver","uploadOfflineRecords","failed to uploadOfflineRecords");
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "uploadOfflineRecords", "" + e.getMessage());
         }
     }
 
@@ -91,7 +103,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             updateLocalStatus(response);
         } catch (Exception e) {
             // TODO: Handle exception
-            ErrorUtils.logErrors(e,"ConnectivityReciver","handleAPIResponse","failed to handleAPIResponse");
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "handleAPIResponse", "" + e.getMessage());
         }
     }
 
@@ -133,9 +145,34 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"ConnectivityReciver","updateLocalStatus","failed to updateLocalStatus");
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "updateLocalStatus", "" + e.getMessage());
         }
-
     }
 
+
+    private void uploadErrorLogsRecord(JSONArray dataArray) {
+
+        try {
+            JSONObject dataObject = new JSONObject();
+            dataObject.put("data", dataArray);
+
+            HttpService.accessWebServicesJSONNoDialog(
+                    mContext, ApiUtils.SYNC_ERROR_SAVE, dataObject,
+                    (response, error, status) -> handleErrorAPIResponse(response, error, status));
+        } catch (Exception e) {
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "uploadOfflineRecords", "" + e.getMessage());
+        }
+    }
+
+    private void handleErrorAPIResponse(String response, VolleyError error, String status) {
+
+        try {
+            Log.e("Error_response", ":" + response);
+            dataBaseHelper.deleteErrorLogs(Constant.TableNames.ERROR_LOGS, Constant.Fields.ID);
+
+        } catch (Exception e) {
+            // TODO: Handle exception
+            ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "handleAPIResponse", "" + e.getMessage());
+        }
+    }
 }

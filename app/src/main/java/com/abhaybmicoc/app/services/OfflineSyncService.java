@@ -10,9 +10,9 @@ import java.util.Timer;
 
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
 
-public class ConnectivityService extends Service {
+public class OfflineSyncService extends Service {
 
-    ConnectivityReciever connectivityReciever;
+    OfflineSyncBroadcastReciever connectivityReciever;
     private static Timer timer = new Timer();
 
     @Override
@@ -28,7 +28,7 @@ public class ConnectivityService extends Service {
 
     @Override
     public void onCreate() {
-        connectivityReciever = new ConnectivityReciever();
+        connectivityReciever = new OfflineSyncBroadcastReciever();
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(internetIntent);

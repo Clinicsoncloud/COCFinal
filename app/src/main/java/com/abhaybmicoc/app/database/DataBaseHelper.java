@@ -48,7 +48,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp_Log", "Insert " + table + " Details Fail");
             }
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"DataBaseHelper","saveToLocalTable","failed to saveLocalTable");
+            ErrorUtils.logErrors(context, e, "DataBaseHelper", "saveToLocalTable", "" + e.getMessage());
         }
     }
 
@@ -62,7 +62,7 @@ public class DataBaseHelper {
                 Log.v("DataHelp", "Update " + table + " Details Fail");
             }
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"DataBaseHelper","updatePatientInfo","failed to updatePatientInfo");
+            ErrorUtils.logErrors(context, e, "DataBaseHelper", "", "" + e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class DataBaseHelper {
                 }
                 return jArray;
             } catch (JSONException e) {
-                ErrorUtils.logErrors(e,"DataBaseHelper","getOfflineData","failed to getOfflineData");
+                ErrorUtils.logErrors(context, e, "DataBaseHelper", "getOfflineData", "" + e.getMessage());
             }
         }
         Log.e("OfflineData_Array", ":" + jArray.length());
@@ -114,8 +114,46 @@ public class DataBaseHelper {
     }
 
 
+    public JSONArray getErrorLogsData() {
+
+        Cursor cursor = null;
+        JSONArray jArray = new JSONArray();
+        Log.e("ErrorLogsData_Query", "Select * from " + Constant.TableNames.ERROR_LOGS + "");
+        cursor = sqLiteDatabase.rawQuery("Select * from " + Constant.TableNames.ERROR_LOGS + "", null);
+
+        JSONObject json = null;
+
+        if (cursor.getCount() != 0) {
+
+            try {
+                while (cursor.moveToNext()) {
+                    json = new JSONObject();
+
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        json.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i))));
+                    }
+                    jArray.put(json);
+
+                }
+                return jArray;
+            } catch (JSONException e) {
+                ErrorUtils.logErrors(context, e, "DataBaseHelper", "getOfflineData", "" + e.getMessage());
+            }
+        }
+        Log.e("ErrorLogsData_Array", ":" + jArray.length());
+
+        if (jArray.length() > 0)
+            return jArray;
+
+        return null;
+    }
+
     public void deleteTable_data(String tbl_name, String key, String ids) {
         sqLiteDatabase.execSQL("delete from " + tbl_name + " WHERE " + key + " IN (" + ids + ")");
+    }
+
+    public void deleteErrorLogs(String tbl_name, String key) {
+        sqLiteDatabase.execSQL("delete from " + tbl_name);
     }
 
 }

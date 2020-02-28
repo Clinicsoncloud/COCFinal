@@ -42,7 +42,7 @@ public class SharedPreferenceService {
         try {
             return (int)Double.parseDouble(value);
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"SharedPreferenceService","getInteger","failed to getInteger");
+            ErrorUtils.logErrors(context,e,"SharedPreferenceService","getInteger","failed to getInteger");
             return 0;
         }
     }
@@ -57,7 +57,7 @@ public class SharedPreferenceService {
         try {
             return Double.parseDouble(context.getSharedPreferences(sharedPreferenceName, MODE_PRIVATE).getString(key, ""));
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"SharedPreferenceService","getDouble","failed to getDouble");
+            ErrorUtils.logErrors(context,e,"SharedPreferenceService","getDouble","failed to getDouble");
             return 0;
         }
     }

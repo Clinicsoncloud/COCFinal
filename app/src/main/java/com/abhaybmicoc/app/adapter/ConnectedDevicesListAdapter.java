@@ -89,12 +89,12 @@ public class ConnectedDevicesListAdapter extends RecyclerView.Adapter<ConnectedD
                     try {
                         rvClickListener.rv_click(position, 0, dataArray.getJSONObject(position).getString("device_name"));
                     } catch (Exception e) {
-                        ErrorUtils.logErrors(e,"ConnectedDevicesListAdapter","onBindViewHolder","failed to onBindViewHolder");
+                        ErrorUtils.logErrors(context,e,"ConnectedDevicesListAdapter","onBindViewHolder",""+e.getMessage());
                     }
                 }
             });
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"ConnectedDevicesListAdapter","onBindViewHolder","failed to onBindViewHolder");
+            ErrorUtils.logErrors(context,e,"ConnectedDevicesListAdapter","onBindViewHolder",""+e.getMessage());
         }
 
     }

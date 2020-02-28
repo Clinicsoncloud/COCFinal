@@ -1291,7 +1291,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     private int getAge() {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)){
             String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-            return DateService.getAgeFromStringDate(dateOfBirth);
+            return DateService.getAgeFromStringDate(context,dateOfBirth);
         }else
             return 0;
     }

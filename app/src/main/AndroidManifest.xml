@@ -199,11 +199,11 @@
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
         <service
-            android:name=".services.ConnectivityService"
+            android:name=".services.OfflineSyncService"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
-        <receiver android:name=".services.ConnectivityReciever">
+        <receiver android:name=".services.OfflineSyncBroadcastReciever">
             <intent-filter>
                 <action
                     android:name="android.net.conn.CONNECTIVITY_CHANGE"

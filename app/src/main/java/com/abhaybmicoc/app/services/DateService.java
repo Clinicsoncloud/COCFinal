@@ -1,6 +1,7 @@
 package com.abhaybmicoc.app.services;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.util.Log;
 
 import com.abhaybmicoc.app.utils.ErrorUtils;
@@ -17,17 +18,19 @@ public class DateService {
     public static final String DATE_FORMAT = "dd-MMM-yyyy hh:mm:ss";
     public static final String YYYY_MM_DD_HMS = "yyyy-MM-dd hh:mm:ss";
 
+    Context context;
+
     /**
      * @param dateOfBirth
      * @return
      */
-    public static int getAgeFromStringDate(String dateOfBirth) {
+    public static int getAgeFromStringDate(Context context, String dateOfBirth) {
         Date date = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             date = sdf.parse(dateOfBirth);
         } catch (ParseException e) {
-            ErrorUtils.logErrors(e,"DateService","getAgeFromStringDate","failed to getAgeFromStringDate");
+            ErrorUtils.logErrors(context, e, "DateService", "getAgeFromStringDate", "failed to getAgeFromStringDate");
             return 0;
         }
 
@@ -50,7 +53,7 @@ public class DateService {
         return age;
     }
 
-    public static String formatDateFromString(String date, String fromDatePattern, String toDatePattern) {
+    public static String formatDateFromString(Context context, String date, String fromDatePattern, String toDatePattern) {
         String formattedDate;
 
         @SuppressLint("SimpleDateFormat")
@@ -61,7 +64,7 @@ public class DateService {
             Date parsedDate = inputDateFormat.parse(date);
             formattedDate = formatter.format(parsedDate);
         } catch (ParseException e) {
-            ErrorUtils.logErrors(e,"DateService","formatDateFromString","failed to formatDateFromString");
+            ErrorUtils.logErrors(context, e, "DateService", "formatDateFromString", "failed to formatDateFromString");
             return null;
         }
 

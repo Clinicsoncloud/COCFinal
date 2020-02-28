@@ -16,6 +16,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQLiteQueries.query_TBL_PARAMETERS);
         db.execSQL(SQLiteQueries.query_TBL_PATIENTS);
+        db.execSQL(SQLiteQueries.query_TBL_ERROR_LOG);
     }
 
     @Override
@@ -30,6 +31,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int i, int i1) {
         db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.TBL_PARAMETERS);
         db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.TBL_PATIENTS);
+        db.execSQL("DROP TABLE IF EXISTS " + Constant.TableNames.ERROR_LOGS);
 
         onCreate(db);
     }

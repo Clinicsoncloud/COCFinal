@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
                             } catch (Exception e) {
                                 showToast(e.toString());
-                                ErrorUtils.logErrors(e,"MainActivityHemoglobin","showToast","failed to showToast");
+                                ErrorUtils.logErrors(context,e,"MainActivityHemoglobin","showToast",""+e.getMessage());
                             }
                         }
                     }
@@ -311,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
 
         } catch (Exception e) {
-            ErrorUtils.logErrors(e,"MainActivityHemoglobin","printerActivation","failed to printerActivation");
+            ErrorUtils.logErrors(context,e,"MainActivityHemoglobin","printerActivation",""+e.getMessage());
         }
     }
 
@@ -542,7 +542,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         try {
             AndMedical_App_Global.mBTcomm = null;
         } catch (NullPointerException e) {
-            ErrorUtils.logErrors(e,"MainActivityHemoglobin","switchOffDeviceAndMoveNext","failed to switchOffDeviceAndMoveNext");
+            ErrorUtils.logErrors(context,e,"MainActivityHemoglobin","switchOffDeviceAndMoveNext",""+e.getMessage());
         }
 
         Intent intent = new Intent(MainActivity.this, Act_Main.class);
@@ -662,7 +662,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 return bool;
             }
         } catch (Exception localException) {
-            ErrorUtils.logErrors(localException,"MainActivityHemoglobin","refreshDeviceCache","failed to refreshDeviceCache");
+            ErrorUtils.logErrors(context,localException,"MainActivityHemoglobin","refreshDeviceCache",""+localException.getMessage());
         }
         return false;
     }
@@ -755,7 +755,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
                 mGatt.disconnect();
                 mGatt.close();
             } catch (Exception ex) {
-                ErrorUtils.logErrors(ex,"MainActivityHemoglobin","stopBluetoothConnection","failed to stopBluetoothConnection");
+                ErrorUtils.logErrors(context,ex,"MainActivityHemoglobin","stopBluetoothConnection",""+ex.getMessage());
             }
         }
     }
@@ -837,7 +837,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_FINE_LOCATION);
         } catch (RuntimeException ex) {
             // TODO: Show message that we did not get permission to access bluetooth
-            ErrorUtils.logErrors(ex,"MainActivityHemoglobin","requestPermission","failed to requestPermission");
+            ErrorUtils.logErrors(context,ex,"MainActivityHemoglobin","requestPermission",""+ex.getMessage());
         }
     }
 

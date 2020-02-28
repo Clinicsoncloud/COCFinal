@@ -14,6 +14,8 @@ import java.util.ArrayList;
 
 public class DataBase extends SQLiteOpenHelper {
 
+    Context context;
+
     private static final String REGISTER_TABLE = "aanddmedical_register";
 
     private static final String ZLIFETRACK_TABLE = "aandmedical_lifetrack";
@@ -256,25 +258,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getUserDetailAccount","failed to getUserDetailAccount");
+                ErrorUtils.logErrors(context,e,"DataBase","getUserDetailAccount",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getUserDetailAccount","failed to getUserDetailAccount at finally");
+                    ErrorUtils.logErrors(context,e,"DataBase","getUserDetailAccount",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getUserDetailAccount","failed to getUserDetailAccount");
+            ErrorUtils.logErrors(context,e,"DataBase","getUserDetailAccount",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getUserDetailAccount","failed to getUserDetailAccount");
+                ErrorUtils.logErrors(context,e,"DataBase","getUserDetailAccount",""+e.getMessage());
             }
         }
         return infoBeanObj;
@@ -305,25 +307,25 @@ public class DataBase extends SQLiteOpenHelper {
                     db.insert(REGISTER_TABLE, null, cv);
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","entryGuestInfo","failed to entryGuestInfo");
+                ErrorUtils.logErrors(context,e,"DataBase","entryGuestInfo",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","entryGuestInfo","failed to entryGuestInfo");
+                    ErrorUtils.logErrors(context,e,"DataBase","entryGuestInfo",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","entryGuestInfo","failed to entryGuestInfo");
+            ErrorUtils.logErrors(context,e,"DataBase","entryGuestInfo",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","entryGuestInfo","failed to entryGuestInfo");
+                ErrorUtils.logErrors(context,e,"DataBase","entryGuestInfo",""+e.getMessage());
             }
         }
     }
@@ -351,25 +353,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getGuestInfo","failed to getGuestInfo");
+                ErrorUtils.logErrors(context,e,"DataBase","getGuestInfo",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getGuestInfo","failed to getGuestInfo");
+                    ErrorUtils.logErrors(context,e,"DataBase","getGuestInfo",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getGuestInfo","failed to getGuestInfo");
+            ErrorUtils.logErrors(context,e,"DataBase","getGuestInfo",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getGuestInfo","failed to getGuestInfo");
+                ErrorUtils.logErrors(context,e,"DataBase","getGuestInfo",""+e.getMessage());
             }
         }
         return guestInfo;
@@ -422,26 +424,26 @@ public class DataBase extends SQLiteOpenHelper {
                         db.insert(ZLIFETRACK_TABLE, null, cv);
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","lifetrackentry","failed at lifetrackentry");
+                    ErrorUtils.logErrors(context,e,"DataBase","lifetrackentry",""+e.getMessage());
                 } finally {
                     try {
                         if (cursor != null) {
                             cursor.close();
                         }
                     } catch (SQLiteException e) {
-                        ErrorUtils.logErrors(e,"DataBase","lifetrackentry","failed at lifetrackentry");
+                        ErrorUtils.logErrors(context,e,"DataBase","lifetrackentry",""+e.getMessage());
                     }
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","lifetrackentry","failed at lifetrackentry");
+            ErrorUtils.logErrors(context,e,"DataBase","lifetrackentry",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","lifetrackentry","failed at lifetrackentry");
+                ErrorUtils.logErrors(context,e,"DataBase","lifetrackentry",""+e.getMessage());
             }
         }
     }
@@ -483,7 +485,7 @@ public class DataBase extends SQLiteOpenHelper {
                         db.insert(ZWEIGHTTRACK_TABLE, null, cv);
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","weighttrackentry","failed at weighttrackentry");
+                    ErrorUtils.logErrors(context,e,"DataBase","weighttrackentry",""+e.getMessage());
                 } finally {
                     try {
                         if (cursorTimeStamp != null) {
@@ -498,14 +500,14 @@ public class DataBase extends SQLiteOpenHelper {
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","weighttrackentry","failed at weighttrackentry");
+            ErrorUtils.logErrors(context,e,"DataBase","weighttrackentry",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","weighttrackentry","failed at weighttrackentry");
+                ErrorUtils.logErrors(context,e,"DataBase","weighttrackentry",""+e.getMessage());
             }
         }
     }
@@ -557,7 +559,7 @@ public class DataBase extends SQLiteOpenHelper {
                         db.insert(BPTRACK_TABLE, null, cv);
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","bpEntry","failed at bpEntry");
+                    ErrorUtils.logErrors(context,e,"DataBase","bpEntry",""+e.getMessage());
                 } finally {
                     try {
                         if (cursorTimeStump != null) {
@@ -567,19 +569,19 @@ public class DataBase extends SQLiteOpenHelper {
                             cursorTime.close();
                         }
                     } catch (SQLiteException e) {
-                        ErrorUtils.logErrors(e,"DataBase","bpEntry","failed at bpEntry");
+                        ErrorUtils.logErrors(context,e,"DataBase","bpEntry",""+e.getMessage());
                     }
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","bpEntry","failed at bpEntry");
+            ErrorUtils.logErrors(context,e,"DataBase","bpEntry",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","bpEntry","failed at bpEntry");
+                ErrorUtils.logErrors(context,e,"DataBase","bpEntry",""+e.getMessage());
             }
         }
     }
@@ -624,25 +626,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getbpDetails","failed to getbpDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getbpDetails",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getbpDetails","failed to getbpDetails");
+                    ErrorUtils.logErrors(context,e,"DataBase","getbpDetails",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getbpDetails","failed to getbpDetails");
+            ErrorUtils.logErrors(context,e,"DataBase","getbpDetails",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getbpDetails","failed to getbpDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getbpDetails",""+e.getMessage());
             }
         }
         return lifeList;
@@ -681,25 +683,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllWeightDetails","failed to getAllWeightDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllWeightDetails",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getAllWeightDetails","failed to getAllWeightDetails");
+                    ErrorUtils.logErrors(context,e,"DataBase","getAllWeightDetails",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getAllWeightDetails","failed to getAllWeightDetails");
+            ErrorUtils.logErrors(context,e,"DataBase","getAllWeightDetails",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllWeightDetails","failed to getAllWeightDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllWeightDetails",""+e.getMessage());
             }
         }
         return weightList;
@@ -759,25 +761,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllActivityDetails","failed to getAllActivityDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllActivityDetails",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getAllActivityDetails","failed to getAllActivityDetails");
+                    ErrorUtils.logErrors(context,e,"DataBase","getAllActivityDetails",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getAllActivityDetails","failed to getAllActivityDetails");
+            ErrorUtils.logErrors(context,e,"DataBase","getAllActivityDetails",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllActivityDetails","failed to getAllActivityDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllActivityDetails",""+e.getMessage());
             }
 
         }
@@ -819,26 +821,26 @@ public class DataBase extends SQLiteOpenHelper {
                         db.insert(THERMOMETER_TABLE_NAME, null, cv);
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","entryThermometerInfo","failed to entryThermometerInfo");
+                    ErrorUtils.logErrors(context,e,"DataBase","entryThermometerInfo",""+e.getMessage());
                 } finally {
                     try {
                         if (cursor != null) {
                             cursor.close();
                         }
                     } catch (SQLiteException e) {
-                        ErrorUtils.logErrors(e,"DataBase","entryThermometerInfo","failed to entryThermometerInfo");
+                        ErrorUtils.logErrors(context,e,"DataBase","entryThermometerInfo",""+e.getMessage());
                     }
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","entryThermometerInfo","failed to entryThermometerInfo");
+            ErrorUtils.logErrors(context,e,"DataBase","entryThermometerInfo",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","entryThermometerInfo","failed to entryThermometerInfo");
+                ErrorUtils.logErrors(context,e,"DataBase","entryThermometerInfo",""+e.getMessage());
             }
         }
     }
@@ -872,25 +874,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllThermometerDetails","failed to getAllThermometerDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllThermometerDetails",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getAllThermometerDetails","failed to getAllThermometerDetails");
+                    ErrorUtils.logErrors(context,e,"DataBase","getAllThermometerDetails",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getAllThermometerDetails","failed to getAllThermometerDetails");
+            ErrorUtils.logErrors(context,e,"DataBase","getAllThermometerDetails",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getAllThermometerDetails","failed to getAllThermometerDetails");
+                ErrorUtils.logErrors(context,e,"DataBase","getAllThermometerDetails",""+e.getMessage());
             }
 
         }
@@ -924,25 +926,25 @@ public class DataBase extends SQLiteOpenHelper {
                 } else {
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","updateTrackerName","failed to updateTrackerName");
+                ErrorUtils.logErrors(context,e,"DataBase","updateTrackerName",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","updateTrackerName","failed to updateTrackerName");
+                    ErrorUtils.logErrors(context,e,"DataBase","updateTrackerName",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","updateTrackerName","failed to updateTrackerName");
+            ErrorUtils.logErrors(context,e,"DataBase","updateTrackerName",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","updateTrackerName","failed to updateTrackerName");
+                ErrorUtils.logErrors(context,e,"DataBase","updateTrackerName",""+e.getMessage());
             }
         }
     }
@@ -966,25 +968,25 @@ public class DataBase extends SQLiteOpenHelper {
                     } while (cursor.moveToNext());
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getTrackerName","failed to getTrackerName");
+                ErrorUtils.logErrors(context,e,"DataBase","getTrackerName",""+e.getMessage());
             } finally {
                 try {
                     if (cursor != null) {
                         cursor.close();
                     }
                 } catch (SQLiteException e) {
-                    ErrorUtils.logErrors(e,"DataBase","getTrackerName","failed to getTrackerName");
+                    ErrorUtils.logErrors(context,e,"DataBase","getTrackerName",""+e.getMessage());
                 }
             }
         } catch (SQLiteException e) {
-            ErrorUtils.logErrors(e,"DataBase","getTrackerName","failed to getTrackerName");
+            ErrorUtils.logErrors(context,e,"DataBase","getTrackerName",""+e.getMessage());
         } finally {
             try {
                 if (db != null) {
                     db.close();
                 }
             } catch (SQLiteException e) {
-                ErrorUtils.logErrors(e,"DataBase","getTrackerName","failed to getTrackerName");
+                ErrorUtils.logErrors(context,e,"DataBase","getTrackerName",""+e.getMessage());
             }
         }
         return uwName;
