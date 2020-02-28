@@ -18,7 +18,7 @@ public class Constant {
 
         public static final String TBL_PARAMETERS = "tbl_parameters";
 
-        public final static String UPLOADED_RECORDS_COUNT = "uploaded_records_count";
+//        public final static String UPLOADED_RECORDS_COUNT = "uploaded_records_count";
         public final static String ID = "id";
         public final static String OTP = "otp";
         public final static String TOKEN = "token";

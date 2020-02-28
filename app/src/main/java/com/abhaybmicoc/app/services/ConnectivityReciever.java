@@ -30,7 +30,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
     DataBaseHelper dataBaseHelper;
     Context mContext;
-    SharedPreferences sharedPreferencesOffline;
+    SharedPreferenceManager sharedPreferenceManager;
 
 
     @Override
@@ -38,7 +38,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
         mContext = context;
         dataBaseHelper = new DataBaseHelper(mContext);
-        sharedPreferencesOffline = mContext.getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
+        sharedPreferenceManager = SharedPreferenceManager.getInstance(mContext);
 
         String action = intent.getAction();
         if (action.equalsIgnoreCase(internetIntent)) {
@@ -119,13 +119,13 @@ public class ConnectivityReciever extends BroadcastReceiver {
                 }
             }
 
+            sharedPreferenceManager.setLastSyncDateTime(DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
-            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-
+            /*SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
 //            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
-            editor.commit();
+            editor.commit();*/
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 

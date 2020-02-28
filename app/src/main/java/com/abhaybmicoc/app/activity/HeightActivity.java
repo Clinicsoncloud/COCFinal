@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
+import com.abhaybmicoc.app.services.SharedPreferenceManager;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
@@ -75,8 +77,7 @@ public class HeightActivity extends Activity {
 
     private ProgressDialog progressDialog;
 
-    private SharedPreferences sharedPreferencePersonalData;
-    private SharedPreferences sharedPreferenceBluetoothAddress;
+    private SharedPreferenceManager sharedPreferenceManager;
 
     private TextView tvAge;
     private TextView tvName;
@@ -103,13 +104,13 @@ public class HeightActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setupUI();
-        setupEvents();
         initializeData();
+        setupEvents();
     }
 
 
     private String getDeviceAddress() {
-        return sharedPreferenceBluetoothAddress.getString("hcbluetooth", "");
+        return sharedPreferenceManager.getHeightBtDeviceAddress();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -162,7 +163,7 @@ public class HeightActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
 
-        if(textToSpeechService != null)
+        if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
     }
 
@@ -204,10 +205,6 @@ public class HeightActivity extends Activity {
         FAILURE_MSG = getResources().getString(R.string.height_fail);
         MANUAL_MSG = getResources().getString(R.string.height_manually);
 
-        // TODO: Rename from AUTO_CONNECT
-        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
-        sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
         tvAge = findViewById(R.id.tv_age);
         tvName = findViewById(R.id.tv_name);
         tvGender = findViewById(R.id.tv_gender);
@@ -220,22 +217,24 @@ public class HeightActivity extends Activity {
         btnNext.setOnClickListener(view -> gotoNext());
         btnConnect.setOnClickListener(view -> connect());
         btnGetHeight.setOnClickListener(view -> getHeight());
-
     }
 
+    @SuppressLint("SetTextI18n")
     private void initializeData() {
         btnClean.setText("Clean");
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+
+        sharedPreferenceManager = SharedPreferenceManager.getInstance(context);
 
         etBluetoothLogs.setFocusable(false);
         etBluetoothLogs.setText(">:Bluetooth Terminal\n");
         etBluetoothLogs.setTextColor(getResources().getColor(R.color.white));
         etBluetoothLogs.setBackgroundColor(getResources().getColor(R.color.black));
 
-        tvName.setText("Name : " + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
-        tvGender.setText("Gender : " + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
-        tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
-        tvMobileNumber.setText("Phone : " + sharedPreferencePersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
+        tvName.setText("Name : " + sharedPreferenceManager.getPatientName());
+        tvGender.setText("Gender : " + sharedPreferenceManager.getPatientGender());
+        tvAge.setText("DOB : " + sharedPreferenceManager.getDateOfBirth());
+        tvMobileNumber.setText("Phone : " + sharedPreferenceManager.getMobileNumber());
 
         turnOnBluetooth();
     }
@@ -252,23 +251,20 @@ public class HeightActivity extends Activity {
                 }
             }
         } else {
+            // TODO: Handle device not found
+
             btnConnect.setClickable(true);
             btnConnect.setText("Connect");
             tv_ConnectedText.setText("Connect");
             btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
             Toast.makeText(context, "Cannot connect to bluetooth device", Toast.LENGTH_SHORT);
-            // TODO: Handle device not found
         }
     }
 
     private void storeBluetoothInformation(BluetoothDevice device) {
-        sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
 
-        SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
-        if (sharedPreferenceBluetoothAddress.getString("hcbluetooth", "").equalsIgnoreCase("")) {
-            editor.putString("hcbluetooth", device.getAddress());
-            editor.commit();
-        }
+        sharedPreferenceManager.setHeightBtDeviceAddress(device.getAddress());
+        sharedPreferenceManager.setHeightBtDeviceName(device.getName());
     }
 
     // region Logical methods
@@ -322,18 +318,18 @@ public class HeightActivity extends Activity {
     private void gotoNext() {
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
-//            textToSpeechService = new TextToSpeechService(getApplicationContext(), MANUAL_MSG);
             textToSpeechService.speakOut(MANUAL_MSG);
+
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
             objIntent.putExtra(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
-            objIntent.putExtra(Constant.Fields.ID, sharedPreferencePersonalData.getString(Constant.Fields.ID, ""));
-            objIntent.putExtra(Constant.Fields.NAME, sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
-            objIntent.putExtra(Constant.Fields.GENDER, sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
-            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+            objIntent.putExtra(Constant.Fields.ID, sharedPreferenceManager.getPatientId());
+            objIntent.putExtra(Constant.Fields.NAME, sharedPreferenceManager.getPatientName());
+            objIntent.putExtra(Constant.Fields.GENDER, sharedPreferenceManager.getPatientGender());
+            objIntent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferenceManager.getDateOfBirth());
 
-            writeToSharedPreferences(Constant.Fields.HEIGHT, etManualHeight.getText().toString());
+            writeToSharedPreferences(etManualHeight.getText().toString());
 
             startActivity(objIntent);
             finish();
@@ -343,14 +339,9 @@ public class HeightActivity extends Activity {
     /**
      *
      */
-    private void writeToSharedPreferences(String key, String value) {
-        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreference.edit();
-        editor.putString(key, value);
-        editor.commit();
+    private void writeToSharedPreferences(String value) {
+        sharedPreferenceManager.setHeight(value);
     }
-
 
     // endregion
 

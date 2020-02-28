@@ -23,6 +23,7 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
 import com.abhaybmicoc.app.services.HttpService;
+import com.abhaybmicoc.app.services.SharedPreferenceManager;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Tools;
@@ -74,7 +75,10 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
     private TextToSpeech textToSpeech;
     private BluetoothAdapter mBluetoothAdapter;
-    private SharedPreferences sharedPreferencesPersonal;
+
+    private SharedPreferenceManager sharedPreferenceManager;
+
+//    private SharedPreferences sharedPreferencesPersonal;
 
     TextToSpeechService textToSpeechService;
 
@@ -91,7 +95,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
     public void onBackPressed() {
         goToOtpLoginScreen();
 
-        clearPersonalInformation();
     }
 
     @Override
@@ -171,14 +174,15 @@ public class OtpVerifyScreen extends AppCompatActivity {
             } else if (rdGenderGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
+                updatePatientInfo();
+
                 if (Utils.isOnline(context)) {
                     if (strConnectivity.equals("online"))
                         postData();
                     else
                         Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
-                } else {
-                    updatePatientInfo();
                 }
+
 
             }
         });
@@ -187,7 +191,9 @@ public class OtpVerifyScreen extends AppCompatActivity {
             selectedGenderId = rdGenderGroup.getCheckedRadioButtonId();
             rdGender = findViewById(selectedGenderId);
 
-            writeToPersonalSharedPreferenceKey(Constant.Fields.GENDER, rdGender.getText().toString());
+            sharedPreferenceManager.setPatientGender(rdGender.getText().toString());
+
+//            writeToPersonalSharedPreferenceKey(Constant.Fields.GENDER, rdGender.getText().toString());
         });
     }
 
@@ -201,16 +207,17 @@ public class OtpVerifyScreen extends AppCompatActivity {
         textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
 
         try {
-            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
-            etName.setText(sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
+            sharedPreferenceManager = SharedPreferenceManager.getInstance(context);
+
+            etName.setText(sharedPreferenceManager.getPatientName());
             etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
-            etDateOfBirth.setText(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
+            etDateOfBirth.setText(sharedPreferenceManager.getDateOfBirth());
 
-            if (sharedPreferencesPersonal.getString(Constant.Fields.EMAIL, "").equalsIgnoreCase("null"))
+            if (sharedPreferenceManager.getPatientEmail().equalsIgnoreCase("null"))
                 etEmail.setText("");
             else
-                etEmail.setText(sharedPreferencesPersonal.getString(Constant.Fields.EMAIL, ""));
+                etEmail.setText(sharedPreferenceManager.getPatientEmail());
 
             initializeGender();
         } catch (Exception e) {
@@ -267,7 +274,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
         HashMap headersParams = new HashMap();
 
-        String bearer = "Bearer ".concat(sharedPreferencesPersonal.getString("token", ""));
+        Log.e("Token_Log", ":" + sharedPreferenceManager.getToken());
+        String bearer = "Bearer ".concat(sharedPreferenceManager.getToken());
         headersParams.put("Authorization", bearer);
 
         HttpService.accessWebServices(
@@ -285,7 +293,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(response);
 
                 writeToPersonalSharedPreference(jsonObject);
-
 
             } catch (Exception e) {
                 // TODO: Handle exception
@@ -316,15 +323,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
             patientObject.put(Constant.Fields.PATIENT_ID, patient_id);
             patientObject.put(Constant.Fields.NAME, etName.getText().toString());
             patientObject.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-            patientObject.put(Constant.Fields.TOKEN, "");
             patientObject.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
             patientObject.put(Constant.Fields.MOBILE_NUMBER, getSelectedGender());
+            patientObject.put(Constant.Fields.TOKEN, "");
 
             dataObject.put("patient", patientObject);
             resObject.put("data", dataObject);
 
             writeToPersonalSharedPreference(resObject);
-
 
         } catch (Exception e) {
         }
@@ -345,37 +351,23 @@ public class OtpVerifyScreen extends AppCompatActivity {
      * @throws JSONException
      */
     private void writeToPersonalSharedPreference(JSONObject jsonObject) throws JSONException {
-        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
         if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.ID))
-            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
+            sharedPreferenceManager.setPatientId(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));
         if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.PATIENT_ID))
-            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.PATIENT_ID));
+            sharedPreferenceManager.setPatientId(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.PATIENT_ID));
 
-        writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.NAME));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.EMAIL));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.TOKEN));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.DATE_OF_BIRTH));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.MOBILE_NUMBER));
+        sharedPreferenceManager.setPatientName(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.NAME));
+        sharedPreferenceManager.setPatientEmail(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.EMAIL));
+        sharedPreferenceManager.setDateOfBirth(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.DATE_OF_BIRTH));
+        sharedPreferenceManager.setMobileNumber(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.MOBILE_NUMBER));
+        sharedPreferenceManager.setToken(jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.TOKEN));
 
-        editor.commit();
 
         Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
         startActivity(objIntent);
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
         finish();
-    }
-
-    /**
-     *
-     */
-    private void writeToPersonalSharedPreferenceKey(String key, String value) {
-        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreference.edit();
-        editor.putString(key, value);
-        editor.commit();
     }
 
     /**
@@ -394,14 +386,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
      *
      */
     private void initializeGender() {
-        if (sharedPreferencesPersonal.getString(Constant.Fields.GENDER, "").equalsIgnoreCase("male")) {
+        if (sharedPreferenceManager.getPatientGender().equalsIgnoreCase("male")) {
             rdMale.setChecked(true);
 
-            writeToPersonalSharedPreferenceKey(Constant.Fields.GENDER, getSelectedGender());
-        } else if (sharedPreferencesPersonal.getString(Constant.Fields.GENDER, "").equalsIgnoreCase("female")) {
+            sharedPreferenceManager.setPatientGender(getSelectedGender());
+        } else if (sharedPreferenceManager.getPatientGender().equalsIgnoreCase("female")) {
             rdFemale.setChecked(true);
 
-            writeToPersonalSharedPreferenceKey(Constant.Fields.GENDER, getSelectedGender());
+            sharedPreferenceManager.setPatientGender(getSelectedGender());
         }
     }
 
@@ -411,13 +403,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
         RadioButton radioButton = rdGenderGroup.findViewById(radioButtonID);
         return radioButton.getText().toString();
     }
-
-    private void clearPersonalInformation() {
-
-        SharedPreferences.Editor sharedPreferencePersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE).edit().clear();
-        sharedPreferencePersonalData.clear().apply();
-    }
-
 
     // endregion
 }

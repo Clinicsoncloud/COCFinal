@@ -47,6 +47,7 @@ import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
+import com.abhaybmicoc.app.services.SharedPreferenceManager;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
@@ -69,23 +70,22 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     // region Variables
 
-
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
 
+    private DataBaseHelper dataBaseHelper;
 
     private int selectedId;
 
-
     private ProgressDialog progressDialog;
 
+    SharedPreferenceManager sharedPreferenceManager;
+    private SharedPreferences sharedPreferencesActivator;
 
-    SharedPreferences sharedPreferencesPersonal;
+    /*SharedPreferences sharedPreferencesPersonal;
     SharedPreferences sharedPreferencesOffline;
-
-    private DataBaseHelper dataBaseHelper;
-    SharedPreferences sharedPreferenceLanguage;
+    SharedPreferences sharedPreferenceLanguage;*/
 
     TextToSpeechService textToSpeechService;
 
@@ -93,8 +93,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private String WELCOME_LOGIN_MESSAGE = "";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
-
-    private SharedPreferences sharedPreferencesActivator;
 
     private FloatingActionButton fabMenuOptions;
     private CardView cvOfflineDataStatus;
@@ -111,14 +109,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private Toolbar toolbar;
     private NavigationView navigationView;
 
-
     final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
     android.app.Dialog changeLanguageDilog;
 
     ArrayList<String> languagesList;
 
     // endregion
-
 
     // region Initialization methods
 
@@ -130,7 +126,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
-
 
         fabMenuOptions = findViewById(R.id.fab_menuOptions);
         cvOfflineDataStatus = findViewById(R.id.cv_OfflineDataStatus);
@@ -171,9 +166,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
         btnSynch.setOnClickListener(v -> getOfflineRecords());
-
-
-//        spnLanguages.setOnItemSelectedListener(this);
     }
 
     /**
@@ -193,17 +185,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void showOfflineDataStatus() {
-
-        /*if (menuOptionsClicked) {
-            cvOfflineDataStatus.setVisibility(View.GONE);
-            menuOptionsClicked = false;
-        } else {*/
         cvOfflineDataStatus.setVisibility(View.VISIBLE);
         cvOfflineDataStatus.startAnimation(slideUpAnimation);
-//            overridePendingTransition(R.anim.push_left_out, R.anim.out_to_left);
         menuOptionsClicked = true;
+
         setOfflineDataStatus();
-//        }
     }
 
     private void setOfflineDataStatus() {
@@ -218,19 +204,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             btnSynch.setVisibility(View.GONE);
         }
 
-        Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
-
-        String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
+        String uploaded_Count = sharedPreferenceManager.getLastSyncDateTime();
 
         if (uploaded_Count != null && !uploaded_Count.equals(""))
-            tvNoOfUploadedRecords.setText(sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
+            tvNoOfUploadedRecords.setText(uploaded_Count);
         else
             tvNoOfUploadedRecords.setText("0");
-
     }
 
     private void getOfflineRecords() {
-
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
 
@@ -246,9 +228,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void uploadOfflineRecords(JSONArray dataArray) {
-
         try {
-
             if (Utils.isOnline(context)) {
 
                 JSONObject dataObject = new JSONObject();
@@ -257,6 +237,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 HttpService.accessWebServicesJSON(
                         context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                         (response, error, status) -> handleOfflineAPIResponse(response, error, status));
+
             } else {
                 Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
             }
@@ -265,7 +246,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
-
         try {
             updateLocalStatus(response);
         } catch (Exception e) {
@@ -301,25 +281,18 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             }
 
 
-            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-
-//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
-            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
-            editor.commit();
+            sharedPreferenceManager.setLastSyncDateTime(DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
-
 
             setOfflineDataStatus();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
-
 
     private void setLocale(String lang) {
 
@@ -330,9 +303,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
 
         //saving data to shared preference
-        SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
-        editor.putString("my_lan", lang);
-        editor.apply();
+        sharedPreferenceManager.setSelectedLanguage(lang);
+
     }
 
 
@@ -347,13 +319,13 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         bluetoothAdapter.enable();
 
         try {
+            sharedPreferenceManager = SharedPreferenceManager.getInstance(context);
+
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
-            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-            sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
-            sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
-
-
-            sharedPreferencesPersonal.edit().clear().apply();
+//            sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+//            sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+//            sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
+//            sharedPreferencesPersonal.edit().clear().apply();
 
             kiosk_id = sharedPreferencesActivator.getString("pinLock", "");
         } catch (Exception e) {
@@ -365,7 +337,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(MOBILE_NUMBER_MAX_LENGTH);
         etMobileNumber.setFilters(filterArray);
-
 
         languagesList = new ArrayList<>();
         languagesList.add("English");
@@ -404,8 +375,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
         View hView = navigationView.getHeaderView(0);
-
-
     }
 
     @Override
@@ -444,7 +413,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             }
         }
     }
-
 
     private void savePatient() {
         try {
@@ -488,29 +456,14 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
      */
     private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
 
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
-
-        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
-        editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
-        editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
-        editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
-        editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
-        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH));
-        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
-
-        editor.commit();
-
+        sharedPreferenceManager.setPatientId(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
+        sharedPreferenceManager.setPatientName(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
+        sharedPreferenceManager.setPatientEmail(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
+        sharedPreferenceManager.setPatientGender(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
+        sharedPreferenceManager.setDateOfBirth(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH));
+        sharedPreferenceManager.setMobileNumber(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
+        sharedPreferenceManager.setToken(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
     }
-
-
-    private void writeToPersonalSharedPreference(String key, String value) {
-        SharedPreferences sharedPreference = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-
-        SharedPreferences.Editor editor = sharedPreference.edit();
-        editor.putString(key, value);
-        editor.commit();
-    }
-
 
     // endregion
 
@@ -541,7 +494,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
+
+                    sharedPreferenceManager.setToken(jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
@@ -595,8 +549,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 showLanguageDilog();
 
                 break;
-
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -619,19 +571,17 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnSelectLanguage.setAdapter(dataAdapter);
 
-
-        if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
+        if (sharedPreferenceManager.getSelectedLanguage().equals("en")) {
             spnSelectLanguage.setSelection(0);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
+        } else if (sharedPreferenceManager.getSelectedLanguage().equals("hi")) {
             spnSelectLanguage.setSelection(1);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
+        } else if (sharedPreferenceManager.getSelectedLanguage().equals("mar")) {
             spnSelectLanguage.setSelection(2);
         }
 
         spnSelectLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                 setLanguageSelection(i);
 
             }
@@ -676,25 +626,13 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             cvOfflineDataStatus.setVisibility(View.GONE);
 
             /*if (v instanceof AutoCompleteTextView) {
-                InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputM   ethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }*/
 
         }
         return super.dispatchTouchEvent(event);
     }
-
-    /*public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        Log.e("SpinnerSelected", ":" + spnLanguages.getSelectedItem());
-
-        setLanguageSelection(position);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        Toast.makeText(context, "Nothing selected yet", Toast.LENGTH_SHORT).show();
-    }*/
-
 
     // endregion
 }
