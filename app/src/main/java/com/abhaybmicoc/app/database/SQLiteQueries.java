@@ -82,6 +82,7 @@ public class SQLiteQueries {
             + Constant.Fields.UPDATED_AT + " VARCHAR,"
             + Constant.Fields.DELETED_AT + " VARCHAR,"
             + Constant.Fields.STATUS + " VARCHAR,"
+            + Constant.Fields.IS_COMPLETED + " VARCHAR,"
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
 
@@ -107,7 +108,8 @@ public class SQLiteQueries {
             + "parameters.* from `"
             + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
             + Constant.TableNames.PARAMETERS + "` as parameters "
-            + "ON patients.patient_id = parameters.patient_id";
+            + "ON patients.patient_id = parameters.patient_id "
+            + "Where parameters.is_completed = 'true'";
 
 
     public static String QUERY_GET_LAST_INSERTED_PATIENT_ID = "SELECT " + Constant.Fields.PATIENT_ID
