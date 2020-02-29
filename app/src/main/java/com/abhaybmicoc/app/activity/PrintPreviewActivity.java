@@ -1349,6 +1349,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+            paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
 
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 

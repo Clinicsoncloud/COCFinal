@@ -125,6 +125,7 @@ public class Constant {
         public static final String STATUS = "status";
 
         public static final String IS_UPLOADED = "is_uploaded";
+        public static final String IS_COMPLETED = "is_completed";
 
     }
 

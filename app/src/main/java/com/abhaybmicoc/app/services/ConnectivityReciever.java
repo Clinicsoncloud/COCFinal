@@ -25,7 +25,6 @@ public class ConnectivityReciever extends BroadcastReceiver {
     Context mContext;
     SharedPreferences sharedPreferencesOffline;
 
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -44,6 +43,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
                 Log.e("receiver_Log_Receiver", ":True:" + networkInfo.isConnectedOrConnecting());
                 getOfflineRecords();
+
             } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                 Log.e("receiver_Log_Receiver", ":FAlse:");
             }
@@ -54,6 +54,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
+
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
             }
