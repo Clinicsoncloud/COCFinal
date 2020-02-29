@@ -325,7 +325,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
             patientObject.put(Constant.Fields.EMAIL, etEmail.getText().toString());
             patientObject.put(Constant.Fields.TOKEN, "");
             patientObject.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
-            patientObject.put(Constant.Fields.MOBILE_NUMBER, getSelectedGender());
+            patientObject.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
 
             dataObject.put("patient", patientObject);
             resObject.put("data", dataObject);

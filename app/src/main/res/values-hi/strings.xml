@@ -622,10 +622,10 @@
 
     <string name="actofit_msg">GoTo smartscale बटण पे क्लिक करें औरं वेईगं scale पे खडे रहे </string>
     <string name="actofit_result_msg">क्रिपया next बटण दबाये</string>
-    <string name="oximeter_msg">अपनी उंगली मशीन मे डाले औरं result का इंतजार करें </string>
+    <string name="oximeter_msg">अपनी उंगली ऑक्सिमीटर मे डाले औरं result का इंतजार करें </string>
     <string name="BloodPreeure_msg">ब्लड pressure का कफ्फ हात में डाले और मशीन का स्टार्ट बटण दबाये </string>
     <string name="temperature_fail_msg">temperature सेन्सर नही मिला क्रिपया manually कनेक्ट करे </string>
-    <string name="temperature_success_msg">temperature सेन्सर को माथे पे रखें औरं बटण दबाये</string>
+    <string name="temperature_success_msg">temperature सेन्सर को माथे पे रखें औरं २ से ३ सेकंड्स बटण दबाये रखे </string>
     <string name="temperature_manually">क्रिपया temperature डाले</string>
 
     <string name="sync_scan_msg">क्रिपया अपनी सिन्क प्लस मशीन का बटण दबा के रखे</string>
@@ -634,8 +634,8 @@
     <string name="add_blood_msg">क्रिपया अपना खून डाले</string>
     <string name="new_strip_msg">क्रिपया नयी स्ट्रीप डाले</string>
 
-    <string name="hemoglobin_msg">क्रिपया अपनी hemoglobin मशीन का पावर बटण दबा के रखे</string>
-    <string name="print_msg">क्रिपया प्रिन्ट बटण दबाये </string>
+    <string name="hemoglobin_msg">क्रिपया अपनी hemoglobin मशीन का पावर ऑन करे और कनेक्ट बटण दबाये</string>
+    <string name="print_msg">क्रिपया प्रिन्ट बटण दबाये</string>
     <string name="print_reconnect_msg">क्रिपया प्रिंटर दोबारा कनेक्ट करणे के लिये reconnect बटण दबाये</string>
     <string name="print_result_msg">क्रिपया अपनी परिणाम कि परची लें </string>
 

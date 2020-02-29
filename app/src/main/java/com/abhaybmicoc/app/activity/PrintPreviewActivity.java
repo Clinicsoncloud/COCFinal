@@ -313,7 +313,6 @@ public class PrintPreviewActivity extends Activity {
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-
             textToSpeechService.speakOut(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
@@ -978,8 +977,8 @@ public class PrintPreviewActivity extends Activity {
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
 
-            btnReconnect.setBackground(getResources().getDrawable(R.drawable.grayback));
-            btnReconnect.setEnabled(false);
+            btnReconnect.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnReconnect.setEnabled(true);
 
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
@@ -2054,13 +2053,13 @@ public class PrintPreviewActivity extends Activity {
 
                 printerActivation();
             } else {
+                textToSpeechService.speakOut(RECONNECT_MSG);
                 showReconnectPopup();
             }
         }
     }
 
     private void showReconnectPopup() {
-        textToSpeechService.speakOut(RECONNECT_MSG);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
@@ -2083,6 +2082,7 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
+        textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }

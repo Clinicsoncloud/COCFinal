@@ -216,6 +216,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             JSONArray dataArray = dataBaseHelper.getOfflineData();
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
+                Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
             } else {
                 setOfflineDataStatus();
             }
@@ -317,11 +318,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         bluetoothAdapter.enable();
 
         try {
+
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
             sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
-
 
             sharedPreferencesPersonal.edit().clear().apply();
 
