@@ -1,6 +1,12 @@
 package com.abhaybmicoc.app.screen;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
@@ -13,11 +19,14 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.oximeter.MainActivity;
+import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
+
+import java.util.Locale;
 
 public class DisplayRecordScreen extends AppCompatActivity implements View.OnClickListener {
     // region Variables
@@ -31,6 +40,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferencesLanguage;
 
     private TextView tvAge;
     private TextView tvBmi;
@@ -55,6 +65,9 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
     private String physique = "--";
 
+    private TextToSpeechService textToSpeechService;
+    private String RESULT_MSG = "";
+
     // endregion
 
     // region Events
@@ -70,13 +83,15 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.tv_header_height:
                 context.startActivity(new Intent(this, HeightActivity.class));
+                finish();
                 break;
 
             case R.id.tv_header_weight:
                 context.startActivity(new Intent(this, ActofitMainActivity.class));
+                finish();
                 break;
         }
     }
@@ -88,7 +103,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     /**
      *
      */
-    private void setupUI(){
+    private void setupUI() {
         setContentView(R.layout.layout_display_record_screen);
 
         actionBar = getSupportActionBar();
@@ -119,14 +134,17 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         btnBack = findViewById(R.id.btn_skip);
         btnRetest = findViewById(R.id.btn_retest);
+
+        RESULT_MSG = getResources().getString(R.string.actofit_result_msg);
     }
 
     /**
      *
      */
-    private void setupEvents(){
+    private void setupEvents() {
         tvHeight.setOnClickListener(view -> {
             context.startActivity(new Intent(this, HeightActivity.class));
+            finish();
         });
 
         tvWeight.setOnClickListener(view -> {
@@ -146,7 +164,29 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
         finish();
     }
 
-    private void initializeData(){
+    private void setLocale(String lang) {
+
+        Locale locale = new Locale(lang);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
+
+        //saving data to shared preference
+        SharedPreferences.Editor editor = sharedPreferencesLanguage.edit();
+        editor.putString("language", lang);
+        editor.apply();
+    }
+
+    private void initializeData() {
+        sharedPreferencesLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+
+        setLocale(sharedPreferencesLanguage.getString("language", ""));
+
+        new Handler().postDelayed(() -> {
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        }, 2000);
+
         Intent intent = getIntent();
 
         showData(intent);
@@ -155,16 +195,23 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
     // endregion
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
+    }
+
     // region Logical methods
 
     /**
      *
      */
-    private void goBack(){
+    private void goBack() {
         clearData();
 
         startActivity(new Intent(getApplicationContext(), ActofitMainActivity.class));
-
         finish();
     }
 
@@ -192,7 +239,7 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     /**
      *
      */
-    private void showData(Intent intent){
+    private void showData(Intent intent) {
         sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
         physique = getPhysique((intent.getFloatExtra(Constant.Fields.PHYSIQUE, 0f)));
@@ -219,7 +266,6 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     }
 
     /**
-     *
      * @param val
      * @return
      */
@@ -250,27 +296,27 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
 
         return value;
     }
-    
-    private void updateActofitSharedPreferences(Intent intent){
+
+    private void updateActofitSharedPreferences(Intent intent) {
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
-        
+
         SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
 
         editor.putString(Constant.Fields.PHYSIQUE, physique);
-        editor.putString(Constant.Fields.BMI, String.valueOf(intent.getFloatExtra(Constant.Fields.BMI,0f)));
-        editor.putString(Constant.Fields.BMR, String.valueOf(intent.getFloatExtra(Constant.Fields.BMR,0f)));
-        editor.putString(Constant.Fields.WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.WEIGHT,0f)));
-        editor.putString(Constant.Fields.PROTEIN, String.valueOf(intent.getFloatExtra(Constant.Fields.PROTEIN,0f)));
-        editor.putString(Constant.Fields.META_AGE, String.valueOf(intent.getFloatExtra(Constant.Fields.META_AGE,0f)));
-        editor.putString(Constant.Fields.BODY_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_FAT,0f)));
-        editor.putString(Constant.Fields.BONE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.BONE_MASS,0f)));
-        editor.putString(Constant.Fields.BODY_WATER, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_WATER,0f)));
-        editor.putString(Constant.Fields.MUSCLE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.MUSCLE_MASS,0f)));
-        editor.putString(Constant.Fields.VISCERAL_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.VISCERAL_FAT,0f)));
-        editor.putString(Constant.Fields.HEALTH_SCORE, String.valueOf(intent.getFloatExtra(Constant.Fields.HEALTH_SCORE,0f)));
-        editor.putString(Constant.Fields.SKELETAL_MUSCLE, String.valueOf(intent.getFloatExtra(Constant.Fields.SKELETAL_MUSCLE,0f)));
-        editor.putString(Constant.Fields.FAT_FREE_WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.FAT_FREE_WEIGHT,0f)));
-        editor.putString(Constant.Fields.SUBCUTANEOUS_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.SUBCUTANEOUS_FAT,0f)));
+        editor.putString(Constant.Fields.BMI, String.valueOf(intent.getFloatExtra(Constant.Fields.BMI, 0f)));
+        editor.putString(Constant.Fields.BMR, String.valueOf(intent.getFloatExtra(Constant.Fields.BMR, 0f)));
+        editor.putString(Constant.Fields.WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.WEIGHT, 0f)));
+        editor.putString(Constant.Fields.PROTEIN, String.valueOf(intent.getFloatExtra(Constant.Fields.PROTEIN, 0f)));
+        editor.putString(Constant.Fields.META_AGE, String.valueOf(intent.getFloatExtra(Constant.Fields.META_AGE, 0f)));
+        editor.putString(Constant.Fields.BODY_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_FAT, 0f)));
+        editor.putString(Constant.Fields.BONE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.BONE_MASS, 0f)));
+        editor.putString(Constant.Fields.BODY_WATER, String.valueOf(intent.getFloatExtra(Constant.Fields.BODY_WATER, 0f)));
+        editor.putString(Constant.Fields.MUSCLE_MASS, String.valueOf(intent.getFloatExtra(Constant.Fields.MUSCLE_MASS, 0f)));
+        editor.putString(Constant.Fields.VISCERAL_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.VISCERAL_FAT, 0f)));
+        editor.putString(Constant.Fields.HEALTH_SCORE, String.valueOf(intent.getFloatExtra(Constant.Fields.HEALTH_SCORE, 0f)));
+        editor.putString(Constant.Fields.SKELETAL_MUSCLE, String.valueOf(intent.getFloatExtra(Constant.Fields.SKELETAL_MUSCLE, 0f)));
+        editor.putString(Constant.Fields.FAT_FREE_WEIGHT, String.valueOf(intent.getFloatExtra(Constant.Fields.FAT_FREE_WEIGHT, 0f)));
+        editor.putString(Constant.Fields.SUBCUTANEOUS_FAT, String.valueOf(intent.getFloatExtra(Constant.Fields.SUBCUTANEOUS_FAT, 0f)));
 
         editor.commit();
     }

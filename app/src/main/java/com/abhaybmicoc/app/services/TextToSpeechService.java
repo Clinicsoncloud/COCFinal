@@ -6,6 +6,7 @@ import android.content.Context;
 import android.annotation.TargetApi;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
+import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 
@@ -27,22 +28,17 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
 
     public TextToSpeechService(Context context, String msg) {
         this.context = context;
-
         this.textToSpeech = new TextToSpeech(context, this);
         this.message = msg;
-        Log.e("constructor_TxtSpeach", " : " + msg);
     }
 
     public void speakOut(String message) {
         if (isInitialize) {
-            Log.e("speakOut_message", " : " + message);
             textToSpeech.speak(message, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
 
     public void stopTextToSpeech() {
-
-        Log.e("Stopped_TextSpeach", ":" + textToSpeech);
         try {
             if (textToSpeech != null) {
                 textToSpeech.stop();
@@ -55,33 +51,48 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onInit(int status) {
-        Log.e("onInit", " : ");
         if (status == TextToSpeech.SUCCESS) {
-            int result;
-            isInitialize = true;
-            sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
-
-            Log.e("My_Selected_Lang", ":" + sharedPreferenceLanguage.getString("my_lan", ""));
-
-            if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
-                Log.e("inside_english", " : ");
-                result = textToSpeech.setLanguage(Locale.US);
-            } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
-                Log.e("inside_hindi", " : ");
-                result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
-                textToSpeech.setPitch(1f);
-                textToSpeech.setSpeechRate(1.8f);
-            } else {
-                result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
-                textToSpeech.setPitch(1f);
-                textToSpeech.setSpeechRate(1.8f);
-            }
-            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Log.e("inside_langerror", " : ");
-            } else {
-                Log.e("inside_else", " : speakOut_isInitialize" + isInitialize);
-                speakOut(message);
-            }
+            initializeLanguage();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void initializeLanguage(){
+        /**
+         * 1. Get preferred language
+         * 2. Check if language is initialized
+         * 3.a. If language initialized, speak default message
+         * 3.b. If language not initialized, log error
+         */
+        isInitialize = true;
+        sharedPreferenceLanguage = context.getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+
+        int result = setLanguage();
+
+        if (isLanguageSelected(result)) {
+            speakOut(message);
+        }
+    }
+
+    private boolean isLanguageSelected(int result){
+        return result != -1 && result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private int setLanguage(){
+        int result = -1;
+
+        if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
+            result = textToSpeech.setLanguage(Locale.US);
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("hi")) {
+            result = textToSpeech.setLanguage(Locale.forLanguageTag("hi"));
+            textToSpeech.setPitch(1f);
+            textToSpeech.setSpeechRate(1.8f);
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("mar")) {
+            result = textToSpeech.setLanguage(Locale.forLanguageTag("mar"));
+            textToSpeech.setPitch(1f);
+            textToSpeech.setSpeechRate(1.8f);
+        }
+        return result;
     }
 }

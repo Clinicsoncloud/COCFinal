@@ -185,6 +185,7 @@ public class ActofitMainActivity extends AppCompatActivity {
         intent1.putExtra(Constant.Fields.SKELETAL_MUSCLE, skeletalMuscle);
 
         startActivity(intent1);
+        finish();
     }
 
     @Override
@@ -276,10 +277,10 @@ public class ActofitMainActivity extends AppCompatActivity {
      *
      */
     private void initializeData() {
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
 
             tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
@@ -448,11 +449,25 @@ public class ActofitMainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
 
         if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 }

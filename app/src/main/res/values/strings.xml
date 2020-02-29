@@ -623,6 +623,7 @@
     <string name="height_manually">Enter height manually</string>
 
     <string name="actofit_msg">Please click on GoTo SmartScale and stand on wehing scale</string>
+    <string name="actofit_result_msg">Please click next button</string>
     <string name="oximeter_msg">put finger inside the device and wait for result</string>
     <string name="BloodPreeure_msg">Please insert hand to the cuff and press device start button and wait for result</string>
 

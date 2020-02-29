@@ -613,7 +613,7 @@
 
     <!--voice commands-->
 
-    <string name="mobile_no_msg">क्लीनिकस ऑन क्लाऊड मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
+    <string name="mobile_no_msg">cleeneeks on cloud मे आपका स्वागत है क्रिपया अपना मोबाईल नंबर डाले</string>
     <string name="otp_msg">क्रिपया अपना ओ टी पी डाले</string>
     <string name="registration_msg">क्रिपया अपनी जानकारी भरे</string>
     <string name="height_fail">height सेन्सर नही मिला क्रिपया स्वयं कनेक्ट करे</string>
@@ -621,6 +621,7 @@
     <string name="height_manually">क्रिपया height डाले </string>
 
     <string name="actofit_msg">GoTo smartscale बटण पे क्लिक करें औरं वेईगं scale पे खडे रहे </string>
+    <string name="actofit_result_msg">क्रिपया next बटण दबाये</string>
     <string name="oximeter_msg">अपनी उंगली मशीन मे डाले औरं result का इंतजार करें </string>
     <string name="BloodPreeure_msg">ब्लड pressure का कफ्फ हात में डाले और मशीन का स्टार्ट बटण दबाये </string>
     <string name="temperature_fail_msg">temperature सेन्सर नही मिला क्रिपया manually कनेक्ट करे </string>

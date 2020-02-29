@@ -165,9 +165,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
         btnSynch.setOnClickListener(v -> getOfflineRecords());
-
-
-//        spnLanguages.setOnItemSelectedListener(this);
     }
 
     /**
@@ -187,23 +184,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void showOfflineDataStatus() {
-
-        /*if (menuOptionsClicked) {
-            cvOfflineDataStatus.setVisibility(View.GONE);
-            menuOptionsClicked = false;
-        } else {*/
         cvOfflineDataStatus.setVisibility(View.VISIBLE);
         cvOfflineDataStatus.startAnimation(slideUpAnimation);
-//            overridePendingTransition(R.anim.push_left_out, R.anim.out_to_left);
+
         menuOptionsClicked = true;
         setOfflineDataStatus();
-//        }
     }
 
     private void setOfflineDataStatus() {
-
         JSONArray dataArray = dataBaseHelper.getOfflineData();
-
         if (dataArray != null && dataArray.length() > 0) {
             tvNoOfRecords.setText(String.valueOf(dataArray.length()));
             btnSynch.setVisibility(View.VISIBLE);
@@ -212,6 +201,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             btnSynch.setVisibility(View.GONE);
         }
 
+        Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
         String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
 
         if (uploaded_Count != null && !uploaded_Count.equals(""))
@@ -222,27 +212,21 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void getOfflineRecords() {
-
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
-
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
             } else {
                 setOfflineDataStatus();
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void uploadOfflineRecords(JSONArray dataArray) {
-
         try {
-
             if (Utils.isOnline(context)) {
-
                 JSONObject dataObject = new JSONObject();
                 dataObject.put("data", dataArray);
 
@@ -292,17 +276,13 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 }
             }
 
-
             SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-
-//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
             editor.commit();
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
-
 
             setOfflineDataStatus();
 
@@ -314,7 +294,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
 
     private void setLocale(String lang) {
-
         Locale locale = new Locale(lang);
         Locale.setDefault(locale);
         Configuration config = new Configuration();
@@ -323,10 +302,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         //saving data to shared preference
         SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
-        editor.putString("my_lan", lang);
+        editor.putString("language", lang);
         editor.apply();
     }
-
 
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
@@ -357,7 +335,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(MOBILE_NUMBER_MAX_LENGTH);
         etMobileNumber.setFilters(filterArray);
-
 
         languagesList = new ArrayList<>();
         languagesList.add("English");
@@ -396,22 +373,24 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
         View hView = navigationView.getHeaderView(0);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        textToSpeechService.speakOut(WELCOME_LOGIN_MESSAGE);
     }
 
     // endregion
@@ -419,7 +398,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     // region Logical methods
 
     /**
-     *
+     * 1.check the location permission
+     * 2.check the mobile number is empty or not
+     * 3.check mobile number is valid or not
+     * 4.a.check for network connection
+     * 4.b.if network available generate otp
+     * 4.c.if network not available save patient locally
      */
     private void doLogin() {
         if (Utils.getInstance().giveLocationPermission(this)) {
@@ -437,7 +421,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
     }
 
-
+    /**
+     * save patient data locally
+     */
     private void savePatient() {
         try {
             ContentValues patientContentValues = new ContentValues();
@@ -589,19 +575,14 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 showOfflineDataStatus();
                 break;
 
-
             case R.id.nav_setting:
                 startActivity(new Intent(context, SettingsActivity.class));
                 finish();
                 break;
 
             case R.id.nav_language:
-
                 showLanguageDilog();
-
                 break;
-
-
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -624,26 +605,23 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnSelectLanguage.setAdapter(dataAdapter);
 
-
-        if (sharedPreferenceLanguage.getString("my_lan", "").equals("en")) {
+        if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
             spnSelectLanguage.setSelection(0);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("hi")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("hi")) {
             spnSelectLanguage.setSelection(1);
-        } else if (sharedPreferenceLanguage.getString("my_lan", "").equals("mar")) {
+        } else if (sharedPreferenceLanguage.getString("language", "").equals("mar")) {
             spnSelectLanguage.setSelection(2);
         }
 
         spnSelectLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
                 setLanguageSelection(i);
-
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-
+                Toast.makeText(context, "No preffered Language selected", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -663,20 +641,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         changeLanguageDilog.show();
         changeLanguageDilog.getWindow().setAttributes(layoutParams);
-
     }
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
-
         if (event.getAction() == KeyEvent.ACTION_UP) {
             View v = getCurrentFocus();
             if (v instanceof EditText) {
                 InputMethodManager imm = (InputMethodManager) getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }
-
             cvOfflineDataStatus.setVisibility(View.GONE);
         }
         return super.dispatchTouchEvent(event);
