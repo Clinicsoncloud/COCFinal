@@ -216,7 +216,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             JSONArray dataArray = dataBaseHelper.getOfflineData();
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
-                Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
             } else {
                 setOfflineDataStatus();
             }
@@ -244,6 +243,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
 
         try {
+            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
             updateLocalStatus(response);
         } catch (Exception e) {
             // TODO: Handle exception
