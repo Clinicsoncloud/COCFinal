@@ -62,9 +62,13 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:theme">
         <activity
+            android:name=".activity.TutorialVideosActivity"
+            android:label="@string/title_activity_tutorial_videos"
+            android:theme="@style/NoActionBar"></activity>
+        <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"

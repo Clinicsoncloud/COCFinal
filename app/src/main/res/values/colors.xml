@@ -138,5 +138,8 @@
     <color name="colorNavHeaderDark">#002433</color>
     <color name="colorHeader">#005073</color>
 
+    <color name="shadow">#555555</color>
+    <color name="title">#777777</color>
+
 
 </resources>

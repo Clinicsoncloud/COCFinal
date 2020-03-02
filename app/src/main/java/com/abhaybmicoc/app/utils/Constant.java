@@ -14,6 +14,13 @@ public class Constant {
 
     public static class Fields {
 
+        // Google Console APIs developer key
+        // Replace this key with your's
+        public static final String DEVELOPER_KEY = "AIzaSyCtNccnt28ccbBq2iIAh0fQr4AqEQoXP3U";
+
+        // YouTube video id
+        public static final String YOUTUBE_VIDEO_CODE = "_oEA18Y8gM0";
+
         public static String internetIntent = "android.net.conn.CONNECTIVITY_CHANGE";
 
         public static final String TBL_PARAMETERS = "tbl_parameters";

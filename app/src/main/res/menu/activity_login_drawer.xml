@@ -17,5 +17,10 @@
             android:icon="@drawable/change_language_icon"
             android:title="Change Language" />
 
+        <item
+            android:id="@+id/nav_tutorial_videos"
+            android:icon="@drawable/youtube_icon"
+            android:title="Tutorial Videos" />
+
     </group>
 </menu>

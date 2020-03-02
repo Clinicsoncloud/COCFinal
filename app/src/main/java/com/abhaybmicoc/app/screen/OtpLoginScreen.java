@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.SettingsActivity;
+import com.abhaybmicoc.app.activity.TutorialVideosActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
@@ -583,6 +584,13 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             case R.id.nav_language:
                 showLanguageDilog();
                 break;
+
+            case R.id.nav_tutorial_videos:
+                startActivity(new Intent(context, TutorialVideosActivity.class));
+                finish();
+                break;
+
+
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

@@ -651,5 +651,14 @@
         <item>Hindi</item>
         <item>Marathi</item>
     </string-array>
+    <string name="title_activity_tutorial_videos">TutorialVideosActivity</string>
+
+
+    <string name="title_logo">NATIONAL GEOGRAPHIC</string>
+    <string name="btn_skip_intro">Skip Intro</string>
+
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 
 </resources>
+
+

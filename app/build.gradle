@@ -103,5 +103,12 @@ dependencies {
     implementation 'com.github.rehmanmuradali:ticker:1.0.0'
     implementation 'org.jetbrains:annotations:15.0'
 
+    implementation('com.google.api-client:google-api-client-android:1.22.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-youtube:v3-rev183-1.22.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
 }
 apply plugin: 'com.google.gms.google-services'
