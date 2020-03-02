@@ -217,6 +217,10 @@ public class PrintPreviewActivity extends Activity {
     private String RECONNECT_MSG = "";
     private String RECEIPT_MSG = "";
 
+    private AlertDialog.Builder alertDialogBuilder;
+
+    private boolean isNotConnected = false;
+
     TextToSpeechService textToSpeechService;
 
     // endregion
@@ -230,6 +234,7 @@ public class PrintPreviewActivity extends Activity {
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
+        init("");
         setupUI();
         setupEvents();
         initializeData();
@@ -247,16 +252,23 @@ public class PrintPreviewActivity extends Activity {
 
         if (mBT.isEnabled())
             mBT.disable();
+
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
     public void onBackPressed() {
-//        super.onBackPressed();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
 
@@ -300,6 +312,14 @@ public class PrintPreviewActivity extends Activity {
 
     // region Initialization methods
 
+    private void init(String msg) {
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), msg);
+    }
+
+    /**
+     * 1.setup the UI componentes
+     * 2.setup messsages to the variables
+     */
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
 
@@ -308,6 +328,9 @@ public class PrintPreviewActivity extends Activity {
         RECEIPT_MSG = getResources().getString(R.string.print_result_msg);
     }
 
+    /**
+     * 1.Handle the click events
+     */
     private void setupEvents() {
         btnHome.setOnClickListener(view -> goToHome());
 
@@ -325,13 +348,15 @@ public class PrintPreviewActivity extends Activity {
         btnReconnect.setOnClickListener(view -> autoConnectPrinter());
     }
 
+    /**
+     * 1.initialize the data
+     * 2.Creates the database helper  and texttospecch object
+     * 3.
+     */
     private void initializeData() {
-
         dataBaseHelper = new DataBaseHelper(context);
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
-
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
 
         connectToSavedPrinter();
 
@@ -363,10 +388,10 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-
             }
         }
     }
+
 
     private void autoConnectPrinter() {
         mGP.closeConn();
@@ -983,8 +1008,7 @@ public class PrintPreviewActivity extends Activity {
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            Log.e("printerActivation"," : textToSpeech");
-            textToSpeechService.speakOut(PRINT_MSG);
+            init(PRINT_MSG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2060,7 +2084,8 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void showReconnectPopup() {
-
+        isNotConnected = true;
+        init(RECONNECT_MSG);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         alertDialogBuilder.setTitle("Communication Lost!");
@@ -2082,7 +2107,6 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
-        textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }

@@ -161,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     public void onBackPressed() {
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -176,6 +175,15 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 //            sendMessage("U370");
             disconnectGattServer();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        /* close the texttospeechservice*/
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
 
