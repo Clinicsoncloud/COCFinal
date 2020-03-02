@@ -631,6 +631,7 @@
     <string name="new_strip_msg">कृपया ,नवीन स्ट्रीप टाका</string>
 
     <string name="hemoglobin_msg">कृपया ,हेमोग्लोबीन device पावर ऑन करा आणि कनेक्ट बटण क्लिक करा</string>
+    <string name="hemoglobin_start_test_msg">कृपया ,टेस्ट स्टार्ट करा</string>
     <string name="print_msg">कृपया ,प्रिन्ट बटण दाबा</string>
     <string name="print_reconnect_msg">कृपया ,प्रिन्टर कनेक्ट नाही झाला reconnect बटण वर क्लिक करा आणि पुन्हा प्रिन्टर कनेक्ट करा</string>
     <string name="print_result_msg">कृपया ,तुमच्या result ची पावती घ्या</string>

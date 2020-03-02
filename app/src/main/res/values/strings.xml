@@ -638,6 +638,7 @@
     <string name="new_strip_msg">Please Insert New Strip</string>
 
     <string name="hemoglobin_msg">Please long press device power button and click on connect button</string>
+    <string name="hemoglobin_start_test_msg">Please click on start Test</string>
     <string name="print_msg">Please click on print button</string>
     <string name="print_reconnect_msg">Please click on Reconnect button to reconnect printer</string>
     <string name="print_result_msg">Please collect your result receipt</string>

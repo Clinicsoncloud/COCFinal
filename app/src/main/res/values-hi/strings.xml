@@ -635,6 +635,7 @@
     <string name="new_strip_msg">क्रिपया नयी स्ट्रीप डाले</string>
 
     <string name="hemoglobin_msg">क्रिपया अपनी hemoglobin मशीन का पावर ऑन करे और कनेक्ट बटण दबाये</string>
+    <string name="hemoglobin_start_test_msg">क्रिपया टेस्ट स्टार्ट करें</string>
     <string name="print_msg">क्रिपया प्रिन्ट बटण दबाये</string>
     <string name="print_reconnect_msg">क्रिपया प्रिंटर दोबारा कनेक्ट करणे के लिये reconnect बटण दबाये</string>
     <string name="print_result_msg">क्रिपया अपनी परिणाम कि परची लें </string>

@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     ArrayList<String> deviceArrayList;
 
     private String HEMOGLOBIN_MSG = "";
+    private String START_TEST_MSG = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -353,6 +354,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         setContentView(R.layout.new_try_hemoglobin);
 
         HEMOGLOBIN_MSG = getResources().getString(R.string.hemoglobin_msg);
+        START_TEST_MSG = getResources().getString(R.string.hemoglobin_start_test_msg);
 
         btnNext = findViewById(R.id.btn_skip);
         btnScan = findViewById(R.id.btn_scan);
@@ -634,6 +636,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             btnConnect.setText("Connected");
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
             btnConnect.setClickable(false);
+            textToSpeechService.speakOut(START_TEST_MSG);
         } else {
             COUNT_CONNECTION_TRY++;
 
