@@ -157,7 +157,6 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
     }
 
     private void goNext() {
-        clearData();
 
         startActivity(new Intent(getApplicationContext(), MainActivity.class));
 

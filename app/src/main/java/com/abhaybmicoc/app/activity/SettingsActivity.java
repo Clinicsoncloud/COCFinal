@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -32,6 +33,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
     protected JSONObject deviceObj;
     private TextView tvSelectedDevice, tvDeviceName, tvDeviceAddress, tvDeviceNotConnected;
     private Button btnRemoveDevice;
+    private ImageView iv_Back;
 
     private SharedPreferences spDeviceAddress;
     private LinearLayout llDeviceDetailsLayout;
@@ -72,6 +74,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
         btnRemoveDevice = findViewById(R.id.btn_RemoveDevice);
         tvDeviceNotConnected = findViewById(R.id.tv_DeviceNotConnected);
         llDeviceDetailsLayout = findViewById(R.id.ll_DeviceDetailsLayout);
+        iv_Back = findViewById(R.id.iv_Back);
 
     }
 
@@ -81,7 +84,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
 
             deviceObj = new JSONObject();
             deviceObj.put("device_name", "Height Sensor");
-            deviceObj.put("is_selected", "0");
+            deviceObj.put("is_selected", "1");
             devicesArray.put(deviceObj);
 
             deviceObj = new JSONObject();
@@ -106,6 +109,8 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
 
             setConnectedDevicesAdapter();
 
+            showHeightSensorDetails();
+
         } catch (Exception e) {
         }
     }
@@ -113,7 +118,13 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
     private void setupEvents() {
 
         btnRemoveDevice.setOnClickListener(view -> removeDevice());
+        iv_Back.setOnClickListener(view -> goToBackScreen());
 
+    }
+
+    private void goToBackScreen() {
+        startActivity(new Intent(context, OtpLoginScreen.class));
+        finish();
     }
 
 

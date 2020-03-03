@@ -657,4 +657,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         return super.dispatchTouchEvent(event);
     }
     // endregion
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

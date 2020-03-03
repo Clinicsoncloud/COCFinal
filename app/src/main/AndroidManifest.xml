@@ -64,29 +64,35 @@
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
+            android:screenOrientation="landscape"
             android:theme="@style/NoActionBar"></activity>
         <activity
             android:name=".screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".actofit.ActofitMainActivity"
             android:label="@string/title_activity_weight_screen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction" />
         <activity
             android:name=".thermometer.ThermometerScreen"
             android:label="@string/title_activity_thermometer_screen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activity.HeightActivity"
             android:label="@string/title_activity_height_screen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".screen.ActivateScreen"
             android:label="@string/app_name"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
@@ -105,10 +111,12 @@
         <activity
             android:name=".screen.OtpVerifyScreen"
             android:label="@string/title_activity_otp_verify_screen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".screen.OtpLoginScreen"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
@@ -125,34 +133,44 @@
             android:theme="@style/AppThemeAction" />
         <activity
             android:name=".base.ADInstructionActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.TransBackground" />
         <activity
             android:name=".glucose.GlucoseScanListActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeGlucose" />
         <activity
             android:name=".glucose.GlucoseActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeGlucose" />
         <activity
             android:name=".printer.esys.pridedemoapp.Act_Main"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- Printer -->
         <activity
             android:name=".printer.esys.pridedemoapp.Act_BTDiscovery"
             android:launchMode="standard"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- hemoglobin -->
         <activity
             android:name=".hemoglobin.MainActivity"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeHemoGlobin" />
         <activity
             android:name=".oxygen.OxygenActivity"
             android:label="@string/app_name"
+            android:screenOrientation="landscape"
+
             android:theme="@style/AppThemeGlucose" />
         <activity
             android:name=".activity.BloodPressureActivity"
             android:finishOnTaskLaunch="true"
+            android:screenOrientation="landscape"
             android:theme="@android:style/Theme.NoTitleBar" />
         <activity
             android:name=".activity.InstructionActivity"
             android:finishOnTaskLaunch="true"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.TransBackground" />
 
         <meta-data
@@ -165,9 +183,11 @@
         <activity
             android:name=".activity.DialogActivity"
             android:finishOnTaskLaunch="true"
+            android:screenOrientation="landscape"
             android:theme="@style/Theme.TransBackground" />
         <activity
             android:name=".activity.PrintPreviewActivity"
+
             android:screenOrientation="landscape" /> <!-- for android 9 -->
         <uses-library
             android:name="org.apache.http.legacy"
