@@ -74,6 +74,7 @@ public class SQLiteQueries {
             + Constant.Fields.SKELETAL_MUSCLE_RESULT + " VARCHAR,"
             + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT + " VARCHAR,"
             + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT + " VARCHAR,"
+            + Constant.Fields.FATFREERSNGE + " VARCHAR,"
 
             + Constant.Fields.CREATED_BY + " VARCHAR,"
             + Constant.Fields.UPDATED_BY + " VARCHAR,"

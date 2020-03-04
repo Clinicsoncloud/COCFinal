@@ -201,7 +201,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             btnSynch.setVisibility(View.GONE);
         }
 
-        Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
         String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
 
         if (uploaded_Count != null && !uploaded_Count.equals(""))

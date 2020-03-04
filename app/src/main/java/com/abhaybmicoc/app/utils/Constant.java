@@ -114,7 +114,7 @@ public class Constant {
         public final static String SKELETAL_MUSCLE_RESULT = "skeletonmuscleresult";
         public final static String BLOOD_PRESSURE_SYSTOLIC_RESULT = "systolicresult";
         public final static String BLOOD_PRESSURE_DIASTOLIC_RESULT = "bloodpressureresult";
-
+        public final static String FATFREERSNGE = "fatfreersnge";
 
         public static final String CREATED_BY = "created_by";
         public static final String UPDATED_BY = "updated_by";
@@ -126,7 +126,6 @@ public class Constant {
 
         public static final String IS_UPLOADED = "is_uploaded";
         public static final String IS_COMPLETED = "is_completed";
-
     }
 
     public static class TableNames {

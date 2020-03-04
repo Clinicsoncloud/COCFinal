@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -89,6 +90,8 @@ public class ConnectivityReciever extends BroadcastReceiver {
 
     private void updateLocalStatus(String response) {
         try {
+
+            Toast.makeText(mContext, "Data Sync successfully", Toast.LENGTH_SHORT).show();
             JSONObject jsonObject = new JSONObject(response);
 
             JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");

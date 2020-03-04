@@ -363,7 +363,6 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-
             }
         }
     }
@@ -983,7 +982,6 @@ public class PrintPreviewActivity extends Activity {
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            Log.e("printerActivation"," : textToSpeech");
             textToSpeechService.speakOut(PRINT_MSG);
 
         } catch (Exception e) {
@@ -1349,6 +1347,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
+            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
