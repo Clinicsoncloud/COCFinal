@@ -1404,25 +1404,28 @@ public class PrintPreviewActivity extends Activity {
         try {
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+            JSONArray resultArray = jsonObject.getJSONArray("result");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patientIdArray.length(); i++) {
-                if (patientId.equals("")) {
-                    patientId = patientIdArray.getString(i);
-                } else {
-                    patientId = patientId + "," + patientIdArray.getString(i);
-                }
-            }
+            for (int i = 0; i < resultArray.length(); i++) {
 
-            for (int j = 0; j < parameterIdArray.length(); j++) {
-                if (parameterId.equals("")) {
-                    parameterId = parameterIdArray.getString(j);
+                if (patientId.equals("")) {
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
                 } else {
-                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
+                }
+
+                if (parameterId.equals("")) {
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
+                } else {
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
+                }
+
+                if (sharedPreferencesToken.getString(Constant.Fields.ID, "").
+                        equals(resultArray.getJSONObject(i).getString("patient_id"))) {
+                    fileName = resultArray.getJSONObject(i).getString("filename");
                 }
             }
 
@@ -1634,6 +1637,8 @@ public class PrintPreviewActivity extends Activity {
      */
     private void readFileName(String response) {
         try {
+
+
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");

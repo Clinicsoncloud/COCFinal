@@ -254,31 +254,27 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         try {
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+            JSONArray resultArray = jsonObject.getJSONArray("result");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patientIdArray.length(); i++) {
+            for (int i = 0; i < resultArray.length(); i++) {
+
                 if (patientId.equals("")) {
-                    patientId = patientIdArray.getString(i);
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
                 } else {
-                    patientId = patientId + "," + patientIdArray.getString(i);
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
                 }
-            }
 
-            for (int j = 0; j < parameterIdArray.length(); j++) {
+
                 if (parameterId.equals("")) {
-                    parameterId = parameterIdArray.getString(j);
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
                 } else {
-                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
                 }
-            }
 
-            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
-            editor.commit();
+            }
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 

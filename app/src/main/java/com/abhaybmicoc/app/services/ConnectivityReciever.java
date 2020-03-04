@@ -92,27 +92,27 @@ public class ConnectivityReciever extends BroadcastReceiver {
         try {
 
             Toast.makeText(mContext, "Data Sync successfully", Toast.LENGTH_SHORT).show();
+
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+            JSONArray resultArray = jsonObject.getJSONArray("result");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patientIdArray.length(); i++) {
-                if (patientId.equals("")) {
-                    patientId = patientIdArray.getString(i);
-                } else {
-                    patientId = patientId + "," + patientIdArray.getString(i);
-                }
-            }
+            for (int i = 0; i < resultArray.length(); i++) {
 
-            for (int j = 0; j < parameterIdArray.length(); j++) {
-                if (parameterId.equals("")) {
-                    parameterId = parameterIdArray.getString(j);
+                if (patientId.equals("")) {
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
                 } else {
-                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
+                }
+
+
+                if (parameterId.equals("")) {
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
+                } else {
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
                 }
             }
 
