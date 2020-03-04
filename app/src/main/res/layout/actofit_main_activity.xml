@@ -497,7 +497,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="100dp"
                     android:layout_weight="1"
                     android:gravity="center"
                     android:orientation="horizontal"
@@ -537,12 +537,12 @@
 
                     <Button
                         android:id="@+id/btn_skip"
-                        android:layout_width="wrap_content"
+                        android:layout_width="500dp"
                         android:layout_height="60dp"
                         android:layout_gravity="center_vertical"
                         android:layout_margin="5dp"
                         android:layout_weight="1"
-                        android:background="@drawable/greenback"
+                        android:background="@drawable/repeat"
                         android:gravity="center"
                         android:text="Skip"
                         android:textColor="@color/white"
