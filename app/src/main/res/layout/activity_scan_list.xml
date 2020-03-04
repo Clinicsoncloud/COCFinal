@@ -118,7 +118,7 @@
 
         <Button
             android:id="@+id/btn_skip"
-            android:layout_width="700dp"
+            android:layout_width="650dp"
             android:layout_height="@dimen/hgt45"
             android:layout_gravity="center"
             android:layout_weight="0"
