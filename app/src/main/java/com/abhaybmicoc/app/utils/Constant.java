@@ -118,6 +118,7 @@ public class Constant {
         public final static String FILE_NAME = "file_name";
         public final static String METHOD_NAME = "method_name";
         public final static String MESSAGE = "message";
+        public final static String FATFREERSNGE = "fatfreersnge";
 
         public static final String CREATED_BY = "created_by";
         public static final String UPDATED_BY = "updated_by";
@@ -128,12 +129,13 @@ public class Constant {
         public static final String STATUS = "status";
 
         public static final String IS_UPLOADED = "is_uploaded";
-    }
+        public static final String IS_COMPLETED = "is_completed";
 
+    }
     public static class TableNames {
-        public static final String TBL_PARAMETERS = "tbl_parameters";
-        public static final String TBL_PATIENTS = "tbl_patients";
+        public static final String PARAMETERS = "tbl_parameters";
+        public static final String PATIENTS = "tbl_patients";
         public static final String ERROR_LOGS = "error_logs";
     }
-
 }
+

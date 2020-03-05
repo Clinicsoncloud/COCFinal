@@ -618,10 +618,10 @@
 
     <string name="actofit_msg">कृपया ,गोटु smartscale बटण वर क्लिक करा आणि वेहिंग scale वर उभे रहा</string>
     <string name="actofit_result_msg">कृपया ,next  बटण दाबा</string>
-    <string name="oximeter_msg">कृपया ,आपले बोट मशीन मध्ये घाला आणि result ची वाट पहा</string>
+    <string name="oximeter_msg">कृपया ,आपले बोट ऑक्सिमीटर मध्ये घाला आणि result ची वाट पहा</string>
     <string name="BloodPreeure_msg">कृपया ,blood pressure चा कफ्फ हातामध्ये घाला आणि ,मशीन चे स्टार्ट बटण दाबा</string>
     <string name="temperature_fail_msg">कृपया ,temperature सेन्सर कनेक्ट झाला नाही कृपया , स्वतः कनेक्ट करा</string>
-    <string name="temperature_success_msg">कृपया , temperature मशीन कपाळावर ठेवा आणि बटण दाबा</string>
+    <string name="temperature_success_msg">कृपया , temperature मशीन कपाळावर ठेवा आणि बटण २ ते ३ सेकंड्स दाबून ठेवा</string>
     <string name="temperature_manually">कृपया manually temperature टाका</string>
 
     <string name="sync_scan_msg">कृपया ,SYNC प्लस डिव्हाइस चे बटण दाबून ठेवा</string>
@@ -630,7 +630,8 @@
     <string name="add_blood_msg">कृपया ,ब्लड टाका </string>
     <string name="new_strip_msg">कृपया ,नवीन स्ट्रीप टाका</string>
 
-    <string name="hemoglobin_msg">कृपया ,हेमोग्लोबीन device चे पॉवर बटण थोड्या वेळ दाबून सोडा</string>
+    <string name="hemoglobin_msg">कृपया ,हेमोग्लोबीन device पावर ऑन करा आणि कनेक्ट बटण क्लिक करा</string>
+    <string name="hemoglobin_start_test_msg">कृपया ,टेस्ट स्टार्ट करा</string>
     <string name="print_msg">कृपया ,प्रिन्ट बटण दाबा</string>
     <string name="print_reconnect_msg">कृपया ,प्रिन्टर कनेक्ट नाही झाला reconnect बटण वर क्लिक करा आणि पुन्हा प्रिन्टर कनेक्ट करा</string>
     <string name="print_result_msg">कृपया ,तुमच्या result ची पावती घ्या</string>

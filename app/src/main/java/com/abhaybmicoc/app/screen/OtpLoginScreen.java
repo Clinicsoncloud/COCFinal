@@ -36,8 +36,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,12 +73,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private Button btnLogin;
     private EditText etMobileNumber;
 
-
     private int selectedId;
 
-
     private ProgressDialog progressDialog;
-
 
     SharedPreferences sharedPreferencesPersonal;
     SharedPreferences sharedPreferencesOffline;
@@ -111,6 +106,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView navigationView;
+    private String patient_id = "";
 
 
     final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -119,7 +115,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     ArrayList<String> languagesList;
 
     // endregion
-
 
     // region Initialization methods
 
@@ -131,7 +126,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
-
 
         fabMenuOptions = findViewById(R.id.fab_menuOptions);
         cvOfflineDataStatus = findViewById(R.id.cv_OfflineDataStatus);
@@ -209,7 +203,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             tvNoOfRecords.setText("0");
             btnSynch.setVisibility(View.GONE);
         }
-        Log.e("Uploading_data_count", ":" + sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
+
         String uploaded_Count = sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, "");
 
         if (uploaded_Count != null && !uploaded_Count.equals(""))
@@ -252,6 +246,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
 
         try {
+            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
             updateLocalStatus(response);
         } catch (Exception e) {
             // TODO: Handle exception
@@ -263,35 +258,31 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         try {
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+            JSONArray resultArray = jsonObject.getJSONArray("result");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patientIdArray.length(); i++) {
+            for (int i = 0; i < resultArray.length(); i++) {
+
                 if (patientId.equals("")) {
-                    patientId = patientIdArray.getString(i);
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
                 } else {
-                    patientId = patientId + "," + patientIdArray.getString(i);
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
                 }
-            }
 
-            for (int j = 0; j < parameterIdArray.length(); j++) {
+
                 if (parameterId.equals("")) {
-                    parameterId = parameterIdArray.getString(j);
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
                 } else {
-                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
                 }
+
             }
 
-            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
-            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
-            editor.commit();
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
-
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
 
             setOfflineDataStatus();
 
@@ -326,11 +317,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         bluetoothAdapter.enable();
 
         try {
+
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
             sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
-
 
             sharedPreferencesPersonal.edit().clear().apply();
 
@@ -422,10 +413,10 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
+                savePatient();
+
                 if (Utils.isOnline(context)) {
                     GenerateOTP();
-                } else {
-                    savePatient();
                 }
             }
         }
@@ -441,12 +432,23 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             patientContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
             patientContentValues.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PATIENTS, patientContentValues, etMobileNumber.getText().toString());
+            Long saveResponse = dataBaseHelper.saveToLocalTable(Constant.TableNames.PATIENTS, patientContentValues, etMobileNumber.getText().toString());
 
-            Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
-            objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
-            objIntent.putExtra("connectivity", "offline");
-            startActivity(objIntent);
+            if (saveResponse != -1) {
+                patient_id = dataBaseHelper.getLastInsertPatientID();
+
+                if (!Utils.isOnline(context)) {
+                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
+                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
+                    objIntent.putExtra("connectivity", "offline");
+
+                    startActivity(objIntent);
+                }
+            } else {
+                //TODO:  Handle Error Message
+            }
+
 
         } catch (Exception e) {
             ErrorUtils.logErrors(context, e, "OtpLoginScreen", "savePatient", "" + e.getMessage());
@@ -488,7 +490,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
 
         editor.commit();
-
     }
 
 
@@ -498,6 +499,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         SharedPreferences.Editor editor = sharedPreference.edit();
         editor.putString(key, value);
         editor.commit();
+
     }
 
 
@@ -534,6 +536,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
                     objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
@@ -546,6 +549,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+                    objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
                     objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
@@ -655,4 +659,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         return super.dispatchTouchEvent(event);
     }
     // endregion
+
+    @Override
+    public void onBackPressed() {
+
+    }
 }

@@ -614,8 +614,9 @@ public class BloodPressureActivity extends Activity {
     private void setIndicatorMessage(String message) {
         if (progress == null)
             return;
+        if (!((Activity) context).isFinishing() && progress.isShowing())
+            progressDialog.dismiss();
 
-        progressDialog.dismiss();
         TextView syncMessages = (TextView) progress.findViewById(R.id.syncMessages1);
 
         if (message == null)
@@ -1105,7 +1106,9 @@ public class BloodPressureActivity extends Activity {
 
                 showIndicator(getResources().getString(R.string.indicator_start_receive));
                 BleReceivedService.getGatt().discoverServices();
-                progressDialog.dismiss();
+
+                if (!((Activity) context).isFinishing() && progress.isShowing())
+                    progressDialog.dismiss();
 
                 setDateTimeDelay = Long.MIN_VALUE;
                 indicationDelay = Long.MIN_VALUE;

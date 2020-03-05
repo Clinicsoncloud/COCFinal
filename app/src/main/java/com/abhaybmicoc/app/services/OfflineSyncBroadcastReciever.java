@@ -9,9 +9,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.screen.OtpVerifyScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
@@ -20,12 +18,8 @@ import com.android.volley.VolleyError;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static android.content.Context.MODE_PRIVATE;
 import static com.abhaybmicoc.app.utils.Constant.Fields.internetIntent;
-
 
 public class OfflineSyncBroadcastReciever extends BroadcastReceiver {
 
@@ -62,6 +56,7 @@ public class OfflineSyncBroadcastReciever extends BroadcastReceiver {
     private void getOfflineRecords() {
         try {
             JSONArray dataArray = dataBaseHelper.getOfflineData();
+
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
             }
@@ -109,41 +104,41 @@ public class OfflineSyncBroadcastReciever extends BroadcastReceiver {
 
     private void updateLocalStatus(String response) {
         try {
+
+            Toast.makeText(mContext, "Data Sync successfully", Toast.LENGTH_SHORT).show();
+
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray patientIdArray = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameterIdArray = jsonObject.getJSONArray("parameter_ids");
+            JSONArray resultArray = jsonObject.getJSONArray("result");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patientIdArray.length(); i++) {
+            for (int i = 0; i < resultArray.length(); i++) {
+
                 if (patientId.equals("")) {
-                    patientId = patientIdArray.getString(i);
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
                 } else {
-                    patientId = patientId + "," + patientIdArray.getString(i);
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
                 }
-            }
 
-            for (int j = 0; j < parameterIdArray.length(); j++) {
+
                 if (parameterId.equals("")) {
-                    parameterId = parameterIdArray.getString(j);
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
                 } else {
-                    parameterId = parameterId + "," + parameterIdArray.getString(j);
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
                 }
             }
-
 
             SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
 
-//            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, String.valueOf(parameterIdArray.length()));
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
             editor.commit();
 
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PATIENTS, Constant.Fields.PATIENT_ID, patientId);
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
-            dataBaseHelper.deleteTable_data(Constant.TableNames.TBL_PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
         } catch (Exception e) {
             ErrorUtils.logErrors(mContext, e, "OfflineSyncBroadcastReciever", "updateLocalStatus", "" + e.getMessage());
         }

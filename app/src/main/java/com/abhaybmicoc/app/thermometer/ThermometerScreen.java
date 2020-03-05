@@ -424,7 +424,7 @@ public class ThermometerScreen extends AppCompatActivity {
             bluetoothDevice = bluetoothAdapter.getRemoteDevice(params[0]);
             try {
                 socket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"));
-                if (!socket.isConnected()) {
+                if (socket != null && !socket.isConnected()) {
                     socket.connect();
                 }
 

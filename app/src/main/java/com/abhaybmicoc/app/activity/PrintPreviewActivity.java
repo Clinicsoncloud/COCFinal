@@ -143,6 +143,7 @@ public class PrintPreviewActivity extends Activity {
     private SharedPreferences sharedPreferencesThermometer;
     private SharedPreferences sharedPreferencesPersonalData;
     private SharedPreferences sharedPreferencesBloodPressure;
+    private SharedPreferences sharedPreferencesOffline;
 
     private ImageView ivDownload;
 
@@ -314,7 +315,6 @@ public class PrintPreviewActivity extends Activity {
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-
             textToSpeechService.speakOut(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
@@ -345,7 +345,7 @@ public class PrintPreviewActivity extends Activity {
         getPrintData();
         getResults();
         saveDataToLocal();
-        postData();
+//        postData();
 
     }
 
@@ -365,7 +365,6 @@ public class PrintPreviewActivity extends Activity {
                 autoConnectPrinter();
             } else {
                 printerActivation();
-
             }
         }
     }
@@ -980,13 +979,12 @@ public class PrintPreviewActivity extends Activity {
             OutputStream outstream = BluetoothComm.mosOut;
             ptrGen = new Printer_GEN(Act_GlobalPool.setup, outstream, input);
 
-            btnReconnect.setBackground(getResources().getDrawable(R.drawable.grayback));
-            btnReconnect.setEnabled(false);
+            btnReconnect.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnReconnect.setEnabled(true);
 
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            Log.e("printerActivation"," : textToSpeech");
             textToSpeechService.speakOut(PRINT_MSG);
 
         } catch (Exception e) {
@@ -1350,13 +1348,104 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+            paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
+            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
-            dataBaseHelper.saveToLocalTable(Constant.TableNames.TBL_PARAMETERS, paramsContentValues, "");
+            dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
+            btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
+            btnHome.setEnabled(true);
+
+            getOfflineRecords();
+
+        } catch (Exception e) {
+        }
+    }
+
+    private void getOfflineRecords() {
+        try {
+            JSONArray dataArray = dataBaseHelper.getOfflineData();
+
+            if (dataArray != null && dataArray.length() > 0) {
+                uploadOfflineRecords(dataArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void uploadOfflineRecords(JSONArray dataArray) {
+        try {
+            if (Utils.isOnline(context)) {
+
+                JSONObject dataObject = new JSONObject();
+                dataObject.put("data", dataArray);
+
+                HttpService.accessWebServicesJSON(
+                        context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
+                        (response, error, status) -> handleOfflineAPIResponse(response, error, status));
+
+            } else {
+                Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             ErrorUtils.logErrors(context,e,"PrintPreviewActivity","saveDataToLocal",""+e.getMessage());
         }
     }
+
+    private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
+        try {
+            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
+            updateLocalStatus(response);
+        } catch (Exception e) {
+            // TODO: Handle exception
+            e.printStackTrace();
+        }
+    }
+
+    private void updateLocalStatus(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+
+            JSONArray resultArray = jsonObject.getJSONArray("result");
+
+            String patientId = "";
+            String parameterId = "";
+
+            for (int i = 0; i < resultArray.length(); i++) {
+
+                if (patientId.equals("")) {
+                    patientId = resultArray.getJSONObject(i).getString("patient_id");
+                } else {
+                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
+                }
+
+                if (parameterId.equals("")) {
+                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
+                } else {
+                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
+                }
+
+                if (sharedPreferencesToken.getString(Constant.Fields.ID, "").
+                        equals(resultArray.getJSONObject(i).getString("patient_id"))) {
+                    fileName = resultArray.getJSONObject(i).getString("filename");
+                }
+            }
+
+            SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+
+            editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+
+            editor.commit();
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
+
+            dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     private void postData() {
 
@@ -1552,6 +1641,8 @@ public class PrintPreviewActivity extends Activity {
      */
     private void readFileName(String response) {
         try {
+
+
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");
@@ -1570,6 +1661,7 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferencesHemoglobin = getSharedPreferences(ApiUtils.PREFERENCE_HEMOGLOBIN, MODE_PRIVATE);
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
+        sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
     }
 
 
@@ -1972,13 +2064,13 @@ public class PrintPreviewActivity extends Activity {
 
                 printerActivation();
             } else {
+                textToSpeechService.speakOut(RECONNECT_MSG);
                 showReconnectPopup();
             }
         }
     }
 
     private void showReconnectPopup() {
-        textToSpeechService.speakOut(RECONNECT_MSG);
 
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
@@ -2001,6 +2093,7 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
+        textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }
