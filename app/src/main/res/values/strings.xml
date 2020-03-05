@@ -652,5 +652,6 @@
         <item>Hindi</item>
         <item>Marathi</item>
     </string-array>
+    <string name="title_activity_change_language">ChangeLanguageActivity</string>
 
 </resources>

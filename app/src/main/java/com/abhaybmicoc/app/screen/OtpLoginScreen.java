@@ -41,6 +41,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.ChangeLanguageActivity;
 import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
@@ -80,7 +81,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     SharedPreferences sharedPreferencesOffline;
 
     private DataBaseHelper dataBaseHelper;
-    SharedPreferences sharedPreferenceLanguage;
 
     TextToSpeechService textToSpeechService;
 
@@ -165,22 +165,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
         btnSynch.setOnClickListener(v -> getOfflineRecords());
-    }
-
-    /**
-     * @param position
-     */
-    private void setLanguageSelection(int position) {
-        if (position == 0) {
-            setLocale("en");
-            Toast.makeText(context, "English selected", Toast.LENGTH_SHORT).show();
-        } else if (position == 1) {
-            setLocale("hi");
-            Toast.makeText(context, "Hindi Selected", Toast.LENGTH_SHORT).show();
-        } else if (position == 2) {
-            setLocale("mar");
-            Toast.makeText(context, "Marathi Selected", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void showOfflineDataStatus() {
@@ -288,20 +272,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     }
 
-
-    private void setLocale(String lang) {
-        Locale locale = new Locale(lang);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getBaseContext().getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-
-        //saving data to shared preference
-        SharedPreferences.Editor editor = sharedPreferenceLanguage.edit();
-        editor.putString("language", lang);
-        editor.apply();
-    }
-
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
 
@@ -316,7 +286,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-            sharedPreferenceLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
             sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
 
             sharedPreferencesPersonal.edit().clear().apply();
@@ -577,67 +546,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 break;
 
             case R.id.nav_language:
-                showLanguageDilog();
+
+                startActivity(new Intent(context, ChangeLanguageActivity.class));
+                finish();
+
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void showLanguageDilog() {
-        changeLanguageDilog.setContentView(R.layout.select_language_dilog);
-        layoutParams.copyFrom(changeLanguageDilog.getWindow().getAttributes());
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        changeLanguageDilog.getWindow().setLayout(layoutParams.width, layoutParams.height);
-        changeLanguageDilog.setCanceledOnTouchOutside(false);
-
-        final Spinner spnSelectLanguage = changeLanguageDilog.findViewById(R.id.spn_SelectLanguage);
-        final ImageView icCloseDilog = changeLanguageDilog.findViewById(R.id.ic_CloseDilog);
-        final Button btnChangeLanguage = changeLanguageDilog.findViewById(R.id.btn_ChangeLanguage);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_item, languagesList);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spnSelectLanguage.setAdapter(dataAdapter);
-
-        if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
-            spnSelectLanguage.setSelection(0);
-        } else if (sharedPreferenceLanguage.getString("language", "").equals("hi")) {
-            spnSelectLanguage.setSelection(1);
-        } else if (sharedPreferenceLanguage.getString("language", "").equals("mar")) {
-            spnSelectLanguage.setSelection(2);
-        }
-
-        spnSelectLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                setLanguageSelection(i);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-                Toast.makeText(context, "No preffered Language selected", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        btnChangeLanguage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeLanguageDilog.dismiss();
-            }
-        });
-
-        icCloseDilog.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                changeLanguageDilog.dismiss();
-            }
-        });
-
-        changeLanguageDilog.show();
-        changeLanguageDilog.getWindow().setAttributes(layoutParams);
-    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {

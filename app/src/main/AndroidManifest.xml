@@ -62,10 +62,14 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:theme">
         <activity
+            android:name=".activity.ChangeLanguageActivity"
+            android:label="@string/title_activity_change_language"
+            android:theme="@style/NoActionBar"></activity>
+        <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:screenOrientation="landscape"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
@@ -160,7 +164,6 @@
             android:name=".oxygen.OxygenActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-
             android:theme="@style/AppThemeGlucose" />
         <activity
             android:name=".activity.BloodPressureActivity"
@@ -187,7 +190,6 @@
             android:theme="@style/Theme.TransBackground" />
         <activity
             android:name=".activity.PrintPreviewActivity"
-
             android:screenOrientation="landscape" /> <!-- for android 9 -->
         <uses-library
             android:name="org.apache.http.legacy"

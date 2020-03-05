@@ -57,7 +57,7 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void initializeLanguage(){
+    private void initializeLanguage() {
         /**
          * 1. Get preferred language
          * 2. Check if language is initialized
@@ -74,13 +74,15 @@ public class TextToSpeechService implements TextToSpeech.OnInitListener {
         }
     }
 
-    private boolean isLanguageSelected(int result){
+    private boolean isLanguageSelected(int result) {
         return result != -1 && result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private int setLanguage(){
+    private int setLanguage() {
         int result = -1;
+
+        Log.e("SavedLanguage", ":" + sharedPreferenceLanguage.getString("language", ""));
 
         if (sharedPreferenceLanguage.getString("language", "").equals("en")) {
             result = textToSpeech.setLanguage(Locale.US);
