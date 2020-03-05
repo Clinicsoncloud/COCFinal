@@ -167,7 +167,25 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         btnLogin.setOnClickListener(v -> doLogin());
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
-        btnSynch.setOnClickListener(v -> getOfflineRecords());
+        btnSynch.setOnClickListener(v -> getOfflineData());
+    }
+
+    private void getOfflineData() {
+        getOfflineRecords();
+        getErrorLog();
+    }
+
+    private void getErrorLog() {
+        try {
+            JSONArray dataArray = dataBaseHelper.getErrorLogsData();
+            if (dataArray != null && dataArray.length() > 0) {
+                uploadErrorLogs(dataArray);
+            } else {
+                setOfflineDataStatus();
+            }
+        } catch (Exception e) {
+            ErrorUtils.logErrors(context, e, "OtpLoginScreen", "getOfflineRecords", "" + e.getMessage());
+        }
     }
 
     /**
@@ -243,6 +261,34 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
     }
 
+    private void uploadErrorLogs(JSONArray dataArray){
+        try {
+            if (Utils.isOnline(context)) {
+                JSONObject dataObject = new JSONObject();
+                dataObject.put("data", dataArray);
+
+                HttpService.accessWebServicesJSON(
+                        context, ApiUtils.SYNC_ERROR_SAVE, dataObject,
+                        (response, error, status) -> handleErrorAPIResponse(response, error, status));
+            } else {
+                Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            ErrorUtils.logErrors(context, e, "OtpLoginScreen", "uploadOfflineRecords", "" + e.getMessage());
+        }
+    }
+
+    private void handleErrorAPIResponse(String response, VolleyError error, String status){
+        if(response != null) {
+            try {
+                Toast.makeText(context, "Errors Sync successfully", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // TODO: Handle exception
+                ErrorUtils.logErrors(context, e, "OtpLoginScreen", "handleOfflineAPIResponse", "" + e.getMessage());
+            }
+        }
+    }
+
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
 
         try {
@@ -283,15 +329,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
-
             setOfflineDataStatus();
-
         } catch (Exception e) {
             ErrorUtils.logErrors(context, e, "OtpLoginScreen", "updateLocalStatus", "" + e.getMessage());
         }
-
     }
-
 
     private void setLocale(String lang) {
         Locale locale = new Locale(lang);

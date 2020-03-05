@@ -1373,6 +1373,17 @@ public class PrintPreviewActivity extends Activity {
             e.printStackTrace();
         }
     }
+    private void getErrorLogs() {
+        try {
+            JSONArray dataArray = dataBaseHelper.getErrorLogsData();
+
+            if (dataArray != null && dataArray.length() > 0) {
+                uploadErrorLogs(dataArray);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void uploadOfflineRecords(JSONArray dataArray) {
         try {
@@ -1390,6 +1401,35 @@ public class PrintPreviewActivity extends Activity {
             }
         } catch (Exception e) {
             ErrorUtils.logErrors(context,e,"PrintPreviewActivity","saveDataToLocal",""+e.getMessage());
+        }
+    }
+    private void uploadErrorLogs(JSONArray dataArray) {
+        try {
+            if (Utils.isOnline(context)) {
+
+                JSONObject dataObject = new JSONObject();
+                dataObject.put("data", dataArray);
+
+                HttpService.accessWebServicesJSON(
+                        context, ApiUtils.SYNC_ERROR_SAVE, dataObject,
+                        (response, error, status) -> handleErrorAPIResponse(response, error, status));
+
+            } else {
+                Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            ErrorUtils.logErrors(context,e,"PrintPreviewActivity","saveDataToLocal",""+e.getMessage());
+        }
+    }
+
+    private void handleErrorAPIResponse(String response, VolleyError error, String status) {
+        if(response != null){
+            try {
+                Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                // TODO: Handle exception
+                ErrorUtils.logErrors(context,e,"PrintPreviewActivity","saveDataToLocal",""+e.getMessage());
+            }
         }
     }
 
