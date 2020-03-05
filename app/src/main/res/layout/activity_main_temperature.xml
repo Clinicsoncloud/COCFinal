@@ -320,11 +320,11 @@
 
         <Button
             android:id="@+id/btn_skip"
-            android:layout_width="700dp"
+            android:layout_width="650dp"
             android:layout_height="50dp"
             android:layout_below="@+id/checkBox"
             android:layout_gravity="center"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="100dp"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:text="Next"
