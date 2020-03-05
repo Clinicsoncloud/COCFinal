@@ -241,24 +241,40 @@ public class HeightActivity extends Activity {
     }
 
     private void initializeBluetooth() {
-        Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
 
-        if (bluetoothDevices.size() > 0) {
-            for (BluetoothDevice device : bluetoothDevices) {
-                if (device.getName().equals("HC-05")) {
-                    storeBluetoothInformation(device);
+        if (savedDeviceAlreadyExists()) {
 
-                    new Connect().execute(new String[]{device.getAddress()});
-                }
-            }
+            new Connect().execute(new String[]{getStoredDeviceAddress()});
+
         } else {
-            btnConnect.setClickable(true);
-            btnConnect.setText("Connect");
-            tv_ConnectedText.setText("Connect");
-            btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
-            Toast.makeText(context, "Cannot connect to bluetooth device", Toast.LENGTH_SHORT);
-            // TODO: Handle device not found
+
+            Set<BluetoothDevice> bluetoothDevices = bluetoothAdapter.getBondedDevices();
+            if (bluetoothDevices.size() > 0) {
+                for (BluetoothDevice device : bluetoothDevices) {
+
+                    if (device.getName().equals("HC-05")) {
+                        storeBluetoothInformation(device);
+
+                        new Connect().execute(new String[]{device.getAddress()});
+                    }
+                }
+            } else {
+                btnConnect.setClickable(true);
+                btnConnect.setText("Connect");
+                tv_ConnectedText.setText("Connect");
+                btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
+                Toast.makeText(context, "Cannot connect to bluetooth device", Toast.LENGTH_SHORT);
+                // TODO: Handle device not found
+            }
         }
+    }
+
+    private boolean savedDeviceAlreadyExists() {
+        return !sharedPreferenceBluetoothAddress.getString("hcbluetooth", "").equals("");
+    }
+
+    private String getStoredDeviceAddress() {
+        return sharedPreferenceBluetoothAddress.getString("hcbluetooth", "");
     }
 
     private void storeBluetoothInformation(BluetoothDevice device) {
