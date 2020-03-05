@@ -308,6 +308,7 @@ public class ThermometerScreen extends AppCompatActivity {
         btnConnect.setText("Connecting...");
 
         startActivityForResult(new Intent("android.bluetooth.adapter.action.REQUEST_ENABLE"), 3);
+
     }
 
     /**
@@ -363,15 +364,29 @@ public class ThermometerScreen extends AppCompatActivity {
      */
     private void handleTemperatureResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == -1) {
-            Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
 
-            if (devices != null && devices.size() > 0) {
+            Log.e("ThermoDeviceSaved_Log", ":" + savedDeviceAlreadyExists() + " :SavedThermoAddress: " + getStoredDeviceAddress());
 
-                storeBluetoothDevices(devices);
+            if (savedDeviceAlreadyExists()) {
+                new Connect().execute(new String[]{getStoredDeviceAddress()});
+            } else {
+                Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
+                if (devices != null && devices.size() > 0) {
 
-                Toast.makeText(this, strBluetoothTurnedOn, Toast.LENGTH_LONG).show();
+                    storeBluetoothDevices(devices);
+
+                    Toast.makeText(this, strBluetoothTurnedOn, Toast.LENGTH_LONG).show();
+                }
             }
         }
+    }
+
+    private boolean savedDeviceAlreadyExists() {
+        return !sharedPreferenceBluetoothAddress.getString("hcthermometer", "").equals("");
+    }
+
+    private String getStoredDeviceAddress() {
+        return sharedPreferenceBluetoothAddress.getString("hcthermometer", "");
     }
 
     /**
