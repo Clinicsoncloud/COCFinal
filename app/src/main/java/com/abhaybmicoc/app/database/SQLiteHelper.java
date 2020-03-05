@@ -17,7 +17,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
         db.execSQL(SQLiteQueries.QUERY_TBL_PARAMETERS);
         db.execSQL(SQLiteQueries.QUERY_TBL_PATIENTS);
-        db.execSQL(SQLiteQueries.query_TBL_ERROR_LOG);
+        db.execSQL(SQLiteQueries.QUERY_TBL_ERROR_LOG);
     }
 
     @Override

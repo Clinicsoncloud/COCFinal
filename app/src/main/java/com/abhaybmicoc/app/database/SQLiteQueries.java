@@ -104,7 +104,7 @@ public class SQLiteQueries {
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
 
-    public static final String query_TBL_ERROR_LOG = "create table IF NOT EXISTS "
+    public static final String QUERY_TBL_ERROR_LOG = "create table IF NOT EXISTS "
             + Constant.TableNames.ERROR_LOGS + "("
             + Constant.Fields.ID + " INTEGER primary key AUTOINCREMENT,"
             + Constant.Fields.FILE_NAME + " VARCHAR,"
