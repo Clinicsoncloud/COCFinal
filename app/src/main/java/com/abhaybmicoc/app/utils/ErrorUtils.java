@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -12,6 +13,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class ErrorUtils {
 
@@ -51,10 +54,18 @@ public class ErrorUtils {
         try {
             DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
 
+            SharedPreferences sharedPreferences = context.getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            SharedPreferences sharePreferenceActivator = context.getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+
+            String kiosk_id = sharePreferenceActivator.getString(Constant.Fields.KIOSK_ID,"");
+            String mobile_number = sharedPreferences.getString(Constant.Fields.MOBILE_NUMBER,"");
+
             ContentValues paramsContentValues = new ContentValues();
             paramsContentValues.put(Constant.Fields.FILE_NAME, fileName);
             paramsContentValues.put(Constant.Fields.METHOD_NAME, methodName);
             paramsContentValues.put(Constant.Fields.MESSAGE, message);
+            paramsContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
+            paramsContentValues.put(Constant.Fields.MOBILE_NUMBER, mobile_number);
 
             Log.e("paramsContentValues_Err", ":" + paramsContentValues);
 

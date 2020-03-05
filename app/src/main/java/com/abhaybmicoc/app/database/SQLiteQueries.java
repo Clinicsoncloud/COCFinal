@@ -109,7 +109,9 @@ public class SQLiteQueries {
             + Constant.Fields.ID + " INTEGER primary key AUTOINCREMENT,"
             + Constant.Fields.FILE_NAME + " VARCHAR,"
             + Constant.Fields.METHOD_NAME + " VARCHAR,"
-            + Constant.Fields.MESSAGE + " VARCHAR "+ ");";
+            + Constant.Fields.MESSAGE + " VARCHAR "
+            + Constant.Fields.KIOSK_ID + " VARCHAR "
+            + Constant.Fields.MOBILE_NUMBER + " VARCHAR "+ ");";
 
     public static final String QUERY_GET_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
             + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
