@@ -57,15 +57,12 @@ public class ErrorUtils {
             SharedPreferences sharedPreferences = context.getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             SharedPreferences sharePreferenceActivator = context.getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
 
-            String kiosk_id = sharePreferenceActivator.getString(Constant.Fields.KIOSK_ID,"");
-            String mobile_number = sharedPreferences.getString(Constant.Fields.MOBILE_NUMBER,"");
-
             ContentValues paramsContentValues = new ContentValues();
             paramsContentValues.put(Constant.Fields.FILE_NAME, fileName);
             paramsContentValues.put(Constant.Fields.METHOD_NAME, methodName);
             paramsContentValues.put(Constant.Fields.MESSAGE, message);
-            paramsContentValues.put(Constant.Fields.KIOSK_ID, kiosk_id);
-            paramsContentValues.put(Constant.Fields.MOBILE_NUMBER, mobile_number);
+            paramsContentValues.put(Constant.Fields.KIOSK_ID, sharePreferenceActivator.getString("pinLock",""));
+            paramsContentValues.put(Constant.Fields.MOBILE_NUMBER, sharedPreferences.getString(Constant.Fields.MOBILE_NUMBER,""));
 
             Log.e("paramsContentValues_Err", ":" + paramsContentValues);
 
