@@ -39,7 +39,7 @@ import java.util.UUID;
 public class HeightActivity extends Activity {
     // region Variables
 
-    private Context context;
+    private Context context = HeightActivity.this;
 
     private String str = "";
     private String message = "";
@@ -162,7 +162,7 @@ public class HeightActivity extends Activity {
     public void onDestroy() {
         super.onDestroy();
 
-        if(textToSpeechService != null)
+        if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
     }
 
@@ -225,7 +225,7 @@ public class HeightActivity extends Activity {
 
     private void initializeData() {
         btnClean.setText("Clean");
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
 
         etBluetoothLogs.setFocusable(false);
         etBluetoothLogs.setText(">:Bluetooth Terminal\n");
