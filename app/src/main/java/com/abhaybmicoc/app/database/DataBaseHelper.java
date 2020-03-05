@@ -93,7 +93,7 @@ public class DataBaseHelper {
 
                     jArray.put(json);
                 }
-
+                Log.e("GEtOfflineData_Log", ":" + jArray);
                 return jArray;
             } catch (JSONException e) {
                 e.printStackTrace();
