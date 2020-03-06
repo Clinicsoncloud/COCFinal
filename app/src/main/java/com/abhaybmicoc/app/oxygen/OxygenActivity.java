@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.LinearLayout;
 import android.bluetooth.BluetoothDevice;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 
 import com.abhaybmicoc.app.R;

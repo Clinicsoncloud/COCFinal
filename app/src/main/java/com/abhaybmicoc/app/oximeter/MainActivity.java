@@ -3,7 +3,6 @@ package com.abhaybmicoc.app.oximeter;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.os.Looper;
 import android.os.Message;
@@ -23,7 +22,7 @@ import android.speech.tts.TextToSpeech;
 import android.location.LocationManager;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ErrorUtils;

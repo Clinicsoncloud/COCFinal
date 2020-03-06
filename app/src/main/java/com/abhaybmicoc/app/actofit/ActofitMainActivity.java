@@ -1,7 +1,6 @@
 package com.abhaybmicoc.app.actofit;
 
 import android.os.Build;
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Toast;
 import android.app.Activity;
@@ -23,9 +22,9 @@ import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.bluetooth.BluetoothAdapter;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -63,7 +62,7 @@ public class ActofitMainActivity extends AppCompatActivity {
     private int NO_SAVED_DEVICE = 102;
     private int IMPEDANCE_MEASUREMENT_ERROR_FROM_SMARTSCALE = 100;
 
-    android.support.v7.app.ActionBar actionBar;
+    androidx.appcompat.app.ActionBar actionBar;
 
     String KEY_ERROR = "error";
     String KEY_MESSAGE = "message";

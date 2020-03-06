@@ -1,21 +1,17 @@
 package com.abhaybmicoc.app.screen;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 import android.widget.TextView;
-import android.support.v7.app.ActionBar;
+import androidx.appcompat.app.ActionBar;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.oximeter.MainActivity;
@@ -24,7 +20,6 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
-import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 
 import java.util.Locale;
 

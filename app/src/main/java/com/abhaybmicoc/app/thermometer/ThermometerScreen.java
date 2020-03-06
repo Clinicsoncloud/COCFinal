@@ -1,8 +1,6 @@
 package com.abhaybmicoc.app.thermometer;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.AsyncTask;
 import android.content.Intent;
@@ -14,7 +12,6 @@ import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 import android.widget.Button;
@@ -24,8 +21,8 @@ import android.widget.TextView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.speech.tts.TextToSpeech;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
@@ -40,12 +37,10 @@ import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.Locale;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 

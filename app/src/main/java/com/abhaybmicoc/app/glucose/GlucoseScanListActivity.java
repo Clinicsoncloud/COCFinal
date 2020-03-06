@@ -14,18 +14,17 @@ import android.content.Context;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.view.GestureDetector;
-import android.speech.tts.TextToSpeech;
 import android.content.pm.PackageManager;
 import android.content.SharedPreferences;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
@@ -37,7 +36,6 @@ import org.maniteja.com.synclib.helper.Util;
 import org.maniteja.com.synclib.helper.HelperC;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.ArrayList;
 
 public class GlucoseScanListActivity extends AppCompatActivity {

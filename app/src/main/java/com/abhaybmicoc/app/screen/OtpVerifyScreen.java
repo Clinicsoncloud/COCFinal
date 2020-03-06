@@ -1,13 +1,11 @@
 package com.abhaybmicoc.app.screen;
 
 import android.content.ContentValues;
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 import android.widget.EditText;
-import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.app.ProgressDialog;
@@ -15,33 +13,26 @@ import android.app.DatePickerDialog;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
-import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.abhaybmicoc.app.utils.Utils;
-import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Map;
-import java.util.Date;
 import java.util.Locale;
 import java.util.HashMap;
 import java.util.Calendar;

@@ -3,7 +3,7 @@ package com.abhaybmicoc.app.utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;

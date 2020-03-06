@@ -1,12 +1,11 @@
 package com.abhaybmicoc.app.services;
 
-import android.util.Log;
 import android.os.Build;
 import android.content.Context;
 import android.annotation.TargetApi;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.ErrorUtils;

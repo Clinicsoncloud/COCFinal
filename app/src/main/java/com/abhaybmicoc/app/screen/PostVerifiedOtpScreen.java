@@ -1,6 +1,5 @@
 package com.abhaybmicoc.app.screen;
 
-import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
 import android.content.Intent;
@@ -9,28 +8,21 @@ import android.widget.EditText;
 import android.app.ProgressDialog;
 import android.speech.tts.TextToSpeech;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.services.HttpService;
-import com.android.volley.Request;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 
-import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import java.util.Map;
-import java.util.Locale;
 import java.util.HashMap;
 
 import org.json.JSONObject;
-import org.json.JSONException;
 
 public class PostVerifiedOtpScreen extends AppCompatActivity {
 

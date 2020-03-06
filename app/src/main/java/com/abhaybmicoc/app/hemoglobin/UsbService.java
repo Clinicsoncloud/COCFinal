@@ -13,7 +13,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.usbserial.felhr.usbserial.SerialInputStream;

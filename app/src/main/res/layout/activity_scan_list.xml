@@ -88,7 +88,7 @@
             </LinearLayout>
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_results"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
             android:textSize="25sp"
             android:textStyle="bold" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="@dimen/space25"
             android:layout_height="wrap_content"
             android:visibility="gone" />

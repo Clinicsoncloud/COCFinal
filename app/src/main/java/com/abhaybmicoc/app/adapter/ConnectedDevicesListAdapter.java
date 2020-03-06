@@ -1,7 +1,7 @@
 package com.abhaybmicoc.app.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,6 @@ import com.abhaybmicoc.app.interfaces.RvClickListener;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 
 import org.json.JSONArray;
-
-import java.util.List;
 
 
 /**
