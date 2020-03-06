@@ -229,8 +229,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
 
         try {
-            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
-            updateLocalStatus(response);
+            if (status.equals("response")) {
+                updateLocalStatus(response);
+            } else {
+                Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             // TODO: Handle exception
             e.printStackTrace();
@@ -260,12 +263,14 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 } else {
                     parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
                 }
-
             }
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
+
+            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
+
 
             setOfflineDataStatus();
 

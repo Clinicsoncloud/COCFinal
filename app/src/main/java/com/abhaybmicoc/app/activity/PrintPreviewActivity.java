@@ -1392,8 +1392,11 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
         try {
-            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
-            updateLocalStatus(response);
+            if (status.equals("response")) {
+                updateLocalStatus(response);
+            } else {
+                Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             // TODO: Handle exception
             e.printStackTrace();
@@ -1434,6 +1437,8 @@ public class PrintPreviewActivity extends Activity {
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
             editor.commit();
+
+            Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 

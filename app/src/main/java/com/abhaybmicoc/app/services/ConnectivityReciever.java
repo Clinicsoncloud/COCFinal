@@ -81,7 +81,11 @@ public class ConnectivityReciever extends BroadcastReceiver {
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
         try {
-            updateLocalStatus(response);
+            if (status.equals("response")) {
+                updateLocalStatus(response);
+            } else {
+                Toast.makeText(mContext, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             // TODO: Handle exception
             e.printStackTrace();
@@ -91,7 +95,6 @@ public class ConnectivityReciever extends BroadcastReceiver {
     private void updateLocalStatus(String response) {
         try {
 
-            Toast.makeText(mContext, "Data Sync successfully", Toast.LENGTH_SHORT).show();
 
             JSONObject jsonObject = new JSONObject(response);
 
@@ -121,6 +124,8 @@ public class ConnectivityReciever extends BroadcastReceiver {
             editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
             editor.commit();
+
+            Toast.makeText(mContext, "Data Sync successfully", Toast.LENGTH_SHORT).show();
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
