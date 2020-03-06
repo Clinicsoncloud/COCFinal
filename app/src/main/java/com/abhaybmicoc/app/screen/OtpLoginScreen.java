@@ -84,7 +84,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     TextToSpeechService textToSpeechService;
 
-    private String kiosk_id;
+    private String kiosk_id = "", clinic_name = "";
     private String WELCOME_LOGIN_MESSAGE = "";
 
     final int MOBILE_NUMBER_MAX_LENGTH = 10; //max length of your text
@@ -112,6 +112,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     android.app.Dialog changeLanguageDilog;
 
     ArrayList<String> languagesList;
+
+    private TextView tvClinicName;
+    private TextView tvKioskID;
 
     // endregion
 
@@ -322,6 +325,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             sharedPreferencesPersonal.edit().clear().apply();
 
             kiosk_id = sharedPreferencesActivator.getString("pinLock", "");
+            clinic_name = "Welcome to " + sharedPreferencesActivator.getString("clinic_name", "");
+
+            tvClinicName.setText(clinic_name);
+            tvKioskID.setText(kiosk_id);
+
         } catch (Exception e) {
         }
 
@@ -369,6 +377,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         navigationView.setNavigationItemSelectedListener(this);
 
         View hView = navigationView.getHeaderView(0);
+
+
+        tvClinicName = hView.findViewById(R.id.tv_ClinicName);
+        tvKioskID = hView.findViewById(R.id.tv_KioskID);
+
+
     }
 
     @Override

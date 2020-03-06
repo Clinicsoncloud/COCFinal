@@ -4,6 +4,7 @@ public class ApiUtils {
     private static String PROTOCOL = "http://";
     private static String SERVER_URL = "45.252.190.29";
 
+    public static String KIOSK = PROTOCOL + SERVER_URL + "/api/v1/kiosk";
     public static String LOGIN_URL = PROTOCOL + SERVER_URL + "/api/v1/login";
     public static String PROFILE_URL = PROTOCOL + SERVER_URL + "/api/v1/profile";
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";
