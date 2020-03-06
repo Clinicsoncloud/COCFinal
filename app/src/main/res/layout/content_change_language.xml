@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.ChangeLanguageActivity"
+    tools:showIn="@layout/activity_change_language">
+
+
+    <ImageView
+        android:id="@+id/iv_Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin20"
+        android:src="@drawable/back_but12" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview_room1"
+        android:layout_width="400dp"
+        android:layout_height="200dp"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="#374752"
+        app:cardCornerRadius="20dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <!--<Spinner
+                android:id="@+id/spn_SelectLanguage"
+                android:layout_width="400dp"
+                android:layout_height="50dp"
+                android:layout_margin="@dimen/pad10"
+                android:background="@drawable/rectangle"
+                android:gravity="center"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorHeader"
+                android:textSize="25dp"
+                tools:ignore="RtlCompat" />-->
+
+
+            <Spinner
+                android:id="@+id/spn_SelectLanguage"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="@dimen/margin20" />
+
+            <Button
+                android:id="@+id/btn_ChangeLanguage"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin20"
+                android:layout_marginBottom="@dimen/margin20"
+                android:background="@drawable/greenbg"
+                android:gravity="center"
+                android:text="Change Language"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>
