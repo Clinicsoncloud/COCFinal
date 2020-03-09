@@ -73,6 +73,23 @@ public class DataBaseHelper {
         return id;
     }
 
+    public String getLastInsertedParameterID() {
+        Cursor cursor = null;
+
+        Log.e("lastInsertedParameter_Log", ":" + SQLiteQueries.QUERY_GET_LAST_INSERTED_PARAMETER_ID);
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_LAST_INSERTED_PARAMETER_ID, null);
+
+        String id = "";
+
+        if (cursor.moveToNext()) {
+            for (int i = 0; i < cursor.getColumnCount(); i++) {
+                id = cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i)));
+            }
+        }
+        Log.e("LastParam_Log", " : " + id);
+        return id;
+    }
+
     public JSONArray getOfflineData() {
 
         Cursor cursor = null;
@@ -94,6 +111,40 @@ public class DataBaseHelper {
                     jArray.put(json);
                 }
 
+                return jArray;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (jArray.length() > 0)
+            return jArray;
+
+        return null;
+    }
+
+    public JSONArray getFeedbackData() {
+
+        Cursor cursor = null;
+        JSONArray jArray = new JSONArray();
+
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_FEEDBACK_DATA, null);
+
+        JSONObject json = null;
+
+        if (cursor.getCount() != 0) {
+            try {
+                while (cursor.moveToNext()) {
+                    json = new JSONObject();
+
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        json.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i))));
+                    }
+
+                    jArray.put(json);
+                }
+
+                Log.e("jsonArrayFeedback", " : " + jArray);
                 return jArray;
             } catch (JSONException e) {
                 e.printStackTrace();

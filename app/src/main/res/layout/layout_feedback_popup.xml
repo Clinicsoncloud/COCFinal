@@ -2,16 +2,25 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/feedback_bg"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="15dp"
+        android:layout_margin="30dp"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feedback"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="35sp"/>
 
         <com.hsalf.smilerating.SmileRating
             android:id="@+id/smile_rating"
@@ -20,16 +29,19 @@
             app:layout_constraintLeft_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
             tools:ignore="MissingConstraints"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
+            app:showLine="false"
+            android:layout_margin="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_save_rating"
             app:layout_constraintTop_toBottomOf="@id/smile_rating"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="25dp"
+            android:background="@drawable/repeat"
+            android:textColor="@color/white"
             android:text="DONE" />
 
 

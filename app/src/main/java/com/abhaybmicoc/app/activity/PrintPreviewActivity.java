@@ -11,8 +11,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.Window;
 import android.os.AsyncTask;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.app.Activity;
 import android.widget.Button;
@@ -61,6 +67,8 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import com.hsalf.smilerating.BaseRating;
+import com.hsalf.smilerating.SmileRating;
 import com.prowesspride.api.Printer_GEN;
 import com.prowesspride.api.Setup;
 
@@ -134,6 +142,10 @@ public class PrintPreviewActivity extends Activity {
     @BindView(R.id.headerLL)
     LinearLayout headerLL;
 
+    private RelativeLayout layoutFeedbackPopup;
+    private Button saveRating;
+    private SmileRating smileRating;
+
     private SharedPreferences sharedPreferencesToken;
     private SharedPreferences sharedPreferencesSugar;
     private SharedPreferences sharedPreferencesActofit;
@@ -149,6 +161,9 @@ public class PrintPreviewActivity extends Activity {
     private int age;
     private int height;
     private int iRetVal;
+
+    private int feedbackRating;
+
     public static int iWidth;
     public static final int DEVICE_NOTCONNECTED = -100;
     private static final int PERMISSION_STORAGE_CODE = 1000;
@@ -213,9 +228,12 @@ public class PrintPreviewActivity extends Activity {
 
     DataBaseHelper dataBaseHelper;
 
+    private String parameter_id;
+
     private String PRINT_MSG = "";
     private String RECONNECT_MSG = "";
     private String RECEIPT_MSG = "";
+    private String lastInsertedParameterID = "";
 
     TextToSpeechService textToSpeechService;
 
@@ -315,14 +333,98 @@ public class PrintPreviewActivity extends Activity {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
             textToSpeechService.speakOut(RECEIPT_MSG);
 
+            showFeedbackPopup();
+
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
-
         });
 
         ivDownload.setOnClickListener(view -> downloadFile(fileName));
 
         btnReconnect.setOnClickListener(view -> autoConnectPrinter());
+    }
+
+    private void showFeedbackPopup() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.layout_feedback_popup, null);
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.setElevation(20);
+        }
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(false);
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        saveRating = popupView.findViewById(R.id.btn_save_rating);
+        smileRating = popupView.findViewById(R.id.smile_rating);
+
+        smileRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
+            @Override
+            public void onSmileySelected(int smiley, boolean reselected) {
+                smileSelectedEvent(smiley);
+            }
+        });
+
+        saveRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popupWindow.dismiss();
+                saveFeedBack(feedbackRating);
+            }
+        });
+
+        smileRating.setOnRatingSelectedListener(new SmileRating.OnRatingSelectedListener() {
+            @Override
+            public void onRatingSelected(int level, boolean reselected) {
+
+            }
+        });
+    }
+
+    private void smileSelectedEvent(int smiley) {
+        // reselected is false when user selects different smiley that previously selected one
+        // true when the same smiley is selected.
+        // Except if it first time, then the value will be false.
+        int level;
+        switch (smiley) {
+            case SmileRating.BAD:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Bad : " + feedbackRating);
+                break;
+            case SmileRating.GOOD:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Good : " + feedbackRating);
+                break;
+            case SmileRating.GREAT:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Great : " + feedbackRating);
+                break;
+            case SmileRating.OKAY:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Okay : " + feedbackRating);
+                break;
+            case SmileRating.TERRIBLE:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Terrible : " + feedbackRating);
+                break;
+        }
+    }
+
+    private void saveFeedBack(int level) {
+        ContentValues paramsContentValues = new ContentValues();
+        paramsContentValues.put(Constant.Fields.PARAMETER_ID, "" + lastInsertedParameterID);
+        paramsContentValues.put(Constant.Fields.MOBILE_NUMBER, "" + sharedPreferencesPersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
+        paramsContentValues.put(Constant.Fields.FEEDBACK_VALUE, "" + level);
+        paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+
+        dataBaseHelper.saveToLocalTable(Constant.TableNames.FEEDBACK, paramsContentValues, "");
     }
 
     private void initializeData() {
@@ -343,8 +445,6 @@ public class PrintPreviewActivity extends Activity {
         getPrintData();
         getResults();
         saveDataToLocal();
-//        postData();
-
     }
 
     private void connectToSavedPrinter() {
@@ -1353,6 +1453,10 @@ public class PrintPreviewActivity extends Activity {
 
             btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnHome.setEnabled(true);
+
+            lastInsertedParameterID = dataBaseHelper.getLastInsertedParameterID();
+
+            Log.e("Last_parameter_id", " : " + lastInsertedParameterID);
 
             getOfflineRecords();
 

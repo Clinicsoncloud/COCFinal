@@ -9,7 +9,7 @@ public class Constant {
 
     public static class DatabaseDetails {
         public static final String DATABASE_NAME = "clinics_on_cloud";
-        public static final int DATABASE_VERSION = 1;
+        public static final int DATABASE_VERSION = 2;
     }
 
     public static class Fields {
@@ -126,12 +126,16 @@ public class Constant {
 
         public static final String IS_UPLOADED = "is_uploaded";
         public static final String IS_COMPLETED = "is_completed";
+
+
+        public static final String FEEDBACK_VALUE = "feedback_value";
     }
 
     public static class TableNames {
 
         public static final String PARAMETERS = "parameters";
         public static final String PATIENTS = "patients";
+        public static final String FEEDBACK = "feedback";
     }
 
 }

@@ -136,6 +136,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         changeLanguageDilog = new android.app.Dialog(context);
         changeLanguageDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+
     }
 
     /**
@@ -305,6 +307,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
 
+        JSONArray jsonArray = dataBaseHelper.getFeedbackData();
+
         slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out_to_right);
 
         textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
@@ -352,6 +356,10 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         setupNavigationDrawer();
         setupEvents();
         initializeData();
+
+        String param_id = dataBaseHelper.getLastInsertedParameterID();
+
+        Log.e("lastparameter_id", " : " + param_id);
     }
 
     private void setupNavigationDrawer() {

@@ -103,6 +103,13 @@ public class SQLiteQueries {
             + Constant.Fields.STATUS + " VARCHAR,"
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
+    public static final String QUERY_FEEDBACK = "create table IF NOT EXISTS "
+            + Constant.TableNames.FEEDBACK + "("
+            + Constant.Fields.ID + " INTEGER primary key AUTOINCREMENT,"
+            + Constant.Fields.PARAMETER_ID + " VARCHAR,"
+            + Constant.Fields.MOBILE_NUMBER + " VARCHAR,"
+            + Constant.Fields.FEEDBACK_VALUE + " VARCHAR,"
+            + Constant.Fields.CREATED_AT + " VARCHAR" + ");";
 
     public static final String QUERY_GET_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
             + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
@@ -113,9 +120,19 @@ public class SQLiteQueries {
             + "Where parameters.is_completed = 'true'";
 
 
+    public static final String QUERY_GET_FEEDBACK_DATA = "SELECT * "
+            + "from `"
+            + Constant.TableNames.FEEDBACK + "`";
+
+
     public static String QUERY_GET_LAST_INSERTED_PATIENT_ID = "SELECT " + Constant.Fields.PATIENT_ID
             + " from " + Constant.TableNames.PATIENTS
             + " order by " + Constant.Fields.PATIENT_ID
+            + " desc limit 1";
+
+    public static String QUERY_GET_LAST_INSERTED_PARAMETER_ID = "SELECT " + Constant.Fields.PARAMETER_ID
+            + " from " + Constant.TableNames.PARAMETERS
+            + " order by " + Constant.Fields.PARAMETER_ID
             + " desc limit 1";
 
 }
