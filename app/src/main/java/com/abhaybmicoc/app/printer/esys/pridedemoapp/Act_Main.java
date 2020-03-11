@@ -307,6 +307,7 @@ public class Act_Main extends Activity {
 
                     Intent intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
                     intent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
+                    intent.putExtra("report_type", getIntent().getStringExtra("report_type"));
                     startActivity(intent);
                 }
             }
@@ -655,6 +656,8 @@ public class Act_Main extends Activity {
                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                     Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
                     printIntent.putExtra("is_PrinterConnected", "true");
+                    printIntent.putExtra("report_type", getIntent().getStringExtra("report_type"));
+
                     startActivityForResult(printIntent, EXIT_ON_RETURN);
                 } else {
 
@@ -678,6 +681,7 @@ public class Act_Main extends Activity {
                             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
                             Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
                             printIntent.putExtra("is_PrinterConnected", "true");
+                            printIntent.putExtra("report_type", getIntent().getStringExtra("report_type"));
 
                             startActivityForResult(printIntent, EXIT_ON_RETURN);
                         } else {
@@ -947,6 +951,7 @@ public class Act_Main extends Activity {
             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
             Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
             protocol8a.putExtra("is_PrinterConnected", "true");
+            protocol8a.putExtra("report_type", getIntent().getStringExtra("report_type"));
 
             startActivityForResult(protocol8a, EXIT_ON_RETURN);
 

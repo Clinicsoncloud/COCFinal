@@ -62,9 +62,14 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:theme">
         <activity
+            android:name=".activity.SelectTestOptionsActivity"
+            android:label="@string/title_activity_select_test_options"
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBar" />
+        <activity
             android:name=".activity.ChangeLanguageActivity"
             android:label="@string/title_activity_change_language"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"

@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.content.SharedPreferences;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.SettingsActivity;
+import com.abhaybmicoc.app.interfaces.RvClickListener;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
@@ -30,6 +32,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     // region Variables
 
     private Context context;
+    RvClickListener rvClickListener;
 
     private List<PrintData> listData = new ArrayList<>();
 
@@ -75,7 +78,19 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
         calculatePrintData(convertView, viewHolder, position);
 
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rvClickListener.rv_click(position, 0, "view_graph");
+            }
+        });
+
         return convertView;
+    }
+
+    public void setRvClickListener(RvClickListener rvClickListener) {
+        this.rvClickListener = rvClickListener;
     }
 
     // endregion
@@ -423,7 +438,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
-        }else {
+        } else {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
@@ -527,7 +542,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showHemoglobin(ViewHolder viewHolder){
+    private void showHemoglobin(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -570,7 +585,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBloodGlucose(ViewHolder viewHolder){
+    private void showBloodGlucose(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -581,8 +596,8 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         } else {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
-            viewHolder.valueTV.setText("" +printData.getCurr_value());
-            viewHolder.parameterTV.setText("" +printData.getParameter());
+            viewHolder.valueTV.setText("" + printData.getCurr_value());
+            viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (sharedPreferencesPersonalPreferencesGlucose.getString(Constant.Fields.GLUCOSE_TYPE, "").equals("Fasting (Before Meal)")) {
                 if (printData.getCurr_value() > 100) {
@@ -679,7 +694,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
         }
     }
 
-    private void showBodyOxygen(ViewHolder viewHolder){
+    private void showBodyOxygen(ViewHolder viewHolder) {
         if (printData.getCurr_value() == 0.0) {
             viewHolder.rangeTV.setText("");
             viewHolder.resultTV.setText("");
@@ -1162,7 +1177,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
 
         } else {
-            viewHolder.rangeTV.setText("<= "+ age + " yrs");
+            viewHolder.rangeTV.setText("<= " + age + " yrs");
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
@@ -1234,7 +1249,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
-            if(SharedPreferenceService.isMalePatient(context)){
+            if (SharedPreferenceService.isMalePatient(context)) {
                 /* Male skeleton muscle */
 
                 if (printData.getCurr_value() > 59) {
@@ -1274,25 +1289,25 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     // region Logical methods
 
-    private double getWeight(){
+    private double getWeight() {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT))
             return SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
         else
             return 0;
     }
 
-    private int getHeight(){
+    private int getHeight() {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT))
-            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT,Constant.Fields.HEIGHT);
+            return SharedPreferenceService.getInteger(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.HEIGHT);
         else
             return 0;
     }
 
     private int getAge() {
-        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)){
+        if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)) {
             String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
             return DateService.getAgeFromStringDate(dateOfBirth);
-        }else
+        } else
             return 0;
     }
 

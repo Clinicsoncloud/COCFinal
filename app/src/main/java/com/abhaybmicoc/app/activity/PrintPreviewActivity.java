@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.interfaces.RvClickListener;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
@@ -88,7 +90,7 @@ import butterknife.ButterKnife;
 
 import static com.abhaybmicoc.app.utils.ApiUtils.PREFERENCE_THERMOMETERDATA;
 
-public class PrintPreviewActivity extends Activity {
+public class PrintPreviewActivity extends Activity implements RvClickListener {
     // region Variables
 
     private Context context = PrintPreviewActivity.this;
@@ -219,6 +221,9 @@ public class PrintPreviewActivity extends Activity {
 
     TextToSpeechService textToSpeechService;
 
+    private String report_type = "";
+    private RecyclerView rvVisitedDates;
+
     // endregion
 
     // region Events
@@ -230,6 +235,7 @@ public class PrintPreviewActivity extends Activity {
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
+        getIntentData();
         setupUI();
         setupEvents();
         initializeData();
@@ -258,7 +264,6 @@ public class PrintPreviewActivity extends Activity {
     protected void onPause() {
         super.onPause();
     }
-
 
     // endregion
 
@@ -300,8 +305,13 @@ public class PrintPreviewActivity extends Activity {
 
     // region Initialization methods
 
+    private void getIntentData() {
+        report_type = getIntent().getStringExtra("report_type");
+    }
+
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
+        rvVisitedDates = findViewById(R.id.rv_VisitedDates);
 
         PRINT_MSG = getResources().getString(R.string.print_msg);
         RECONNECT_MSG = getResources().getString(R.string.print_reconnect_msg);
@@ -317,7 +327,6 @@ public class PrintPreviewActivity extends Activity {
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
-
         });
 
         ivDownload.setOnClickListener(view -> downloadFile(fileName));
@@ -334,17 +343,18 @@ public class PrintPreviewActivity extends Activity {
         textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
 
         connectToSavedPrinter();
-
         gettingDataObjects();
-        calculations();
-        setNewList();
-        getStandardRange();
         setStaticData();
-        getPrintData();
-        getResults();
-        saveDataToLocal();
-//        postData();
 
+        if (report_type.equals("")) {
+            calculations();
+            setNewList();
+            getStandardRange();
+            getPrintData();
+            getResults();
+            saveDataToLocal();
+//        postData();
+        }
     }
 
     private void connectToSavedPrinter() {
@@ -1188,11 +1198,31 @@ public class PrintPreviewActivity extends Activity {
             printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, ""))));
             printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""))));
 
-            lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
+
+            PrintPreviewAdapter printPreviewAdapter = new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew);
+            lV.setAdapter(printPreviewAdapter);
+            printPreviewAdapter.setRvClickListener(this);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void rv_click(int position, int value, String key) {
+
+        if (key.equals("view_graph")) {
+
+            showHistoryGraph();
+
+        }
+    }
+
+    private void showHistoryGraph() {
+
+
+    }
+
 
     private void saveDataToLocal() {
 
@@ -1706,6 +1736,7 @@ public class PrintPreviewActivity extends Activity {
             }
         }
     }
+
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
         /* displays the progress dialog untill background task is completed */

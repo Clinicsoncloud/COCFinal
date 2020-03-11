@@ -1,13 +1,19 @@
 package com.abhaybmicoc.app.screen;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 import android.widget.EditText;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.app.ProgressDialog;
@@ -17,11 +23,16 @@ import android.content.SharedPreferences;
 import android.bluetooth.BluetoothAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.SelectTestOptionsActivity;
+import com.abhaybmicoc.app.activity.SplashActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
+import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_Main;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
@@ -84,6 +95,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
     private BluetoothAdapter bluetoothAdapter;
     private String patient_id = "";
 
+    final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+    android.app.Dialog reportOptionDilog;
     // endregion
 
     // region Event methods
@@ -127,8 +140,10 @@ public class OtpVerifyScreen extends AppCompatActivity {
     // region Initialization methods
 
     public void setupUI() {
-        btnLogin = findViewById(R.id.btn_login);
+        reportOptionDilog = new android.app.Dialog(context);
+        reportOptionDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+        btnLogin = findViewById(R.id.btn_login);
         rdMale = findViewById(R.id.rd_male);
         rdFemale = findViewById(R.id.rd_female);
         rdGender = findViewById(selectedGenderId);
@@ -196,7 +211,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
     private void initializeData() {
 
-
         dataBaseHelper = new DataBaseHelper(context);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
@@ -208,7 +222,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             token = sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, "");
             etName.setText(sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
-            etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
+            etMobileNumber.setText(sharedPreferencesPersonal.getString(Constant.Fields.MOBILE_NUMBER, ""));
+//            etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
             etDateOfBirth.setText(sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
 
             if (sharedPreferencesPersonal.getString(Constant.Fields.EMAIL, "").equalsIgnoreCase("null"))
@@ -274,6 +289,10 @@ public class OtpVerifyScreen extends AppCompatActivity {
         String bearer = "Bearer ".concat(token);
         headersParams.put("Authorization", bearer);
 
+
+        Log.e("requestBodyParams_Logs", ":" + requestBodyParams);
+        Log.e("headersParams_Logs", ":" + headersParams);
+
         HttpService.accessWebServices(
                 context,
                 ApiUtils.PROFILE_URL,
@@ -283,17 +302,24 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("response_Logs", ":" + response);
         if (status.equals("response")) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
 
                 writeToPersonalSharedPreference(jsonObject);
 
-                Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
-                startActivity(objIntent);
-                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-                finish();
+                if (!sharedPreferencesPersonal.getString(Constant.Fields.NAME, "").equals("")) {
 
+                    startActivity(new Intent(context, SelectTestOptionsActivity.class));
+//                    showReportOptionsPopUp();
+                } else {
+                    Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                    startActivity(objIntent);
+                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+                    finish();
+                }
             } catch (Exception e) {
                 // TODO: Handle exception
             }
@@ -332,11 +358,62 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             writeToPersonalSharedPreference(resObject);
 
-
         } catch (Exception e) {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    private void showReportOptionsPopUp() {
+        reportOptionDilog.setContentView(R.layout.report_options_dilog);
+        layoutParams.copyFrom(reportOptionDilog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        reportOptionDilog.getWindow().setLayout(layoutParams.width, layoutParams.height);
+        reportOptionDilog.setCanceledOnTouchOutside(false);
+
+
+        final RadioGroup rgSelectTestOption = reportOptionDilog.findViewById(R.id.rg_SelectTestOption);
+        final RadioButton rbPatienttest = reportOptionDilog.findViewById(R.id.rb_PatientTest);
+        final RadioButton rbPaitentReport = reportOptionDilog.findViewById(R.id.rb_PaitentReport);
+        final ImageView ic_CloseDilog = reportOptionDilog.findViewById(R.id.ic_CloseDilog);
+        final Button btn_Proceed = reportOptionDilog.findViewById(R.id.btn_Proceed);
+
+        try {
+
+            btn_Proceed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (rbPaitentReport.isChecked()) {
+                        Intent intent = new Intent(context, Act_Main.class);
+                        intent.putExtra("is_PrinterConnected", "");
+                        intent.putExtra("report_type", "view_only_report");
+                        startActivity(intent);
+
+                    } else if (rbPatienttest.isChecked()) {
+                        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                        startActivity(objIntent);
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+                        finish();
+
+                    }
+
+                }
+            });
+
+
+            ic_CloseDilog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    reportOptionDilog.dismiss();
+                }
+            });
+
+
+        } catch (Exception e) {
+        }
+        reportOptionDilog.show();
+        reportOptionDilog.getWindow().setAttributes(layoutParams);
+    }
 
     // region Logical methods
 

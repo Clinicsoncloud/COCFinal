@@ -653,5 +653,6 @@
         <item>Marathi</item>
     </string-array>
     <string name="title_activity_change_language">ChangeLanguageActivity</string>
+    <string name="title_activity_select_test_options">SelectTestOptionsActivity</string>
 
 </resources>
