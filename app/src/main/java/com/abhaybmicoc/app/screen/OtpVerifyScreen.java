@@ -182,7 +182,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
                     else
                         Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 

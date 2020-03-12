@@ -1362,7 +1362,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void getOfflineRecords() {
         try {
-            JSONArray dataArray = dataBaseHelper.getOfflineData();
+            JSONArray dataArray = dataBaseHelper.getLastOfflineData(sharedPreferencesPersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);

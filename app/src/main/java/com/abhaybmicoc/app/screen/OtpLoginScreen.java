@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -21,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -31,12 +29,9 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +39,12 @@ import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.ChangeLanguageActivity;
 import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.services.DateService;
+import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.VolleyError;
 
@@ -58,7 +54,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class OtpLoginScreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -68,7 +63,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     // region Variables
 
-
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
@@ -76,6 +70,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private int selectedId;
 
     private ProgressDialog progressDialog;
+    private boolean isProgressDilogVisible = false;
 
     SharedPreferences sharedPreferencesPersonal;
     SharedPreferences sharedPreferencesOffline;
@@ -107,6 +102,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private NavigationView navigationView;
     private String patient_id = "";
 
+    ImageView iv_toolbarAlert;
+    TextView tv_ToolbarOfflineCount;
+
+//    private TextView tv_offlineCount;
+//    private ImageView ivAlert;
+
 
     final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
     android.app.Dialog changeLanguageDilog;
@@ -129,11 +130,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
 
+
         fabMenuOptions = findViewById(R.id.fab_menuOptions);
         cvOfflineDataStatus = findViewById(R.id.cv_OfflineDataStatus);
         btnSynch = findViewById(R.id.btn_Synch);
         tvNoOfRecords = findViewById(R.id.tv_no_of_records);
         tvNoOfUploadedRecords = findViewById(R.id.tv_no_of_uploaded_records);
+
+//        tv_offlineCount = findViewById(R.id.tv_offlineCount);
+//        ivAlert = findViewById(R.id.iv_alert);
 
         WELCOME_LOGIN_MESSAGE = getResources().getString(R.string.mobile_no_msg);
 
@@ -167,6 +172,10 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         btnLogin.setOnClickListener(v -> doLogin());
 
         fabMenuOptions.setOnClickListener((v -> showOfflineDataStatus()));
+
+        iv_toolbarAlert.setOnClickListener(view -> showOfflineDataStatus());
+        tv_ToolbarOfflineCount.setOnClickListener(view -> showOfflineDataStatus());
+
         btnSynch.setOnClickListener(v -> getOfflineRecords());
     }
 
@@ -179,7 +188,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void setOfflineDataStatus() {
-        JSONArray dataArray = dataBaseHelper.getOfflineData();
+        JSONArray dataArray = dataBaseHelper.getAllOfflineData();
         if (dataArray != null && dataArray.length() > 0) {
             tvNoOfRecords.setText(String.valueOf(dataArray.length()));
             btnSynch.setVisibility(View.VISIBLE);
@@ -203,6 +212,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             if (dataArray != null && dataArray.length() > 0) {
                 uploadOfflineRecords(dataArray);
             } else {
+
+                if (progressDialog.isShowing() && isProgressDilogVisible) {
+                    isProgressDilogVisible = false;
+                    progressDialog.dismiss();
+                }
+
                 setOfflineDataStatus();
             }
         } catch (Exception e) {
@@ -213,10 +228,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void uploadOfflineRecords(JSONArray dataArray) {
         try {
             if (Utils.isOnline(context)) {
+
+                if (!progressDialog.isShowing() && !isProgressDilogVisible) {
+                    isProgressDilogVisible = true;
+                    progressDialog.show();
+                }
+
                 JSONObject dataObject = new JSONObject();
                 dataObject.put("data", dataArray);
 
-                HttpService.accessWebServicesJSON(
+                HttpService.accessWebServicesJSONNoDialog(
                         context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                         (response, error, status) -> handleOfflineAPIResponse(response, error, status));
             } else {
@@ -232,6 +253,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             if (status.equals("response")) {
                 updateLocalStatus(response);
             } else {
+
+                if (progressDialog.isShowing() && isProgressDilogVisible) {
+                    isProgressDilogVisible = false;
+                    progressDialog.dismiss();
+                }
                 Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
@@ -271,17 +297,24 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
             Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
 
-
+            checkOfflineCount();
+            getOfflineRecords();
             setOfflineDataStatus();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
+
+        checkOfflineCount();
+
+        progressDialog = Tools.progressDialog(context);
+        progressDialog.setMessage("Loading");
+        progressDialog.setCancelable(false);
+        progressDialog.dismiss();
 
         slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out_to_right);
 
@@ -291,7 +324,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         bluetoothAdapter.enable();
 
         try {
-
             sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
             sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
@@ -322,6 +354,20 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         clearDatabase();
     }
 
+    private void checkOfflineCount() {
+
+        JSONArray dataArray = dataBaseHelper.getAllOfflineData();
+
+        if (dataArray != null && dataArray.length() > 0) {
+            tv_ToolbarOfflineCount.setVisibility(View.VISIBLE);
+            tv_ToolbarOfflineCount.setText(String.valueOf(dataArray.length()));
+        } else {
+            tv_ToolbarOfflineCount.setVisibility(View.GONE);
+            tv_ToolbarOfflineCount.setText("0");
+        }
+
+    }
+
     // endregion
 
     // region Events
@@ -332,15 +378,20 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         setupUI();
         setupNavigationDrawer();
-        setupEvents();
         initializeData();
+        setupEvents();
     }
 
     private void setupNavigationDrawer() {
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        iv_toolbarAlert = (ImageView) toolbar.findViewById(R.id.iv_toolbarAlert);
+        tv_ToolbarOfflineCount = (TextView) toolbar.findViewById(R.id.tv_ToolbarOfflineCount);
+
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -431,8 +482,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             } else {
                 //TODO:  Handle Error Message
             }
-
-
         } catch (Exception e) {
         }
     }

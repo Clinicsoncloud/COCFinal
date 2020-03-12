@@ -73,10 +73,46 @@ public class DataBaseHelper {
         return id;
     }
 
+    public JSONArray getLastOfflineData(String mobile) {
+
+        Cursor cursor = null;
+        JSONArray jArray = new JSONArray();
+
+        Log.e("LastOfflineData_Query", "  :  " + SQLiteQueries.QUERY_GET_LAST_OFFLINE_DATA);
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_LAST_OFFLINE_DATA, null);
+
+        JSONObject json = null;
+
+        if (cursor.getCount() != 0) {
+            try {
+                while (cursor.moveToNext()) {
+                    json = new JSONObject();
+
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        json.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i))));
+                    }
+
+                    jArray.put(json);
+                }
+                Log.e("GetLastOfflineData_Log", ":" + jArray);
+                return jArray;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (jArray.length() > 0)
+            return jArray;
+
+        return null;
+    }
+
     public JSONArray getOfflineData() {
 
         Cursor cursor = null;
         JSONArray jArray = new JSONArray();
+
+        Log.e("OfflineData_Query", "  :  " + SQLiteQueries.QUERY_GET_OFFLINE_DATA);
 
         cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_OFFLINE_DATA, null);
 
@@ -93,7 +129,7 @@ public class DataBaseHelper {
 
                     jArray.put(json);
                 }
-                Log.e("GEtOfflineData_Log", ":" + jArray);
+                Log.e("GetOfflineData_Log", ":" + jArray);
                 return jArray;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -105,6 +141,42 @@ public class DataBaseHelper {
 
         return null;
     }
+
+    public JSONArray getAllOfflineData() {
+
+        Cursor cursor = null;
+        JSONArray jArray = new JSONArray();
+
+        Log.e("AllOfflineData_Query", "  :  " + SQLiteQueries.QUERY_GET_ALL_OFFLINE_DATA);
+
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_ALL_OFFLINE_DATA, null);
+
+        JSONObject json = null;
+
+        if (cursor.getCount() != 0) {
+            try {
+                while (cursor.moveToNext()) {
+                    json = new JSONObject();
+
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        json.put(cursor.getColumnName(i), cursor.getString(cursor.getColumnIndex(cursor.getColumnName(i))));
+                    }
+
+                    jArray.put(json);
+                }
+                Log.e("GetAllOfflineData_Log", ":" + jArray);
+                return jArray;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (jArray.length() > 0)
+            return jArray;
+
+        return null;
+    }
+
 
     public void deleteTable_data(String tbl_name, String key, String ids) {
 

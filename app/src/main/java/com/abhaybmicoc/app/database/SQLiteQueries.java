@@ -110,7 +110,26 @@ public class SQLiteQueries {
             + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
             + Constant.TableNames.PARAMETERS + "` as parameters "
             + "ON patients.patient_id = parameters.patient_id "
+            + "Where parameters.is_completed = 'true'"
+            + " order by parameters.parameter_id ASC limit 10";
+
+    public static final String QUERY_GET_ALL_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
+            + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
+            + "parameters.* from `"
+            + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
+            + Constant.TableNames.PARAMETERS + "` as parameters "
+            + "ON patients.patient_id = parameters.patient_id "
             + "Where parameters.is_completed = 'true'";
+
+
+    public static final String QUERY_GET_LAST_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
+            + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
+            + "parameters.* from `"
+            + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
+            + Constant.TableNames.PARAMETERS + "` as parameters "
+            + "ON patients.patient_id = parameters.patient_id "
+            + "Where parameters.is_completed = 'true'"
+            + " order by parameters.parameter_id DESC limit 1";
 
 
     public static String QUERY_GET_LAST_INSERTED_PATIENT_ID = "SELECT " + Constant.Fields.PATIENT_ID

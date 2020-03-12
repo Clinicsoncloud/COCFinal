@@ -29,7 +29,38 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="" />
+                app:title="">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/iv_toolbarAlert"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginRight="20dp"
+                        android:src="@drawable/bell_icon"
+                        android:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/tv_ToolbarOfflineCount"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_gravity="right|end|top"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="14dp"
+                        android:background="@drawable/badge_background"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@android:color/white"
+                        android:textSize="10sp" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
 
 
@@ -64,7 +95,6 @@
                 android:textColor="@color/white"
                 android:textColorHint="@color/white"
                 android:textSize="25sp" />
-
 
             <Button
                 android:id="@+id/btn_login"
