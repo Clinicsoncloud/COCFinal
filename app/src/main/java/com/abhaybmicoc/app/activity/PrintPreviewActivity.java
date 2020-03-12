@@ -247,6 +247,8 @@ public class PrintPreviewActivity extends Activity {
 
         if (mBT.isEnabled())
             mBT.disable();
+
+
     }
 
     @Override
@@ -299,6 +301,11 @@ public class PrintPreviewActivity extends Activity {
     }
 
     // region Initialization methods
+
+    private void init(String msg) {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), msg);
+    }
 
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
