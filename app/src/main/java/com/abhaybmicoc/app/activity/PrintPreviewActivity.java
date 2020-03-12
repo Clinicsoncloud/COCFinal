@@ -340,8 +340,6 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        setupTextToSpeech();
-
         connectToSavedPrinter();
 
         gettingDataObjects();
