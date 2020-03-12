@@ -230,6 +230,7 @@ public class PrintPreviewActivity extends Activity {
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
+        init("");
         setupUI();
         setupEvents();
         initializeData();
@@ -248,7 +249,8 @@ public class PrintPreviewActivity extends Activity {
         if (mBT.isEnabled())
             mBT.disable();
 
-
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -320,8 +322,7 @@ public class PrintPreviewActivity extends Activity {
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-            if (Utils.isOnline(context))
-                textToSpeechService.speakOut(RECEIPT_MSG);
+            init(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
@@ -356,8 +357,7 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void setupTextToSpeech() {
-        if (Utils.isOnline(context))
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
+        init(PRINT_MSG);
     }
 
     private void connectToSavedPrinter() {
@@ -995,8 +995,7 @@ public class PrintPreviewActivity extends Activity {
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            if (Utils.isOnline(context))
-                textToSpeechService.speakOut(PRINT_MSG);
+            init(PRINT_MSG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2077,15 +2076,13 @@ public class PrintPreviewActivity extends Activity {
 
                 printerActivation();
             } else {
-                if (Utils.isOnline(context))
-                    textToSpeechService.speakOut(RECONNECT_MSG);
                 showReconnectPopup();
             }
         }
     }
 
     private void showReconnectPopup() {
-
+        init(RECONNECT_MSG);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         alertDialogBuilder.setTitle("Communication Lost!");
@@ -2107,8 +2104,6 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
-        if (Utils.isOnline(context))
-            textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }
