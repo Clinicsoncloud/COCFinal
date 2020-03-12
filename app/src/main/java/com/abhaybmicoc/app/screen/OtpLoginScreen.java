@@ -396,10 +396,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
-                savePatient();
-
+//                savePatient();
                 if (Utils.isOnline(context)) {
                     GenerateOTP();
+                } else {
+                    Toast.makeText(context, "No Internet connection, Please Try again", Toast.LENGTH_SHORT).show();
+
                 }
             }
         }

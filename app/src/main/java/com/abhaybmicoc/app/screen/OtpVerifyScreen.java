@@ -173,16 +173,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
             } else if (rdGenderGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
-
-                updatePatientInfo();
+//                updatePatientInfo();
 
                 if (Utils.isOnline(context)) {
                     if (strConnectivity.equals("online"))
                         postData();
                     else
-                        Toast.makeText(context, "", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "No Internet connection, Please Try again", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 

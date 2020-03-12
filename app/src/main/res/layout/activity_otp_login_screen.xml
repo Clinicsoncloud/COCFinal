@@ -16,7 +16,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bgapp">
 
-
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"

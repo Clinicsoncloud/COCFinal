@@ -342,8 +342,8 @@ public class PrintPreviewActivity extends Activity {
         setStaticData();
         getPrintData();
         getResults();
-        saveDataToLocal();
-//        postData();
+//        saveDataToLocal();
+        postData();
 
     }
 
@@ -1606,6 +1606,8 @@ public class PrintPreviewActivity extends Activity {
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
+            Log.e("Post_requestBodyParams", ":" + requestBodyParams);
+
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
                     requestBodyParams,
@@ -1620,6 +1622,12 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+
+
+        Log.e("response_PostLog", ":" + response);
+        Log.e("error_PostLog", ":" + error);
+        Log.e("status_postLog", ":" + status);
+
         if (status.equals("response")) {
             try {
                 readFileName(response);

@@ -60,14 +60,20 @@ public class HttpService {
                 return headerParam;
             }
         };
+
         stringRequest.setRetryPolicy(new RetryPolicy() {
             @Override
             public int getCurrentTimeout() {
+
+                Log.e("getCurrentTimeout", "" + "5000");
+
                 return 50000;
             }
 
             @Override
             public int getCurrentRetryCount() {
+                Log.e("getCurrentRetryCount", "" + "5000");
+
                 return 50000;
             }
 

@@ -5,7 +5,8 @@
         <item
             android:id="@+id/nav_offline_sync"
             android:icon="@drawable/sync_contacts"
-            android:title="Offline Data Status" />
+            android:title="Offline Data Status"
+            android:visible="false" />
 
         <item
             android:id="@+id/nav_setting"
