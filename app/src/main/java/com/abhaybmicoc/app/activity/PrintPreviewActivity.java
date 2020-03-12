@@ -333,8 +333,6 @@ public class PrintPreviewActivity extends Activity {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
             textToSpeechService.speakOut(RECEIPT_MSG);
 
-            showFeedbackPopup();
-
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
         });
@@ -1940,6 +1938,8 @@ public class PrintPreviewActivity extends Activity {
 
         newIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         newIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        showFeedbackPopup();
 
         startActivity(newIntent);
         finish();
