@@ -34,6 +34,7 @@ import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.utils.Utils;
 
 import java.util.Date;
 import java.util.Locale;
@@ -277,10 +278,10 @@ public class ActofitMainActivity extends AppCompatActivity {
      *
      */
     private void initializeData() {
+        setupTextToSpeech();
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
 
             tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
@@ -293,6 +294,12 @@ public class ActofitMainActivity extends AppCompatActivity {
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
 
         enableBluetooth();
+    }
+
+    private void setupTextToSpeech() {
+        if(Utils.isOnline(context)){
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

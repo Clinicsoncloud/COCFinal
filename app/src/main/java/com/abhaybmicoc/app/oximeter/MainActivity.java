@@ -26,6 +26,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.support.annotation.RequiresApi;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.utils.Utils;
 import com.lidroid.xutils.ViewUtils;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -303,7 +304,7 @@ public class MainActivity extends Activity {
 
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), OXIMETER_MSG);
+        setupTextToSpeech();
 
         tvName.setText("Name : " + shared.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + shared.getString(Constant.Fields.GENDER, ""));
@@ -312,6 +313,11 @@ public class MainActivity extends Activity {
 
         bindDevice();
 
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), OXIMETER_MSG);
     }
 
     // endregion

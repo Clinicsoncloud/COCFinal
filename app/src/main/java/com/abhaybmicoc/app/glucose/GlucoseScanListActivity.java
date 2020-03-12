@@ -32,6 +32,7 @@ import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.glucose.adapters.ScanList;
 import com.abhaybmicoc.app.glucose.models.ResultsModel;
 import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.utils.Utils;
 
 import org.maniteja.com.synclib.helper.Util;
 import org.maniteja.com.synclib.helper.HelperC;
@@ -254,11 +255,19 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         deviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         autoConnectFlag = util.readboolean(HelperC.key_autoconnectflag, false);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_MSG);
+        setupTextToSpeech();
 
         sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
 
         connectOrShowScanDevice();
+    }
+
+    /**
+     *
+     */
+    private void setupTextToSpeech() {
+        if(Utils.isOnline(getApplicationContext()))
+        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_MSG);
     }
 
     private void connectOrShowScanDevice() {

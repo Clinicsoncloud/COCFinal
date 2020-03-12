@@ -313,7 +313,8 @@ public class PrintPreviewActivity extends Activity {
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-            textToSpeechService.speakOut(RECEIPT_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
@@ -331,7 +332,7 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
+        setupTextToSpeech();
 
         connectToSavedPrinter();
 
@@ -345,6 +346,11 @@ public class PrintPreviewActivity extends Activity {
         saveDataToLocal();
 //        postData();
 
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
     }
 
     private void connectToSavedPrinter() {
@@ -982,7 +988,8 @@ public class PrintPreviewActivity extends Activity {
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            textToSpeechService.speakOut(PRINT_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(PRINT_MSG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2063,7 +2070,8 @@ public class PrintPreviewActivity extends Activity {
 
                 printerActivation();
             } else {
-                textToSpeechService.speakOut(RECONNECT_MSG);
+                if (Utils.isOnline(context))
+                    textToSpeechService.speakOut(RECONNECT_MSG);
                 showReconnectPopup();
             }
         }
@@ -2092,7 +2100,8 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
-        textToSpeechService.speakOut(RECONNECT_MSG);
+        if (Utils.isOnline(context))
+            textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }

@@ -47,6 +47,7 @@ import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.utils.Utils;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator,View.OnClickListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, View.OnClickListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -146,13 +147,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
     private BluetoothAdapter bluetoothAdapter;
 
-//    private String GLUCOSE_MSG = "Please click on start Test";
+    //    private String GLUCOSE_MSG = "Please click on start Test";
     private String GLUCOSE_MSG = "";
-//    private String INSERT_STRIP_MSG = "Please insert the strip";
+    //    private String INSERT_STRIP_MSG = "Please insert the strip";
     private String INSERT_STRIP_MSG = "";
-//    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    //    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
     private String INSERT_NEW_STRIP_MSG = "";
-//    private String ADD_BLOOD_MSG = "Please add blood";
+    //    private String ADD_BLOOD_MSG = "Please add blood";
     private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
@@ -235,7 +236,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if (text.equals("go")) {
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),"Click on start Test");
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "Click on start Test");
         }
 
         //already existed the return statement of the boolean method
@@ -258,7 +259,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(INSERT_STRIP_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(INSERT_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -268,7 +270,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(ADD_BLOOD_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(ADD_BLOOD_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
@@ -279,7 +282,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(INSERT_NEW_STRIP_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(INSERT_NEW_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -588,8 +592,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
      *
      */
     private void initializeData() {
-
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
+        setupTextToSpeech();
 
         util = new Util(this, this);
 
@@ -608,6 +611,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         }
 
         connectDevice();
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
     }
 
     private void connectDevice() {

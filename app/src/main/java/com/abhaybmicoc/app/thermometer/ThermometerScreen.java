@@ -37,6 +37,7 @@ import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
+import com.abhaybmicoc.app.utils.Utils;
 
 import java.util.Set;
 import java.util.UUID;
@@ -239,9 +240,7 @@ public class ThermometerScreen extends AppCompatActivity {
     }
 
     private void initializeData() {
-
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
-
+        setupTextToSpeech();
         sharePreferenceThermometer = getSharedPreferences(PREFERENCE_THERMOMETERDATA, MODE_PRIVATE);
 
         strConnect = (String) getText(R.string.connect);
@@ -259,6 +258,11 @@ public class ThermometerScreen extends AppCompatActivity {
 
 
         }
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
     }
 
     // endregion
@@ -279,7 +283,8 @@ public class ThermometerScreen extends AppCompatActivity {
             finish();
         } else {
             Toast.makeText(ThermometerScreen.this, "Enter Manual temperature", Toast.LENGTH_SHORT).show();
-            textToSpeechService.speakOut(MANUAL_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(MANUAL_MSG);
         }
     }
 
@@ -477,7 +482,8 @@ public class ThermometerScreen extends AppCompatActivity {
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
 
                 //success msg
-                textToSpeechService.speakOut(SUCCESS_MSG);
+                if (Utils.isOnline(context))
+                    textToSpeechService.speakOut(SUCCESS_MSG);
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
@@ -491,7 +497,8 @@ public class ThermometerScreen extends AppCompatActivity {
                 Toast.makeText(ThermometerScreen.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
                 //failure msg
-                textToSpeechService.speakOut(FAILURE_MSG);
+                if (Utils.isOnline(context))
+                    textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));

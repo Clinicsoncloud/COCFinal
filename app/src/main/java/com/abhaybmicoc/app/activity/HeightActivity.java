@@ -27,6 +27,7 @@ import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.ErrorUtils;
+import com.abhaybmicoc.app.utils.Utils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -225,7 +226,8 @@ public class HeightActivity extends Activity {
 
     private void initializeData() {
         btnClean.setText("Clean");
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+
+        setupTextToSpeech();
 
         etBluetoothLogs.setFocusable(false);
         etBluetoothLogs.setText(">:Bluetooth Terminal\n");
@@ -238,6 +240,12 @@ public class HeightActivity extends Activity {
         tvMobileNumber.setText("Phone : " + sharedPreferencePersonalData.getString(Constant.Fields.MOBILE_NUMBER, ""));
 
         turnOnBluetooth();
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context)) {
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        }
     }
 
     private void initializeBluetooth() {
@@ -338,8 +346,8 @@ public class HeightActivity extends Activity {
     private void gotoNext() {
         if (etManualHeight.getText().toString().equals("")) {
             Toast.makeText(getApplicationContext(), "Enter Manual Height", Toast.LENGTH_SHORT).show();
-//            textToSpeechService = new TextToSpeechService(getApplicationContext(), MANUAL_MSG);
-            textToSpeechService.speakOut(MANUAL_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(MANUAL_MSG);
         } else {
             Intent objIntent = new Intent(getApplicationContext(), ActofitMainActivity.class);
 
@@ -494,13 +502,15 @@ public class HeightActivity extends Activity {
                 tv_ConnectedText.setText("Connected");
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.greenback));
 
-                textToSpeechService.speakOut(SUCCESS_MSG);
+                if (Utils.isOnline(context))
+                    textToSpeechService.speakOut(SUCCESS_MSG);
 
                 new Receiver().execute(new String[]{strEnabled});
             } else {
                 Toast.makeText(HeightActivity.this, "Unable to connect device, try again.", Toast.LENGTH_SHORT).show();
 
-                textToSpeechService.speakOut(FAILURE_MSG);
+                if (Utils.isOnline(context))
+                    textToSpeechService.speakOut(FAILURE_MSG);
 
                 btnConnect.setClickable(true);
                 btnConnect.setBackground(getResources().getDrawable(R.drawable.repeat));
