@@ -125,6 +125,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
      */
     private void setupUI() {
         setContentView(R.layout.activity_otp_login_screen);
+//        setContentView(R.layout.layout_mobile_number_screen);
 
         btnLogin = findViewById(R.id.btn_login);
         etMobileNumber = findViewById(R.id.et_mobile_number);
