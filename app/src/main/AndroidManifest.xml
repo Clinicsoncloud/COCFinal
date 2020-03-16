@@ -61,10 +61,12 @@
         android:theme="@android:style/Theme.NoTitleBar"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:icon,android:theme">
+        <activity android:name=".activity.VisionActivity"
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".activity.ChangeLanguageActivity"
             android:label="@string/title_activity_change_language"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"

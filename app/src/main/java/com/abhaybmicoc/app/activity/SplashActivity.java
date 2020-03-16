@@ -67,7 +67,7 @@ public class SplashActivity extends Activity {
 
         splashHandler = new Handler();
         splashHandler.postDelayed(() -> {
-            final Intent mainIntent = new Intent(context, OtpLoginScreen.class);
+            final Intent mainIntent = new Intent(context, VisionActivity.class);
             startActivity(mainIntent);
             finish();
         }, 2000);
