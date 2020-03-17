@@ -8,26 +8,56 @@
     android:background="@color/white"
     tools:context=".fragments.VisionFourFragment">
     <TextView
+        android:id="@+id/tv_left_vision_last"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/left_vision"
         android:textColor="@color/black"
-        android:textSize="35sp" />
+        android:textSize="25sp" />
+
+    <RadioGroup
+        android:id="@+id/rg_left_vision_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/tv_left_vision_last">
+
+        <RadioButton
+            android:id="@+id/rb_left_vision_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_left_vision_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_left_vision_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="140dp"/>
+
+    </RadioGroup>
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="70dp"
+        android:layout_marginLeft="70dp"
         android:orientation="vertical">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="70dp"
-            android:layout_marginLeft="70dp"
+
             android:orientation="horizontal"
             android:weightSum="5">
 
@@ -259,14 +289,42 @@
         </LinearLayout>
     </LinearLayout>
     <TextView
+        android:id="@+id/tv_right_vision_last"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
         android:text="@string/right_vision"
         android:textColor="@color/black"
-        android:textSize="35sp" />
+        android:textSize="25sp" />
+    <RadioGroup
+        android:id="@+id/rg_right_vision_last"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/tv_right_vision_last">
 
+        <RadioButton
+            android:id="@+id/rb_right_vision_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_right_vision_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_right_vision_7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="140dp"/>
+
+    </RadioGroup>
 
 </RelativeLayout>

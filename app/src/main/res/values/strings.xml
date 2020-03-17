@@ -661,4 +661,7 @@
     <!--fragment text-->
     <string name="left_vision" translatable="false">Left Vision</string>
     <string name="right_vision" translatable="false">Right Vision</string>
+    <string name="result_txt" translatable="false">Your Vision Result is</string>
+
+
 </resources>

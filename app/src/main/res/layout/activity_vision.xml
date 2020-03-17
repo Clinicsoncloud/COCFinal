@@ -18,65 +18,60 @@
 
         <TextView
             android:id="@+id/tv_header_weight"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="1dp"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="2dp"
             android:text="Height"
             android:textColor="@color/white"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_header_height"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
             android:text="Weight"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_header_pulseoximeter"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
             android:text="SpO2"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_header_bloodpressure"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="140dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
-            android:background="@color/orange4"
+            android:layout_margin="@dimen/pad5"
+            android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
             android:text="BP Monitor"
             android:textColor="@color/white"
             android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tv_header_tempreture"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
             android:text="Temperature"
             android:textColor="@color/white"
             android:textSize="22sp" />
@@ -84,61 +79,69 @@
         <TextView
             android:id="@+id/tv_header_bloodsugar"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad10"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
-            android:text="Hb"
+            android:padding="@dimen/pad10"
+            android:text="Vision"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/tv_header_hemoglobin"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
             android:text="Sugar"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
             android:background="@drawable/repeat"
             android:gravity="center"
-            android:padding="@dimen/pad5"
-            android:text="Hb"
+            android:text="Hemoglobin"
             android:textColor="@color/white"
-            android:textSize="22sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="2.5"
         android:visibility="visible" />
 
+    <include
+        android:id="@+id/layout_result"
+        layout="@layout/layout_vision_result"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
+        android:visibility="gone"/>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginLeft="50dp"
-        android:layout_weight="0.5"
         android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="50dp"
         android:layout_marginRight="50dp"
-        android:orientation="horizontal"
+        android:layout_weight="0.5"
         android:gravity="center"
-        android:weightSum="1">
+        android:orientation="horizontal"
+        android:weightSum="2">
 
 
         <LinearLayout
@@ -148,11 +151,30 @@
             android:layout_weight="0.7">
 
             <Button
+                android:id="@+id/btn_finish"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="15dp"
                 android:background="@drawable/repeat"
-                android:text="Finish" />
+                android:text="Finish"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="0.7">
+
+            <Button
+                android:id="@+id/btn_skip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp"
+                android:background="@drawable/repeat"
+                android:text="Skip"
+                android:textColor="@color/white" />
 
         </LinearLayout>
 

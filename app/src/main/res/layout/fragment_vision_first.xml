@@ -9,6 +9,7 @@
     <!-- TODO: Update blank fragment layout -->
 
     <TextView
+        android:id="@+id/tv_left_vision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -17,6 +18,14 @@
         android:text="@string/left_vision"
         android:textColor="@color/black"
         android:textSize="35sp" />
+
+    <RadioButton
+        android:id="@+id/rb_left_vision_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="80dp"
+        android:layout_below="@id/tv_left_vision"/>
 
     <ImageView
         android:layout_width="548dp"
@@ -27,6 +36,7 @@
         tools:ignore="MissingConstraints" />
 
     <TextView
+        android:id="@+id/tv_right_vision"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -35,4 +45,13 @@
         android:text="@string/right_vision"
         android:textColor="@color/black"
         android:textSize="35sp" />
+
+    <RadioButton
+        android:id="@+id/rb_right_vision_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="80dp"
+        android:layout_below="@id/tv_right_vision"/>
 </RelativeLayout>

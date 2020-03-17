@@ -8,26 +8,51 @@
     android:background="@color/white"
     tools:context=".fragments.VisionThirdFragment">
     <TextView
+        android:id="@+id/tv_left_vision_three"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
         android:text="@string/left_vision"
         android:textColor="@color/black"
-        android:textSize="35sp" />
+        android:textSize="25sp" />
+
+    <RadioGroup
+        android:id="@+id/rg_left_vision_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/tv_left_vision_three">
+
+        <RadioButton
+            android:id="@+id/rb_left_vision_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_left_vision_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"/>
+
+    </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="70dp"
+        android:layout_marginRight="70dp"
         android:layout_centerInParent="true"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
+
             android:orientation="horizontal"
             android:weightSum="3">
 
@@ -74,8 +99,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="125dp"
-            android:layout_marginRight="70dp"
-            android:layout_marginLeft="70dp"
             android:orientation="horizontal"
             android:weightSum="4">
 
@@ -132,13 +155,38 @@
 
 
     <TextView
+        android:id="@+id/tv_right_vision_three"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="40dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
         android:text="@string/right_vision"
         android:textColor="@color/black"
-        android:textSize="35sp" />
+        android:textSize="25sp" />
+
+    <RadioGroup
+        android:id="@+id/rg_right_vision_three"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/tv_right_vision_three">
+
+        <RadioButton
+            android:id="@+id/rb_right_vision_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_right_vision_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"/>
+
+    </RadioGroup>
 
 </RelativeLayout>
