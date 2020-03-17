@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.fragments.VisionFourFragment;
 import com.abhaybmicoc.app.utils.ZoomOutPageTransformer;
 import com.abhaybmicoc.app.fragments.VisionThirdFragment;
 import com.abhaybmicoc.app.fragments.VisionFirstFragment;
@@ -23,7 +24,7 @@ public class VisionActivity extends AppCompatActivity {
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 3;
+    private static final int NUM_PAGES = 4;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -81,6 +82,7 @@ public class VisionActivity extends AppCompatActivity {
                 case 0: return VisionFirstFragment.newInstance();
                 case 1: return VisionSecondFragment.newInstance();
                 case 2: return VisionThirdFragment.newInstance();
+                case 3: return VisionFourFragment.newInstance();
                 default: return VisionFirstFragment.newInstance();
             }
         }

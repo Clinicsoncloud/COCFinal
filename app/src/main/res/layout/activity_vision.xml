@@ -6,79 +6,146 @@
     android:layout_height="match_parent"
     android:background="@drawable/background"
     android:orientation="vertical"
+    android:weightSum="3"
     tools:context=".activity.VisionActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="0.1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_header_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_margin="1dp"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="2dp"
+            android:text="Height"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_header_height"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Weight"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_header_pulseoximeter"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="SpO2"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_header_bloodpressure"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@color/orange4"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="BP Monitor"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_header_tempreture"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Temperature"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_header_bloodsugar"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Hb"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/tv_header_hemoglobin"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Sugar"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad10"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Hb"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </LinearLayout>
 
     <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="wrap_content"
-        android:layout_height="600dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginBottom="50dp"
+        android:layout_height="0dp"
+        android:layout_weight="2.5"
         android:visibility="visible" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="50dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center_horizontal"
         android:layout_marginRight="50dp"
         android:orientation="horizontal"
-        android:weightSum="3">
+        android:gravity="center"
+        android:weightSum="1">
+
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1">
-
-            <TextView
-                android:id="@+id/tv_left_vision"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Left Vision"
-                android:textColor="@color/white"
-                android:textSize="35sp" />
-
-            <EditText
-                android:id="@+id/edt_left_vision"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:background="@drawable/rectangle"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Right Vision"
-                android:textColor="@color/white"
-                android:textSize="35sp" />
-
-            <EditText
-                android:id="@+id/edt_right_vision"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_margin="15dp"
-                android:background="@drawable/rectangle"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:layout_weight="0.7">
 
             <Button
                 android:layout_width="match_parent"

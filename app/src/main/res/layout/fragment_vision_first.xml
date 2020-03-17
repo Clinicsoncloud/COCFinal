@@ -7,18 +7,32 @@
     tools:context=".fragments.VisionFirstFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <ImageView
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        android:src="@drawable/letter_1_6_60" />
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/left_vision"
+        android:textColor="@color/black"
+        android:textSize="35sp" />
 
     <ImageView
-        android:layout_width="80mm"
-        android:layout_height="87mm"
+        android:layout_width="548dp"
+        android:layout_height="503dp"
         android:layout_centerInParent="true"
         android:src="@drawable/svg_e_large_text"
         android:textScaleX="@android:integer/config_shortAnimTime"
         tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/right_vision"
+        android:textColor="@color/black"
+        android:textSize="35sp" />
 </RelativeLayout>

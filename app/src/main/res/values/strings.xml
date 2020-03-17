@@ -643,7 +643,7 @@
     <string name="print_msg">Please click on print button</string>
     <string name="print_reconnect_msg">Please click on Reconnect button to reconnect printer</string>
     <string name="print_result_msg">Please collect your result receipt</string>
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
 
 
     <string name="country_prompt">Preferred Language</string>
@@ -653,9 +653,12 @@
         <item>Hindi</item>
         <item>Marathi</item>
     </string-array>
-    <string name="title_activity_change_language">ChangeLanguageActivity</string>
+    <string name="title_activity_change_language" translatable="false">ChangeLanguageActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
 
+    <!--fragment text-->
+    <string name="left_vision" translatable="false">Left Vision</string>
+    <string name="right_vision" translatable="false">Right Vision</string>
 </resources>
