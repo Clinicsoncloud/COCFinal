@@ -511,11 +511,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+        Log.e("status_log"," : " + status);
         if (status.equals("response")) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);
 
                 if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
+
+                    Log.e("if_response"," : " + jsonResponse);
+
                     writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
@@ -529,6 +533,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
                     finish();
                 } else {
+
+                    Log.e("else_response"," : " + jsonResponse);
+
                     writePersonalSharedPreferences(jsonResponse);
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
@@ -544,6 +551,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 }
             } catch (Exception e) {
                 // TODO: Handle exception
+                e.printStackTrace();
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();

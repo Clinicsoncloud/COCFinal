@@ -193,8 +193,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     private void initializeData() {
-
-
         dataBaseHelper = new DataBaseHelper(context);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
@@ -272,6 +270,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
         String bearer = "Bearer ".concat(token);
         headersParams.put("Authorization", bearer);
 
+        Log.e("token_log"," : " + token);
+
         HttpService.accessWebServices(
                 context,
                 ApiUtils.PROFILE_URL,
@@ -294,6 +294,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             } catch (Exception e) {
                 // TODO: Handle exception
+                e.printStackTrace();
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
