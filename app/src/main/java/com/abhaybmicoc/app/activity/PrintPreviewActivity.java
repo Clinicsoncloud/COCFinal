@@ -1600,13 +1600,15 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
+            requestBodyParams.put("Authorization", ""+sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
 
             HashMap mapHeadersParams = new HashMap();
 
-            String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
-            mapHeadersParams.put("Authorization", bearer);
+          /*  String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
+            mapHeadersParams.put("Authorization", bearer);*/
 
             Log.e("Post_requestBodyParams", ":" + requestBodyParams);
+//            Log.e("Authorization_log", ":" + bearer);
 
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,

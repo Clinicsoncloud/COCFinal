@@ -78,9 +78,9 @@ public class ActivateScreen extends AppCompatActivity {
         rippleBackground = findViewById(R.id.content);
         rippleBackground.startRippleAnimation();
 
-        btnSubmit.setOnClickListener(view -> validateKiosk());
+//        btnSubmit.setOnClickListener(view -> validateKiosk());
 
-        /*btnSubmit.setOnClickListener(view -> {
+        btnSubmit.setOnClickListener(view -> {
             sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
             // Writing data to SharedPreferences
             SharedPreferences.Editor editor = sp.edit();
@@ -89,7 +89,7 @@ public class ActivateScreen extends AppCompatActivity {
             Intent objIntent = new Intent(getApplicationContext(), SplashActivity.class);
             startActivity(objIntent);
             finish();
-        });*/
+        });
     }
 
     private void validateKiosk() {

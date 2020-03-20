@@ -264,13 +264,16 @@ public class OtpVerifyScreen extends AppCompatActivity {
         requestBodyParams.put(Constant.Fields.EMAIL, etEmail.getText().toString());
         requestBodyParams.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
         requestBodyParams.put(Constant.Fields.GENDER, getSelectedGender());
+        requestBodyParams.put("Authorization", token);
+
+        Log.e("requesBodyParams"," : " + requestBodyParams);
 
         HashMap headersParams = new HashMap();
 
-        String bearer = "Bearer ".concat(token);
-        headersParams.put("Authorization", bearer);
+        String bearer = "".concat(token);
+//        headersParams.put("Authorization", "");
 
-        Log.e("token_log"," : " + token);
+        Log.e("token_log"," : " + bearer);
 
         HttpService.accessWebServices(
                 context,
