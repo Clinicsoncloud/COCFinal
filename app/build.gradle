@@ -24,6 +24,7 @@ android {
         versionCode 11
         versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -70,7 +71,6 @@ dependencies {
     implementation 'com.annimon:stream:1.2.1'
     implementation 'com.squareup.okio:okio:2.1.0'
 
-
     //Oxygen
     compile('com.jakewharton:butterknife:8.8.1') {
         exclude module: 'support-compat'
@@ -103,5 +103,8 @@ dependencies {
     implementation 'com.github.rehmanmuradali:ticker:1.0.0'
     implementation 'org.jetbrains:annotations:15.0'
 
+    implementation 'com.itextpdf:itextpdf:5.0.6'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
 }
 apply plugin: 'com.google.gms.google-services'

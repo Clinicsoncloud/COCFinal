@@ -1,87 +1,104 @@
 package com.abhaybmicoc.app.activity;
 
-import android.content.ContentValues;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.util.Log;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.app.Dialog;
-import android.view.Window;
-import android.os.AsyncTask;
-import android.widget.Toast;
-import android.app.Activity;
-import android.widget.Button;
-import android.os.SystemClock;
-import android.graphics.Color;
-import android.os.Environment;
-import android.text.TextUtils;
-import android.content.Intent;
-import android.app.AlertDialog;
-import android.widget.TextView;
-import android.content.Context;
-import android.widget.ListView;
-import android.widget.ImageView;
-import android.app.ProgressDialog;
-import android.widget.ProgressBar;
-import android.widget.LinearLayout;
-import android.app.DownloadManager;
-import android.speech.tts.TextToSpeech;
-import android.content.DialogInterface;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DownloadManager;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.bluetooth.BluetoothAdapter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.pdf.PdfDocument;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.os.SystemClock;
+import android.provider.Settings;
+import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
+import android.util.Base64;
+import android.util.Log;
+import android.view.Window;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.entities.AndMedical_App_Global;
+import com.abhaybmicoc.app.model.PrintData;
+import com.abhaybmicoc.app.model.PrintDataOld;
+import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
+import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
+import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
-import com.abhaybmicoc.app.model.PrintDataOld;
-import com.abhaybmicoc.app.model.PrintData;
-import com.abhaybmicoc.app.screen.OtpLoginScreen;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
-import com.abhaybmicoc.app.adapter.PrintPreviewAdapter;
-import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
-import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
-
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Utils;
-import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.html.WebColors;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.prowesspride.api.Printer_GEN;
-import com.prowesspride.api.Setup;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-
-import java.util.Map;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.HashMap;
-import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -219,6 +236,15 @@ public class PrintPreviewActivity extends Activity {
 
     TextToSpeechService textToSpeechService;
 
+    ProgressDialog ppdialog;
+    private String path;
+    private File dir;
+    private File file;
+    private PdfPCell cell;
+
+    BaseColor myColor = WebColors.getRGBColor("#9E9E9E");
+    BaseColor myColor1 = WebColors.getRGBColor("#757575");
+
     // endregion
 
     // region Events
@@ -259,9 +285,7 @@ public class PrintPreviewActivity extends Activity {
         super.onPause();
     }
 
-
     // endregion
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     void requestGPSPermission() {
         try {
@@ -343,7 +367,7 @@ public class PrintPreviewActivity extends Activity {
         getPrintData();
         getResults();
 //        saveDataToLocal();
-        postData();
+//        postData();
 
     }
 
@@ -1189,10 +1213,246 @@ public class PrintPreviewActivity extends Activity {
             printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""))));
 
             lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
+
+            createPDF();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    private void createPDF() {
+
+        Document doc = new Document();
+        PdfWriter docWriter = null;
+
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        try {
+
+            //special font sizes
+            Font bfBold12 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD, new BaseColor(0, 0, 0));
+            Font bf12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
+            Font bf10 = new Font(Font.FontFamily.TIMES_ROMAN, 10);
+
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+
+
+            String pdfFilename = timeStamp + ".pdf";
+            //file path
+//            String path = "coc_docs/" + pdfFilename;
+
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/COC_DOCS";
+
+/*            File file = new File(dir, "mypdffile.pdf");
+            FileOutputStream fOut = new FileOutputStream(file);*/
+
+/*            File file = new File(dir, "mypdffile.pdf");
+
+            PdfWriter.getInstance(doc, fOut);*/
+
+
+            File dir = new File(path, "/" + pdfFilename);
+            FileOutputStream fOut = new FileOutputStream(dir);
+
+            if (!dir.exists())
+                dir.mkdirs();
+
+            Log.e("dir_Log", ":" + dir.getAbsolutePath());
+
+//            File file = new File(dir, "mypdffile.pdf");
+
+            docWriter = PdfWriter.getInstance(doc, new FileOutputStream(dir.getAbsolutePath()));
+
+            //document header attributes
+            doc.addAuthor("COC");
+            doc.addCreationDate();
+            doc.addProducer();
+            doc.addCreator("MySampleCode.com");
+            doc.addTitle("Medical Report");
+            doc.setPageSize(PageSize.A4);
+
+            //open document
+            doc.open();
+
+            //create a paragraph
+            Paragraph paragraph = new Paragraph("Medical Report\n\n");
+            paragraph.setAlignment(Element.ALIGN_LEFT);
+
+            paragraph.add("Name: Vaibhav V\t\t\t");
+            paragraph.add("Height: 173\n");
+            paragraph.add("DOB: 1993-06-03\t\t\t");
+
+            paragraph.add("Gender: Male \n");
+
+
+            //specify column widths
+            float[] columnWidths = {1f, 2f, 2f};
+            //create PDF table with the given widths
+            PdfPTable table = new PdfPTable(columnWidths);
+            // set table width a percentage of the page width
+            table.setWidthPercentage(90f);
+
+            //insert column headings
+            insertCell(table, "Sr. No", Element.ALIGN_CENTER, 1, bfBold12);
+            insertCell(table, "Parameter", Element.ALIGN_CENTER, 1, bfBold12);
+            insertCell(table, "Values", Element.ALIGN_CENTER, 1, bfBold12);
+            table.setHeaderRows(1);
+
+/*            //insert an empty row
+            insertCell(table, "", Element.ALIGN_LEFT, 4, bfBold12);
+            //create section heading by cell merging
+            insertCell(table, "New York Orders ...", Element.ALIGN_LEFT, 4, bfBold12);
+            double orderTotal, total = 0;*/
+
+            //just some random data to fill
+            for (int x = 0; x < printDataListNew.size(); x++) {
+
+
+                insertCell(table, String.valueOf(x + 1), Element.ALIGN_CENTER, 1, bf12);
+                insertCell(table, printDataListNew.get(x).getParameter() + x, Element.ALIGN_LEFT, 1, bf12);
+                insertCell(table, String.valueOf(printDataListNew.get(x).getCurr_value()), Element.ALIGN_LEFT, 1, bf12);
+
+                /*orderTotal = Double.valueOf(df.format(Math.random() * 1000));
+                total = total + orderTotal;
+                insertCell(table, df.format(orderTotal), Element.ALIGN_RIGHT, 1, bf12);*/
+
+            }
+/*            //merge the cells to create a footer for that section
+            insertCell(table, "New York Total...", Element.ALIGN_RIGHT, 3, bfBold12);
+            insertCell(table, df.format(total), Element.ALIGN_RIGHT, 1, bfBold12);
+
+            //repeat the same as above to display another location
+            insertCell(table, "", Element.ALIGN_LEFT, 4, bfBold12);
+            insertCell(table, "California Orders ...", Element.ALIGN_LEFT, 4, bfBold12);
+            orderTotal = 0;
+
+            for (int x = 1; x < 7; x++) {
+
+                insertCell(table, "20020" + x, Element.ALIGN_RIGHT, 1, bf12);
+                insertCell(table, "XYZ00" + x, Element.ALIGN_LEFT, 1, bf12);
+                insertCell(table, "This is Customer Number XYZ00" + x, Element.ALIGN_LEFT, 1, bf12);
+
+                orderTotal = Double.valueOf(df.format(Math.random() * 1000));
+                total = total + orderTotal;
+                insertCell(table, df.format(orderTotal), Element.ALIGN_RIGHT, 1, bf12);
+
+            }
+            insertCell(table, "California Total...", Element.ALIGN_RIGHT, 3, bfBold12);
+            insertCell(table, df.format(total), Element.ALIGN_RIGHT, 1, bfBold12);*/
+
+            //add the PDF table to the paragraph
+            paragraph.add(table);
+            // add the paragraph to the document
+            doc.add(paragraph);
+
+
+            Paragraph para1 = new Paragraph("\n\nParameters Explanation\n");
+            doc.add(para1);
+
+            Paragraph para2 = new Paragraph(getResources().getString(R.string.parameter_explanation), bf10);
+            doc.add(para2);
+            Paragraph para3 = new Paragraph("\n\nNote: Above results are indicative figure, don't follow it without consulting a doctor", bf10);
+            doc.add(para3);
+
+
+            Log.e("File_Path_Log", ":" + dir.getAbsolutePath());
+
+            encodeFileToBase64Binary(dir);
+
+        } catch (DocumentException dex) {
+            dex.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            if (doc != null) {
+
+                Log.e("docFinally_Log", ":" + doc);
+
+                //close the document
+                doc.close();
+            }
+            if (docWriter != null) {
+
+                Log.e("docWriterFinally_Log", ":" + docWriter);
+
+                //close the writer
+                docWriter.close();
+            }
+        }
+
+/*        Document doc = new Document();
+        try {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/PDF";
+
+            File dir = new File(path);
+            if (!dir.exists())
+                dir.mkdirs();
+
+            File file = new File(dir, "mypdffile.pdf");
+            FileOutputStream fOut = new FileOutputStream(file);
+
+            PdfWriter.getInstance(doc, fOut);
+
+            //open the document
+            doc.open();
+
+            Paragraph p1 = new Paragraph("COC Report");
+            p1.setAlignment(Paragraph.ALIGN_CENTER);
+
+            //add paragraph to document
+            doc.add(p1);
+            encodeFileToBase64Binary(file);
+        } catch (DocumentException de) {
+            Log.e("PDFCreator", "DocumentException:" + de);
+        } catch (IOException e) {
+            Log.e("PDFCreator", "ioException:" + e);
+        } finally {
+            doc.close();
+        }*/
+
+    }
+
+    private void insertCell(PdfPTable table, String text, int align, int colspan, Font font) {
+
+        //create a new cell with the specified Text and Font
+        PdfPCell cell = new PdfPCell(new Phrase(text.trim(), font));
+        //set the cell alignment
+        cell.setHorizontalAlignment(align);
+        //set the cell column span in case you want to merge two or more cells
+        cell.setColspan(colspan);
+        //in case there is no text and you wan to create an empty row
+        if (text.trim().equalsIgnoreCase("")) {
+            cell.setMinimumHeight(10f);
+        }
+        //add the call to the table
+        table.addCell(cell);
+
+    }
+
+
+    private String encodeFileToBase64Binary(File yourFile) {
+
+        Log.e("yourFile_path_Log", " : " + yourFile.getAbsolutePath() + "  :File_Length:  " + yourFile.length());
+        int size = (int) yourFile.length();
+        byte[] bytes = new byte[size];
+        try {
+            BufferedInputStream buf = new BufferedInputStream(new FileInputStream(yourFile));
+            buf.read(bytes, 0, bytes.length);
+            buf.close();
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        String encoded = Base64.encodeToString(bytes, Base64.NO_WRAP);
+
+        Log.e("encoded_Base64_Log", ":" + encoded);
+        return encoded;
+    }
+
 
     private void saveDataToLocal() {
 
@@ -1448,7 +1708,6 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
-
     private void postData() {
 
         if (Utils.isOnline(context)) {
@@ -1623,7 +1882,6 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
-
         Log.e("response_PostLog", ":" + response);
         Log.e("error_PostLog", ":" + error);
         Log.e("status_postLog", ":" + status);
@@ -1650,8 +1908,6 @@ public class PrintPreviewActivity extends Activity {
      */
     private void readFileName(String response) {
         try {
-
-
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");
@@ -1672,18 +1928,36 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
     }
 
-
     private String getCurrentTime() {
         return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance().getTime());
     }
 
     private void downloadFile(String fileName) {
-        downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
+        if (Utils.isOnline(context)) {
+            downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
 
-        if (fileName != null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
-        else
-            Toast.makeText(PrintPreviewActivity.this, "No Pdf file available ", Toast.LENGTH_SHORT).show();
+            if (fileName != null)
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
+            else
+                Toast.makeText(PrintPreviewActivity.this, "No Pdf file available ", Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            File pdfFile = new File(Environment.getExternalStorageDirectory() + "/" + "Dir" + "/" + "newFile.pdf");
+            Uri path = Uri.fromFile(pdfFile);
+
+            // Setting the intent for pdf reader
+            Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
+            pdfIntent.setDataAndType(path, "application/pdf");
+            pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+            try {
+                startActivity(pdfIntent);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(context, "Can't read pdf file", Toast.LENGTH_SHORT).show();
+            }
+
+        }
     }
 
     private void startDownload() {
