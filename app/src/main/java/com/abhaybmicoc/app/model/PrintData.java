@@ -5,9 +5,9 @@ import java.io.Serializable;
 public class PrintData implements Serializable {
 
     private String parameter;
-    private double curr_value;
+    private String curr_value;
 
-    public PrintData(String parameter, double curr_value) {
+    public PrintData(String parameter, String curr_value) {
         this.parameter = parameter;
         this.curr_value = curr_value;
     }
@@ -20,11 +20,11 @@ public class PrintData implements Serializable {
         this.parameter = parameter;
     }
 
-    public double getCurr_value() {
+    public String getCurr_value() {
         return curr_value;
     }
 
-    public void setCurr_value(double curr_value) {
+    public void setCurr_value(String curr_value) {
         this.curr_value = curr_value;
     }
 }

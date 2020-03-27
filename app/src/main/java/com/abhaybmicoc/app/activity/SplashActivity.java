@@ -67,7 +67,7 @@ public class SplashActivity extends Activity {
 
         splashHandler = new Handler();
         splashHandler.postDelayed(() -> {
-            final Intent mainIntent = new Intent(context, VisionActivity.class);
+            final Intent mainIntent = new Intent(context, OtpLoginScreen.class);
             startActivity(mainIntent);
             finish();
         }, 2000);
@@ -83,7 +83,8 @@ public class SplashActivity extends Activity {
     }
 
     /**
-     *setLocale Method for changing the language accent in android
+     * setLocale Method for changing the language accent in android
+     *
      * @param lang
      */
     private void setLocale(String lang) {

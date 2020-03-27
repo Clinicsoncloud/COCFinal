@@ -424,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),HEMOGLOBIN_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), HEMOGLOBIN_MSG);
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();

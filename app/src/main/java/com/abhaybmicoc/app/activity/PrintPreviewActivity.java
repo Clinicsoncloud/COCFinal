@@ -143,6 +143,7 @@ public class PrintPreviewActivity extends Activity {
     private SharedPreferences sharedPreferencesPersonalData;
     private SharedPreferences sharedPreferencesBloodPressure;
     private SharedPreferences sharedPreferencesOffline;
+    private SharedPreferences sharedPreferenceVisionResult;
 
     private ImageView ivDownload;
 
@@ -1165,28 +1166,30 @@ public class PrintPreviewActivity extends Activity {
 
     private void setNewList() {
         try {
-            printDataListNew.add(new PrintData("Weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, ""))));
-            printDataListNew.add(new PrintData("BMI", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, ""))));
-            printDataListNew.add(new PrintData("Body fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, ""))));
-            printDataListNew.add(new PrintData("Fat Free weight", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, ""))));
-            printDataListNew.add(new PrintData("Subcutaneous Fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""))));
-            printDataListNew.add(new PrintData("Visceral Fat", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, ""))));
-            printDataListNew.add(new PrintData("Body water", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""))));
-            printDataListNew.add(new PrintData("Skeleton muscle", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, ""))));
-            printDataListNew.add(new PrintData("Protein", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, ""))));
-            printDataListNew.add(new PrintData("Metabolic Age", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, ""))));
-            printDataListNew.add(new PrintData("Health Score", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""))));
-            printDataListNew.add(new PrintData("BMR", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMR, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMR, ""))));
-            printDataListNew.add(new PrintData("Physique", 0.0));
-            printDataListNew.add(new PrintData("Muscle Mass", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""))));
-            printDataListNew.add(new PrintData("Bone Mass", TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""))));
-            printDataListNew.add(new PrintData("Body Temp", TextUtils.isEmpty(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) ? 0 : Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, ""))));
-            printDataListNew.add(new PrintData("Systolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""))));
-            printDataListNew.add(new PrintData("Diastolic", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""))));
-            printDataListNew.add(new PrintData("Pulse Oximeter", TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, ""))));
-            printDataListNew.add(new PrintData("Pulse ", TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, ""))));
-            printDataListNew.add(new PrintData("Blood Glucose", TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, ""))));
-            printDataListNew.add(new PrintData("Hemoglobin", TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""))));
+            printDataListNew.add(new PrintData("Weight", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "")))));
+            printDataListNew.add(new PrintData("BMI", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMI, "")))));
+            printDataListNew.add(new PrintData("Body fat", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_FAT, "")))));
+            printDataListNew.add(new PrintData("Fat Free weight", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.FAT_FREE_WEIGHT, "")))));
+            printDataListNew.add(new PrintData("Subcutaneous Fat", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, "")))));
+            printDataListNew.add(new PrintData("Visceral Fat", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.VISCERAL_FAT, "")))));
+            printDataListNew.add(new PrintData("Body water", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, "")))));
+            printDataListNew.add(new PrintData("Skeleton muscle", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.SKELETAL_MUSCLE, "")))));
+            printDataListNew.add(new PrintData("Protein", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.PROTEIN, "")))));
+            printDataListNew.add(new PrintData("Metabolic Age", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.META_AGE, "")))));
+            printDataListNew.add(new PrintData("Health Score", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, "")))));
+            printDataListNew.add(new PrintData("BMR", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BMR, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BMR, "")))));
+            printDataListNew.add(new PrintData("Physique", String.valueOf(0.0)));
+            printDataListNew.add(new PrintData("Muscle Mass", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, "")))));
+            printDataListNew.add(new PrintData("Bone Mass", String.valueOf(TextUtils.isEmpty(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")) ? 0 : Double.parseDouble(sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, "")))));
+            printDataListNew.add(new PrintData("Body Temp", String.valueOf(TextUtils.isEmpty(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")) ? 0 : Double.parseDouble(sharedPreferencesThermometer.getString(Constant.Fields.TEMPERATURE, "")))));
+            printDataListNew.add(new PrintData("Systolic", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")))));
+            printDataListNew.add(new PrintData("Diastolic", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")))));
+            printDataListNew.add(new PrintData("Pulse Oximeter", String.valueOf(TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")))));
+            printDataListNew.add(new PrintData("Pulse ", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")))));
+            printDataListNew.add(new PrintData("Blood Glucose", String.valueOf(TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")))));
+            printDataListNew.add(new PrintData("Hemoglobin", String.valueOf(TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")))));
+            printDataListNew.add(new PrintData("Left Eye Vision", String.valueOf(TextUtils.isEmpty(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "")) ? "" : String.valueOf(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "")))));
+            printDataListNew.add(new PrintData("Right Eye Vision", String.valueOf(TextUtils.isEmpty(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "")) ? "" : String.valueOf(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "")))));
 
             lV.setAdapter(new PrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
         } catch (Exception e) {
@@ -1223,6 +1226,8 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.SUBCUTANEOUS_FAT, sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
+            paramsContentValues.put(Constant.Fields.EYE_LEFT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, ""));
+            paramsContentValues.put(Constant.Fields.EYE_RIGHT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, ""));
 
             if (!sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase(""))
                 paramsContentValues.put(Constant.Fields.WEIGHT_RANGE, "" + standardWeightRange + " kg");
@@ -1480,6 +1485,9 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
 
+            requestBodyParams.put(Constant.Fields.EYE_LEFT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, ""));
+            requestBodyParams.put(Constant.Fields.EYE_RIGHT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, ""));
+
             if (!sharedPreferencesActofit.getString(Constant.Fields.WEIGHT, "").equalsIgnoreCase(""))
                 requestBodyParams.put(Constant.Fields.WEIGHT_RANGE, "" + standardWeightRange + " kg");
             else
@@ -1607,6 +1615,7 @@ public class PrintPreviewActivity extends Activity {
             mapHeadersParams.put("Authorization", bearer);
 
             Log.e("Post_requestBodyParams", ":" + requestBodyParams);
+            Log.e("Post_mapHeadersParams", ":" + mapHeadersParams);
 
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
@@ -1670,6 +1679,7 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferencesPersonalData = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         sharedPreferencesBloodPressure = getSharedPreferences(ApiUtils.PREFERENCE_BLOODPRESSURE, MODE_PRIVATE);
         sharedPreferencesOffline = getSharedPreferences(ApiUtils.PREFERENCE_OFFLINE, MODE_PRIVATE);
+        sharedPreferenceVisionResult = getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
     }
 
 
@@ -1881,6 +1891,7 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferencesBloodPressure.edit().clear().apply();
         sharedPreferencesBloodPressure.edit().clear().apply();
         sharedPreferencesPersonalDate.edit().clear().apply();
+        sharedPreferenceVisionResult.edit().clear().apply();
     }
 
     private String getPrintText() {

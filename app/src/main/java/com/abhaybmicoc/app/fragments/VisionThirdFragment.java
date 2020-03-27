@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,8 +42,12 @@ public class VisionThirdFragment extends Fragment {
     @BindView(R.id.rg_right_vision_three)
     RadioGroup rgRightVisionThree;
     Unbinder unbinder;
-    private SharedPreferences sharedPreferenceLeftVision;
-    private SharedPreferences sharedPreferenceRightVision;
+    //    private SharedPreferences sharedPreferenceLeftVision;
+//    private SharedPreferences sharedPreferenceRightVision;
+    private SharedPreferences preferenceVisionResult;
+
+
+    private String left_vision = "", right_vision = "";
 
     public VisionThirdFragment() {
         // Required empty public constructor
@@ -68,17 +73,59 @@ public class VisionThirdFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_vision_third, container, false);
         ButterKnife.bind(this, rootView);
 
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("OnStartThird", ":");
+
         setupEvents();
         initializeData();
-        return rootView;
     }
 
     /**
      *
      */
     private void initializeData() {
-        sharedPreferenceLeftVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION,Context.MODE_PRIVATE);
-        sharedPreferenceRightVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION,Context.MODE_PRIVATE);
+        /*sharedPreferenceLeftVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, Context.MODE_PRIVATE);
+        sharedPreferenceRightVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, Context.MODE_PRIVATE);*/
+        preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
+
+        left_vision = preferenceVisionResult.getString("eye_left_vision", "");
+        right_vision = preferenceVisionResult.getString("eye_right_vision", "");
+
+        Log.e("left_vision_Third", ":" + left_vision + "   : right_vision :  " + right_vision);
+
+
+        if (!left_vision.equals("") && left_vision.equals("6/24")) {
+            rbLeftVision3.setChecked(true);
+        } else {
+            rbLeftVision3.setChecked(false);
+
+        }
+
+        if (!left_vision.equals("") && left_vision.equals("6/18")) {
+            rbLeftVision4.setChecked(true);
+        } else {
+            rbLeftVision4.setChecked(false);
+
+        }
+
+        if (!right_vision.equals("") && right_vision.equals("6/24")) {
+            rbRightVision3.setChecked(true);
+        } else {
+            rbRightVision3.setChecked(false);
+        }
+
+        if (!right_vision.equals("") && right_vision.equals("6/18")) {
+            rbRightVision4.setChecked(true);
+        } else {
+            rbRightVision4.setChecked(false);
+        }
+
     }
 
     /**
@@ -88,7 +135,7 @@ public class VisionThirdFragment extends Fragment {
         rgLeftVisionThree.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
 
                     case R.id.rb_left_vision_3:
                         saveLeftVisionResult("6/24");
@@ -105,7 +152,7 @@ public class VisionThirdFragment extends Fragment {
         rgRightVisionThree.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
                     case R.id.rb_right_vision_3:
                         saveRightVisionResult("6/24");
                         break;
@@ -119,22 +166,20 @@ public class VisionThirdFragment extends Fragment {
     }
 
     /**
-     *
      * @param rightVisionResult
      */
     private void saveRightVisionResult(String rightVisionResult) {
-        SharedPreferences.Editor editor = sharedPreferenceRightVision.edit();
-        editor.putString("rightvision", rightVisionResult);
+        SharedPreferences.Editor editor = preferenceVisionResult.edit();
+        editor.putString("eye_right_vision", rightVisionResult);
         editor.commit();
     }
 
     /**
-     *
      * @param leftVisionResult
      */
     private void saveLeftVisionResult(String leftVisionResult) {
-        SharedPreferences.Editor editor = sharedPreferenceLeftVision.edit();
-        editor.putString("leftvision", leftVisionResult);
+        SharedPreferences.Editor editor = preferenceVisionResult.edit();
+        editor.putString("eye_left_vision", leftVisionResult);
         editor.commit();
     }
 
@@ -153,6 +198,5 @@ public class VisionThirdFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
     }
 }

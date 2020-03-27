@@ -15,10 +15,11 @@
 
         <TextView
             android:id="@+id/tv_header_height"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -28,10 +29,11 @@
 
         <TextView
             android:id="@+id/tv_header_weight"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -41,10 +43,11 @@
 
         <TextView
             android:id="@+id/tv_header_pulseoximeter"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1.5"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -55,10 +58,11 @@
 
         <TextView
             android:id="@+id/tv_header_bloodpressure"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -68,10 +72,11 @@
 
         <TextView
             android:id="@+id/tv_header_tempreture"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@color/orange4"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -80,11 +85,27 @@
             android:textSize="22sp" />
 
         <TextView
-            android:id="@+id/tv_header_bloodsugar"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_header_vision"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
+            android:background="@drawable/repeat"
+            android:gravity="center"
+            android:padding="@dimen/pad5"
+            android:text="Vision"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+
+        <TextView
+            android:id="@+id/tv_header_bloodsugar"
+            android:layout_width="0dip"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"
@@ -94,10 +115,11 @@
 
         <TextView
             android:id="@+id/tv_header_hemoglobin"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_margin="@dimen/pad10"
+            android:layout_margin="@dimen/pad5"
+            android:layout_weight="1"
             android:background="@drawable/repeat"
             android:gravity="center"
             android:padding="@dimen/pad5"

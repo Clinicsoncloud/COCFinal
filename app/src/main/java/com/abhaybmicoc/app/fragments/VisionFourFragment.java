@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +47,12 @@ public class VisionFourFragment extends Fragment {
     @BindView(R.id.rg_right_vision_last)
     RadioGroup rgRightVisionLast;
 
-    private SharedPreferences preferenceLeftVisionResult;
-    private SharedPreferences preferenceRightVisionResult;
+    //    private SharedPreferences preferenceLeftVisionResult;
+//    private SharedPreferences preferenceRightVisionResult;
+    private SharedPreferences preferenceVisionResult;
+
+    private String left_vision = "";
+    private String right_vision = "";
 
     public VisionFourFragment() {
         // Required empty public constructor
@@ -73,10 +78,17 @@ public class VisionFourFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_vision_four, container, false);
         ButterKnife.bind(this, rootView);
 
-        setupEvents();
-        initializeData();
 
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e("OnStartFourth", ":");
+
+        setupEvents();
+        initializeData();
     }
 
     /**
@@ -84,8 +96,50 @@ public class VisionFourFragment extends Fragment {
      * initialized sharedpreferences
      */
     private void initializeData() {
-        preferenceLeftVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION,Context.MODE_PRIVATE);
-        preferenceRightVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION,Context.MODE_PRIVATE);
+        /*preferenceLeftVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, Context.MODE_PRIVATE);
+        preferenceRightVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, Context.MODE_PRIVATE);*/
+        preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
+
+        left_vision = preferenceVisionResult.getString("eye_left_vision", "");
+        right_vision = preferenceVisionResult.getString("eye_right_vision", "");
+
+        Log.e("left_vision_Fourth", ":" + left_vision + "   : right_vision :  " + right_vision);
+
+        if (!left_vision.equals("") && left_vision.equals("6/12")) {
+            rbLeftVision5.setChecked(true);
+        } else {
+            rbLeftVision5.setChecked(false);
+        }
+
+        if (!left_vision.equals("") && left_vision.equals("6/9")) {
+            rbLeftVision6.setChecked(true);
+        } else {
+            rbLeftVision6.setChecked(false);
+        }
+
+        if (!left_vision.equals("") && left_vision.equals("6/6")) {
+            rbLeftVision7.setChecked(true);
+        } else {
+            rbLeftVision7.setChecked(false);
+        }
+
+        if (!right_vision.equals("") && right_vision.equals("6/12")) {
+            rbRightVision5.setChecked(true);
+        } else {
+            rbRightVision5.setChecked(false);
+        }
+
+        if (!right_vision.equals("") && right_vision.equals("6/9")) {
+            rbRightVision6.setChecked(true);
+        } else {
+            rbRightVision6.setChecked(false);
+        }
+
+        if (!right_vision.equals("") && right_vision.equals("6/6")) {
+            rbRightVision6.setChecked(true);
+        } else {
+            rbRightVision6.setChecked(false);
+        }
     }
 
     /**
@@ -96,7 +150,7 @@ public class VisionFourFragment extends Fragment {
         rgLeftVisionLast.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
 
                     case R.id.rb_left_vision_5:
                         saveLeftVisionResult("6/12");
@@ -116,7 +170,7 @@ public class VisionFourFragment extends Fragment {
         rgRightVisionLast.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId){
+                switch (checkedId) {
 
                     case R.id.rb_right_vision_5:
                         saveRightVisionResult("6/12");
@@ -136,21 +190,23 @@ public class VisionFourFragment extends Fragment {
 
     /**
      * save the left vision data
+     *
      * @param leftVisionResult
      */
     private void saveLeftVisionResult(String leftVisionResult) {
-        SharedPreferences.Editor editor = preferenceLeftVisionResult.edit();
-        editor.putString("leftvision", leftVisionResult);
+        SharedPreferences.Editor editor = preferenceVisionResult.edit();
+        editor.putString("eye_left_vision", leftVisionResult);
         editor.commit();
     }
 
     /**
      * save the right vision data
+     *
      * @param rightVisionResult
      */
     private void saveRightVisionResult(String rightVisionResult) {
-        SharedPreferences.Editor editor = preferenceRightVisionResult.edit();
-        editor.putString("rightvision", rightVisionResult);
+        SharedPreferences.Editor editor = preferenceVisionResult.edit();
+        editor.putString("eye_right_vision", rightVisionResult);
         editor.commit();
     }
 

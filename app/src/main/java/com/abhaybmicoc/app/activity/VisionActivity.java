@@ -14,10 +14,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.fragments.VisionFirstFragment;
@@ -25,6 +27,7 @@ import com.abhaybmicoc.app.fragments.VisionFourFragment;
 import com.abhaybmicoc.app.fragments.VisionSecondFragment;
 import com.abhaybmicoc.app.fragments.VisionThirdFragment;
 import com.abhaybmicoc.app.glucose.GlucoseActivity;
+import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.ZoomOutPageTransformer;
 
@@ -50,15 +53,15 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
     @BindView(R.id.layout_result)
     LinearLayout layoutResult;
 
-    private SharedPreferences preferenceLeftVisionResult;
-    private SharedPreferences preferenceRightVisionResul;
+    private SharedPreferences preferenceVisionResult;
+//    private SharedPreferences preferenceLeftVisionResult;
+//    private SharedPreferences preferenceRightVisionResul;
 
-    private Context context;
+    private Context context = VisionActivity.this;
 
     private ViewPager mPager;
     private PagerAdapter pagerAdapter;
     private static final int NUM_PAGES = 4;
-
 
     //endregion
 
@@ -74,14 +77,40 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initializeData() {
-        preferenceLeftVisionResult = getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION,MODE_PRIVATE);
-        preferenceRightVisionResul = getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION,MODE_PRIVATE);
+        /*preferenceLeftVisionResult = getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, MODE_PRIVATE);
+        preferenceRightVisionResul = getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, MODE_PRIVATE);*/
+        preferenceVisionResult = getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, MODE_PRIVATE);
     }
 
     private void setupEvents() {
         btnFinish.setOnClickListener(this);
         btnSkip.setOnClickListener(this);
         btnNext.setOnClickListener(this);
+
+
+        mPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            int CurrentPossition = 0;
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Log.e("onPageSelected", ":" + position);
+//                mPager.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_IDLE && CurrentPossition != 0) {
+                    Toast.makeText(getBaseContext(), "finished", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+
     }
 
     private void setViewPager() {
@@ -107,17 +136,19 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_finish:
                 showResult();
                 break;
 
             case R.id.btn_skip:
-                context.startActivity(new Intent(getApplicationContext(), GlucoseActivity.class));
+                startActivity(new Intent(getApplicationContext(), GlucoseScanListActivity.class));
+                finish();
                 break;
 
             case R.id.btn_next:
-                context.startActivity(new Intent(getApplicationContext(), GlucoseActivity.class));
+                startActivity(new Intent(getApplicationContext(), GlucoseScanListActivity.class));
+                finish();
                 break;
         }
     }
@@ -126,8 +157,8 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
         pager.setVisibility(View.GONE);
         layoutResult.setVisibility(View.VISIBLE);
         btnFinish.setVisibility(View.GONE);
-        tvResultLeftVision.setText(preferenceLeftVisionResult.getString("leftvision",""));
-        tvResultRightVision.setText(preferenceRightVisionResul.getString("rightvision",""));
+        tvResultLeftVision.setText(preferenceVisionResult.getString("eye_left_vision", ""));
+        tvResultRightVision.setText(preferenceVisionResult.getString("eye_right_vision", ""));
     }
 
     /**
@@ -147,6 +178,7 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
                     return VisionFirstFragment.newInstance();
                 case 1:
                     return VisionSecondFragment.newInstance();
+
                 case 2:
                     return VisionThirdFragment.newInstance();
                 case 3:
@@ -154,6 +186,12 @@ public class VisionActivity extends AppCompatActivity implements View.OnClickLis
                 default:
                     return VisionFirstFragment.newInstance();
             }
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            // POSITION_NONE makes it possible to reload the PagerAdapter
+            return POSITION_NONE;
         }
 
         @Override

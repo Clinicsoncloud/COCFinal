@@ -61,6 +61,9 @@ public class Constant {
         public final static String BLOOD_PRESSURE_DIASTOLIC = "dialostic";
         public final static String BLOOD_PRESSURE_SYSTOLIC = "blood_pressure";
 
+        public final static String EYE_LEFT_VISION = "eye_left_vision";
+        public final static String EYE_RIGHT_VISION = "eye_right_vision";
+
 
         /**
          * constants for the parameter ranges

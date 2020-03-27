@@ -355,8 +355,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         tvClinicName = hView.findViewById(R.id.tv_ClinicName);
         tvKioskID = hView.findViewById(R.id.tv_KioskID);
-
-
     }
 
     @Override
@@ -434,7 +432,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 //TODO:  Handle Error Message
             }
 
-
         } catch (Exception e) {
         }
     }
@@ -451,6 +448,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         clearSharedPreference(ApiUtils.PREFERENCE_HEMOGLOBIN);
         clearSharedPreference(ApiUtils.PREFERENCE_BLOODPRESSURE);
         clearSharedPreference(ApiUtils.PREFERENCE_THERMOMETERDATA);
+        clearSharedPreference(ApiUtils.PREFERENCE_VISION_RESULT);
     }
 
     private void clearSharedPreference(String preferenceName) {
@@ -502,6 +500,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         requestBodyParams.put("kiosk_id", kiosk_id);
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
 
+        Log.e("Login_Url", ":" + ApiUtils.LOGIN_URL);
+        Log.e("Login_requestBodyParams", ":" + requestBodyParams);
+        Log.e("Login_headerParams", ":" + headerParams);
         HttpService.accessWebServices(
                 context,
                 ApiUtils.LOGIN_URL,

@@ -29,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
+import com.abhaybmicoc.app.activity.VisionActivity;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -268,7 +269,8 @@ public class ThermometerScreen extends AppCompatActivity {
 
     private void handleBaud() {
         if (etTemperature.getText().length() > 0) {
-            Intent objpulse = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+//            Intent objpulse = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
+            Intent objpulse = new Intent(getApplicationContext(), VisionActivity.class);
 
             SharedPreferences.Editor editor = sharePreferenceThermometer.edit();
             editor.putString(Constant.Fields.TEMPERATURE, etTemperature.getText().toString().trim());

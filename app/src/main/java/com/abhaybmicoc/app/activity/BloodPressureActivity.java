@@ -113,7 +113,6 @@ public class BloodPressureActivity extends Activity {
 
     private ProgressDialog pd;
 
-
     private DataBase db;
     private SharedPreferences sharedPreferencesPersonalData;
     private SharedPreferences sharedPreferencesBloodPressure;

@@ -74,7 +74,7 @@ public class GlucoseScanListActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferencesDevice;
 
-//    private String SCAN_MSG = "Please long press the device bluetooth button";
+    //    private String SCAN_MSG = "Please long press the device bluetooth button";
     private String SCAN_MSG = "";
 
     TextToSpeechService textToSpeechService;
@@ -254,7 +254,7 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         deviceAddress = util.readString(HelperC.key_autoconnectaddress, "");
         autoConnectFlag = util.readboolean(HelperC.key_autoconnectflag, false);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_MSG);
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), SCAN_MSG);
 
         sharedPreferencesDevice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
 

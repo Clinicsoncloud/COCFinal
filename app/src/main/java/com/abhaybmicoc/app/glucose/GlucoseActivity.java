@@ -38,6 +38,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.VisionActivity;
 import com.abhaybmicoc.app.hemoglobin.GattClientActionListener;
 import com.abhaybmicoc.app.hemoglobin.GattClientCallback;
 import com.abhaybmicoc.app.services.TextToSpeechService;
@@ -63,7 +64,7 @@ import java.util.ArrayList;
 import java.io.InputStream;
 import java.util.Collections;
 
-public class GlucoseActivity extends AppCompatActivity implements Communicator,View.OnClickListener {
+public class GlucoseActivity extends AppCompatActivity implements Communicator, View.OnClickListener {
     // region Variables,
 
     private Context context = GlucoseActivity.this;
@@ -95,6 +96,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
     private TextView tvLogDisplay;
     private TextView offlineTitle;
     private TextView tvTemperature;
+    private TextView tvVision;
     private TextView tvResultTextNew;
     private TextView tvPulseOximeter;
     private TextView tvConnectionLabel;
@@ -146,13 +148,13 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
     private BluetoothAdapter bluetoothAdapter;
 
-//    private String GLUCOSE_MSG = "Please click on start Test";
+    //    private String GLUCOSE_MSG = "Please click on start Test";
     private String GLUCOSE_MSG = "";
-//    private String INSERT_STRIP_MSG = "Please insert the strip";
+    //    private String INSERT_STRIP_MSG = "Please insert the strip";
     private String INSERT_STRIP_MSG = "";
-//    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
+    //    private String INSERT_NEW_STRIP_MSG = "Please insert the new strip";
     private String INSERT_NEW_STRIP_MSG = "";
-//    private String ADD_BLOOD_MSG = "Please add blood";
+    //    private String ADD_BLOOD_MSG = "Please add blood";
     private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
@@ -235,7 +237,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if (text.equals("go")) {
-            textToSpeechService = new TextToSpeechService(getApplicationContext(),"Click on start Test");
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "Click on start Test");
         }
 
         //already existed the return statement of the boolean method
@@ -448,6 +450,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
                 finish();
                 break;
 
+            case R.id.tv_header_vision:
+                startActivity(new Intent(context, VisionActivity.class));
+                finish();
+                break;
+
             case R.id.tv_header_pulseoximeter:
                 startActivity(new Intent(context, com.abhaybmicoc.app.oximeter.MainActivity.class));
                 finish();
@@ -515,6 +522,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         tvMobile = findViewById(R.id.tv_mobile_number);
         tvPulseOximeter = findViewById(R.id.tv_header_pulseoximeter);
         tvTemperature = findViewById(R.id.tv_header_tempreture);
+        tvVision = findViewById(R.id.tv_header_vision);
         tvBpMonitor = findViewById(R.id.tv_header_bloodpressure);
         tvConnectionStatus = findViewById(R.id.tv_connection_status);
         tvResultText = layoutGlucose.findViewById(R.id.tv_resultText);
@@ -558,6 +566,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
         tvPulseOximeter.setOnClickListener(this);
         tvBpMonitor.setOnClickListener(this);
         tvTemperature.setOnClickListener(this);
+        tvVision.setOnClickListener(this);
 
         btnReadData.setOnClickListener(view -> readData());
         btnStartTest.setOnClickListener(view -> startTest());
@@ -589,7 +598,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator,V
      */
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),"");
+        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
 
         util = new Util(this, this);
 

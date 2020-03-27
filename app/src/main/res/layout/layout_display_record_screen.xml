@@ -8,7 +8,7 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp">
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,12 +20,11 @@
                 android:layout_width="200dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
-                android:padding="@dimen/pad10"
-                android:visibility="gone"
-                android:src="@mipmap/applogo" />
+                android:src="@mipmap/applogo"
+                android:visibility="gone" />
 
             <LinearLayout
-                android:layout_width="1249dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="2"
@@ -33,11 +32,12 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tv_header_weight"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_header_height"
+                    android:layout_width="0dip"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -46,11 +46,11 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/tv_header_height"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_header_weight"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_weight="1"
                     android:background="@color/orange4"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -60,10 +60,11 @@
 
                 <TextView
                     android:id="@+id/tv_header_pulseoximeter"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1.5"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -73,10 +74,11 @@
 
                 <TextView
                     android:id="@+id/tv_header_bloodpressure"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -86,10 +88,11 @@
 
                 <TextView
                     android:id="@+id/tv_header_tempreture"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -98,11 +101,26 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/tv_header_hemoglobin"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_header_vision"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
+                    android:background="@drawable/repeat"
+                    android:gravity="center"
+                    android:padding="@dimen/pad5"
+                    android:text="Vision"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/tv_header_bloodsugar"
+                    android:layout_width="0dip"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
@@ -111,17 +129,18 @@
                     android:textSize="22sp" />
 
                 <TextView
-                    android:id="@+id/tv_header_bloodsugar"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_header_hemoglobin"
+                    android:layout_width="0dip"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/pad10"
+                    android:layout_margin="@dimen/pad5"
+                    android:layout_weight="1"
                     android:background="@drawable/repeat"
                     android:gravity="center"
                     android:padding="@dimen/pad5"
                     android:text="Hemoglobin"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="22sp" />
 
             </LinearLayout>
 
@@ -131,60 +150,60 @@
                 android:layout_gravity="center"
                 android:layout_weight="2"
                 android:gravity="center"
-                android:weightSum="4"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:weightSum="4">
 
                 <TextView
                     android:id="@+id/tv_name"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
+                    android:layout_weight="1"
                     android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Name : Ashok Songara"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_weight="1"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_age"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Age : 24"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
                     android:background="@drawable/rectangle"
+                    android:gravity="center"
+                    android:text="Age : 24"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_gender"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Gender : Male"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/rectangle"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
                 <TextView
                     android:id="@+id/tv_mobile_number"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_margin="@dimen/pad10"
                     android:layout_weight="1"
+                    android:background="@drawable/rectangle"
+                    android:gravity="center"
                     android:text="Phone : 7984507908"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:background="@drawable/rectangle"
-                    android:layout_margin="@dimen/pad10" />
+                    android:textSize="22sp" />
 
 
             </LinearLayout>
@@ -192,6 +211,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@color/transparent"
                 android:orientation="horizontal"
                 android:weightSum="3">
@@ -288,7 +309,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -385,7 +408,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -479,7 +504,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -574,7 +601,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -668,8 +697,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
                 android:layout_gravity="center"
+                android:layout_marginTop="20dp"
                 android:gravity="center">
 
                 <Button
@@ -692,8 +721,8 @@
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
                     android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="15dp"
                     android:layout_marginBottom="10dp"
                     android:background="@drawable/round_btn_small"
