@@ -269,7 +269,6 @@ public class ThermometerScreen extends AppCompatActivity {
 
     private void handleBaud() {
         if (etTemperature.getText().length() > 0) {
-//            Intent objpulse = new Intent(getApplicationContext(), GlucoseScanListActivity.class);
             Intent objpulse = new Intent(getApplicationContext(), VisionActivity.class);
 
             SharedPreferences.Editor editor = sharePreferenceThermometer.edit();

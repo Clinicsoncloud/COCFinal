@@ -27,12 +27,6 @@ import butterknife.Unbinder;
 public class VisionThirdFragment extends Fragment {
     @BindView(R.id.tv_left_vision_three)
     TextView tvLeftVisionThree;
-    @BindView(R.id.rb_left_vision_3)
-    RadioButton rbLeftVision3;
-    @BindView(R.id.rb_left_vision_4)
-    RadioButton rbLeftVision4;
-    @BindView(R.id.rg_left_vision_three)
-    RadioGroup rgLeftVisionThree;
     @BindView(R.id.tv_right_vision_three)
     TextView tvRightVisionThree;
     @BindView(R.id.rb_right_vision_3)
@@ -48,6 +42,15 @@ public class VisionThirdFragment extends Fragment {
 
 
     private String left_vision = "", right_vision = "";
+
+    public static RadioButton rbLeftVision3;
+    public static RadioButton rbLeftVision4;
+
+    public static RadioGroup rgLeftVisionThree;
+    View rootView;
+
+    private SharedPreferences sharedPreferenceLeftVision;
+    private SharedPreferences sharedPreferenceRightVision;
 
     public VisionThirdFragment() {
         // Required empty public constructor
@@ -70,7 +73,7 @@ public class VisionThirdFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_vision_third, container, false);
+        rootView = inflater.inflate(R.layout.fragment_vision_third, container, false);
         ButterKnife.bind(this, rootView);
 
 
@@ -82,23 +85,31 @@ public class VisionThirdFragment extends Fragment {
         super.onStart();
         Log.e("OnStartThird", ":");
 
+        setupUI();
         setupEvents();
         initializeData();
+    }
+
+    private void setupUI() {
+        rbLeftVision3 = rootView.findViewById(R.id.rb_left_vision_3);
+        rbLeftVision4 = rootView.findViewById(R.id.rb_left_vision_4);
+        rbRightVision3 = rootView.findViewById(R.id.rb_right_vision_3);
+        rbRightVision4 = rootView.findViewById(R.id.rb_right_vision_4);
+        rgLeftVisionThree = rootView.findViewById(R.id.rg_left_vision_three);
+        rgRightVisionThree = rootView.findViewById(R.id.rg_right_vision_three);
     }
 
     /**
      *
      */
     private void initializeData() {
-        /*sharedPreferenceLeftVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, Context.MODE_PRIVATE);
-        sharedPreferenceRightVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, Context.MODE_PRIVATE);*/
+
         preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
 
         left_vision = preferenceVisionResult.getString("eye_left_vision", "");
         right_vision = preferenceVisionResult.getString("eye_right_vision", "");
 
         Log.e("left_vision_Third", ":" + left_vision + "   : right_vision :  " + right_vision);
-
 
         if (!left_vision.equals("") && left_vision.equals("6/24")) {
             rbLeftVision3.setChecked(true);
@@ -125,7 +136,6 @@ public class VisionThirdFragment extends Fragment {
         } else {
             rbRightVision4.setChecked(false);
         }
-
     }
 
     /**
@@ -184,7 +194,6 @@ public class VisionThirdFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

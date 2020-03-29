@@ -28,31 +28,25 @@ public class VisionFourFragment extends Fragment {
 
     @BindView(R.id.tv_left_vision_last)
     TextView tvLeftVisionLast;
-    @BindView(R.id.rb_left_vision_5)
-    RadioButton rbLeftVision5;
-    @BindView(R.id.rb_left_vision_6)
-    RadioButton rbLeftVision6;
-    @BindView(R.id.rb_left_vision_7)
-    RadioButton rbLeftVision7;
-    @BindView(R.id.rg_left_vision_last)
-    RadioGroup rgLeftVisionLast;
     @BindView(R.id.tv_right_vision_last)
     TextView tvRightVisionLast;
-    @BindView(R.id.rb_right_vision_5)
-    RadioButton rbRightVision5;
-    @BindView(R.id.rb_right_vision_6)
-    RadioButton rbRightVision6;
-    @BindView(R.id.rb_right_vision_7)
-    RadioButton rbRightVision7;
-    @BindView(R.id.rg_right_vision_last)
-    RadioGroup rgRightVisionLast;
 
-    //    private SharedPreferences preferenceLeftVisionResult;
-//    private SharedPreferences preferenceRightVisionResult;
+    public static RadioButton rbLeftVision5;
+    public static RadioButton rbLeftVision6;
+    public static RadioButton rbLeftVision7;
+    public static RadioButton rbRightVision5;
+    public static RadioButton rbRightVision6;
+    public static RadioButton rbRightVision7;
+
+    public static RadioGroup rgRightVisionLast;
+    public static RadioGroup rgLeftVisionLast;
+
     private SharedPreferences preferenceVisionResult;
 
     private String left_vision = "";
     private String right_vision = "";
+
+    View rootView;
 
     public VisionFourFragment() {
         // Required empty public constructor
@@ -75,12 +69,16 @@ public class VisionFourFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_vision_four, container, false);
+        rootView = inflater.inflate(R.layout.fragment_vision_four, container, false);
         ButterKnife.bind(this, rootView);
 
+        setupUI();
+        /*setupEvents();
+        initializeData();*/
 
         return rootView;
     }
+
 
     @Override
     public void onStart() {
@@ -91,13 +89,26 @@ public class VisionFourFragment extends Fragment {
         initializeData();
     }
 
+    private void setupUI() {
+
+        rbLeftVision5 = rootView.findViewById(R.id.rb_left_vision_5);
+        rbLeftVision6 = rootView.findViewById(R.id.rb_left_vision_6);
+        rbLeftVision7 = rootView.findViewById(R.id.rb_left_vision_7);
+
+        rbRightVision5 = rootView.findViewById(R.id.rb_right_vision_5);
+        rbRightVision6 = rootView.findViewById(R.id.rb_right_vision_6);
+        rbRightVision7 = rootView.findViewById(R.id.rb_right_vision_7);
+
+        rgLeftVisionLast = rootView.findViewById(R.id.rg_left_vision_last);
+        rgRightVisionLast = rootView.findViewById(R.id.rg_right_vision_last);
+    }
+
     /**
      * initialization of data
      * initialized sharedpreferences
      */
     private void initializeData() {
-        /*preferenceLeftVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, Context.MODE_PRIVATE);
-        preferenceRightVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, Context.MODE_PRIVATE);*/
+
         preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
 
         left_vision = preferenceVisionResult.getString("eye_left_vision", "");

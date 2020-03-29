@@ -27,15 +27,16 @@ import static android.content.Context.MODE_PRIVATE;
 public class VisionSecondFragment extends Fragment {
 
     //region variables
+    View rootView;
 
     @BindView(R.id.tv_left_vision)
     TextView tvLeftVision;
-    @BindView(R.id.rb_left_vision_2)
-    RadioButton rbLeftVision2;
+
+    public static RadioButton rbLeftVision2;
+    public static RadioButton rbRightVision2;
     @BindView(R.id.tv_right_vision)
     TextView tvRightVision;
-    @BindView(R.id.rb_right_vision_2)
-    RadioButton rbRightVision2;
+
 
     /**
      * sharedPreferences Declaration
@@ -72,9 +73,13 @@ public class VisionSecondFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_vision_second, container, false);
+        rootView = inflater.inflate(R.layout.fragment_vision_second, container, false);
         ButterKnife.bind(this, rootView);
 
+
+        /*setupUI(rootView);
+        setupEvents();
+        initializeData();*/
 
         return rootView;
     }
@@ -83,9 +88,14 @@ public class VisionSecondFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.e("OnStartSecond", ":");
-
+        setupUI();
         setupEvents();
         initializeData();
+    }
+
+    private void setupUI() {
+        rbLeftVision2 = rootView.findViewById(R.id.rb_left_vision_2);
+        rbRightVision2 = rootView.findViewById(R.id.rb_right_vision_2);
     }
 
     /**
@@ -93,15 +103,12 @@ public class VisionSecondFragment extends Fragment {
      * declared the sharedpreferences here
      */
     private void initializeData() {
-/*        sharedPrefVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, MODE_PRIVATE);
-        sharedPreferenceRightVision = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, MODE_PRIVATE);*/
         preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, MODE_PRIVATE);
 
         left_vision = preferenceVisionResult.getString("eye_left_vision", "");
         right_vision = preferenceVisionResult.getString("eye_right_vision", "");
 
         Log.e("left_vision_Second", ":" + left_vision + "   : right_vision :  " + right_vision);
-
 
         if (!left_vision.equals("") && left_vision.equals("6/36")) {
             rbLeftVision2.setChecked(true);
@@ -137,6 +144,10 @@ public class VisionSecondFragment extends Fragment {
                     saveRightVisionResult("6/36");
             }
         });
+    }
+
+    private void clearFirstRadioButton() {
+        VisionFirstFragment.rbLeftVision1.setChecked(false);
     }
 
     /**

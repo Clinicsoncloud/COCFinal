@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.os.Handler;
+import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 import android.view.Gravity;
 import android.widget.Button;
@@ -431,7 +432,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         }
     }
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -450,11 +450,6 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
                 finish();
                 break;
 
-            case R.id.tv_header_vision:
-                startActivity(new Intent(context, VisionActivity.class));
-                finish();
-                break;
-
             case R.id.tv_header_pulseoximeter:
                 startActivity(new Intent(context, com.abhaybmicoc.app.oximeter.MainActivity.class));
                 finish();
@@ -462,6 +457,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
             case R.id.tv_header_bloodpressure:
                 startActivity(new Intent(this, BloodPressureActivity.class));
+                finish();
+                break;
+
+            case R.id.tv_header_vision:
+                startActivity(new Intent(this, VisionActivity.class));
                 finish();
                 break;
         }

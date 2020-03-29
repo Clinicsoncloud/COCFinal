@@ -235,7 +235,6 @@ public class BloodPressureActivity extends Activity {
     private void setStepsViewVisiblity() {
         layoutSteps.setVisibility(View.VISIBLE);
         layoutBloodPressure.setVisibility(View.GONE);
-
     }
 
     @Override

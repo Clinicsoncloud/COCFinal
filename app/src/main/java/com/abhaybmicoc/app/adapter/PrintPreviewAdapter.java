@@ -580,28 +580,28 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
     private void showEyeLeftVision(ViewHolder viewHolder) {
         if (printData.getCurr_value().equals("")) {
-            viewHolder.rangeTV.setText("");
+            viewHolder.rangeTV.setText("6/6");
             viewHolder.resultTV.setText("");
             viewHolder.valueTV.setText("NA");
             viewHolder.parameterTV.setText("" + printData.getParameter());
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
-            viewHolder.rangeTV.setText("");
+            viewHolder.rangeTV.setText("6/6");
             viewHolder.resultTV.setText("");
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
         }
     }
-
+  
     private void showEyeRightVision(ViewHolder viewHolder) {
         if (printData.getCurr_value().equals("")) {
-            viewHolder.rangeTV.setText("");
+            viewHolder.rangeTV.setText("6/6");
             viewHolder.resultTV.setText("");
             viewHolder.valueTV.setText("NA");
             viewHolder.parameterTV.setText("" + printData.getParameter());
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
-            viewHolder.rangeTV.setText("");
+            viewHolder.rangeTV.setText("6/6");
             viewHolder.resultTV.setText("");
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());

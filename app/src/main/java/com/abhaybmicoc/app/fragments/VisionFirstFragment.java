@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.utils.ApiUtils;
@@ -28,24 +29,25 @@ public class VisionFirstFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
     @BindView(R.id.tv_left_vision)
     TextView tvLeftVision;
-    @BindView(R.id.rb_left_vision_1)
-    RadioButton rbLeftVision1;
     @BindView(R.id.tv_right_vision)
     TextView tvRightVision;
-    @BindView(R.id.rb_right_vision_1)
-    RadioButton rbRightVision1;
 
-    //    private SharedPreferences preferenceLeftVisionResult;
-//    private SharedPreferences preferenceRightVisionResult;
+    public static RadioButton rbLeftVision1;
+    public static RadioButton rbRightVision1;
+
     private SharedPreferences preferenceVisionResult;
 
     private String left_vision = "", right_vision = "";
 
+    View rootView;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
 
     public VisionFirstFragment() {
         // Required empty public constructor
@@ -68,7 +70,7 @@ public class VisionFirstFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_vision_first, container, false);
+        rootView = inflater.inflate(R.layout.fragment_vision_first, container, false);
         ButterKnife.bind(this, rootView);
 
         return rootView;
@@ -79,17 +81,21 @@ public class VisionFirstFragment extends Fragment {
         super.onStart();
         Log.e("OnStartFirst", ":");
 
+        setupUI();
         setupEvents();
         initializeData();
     }
 
 
+    private void setupUI() {
+        rbLeftVision1 = rootView.findViewById(R.id.rb_left_vision_1);
+        rbRightVision1 = rootView.findViewById(R.id.rb_right_vision_1);
+    }
+
     /**
      *
      */
     private void initializeData() {
-        /*preferenceLeftVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_LEFTVISION, Context.MODE_PRIVATE);
-        preferenceRightVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_RIGHTVISION, Context.MODE_PRIVATE);*/
         preferenceVisionResult = getContext().getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
 
         left_vision = preferenceVisionResult.getString("eye_left_vision", "");
@@ -119,8 +125,10 @@ public class VisionFirstFragment extends Fragment {
         rbLeftVision1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked)
+                if (checked) {
                     saveLeftVisionResult("6/60");
+
+                }
             }
         });
 
@@ -131,6 +139,41 @@ public class VisionFirstFragment extends Fragment {
                     saveRightVisionResult("6/60");
             }
         });
+    }
+
+    private void radioGroupFourClear(RadioButton radioButton) {
+        if (radioButton == rbLeftVision1) {
+            VisionFourFragment.rbLeftVision5.setChecked(false);
+            VisionFourFragment.rbLeftVision6.setChecked(false);
+            VisionFourFragment.rbLeftVision7.setChecked(false);
+        } else {
+            VisionFourFragment.rbRightVision5.setChecked(false);
+            VisionFourFragment.rbRightVision6.setChecked(false);
+            VisionFourFragment.rbRightVision7.setChecked(false);
+        }
+    }
+
+    private void radioGroupThreeClear(RadioButton radioButton) {
+        Toast.makeText(getContext(), "unchecked the left radiobuttons", Toast.LENGTH_SHORT).show();
+        if (VisionThirdFragment.rbLeftVision3.isChecked()) {
+            Log.e("rbLeftVision3_Log", " : " + VisionThirdFragment.rbLeftVision4.isChecked());
+            VisionThirdFragment.rbLeftVision3.setChecked(false);
+        } else if (VisionThirdFragment.rbLeftVision4.isChecked()) {
+            Log.e("rbLeftVision4_Log", " : " + VisionThirdFragment.rbLeftVision4.isChecked());
+            VisionThirdFragment.rbLeftVision4.setChecked(false);
+        }
+       /* } else {
+            Toast.makeText(getContext(), "unchecked the right radiobuttons", Toast.LENGTH_SHORT).show();
+                if(VisionThirdFragment.rbRightVision3.isChecked()){
+                    VisionThirdFragment.rbRightVision3.setChecked(false);
+                }else if( VisionThirdFragment.rbRightVision4.isChecked()){
+                    VisionThirdFragment.rbRightVision4.setChecked(false);
+                }
+        }*/
+    }
+
+    private void radiogroupTwoClear(RadioButton radioButton) {
+        VisionSecondFragment.rbLeftVision2.setChecked(false);
     }
 
     /**

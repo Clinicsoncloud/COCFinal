@@ -1614,6 +1614,7 @@ public class PrintPreviewActivity extends Activity {
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
+            Log.e("Post_URL", ":" + ApiUtils.PRINT_POST_URL);
             Log.e("Post_requestBodyParams", ":" + requestBodyParams);
             Log.e("Post_mapHeadersParams", ":" + mapHeadersParams);
 
@@ -1631,7 +1632,6 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
-
 
         Log.e("response_PostLog", ":" + response);
         Log.e("error_PostLog", ":" + error);
@@ -1659,8 +1659,6 @@ public class PrintPreviewActivity extends Activity {
      */
     private void readFileName(String response) {
         try {
-
-
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
             fileName = dataObject.getString("file");

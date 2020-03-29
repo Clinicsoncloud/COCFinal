@@ -3,8 +3,9 @@ package com.abhaybmicoc.app.utils;
 public class ApiUtils {
 
     private static String PROTOCOL = "http://";
-    //    private static String SERVER_URL = "45.252.190.29";
-    private static String SERVER_URL = "192.168.43.40/medicine-backend/public";
+    //        private static String SERVER_URL = "45.252.190.29";
+    private static String SERVER_URL = "45.252.190.200";            // Test server  vv- 27-03-2020
+//    private static String SERVER_URL = "192.168.43.40/medicine-backend/public";
 
     public static String KIOSK = PROTOCOL + SERVER_URL + "/api/v1/kiosk";
     public static String LOGIN_URL = PROTOCOL + SERVER_URL + "/api/v1/login";

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/white"
+    android:orientation="vertical"
     tools:context=".fragments.VisionThirdFragment">
+
     <TextView
         android:id="@+id/tv_left_vision_three"
         android:layout_width="wrap_content"
@@ -21,32 +21,32 @@
         android:id="@+id/rg_left_vision_three"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="40dp"
+        android:layout_below="@id/tv_left_vision_three"
         android:layout_marginLeft="20dp"
-        android:layout_below="@id/tv_left_vision_three">
+        android:layout_marginTop="40dp"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/rb_left_vision_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp" />
 
         <RadioButton
             android:id="@+id/rb_left_vision_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"/>
+            android:layout_marginTop="250dp" />
 
     </RadioGroup>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
         android:layout_centerInParent="true"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="70dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -59,13 +59,14 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="214dp"
                     android:layout_height="182dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alpha_t"/>
+                    android:src="@drawable/alpha_t" />
             </LinearLayout>
 
             <LinearLayout
@@ -84,13 +85,14 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="214dp"
                     android:layout_height="182dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alpha_z"/>
+                    android:src="@drawable/alpha_z" />
             </LinearLayout>
 
         </LinearLayout>
@@ -105,46 +107,53 @@
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="163dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alpha_l"/>
+                    android:src="@drawable/alpha_l" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="163dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alphabet_p"/>
+                    android:src="@drawable/alphabet_p" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="163dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alpha_e"/>
+                    android:src="@drawable/alpha_e" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:orientation="vertical">
+
                 <ImageView
                     android:layout_width="163dp"
                     android:layout_height="125dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/alpha_d"/>
+                    android:src="@drawable/alpha_d" />
             </LinearLayout>
 
 
@@ -168,24 +177,24 @@
         android:id="@+id/rg_right_vision_three"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_below="@id/tv_right_vision_three"
         android:layout_alignParentRight="true"
-        android:gravity="center_vertical"
         android:layout_marginTop="40dp"
         android:layout_marginRight="20dp"
-        android:layout_below="@id/tv_right_vision_three">
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <RadioButton
             android:id="@+id/rb_right_vision_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp" />
 
         <RadioButton
             android:id="@+id/rb_right_vision_4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"/>
+            android:layout_marginTop="250dp" />
 
     </RadioGroup>
 

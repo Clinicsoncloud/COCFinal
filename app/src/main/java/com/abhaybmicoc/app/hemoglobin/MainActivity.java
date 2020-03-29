@@ -45,6 +45,7 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
+import com.abhaybmicoc.app.activity.VisionActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.glucose.GlucoseScanListActivity;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
     private TextView textDateOfBirth;
     private TextView tvMainBpMonitor;
     private TextView tvMainTemperature;
+    private TextView tvMainVision;
 
     private SharedPreferences sharedPreferencesDevice;
     private SharedPreferences sharedPreferencesPersonal;
@@ -375,8 +377,9 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
         tvMainHeight = findViewById(R.id.tv_header_height);
         tvMainWeight = findViewById(R.id.tv_header_weight);
         tvMobileNumber = findViewById(R.id.tv_mobile_number);
-        tvMainSugar = findViewById(R.id.tv_header_bloodsugar);
+        tvMainSugar = findViewById(R.id.tv_header_sugar);
         tvMainTemperature = findViewById(R.id.tv_header_tempreture);
+        tvMainVision = findViewById(R.id.tv_header_vision);
         tvMainOximeter = findViewById(R.id.tv_header_pulseoximeter);
         tvMainBpMonitor = findViewById(R.id.tv_header_bloodpressure);
 
@@ -411,6 +414,10 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         tvMainBpMonitor.setOnClickListener(view -> {
             context.startActivity(new Intent(MainActivity.this, BloodPressureActivity.class));
+        });
+
+        tvMainVision.setOnClickListener(view -> {
+            context.startActivity(new Intent(MainActivity.this, VisionActivity.class));
         });
 
         tvMainSugar.setOnClickListener(view -> {
