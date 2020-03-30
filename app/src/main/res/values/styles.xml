@@ -146,4 +146,10 @@
 
     </style>
 
+    <style name="hint_text_textview_style">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
 </resources>

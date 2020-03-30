@@ -64,22 +64,28 @@
         <activity
             android:name=".activity.ChangeLanguageActivity"
             android:label="@string/title_activity_change_language"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
+            android:theme="@style/NoActionBar" />
+
+        <activity
+            android:name=".activity.TechnicianInstallationActivity"
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="fullSensor"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".actofit.ActofitMainActivity"
             android:label="@string/title_activity_weight_screen"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppThemeAction" />
         <activity
             android:name=".thermometer.ThermometerScreen"
