@@ -58,6 +58,7 @@ import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.Utils;
 import com.prowesspride.api.Printer_GEN;
 
 import java.io.InputStream;
@@ -430,8 +431,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
      */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void initializeData() {
-
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), HEMOGLOBIN_MSG);
+        setupTextToSpeech();
 
         BluetoothManager bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
@@ -452,6 +452,11 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         // connection change and services discovered.
         connectOrShowScanDevice();
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), HEMOGLOBIN_MSG);
     }
 
     private void setUserInfo() {
@@ -643,7 +648,8 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
             btnConnect.setText("Connected");
             btnConnect.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
             btnConnect.setClickable(false);
-            textToSpeechService.speakOut(START_TEST_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(START_TEST_MSG);
         } else {
             COUNT_CONNECTION_TRY++;
 

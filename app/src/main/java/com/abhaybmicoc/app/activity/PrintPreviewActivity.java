@@ -232,6 +232,7 @@ public class PrintPreviewActivity extends Activity {
         setContentView(R.layout.printpreview);
         ButterKnife.bind(this);
 
+        init("");
         setupUI();
         setupEvents();
         initializeData();
@@ -249,6 +250,9 @@ public class PrintPreviewActivity extends Activity {
 
         if (mBT.isEnabled())
             mBT.disable();
+
+        if(textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -302,6 +306,11 @@ public class PrintPreviewActivity extends Activity {
 
     // region Initialization methods
 
+    private void init(String msg) {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), msg);
+    }
+
     private void setupUI() {
         ivDownload = findViewById(R.id.iv_download);
 
@@ -315,7 +324,7 @@ public class PrintPreviewActivity extends Activity {
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
-            textToSpeechService.speakOut(RECEIPT_MSG);
+            init(RECEIPT_MSG);
 
             EnterTextAsyc asynctask = new EnterTextAsyc();
             asynctask.execute(0);
@@ -333,8 +342,6 @@ public class PrintPreviewActivity extends Activity {
 
         mGP = ((AndMedical_App_Global) getApplicationContext());
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), PRINT_MSG);
-
         connectToSavedPrinter();
 
         gettingDataObjects();
@@ -347,6 +354,10 @@ public class PrintPreviewActivity extends Activity {
 //        saveDataToLocal();
         postData();
 
+    }
+
+    private void setupTextToSpeech() {
+        init(PRINT_MSG);
     }
 
     private void connectToSavedPrinter() {
@@ -984,7 +995,7 @@ public class PrintPreviewActivity extends Activity {
             btnPrint.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnPrint.setEnabled(true);
 
-            textToSpeechService.speakOut(PRINT_MSG);
+            init(PRINT_MSG);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -2124,14 +2135,13 @@ public class PrintPreviewActivity extends Activity {
 
                 printerActivation();
             } else {
-                textToSpeechService.speakOut(RECONNECT_MSG);
                 showReconnectPopup();
             }
         }
     }
 
     private void showReconnectPopup() {
-
+        init(RECONNECT_MSG);
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
         alertDialogBuilder.setTitle("Communication Lost!");
@@ -2153,7 +2163,6 @@ public class PrintPreviewActivity extends Activity {
         /* show alert dialog */
         if (!((Activity) context).isFinishing())
             alertDialog.show();
-        textToSpeechService.speakOut(RECONNECT_MSG);
         alertDialogBuilder.setCancelable(false);
     }
 }

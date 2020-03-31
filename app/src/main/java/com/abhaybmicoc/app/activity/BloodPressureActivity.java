@@ -69,6 +69,7 @@ import com.abhaybmicoc.app.utilities.ADSharedPreferences;
 import com.abhaybmicoc.app.utilities.ANDMedicalUtilities;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.utils.Tools;
+import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.view.BloodPressureDispalyDataLayout;
 
 public class BloodPressureActivity extends Activity {
@@ -328,7 +329,7 @@ public class BloodPressureActivity extends Activity {
      */
     private void initializeData() {
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), BLOOD_PRESSURE_MSG);
+        setupTextToSpeech();
 
         tvName.setText("Name : " + sharedPreferencesPersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
@@ -343,6 +344,11 @@ public class BloodPressureActivity extends Activity {
 
         setDeviceConnectionTimeoutHandler();
 
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), BLOOD_PRESSURE_MSG);
     }
 
     private void setDeviceConnectionTimeoutHandler() {

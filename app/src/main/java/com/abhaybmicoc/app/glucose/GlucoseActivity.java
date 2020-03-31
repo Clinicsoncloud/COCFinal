@@ -49,6 +49,7 @@ import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.utils.Utils;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
 import com.abhaybmicoc.app.glucose.adapters.ReadingAdapter;
@@ -261,7 +262,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(INSERT_STRIP_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(INSERT_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -271,7 +273,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(ADD_BLOOD_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(ADD_BLOOD_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.addblood));
@@ -282,7 +285,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             ivGlucose.setVisibility(View.VISIBLE);
             readingRecyclerView.setVisibility(View.GONE);
 
-            textToSpeechService.speakOut(INSERT_NEW_STRIP_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(INSERT_NEW_STRIP_MSG);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 ivSteps.setImageDrawable(getDrawable(R.drawable.insertstrip));
@@ -597,8 +601,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
      *
      */
     private void initializeData() {
-
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
+        setupTextToSpeech();
 
         util = new Util(this, this);
 
@@ -617,6 +620,11 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
         }
 
         connectDevice();
+    }
+
+    private void setupTextToSpeech() {
+        if (Utils.isOnline(context))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), "");
     }
 
     private void connectDevice() {

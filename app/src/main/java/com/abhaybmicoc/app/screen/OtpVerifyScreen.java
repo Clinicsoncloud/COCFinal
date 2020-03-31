@@ -110,8 +110,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        textToSpeechService.speakOut(FILL_REGISTRATION_MESSAGE);
     }
 
     @Override
@@ -199,7 +197,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(etMobileNumber, InputMethodManager.SHOW_IMPLICIT);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
+        setupTextToSpeech();
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
@@ -217,6 +215,12 @@ public class OtpVerifyScreen extends AppCompatActivity {
             initializeGender();
         } catch (Exception e) {
             // TODO: Handle exception
+        }
+    }
+
+    private void setupTextToSpeech() {
+        if(Utils.isOnline(context)){
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
         }
     }
 

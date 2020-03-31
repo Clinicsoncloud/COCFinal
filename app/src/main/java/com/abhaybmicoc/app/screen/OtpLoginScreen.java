@@ -285,7 +285,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out_to_right);
 
-        textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
+        setupTextToSpeech();
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         bluetoothAdapter.enable();
@@ -320,6 +320,12 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         languagesList.add("Marathi");
 
         clearDatabase();
+    }
+
+    private void setupTextToSpeech() {
+        if(Utils.isOnline(context)){
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
+        }
     }
 
     // endregion
