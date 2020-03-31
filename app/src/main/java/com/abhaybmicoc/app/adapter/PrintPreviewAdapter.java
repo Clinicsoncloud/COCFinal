@@ -587,12 +587,19 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
             viewHolder.rangeTV.setText("6/6");
-            viewHolder.resultTV.setText("");
+
+            if (printData.getCurr_value().equals("6/6")) {
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+            } else {
+                viewHolder.resultTV.setText("Not upto Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            }
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
         }
     }
-  
+
     private void showEyeRightVision(ViewHolder viewHolder) {
         if (printData.getCurr_value().equals("")) {
             viewHolder.rangeTV.setText("6/6");
@@ -602,7 +609,15 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
             viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.transparent));
         } else {
             viewHolder.rangeTV.setText("6/6");
-            viewHolder.resultTV.setText("");
+
+            if (printData.getCurr_value().equals("6/6")) {
+                viewHolder.resultTV.setText("Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.green));
+            } else {
+                viewHolder.resultTV.setText("Not upto Standard");
+                viewHolder.resultTV.setBackgroundColor(context.getResources().getColor(R.color.solid_red));
+            }
+
             viewHolder.valueTV.setText("" + printData.getCurr_value());
             viewHolder.parameterTV.setText("" + printData.getParameter());
         }

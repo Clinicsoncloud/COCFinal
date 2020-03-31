@@ -76,6 +76,12 @@ public class SQLiteQueries {
             + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT + " VARCHAR,"
             + Constant.Fields.FATFREERSNGE + " VARCHAR,"
 
+            + Constant.Fields.EYE_LEFT_VISION + " VARCHAR,"
+            + Constant.Fields.EYE_RIGHT_VISION + " VARCHAR,"
+            + Constant.Fields.LEFT_EYERESULT + " VARCHAR,"
+            + Constant.Fields.RIGHT_EYERESULT + " VARCHAR,"
+            + Constant.Fields.EYERANGE + " VARCHAR,"
+
             + Constant.Fields.CREATED_BY + " VARCHAR,"
             + Constant.Fields.UPDATED_BY + " VARCHAR,"
             + Constant.Fields.DELETED_BY + " VARCHAR,"

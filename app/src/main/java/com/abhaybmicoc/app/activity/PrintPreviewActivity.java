@@ -201,6 +201,7 @@ public class PrintPreviewActivity extends Activity {
     private String skeletonmuscleResult;
     private String standardSkeltonMuscle;
     private String fatfreeweightResult = "";
+    private String standardEyeRange = "";
 
     public static Printer_GEN ptrGen;
     private AndMedical_App_Global mGP = null;
@@ -1006,6 +1007,8 @@ public class PrintPreviewActivity extends Activity {
 
         glucoseRange();
 
+        standardEyeRange = "6/6";
+
         if (SharedPreferenceService.isMalePatient(context))
             maleRange(standardWeightMen);
         else
@@ -1328,6 +1331,12 @@ public class PrintPreviewActivity extends Activity {
             else
                 paramsContentValues.put(Constant.Fields.HEMOGLOBIN_RANGE, "NA");
 
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+                    !sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equals(""))
+                paramsContentValues.put(Constant.Fields.EYERANGE, standardEyeRange);
+            else
+                paramsContentValues.put(Constant.Fields.EYERANGE, "NA");
+
             paramsContentValues.put(Constant.Fields.HEIGHT_RESULT, "");
             paramsContentValues.put(Constant.Fields.BMI_RESULT, bmiResult);
             paramsContentValues.put(Constant.Fields.BMR_RESULT, bmrResult);
@@ -1353,6 +1362,22 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
             paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
+
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+                    sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("6/6")) {
+                paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Standard");
+            } else {
+                paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
+
+            }
+
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
+                    sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("6/6")) {
+                paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
+            } else {
+                paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
+
+            }
 
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
@@ -1587,6 +1612,31 @@ public class PrintPreviewActivity extends Activity {
             else
                 requestBodyParams.put(Constant.Fields.HEMOGLOBIN_RANGE, "NA");
 
+
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+                    !sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equals(""))
+                requestBodyParams.put(Constant.Fields.EYERANGE, standardEyeRange);
+            else
+                requestBodyParams.put(Constant.Fields.EYERANGE, "NA");
+
+
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+                    sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("6/6")) {
+                requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Standard");
+            } else {
+                requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
+
+            }
+
+            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
+                    sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("6/6")) {
+                requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
+            } else {
+                requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
+
+            }
+
+
             requestBodyParams.put(Constant.Fields.HEIGHT_RESULT, "");
             requestBodyParams.put(Constant.Fields.BMI_RESULT, bmiResult);
             requestBodyParams.put(Constant.Fields.BMR_RESULT, bmrResult);
@@ -1608,15 +1658,13 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
+            requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
 
             HashMap mapHeadersParams = new HashMap();
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
-            Log.e("Post_URL", ":" + ApiUtils.PRINT_POST_URL);
-            Log.e("Post_requestBodyParams", ":" + requestBodyParams);
-            Log.e("Post_mapHeadersParams", ":" + mapHeadersParams);
 
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
@@ -1632,10 +1680,6 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("response_PostLog", ":" + response);
-        Log.e("error_PostLog", ":" + error);
-        Log.e("status_postLog", ":" + status);
 
         if (status.equals("response")) {
             try {

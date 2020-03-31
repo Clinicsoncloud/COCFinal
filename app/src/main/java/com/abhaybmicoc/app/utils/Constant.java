@@ -92,6 +92,7 @@ public class Constant {
         public final static String SKELETAL_MUSCLE_RANGE = "skeletanmusclerange";
         public final static String BLOOD_PRESSURE_SYSTOLIC_RANGE = "systolicrange";
         public final static String BLOOD_PRESSURE_DIASTOLIC_RANGE = "dialosticrange";
+        public final static String EYERANGE = "eyerange";
 
         /**
          * constant fields for results
@@ -118,6 +119,8 @@ public class Constant {
         public final static String BLOOD_PRESSURE_SYSTOLIC_RESULT = "systolicresult";
         public final static String BLOOD_PRESSURE_DIASTOLIC_RESULT = "bloodpressureresult";
         public final static String FATFREERSNGE = "fatfreersnge";
+        public final static String LEFT_EYERESULT = "eyeleftresult";
+        public final static String RIGHT_EYERESULT = "eyerightresult";
 
         public static final String CREATED_BY = "created_by";
         public static final String UPDATED_BY = "updated_by";
