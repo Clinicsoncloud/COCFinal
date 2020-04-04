@@ -68,7 +68,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     // region Variables
 
-
     private Context context = OtpLoginScreen.this;
     private Button btnLogin;
     private EditText etMobileNumber;
@@ -179,7 +178,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void setOfflineDataStatus() {
-        JSONArray dataArray = dataBaseHelper.getOfflineData();
+        JSONArray dataArray = dataBaseHelper.getAllOfflineData();
         if (dataArray != null && dataArray.length() > 0) {
             tvNoOfRecords.setText(String.valueOf(dataArray.length()));
             btnSynch.setVisibility(View.VISIBLE);
@@ -227,7 +226,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
-
         try {
             if (status.equals("response")) {
                 updateLocalStatus(response);
@@ -244,33 +242,37 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         try {
             JSONObject jsonObject = new JSONObject(response);
 
-            JSONArray resultArray = jsonObject.getJSONArray("result");
+//            JSONArray resultArray = jsonObject.getJSONArray("result");
+            JSONArray patient_id_Array = jsonObject.getJSONArray("patient_ids");
+            JSONArray parameter_id_Array = jsonObject.getJSONArray("parameter_ids");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < resultArray.length(); i++) {
-
+            for (int i = 0; i < patient_id_Array.length(); i++) {
                 if (patientId.equals("")) {
-                    patientId = resultArray.getJSONObject(i).getString("patient_id");
+                    patientId = String.valueOf(patient_id_Array.get(i));
                 } else {
-                    patientId = patientId + "," + resultArray.getJSONObject(i).getString("patient_id");
-                }
-
-
-                if (parameterId.equals("")) {
-                    parameterId = resultArray.getJSONObject(i).getString("parameter_id");
-                } else {
-                    parameterId = parameterId + "," + resultArray.getJSONObject(i).getString("parameter_id");
+                    patientId = patientId + "," + String.valueOf(patient_id_Array.get(i));
                 }
             }
+
+            for (int j = 0; j < parameter_id_Array.length(); j++) {
+                if (parameterId.equals("")) {
+                    parameterId = String.valueOf(parameter_id_Array.get(j));
+                } else {
+                    parameterId = parameterId + "," + String.valueOf(parameter_id_Array.get(j));
+                }
+            }
+
+            Log.e("patientId_Updated", ":" + patientId);
+            Log.e("parameterId_Updated", ":" + parameterId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patientId);
 
             dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameterId);
 
             Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
-
 
             setOfflineDataStatus();
 
@@ -323,7 +325,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void setupTextToSpeech() {
-        if(Utils.isOnline(context)){
+        if (Utils.isOnline(context)) {
             textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
         }
     }
@@ -340,6 +342,64 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         setupNavigationDrawer();
         setupEvents();
         initializeData();
+        if (Utils.isOnline(context)) {
+            checkKioskStatus();
+        }
+    }
+
+    private void checkKioskStatus() {
+        try {
+            Map<String, String> headerParams = new HashMap<>();
+            Map<String, String> requestBodyParams = new HashMap<>();
+
+            requestBodyParams.put("token", kiosk_id);
+
+            HttpService.accessWebServices(
+                    context,
+                    ApiUtils.FIND_BY_TOKEN,
+                    requestBodyParams,
+                    headerParams,
+                    (response, error, status) -> handleCheckKioskAPIResponse(response, error, status));
+        } catch (Exception e) {
+        }
+
+    }
+
+    private void handleCheckKioskAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("response_CheckKiosk", "" + response);
+        try {
+            if (status.equals("response")) {
+                JSONObject resultObj = new JSONObject(response);
+                if (resultObj != null) {
+                    updateKioskInfo(resultObj);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void updateKioskInfo(JSONObject resultObj) {
+        try {
+
+            // Writing data to SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferencesActivator.edit();
+            editor.putString("clinic_name", resultObj.getString("name"));
+            editor.putString("address", resultObj.getString("address"));
+            editor.putString("app_version", resultObj.getString("app_version"));
+            editor.putString("location_id", resultObj.getString("location_id"));
+            editor.putString("total_tests", resultObj.getString("total_tests"));
+            editor.putString("installed_by", resultObj.getString("installed_by"));
+            editor.putString("assigned_user_id", resultObj.getString("assigned_user_id"));
+            editor.putString("installation_date", resultObj.getString("installation_date"));
+            editor.putString("machine_operator_name", resultObj.getString("machine_operator_name"));
+            editor.putString("machine_operator_mobile_number", resultObj.getString("machine_operator_mobile_number"));
+            editor.putString("client_name", resultObj.getString("client_name"));
+            editor.putString("is_trial_mode", resultObj.getString("is_trial_mode"));
+            editor.commit();
+
+        } catch (Exception e) {
+        }
     }
 
     private void setupNavigationDrawer() {
@@ -400,7 +460,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             } else if (etMobileNumber.getText().toString().length() < 10) {
                 etMobileNumber.setError("Please Enter Valid Mobile Number");
             } else {
-//                savePatient();
+                savePatient();
+
                 if (Utils.isOnline(context)) {
                     GenerateOTP();
                 } else {
@@ -506,9 +567,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         requestBodyParams.put("kiosk_id", kiosk_id);
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
 
-        Log.e("Login_Url", ":" + ApiUtils.LOGIN_URL);
-        Log.e("Login_requestBodyParams", ":" + requestBodyParams);
-        Log.e("Login_headerParams", ":" + headerParams);
         HttpService.accessWebServices(
                 context,
                 ApiUtils.LOGIN_URL,
@@ -563,7 +621,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()) {
-
             case R.id.nav_offline_sync:
                 showOfflineDataStatus();
                 break;
@@ -574,10 +631,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 break;
 
             case R.id.nav_language:
-
                 startActivity(new Intent(context, ChangeLanguageActivity.class));
                 finish();
-
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

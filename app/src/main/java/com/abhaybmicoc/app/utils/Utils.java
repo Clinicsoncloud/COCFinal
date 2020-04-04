@@ -43,16 +43,21 @@ import com.abhaybmicoc.app.R;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
+import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 
 
 /**
@@ -108,6 +113,7 @@ public class Utils {
     };
     private static final int MY_PERMISSIONS_REQUEST_CAMERA = 3;
 
+    private static final int  MEGABYTE = 1024 * 1024;
 
     private static Utils utils;
     private int MY_PERMISSIONS_REQUEST_ACCESS_COARSE_LOCATION = 566;
@@ -643,5 +649,32 @@ public class Utils {
         return Base64.encodeToString(imgByte, Base64.DEFAULT);
     }
 
+    public static void downloadFile(String fileUrl, File directory){
+        try {
+
+            java.net.URL url = new URL(fileUrl);
+            HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+            //urlConnection.setRequestMethod("GET");
+            //urlConnection.setDoOutput(true);
+            urlConnection.connect();
+
+            InputStream inputStream = urlConnection.getInputStream();
+            FileOutputStream fileOutputStream = new FileOutputStream(directory);
+            int totalSize = urlConnection.getContentLength();
+
+            byte[] buffer = new byte[MEGABYTE];
+            int bufferLength = 0;
+            while((bufferLength = inputStream.read(buffer))>0 ){
+                fileOutputStream.write(buffer, 0, bufferLength);
+            }
+            fileOutputStream.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

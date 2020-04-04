@@ -1,5 +1,6 @@
 package com.abhaybmicoc.app.activity;
 
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
+import android.view.View;
 import android.view.Window;
 import android.os.AsyncTask;
 import android.widget.Toast;
@@ -68,6 +70,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -251,7 +255,7 @@ public class PrintPreviewActivity extends Activity {
         if (mBT.isEnabled())
             mBT.disable();
 
-        if(textToSpeechService != null)
+        if (textToSpeechService != null)
             textToSpeechService.stopTextToSpeech();
     }
 
@@ -351,8 +355,8 @@ public class PrintPreviewActivity extends Activity {
         setStaticData();
         getPrintData();
         getResults();
-//        saveDataToLocal();
-        postData();
+        saveDataToLocal();
+//        postData();
 
     }
 
@@ -1240,6 +1244,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.SUBCUTANEOUS_FAT, sharedPreferencesActofit.getString(Constant.Fields.SUBCUTANEOUS_FAT, ""));
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, ""));
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, ""));
+
             paramsContentValues.put(Constant.Fields.EYE_LEFT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, ""));
             paramsContentValues.put(Constant.Fields.EYE_RIGHT_VISION, sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, ""));
 
@@ -1372,14 +1377,13 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
-            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
+//            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
             if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
                     sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("6/6")) {
                 paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Standard");
             } else {
                 paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
-
             }
 
             if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
@@ -1387,15 +1391,17 @@ public class PrintPreviewActivity extends Activity {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
             } else {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
-
             }
 
+            Log.e("paramsContentValues_Logs", ":" + paramsContentValues);
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
             btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnHome.setEnabled(true);
 
-            getOfflineRecords();
+            postData();
+
+//            getOfflineRecords();
 
         } catch (Exception e) {
         }
@@ -1420,6 +1426,7 @@ public class PrintPreviewActivity extends Activity {
                 JSONObject dataObject = new JSONObject();
                 dataObject.put("data", dataArray);
 
+                Log.e("dataObject_Print", ":" + dataObject);
                 HttpService.accessWebServicesJSON(
                         context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
                         (response, error, status) -> handleOfflineAPIResponse(response, error, status));
@@ -1432,6 +1439,11 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("sync_offline_print_res", ":" + response);
+        Log.e("sync_offline_print_err", ":" + error);
+        Log.e("sync_offline_print_status", ":" + status);
+
         try {
             if (status.equals("response")) {
                 updateLocalStatus(response);
@@ -1490,6 +1502,7 @@ public class PrintPreviewActivity extends Activity {
     }
 
 
+    @SuppressLint("LongLogTag")
     private void postData() {
 
         if (Utils.isOnline(context)) {
@@ -1636,7 +1649,6 @@ public class PrintPreviewActivity extends Activity {
                 requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Standard");
             } else {
                 requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
-
             }
 
             if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
@@ -1644,9 +1656,7 @@ public class PrintPreviewActivity extends Activity {
                 requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
             } else {
                 requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
-
             }
-
 
             requestBodyParams.put(Constant.Fields.HEIGHT_RESULT, "");
             requestBodyParams.put(Constant.Fields.BMI_RESULT, bmiResult);
@@ -1670,12 +1680,16 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
             requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
+            requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+
 
             HashMap mapHeadersParams = new HashMap();
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
+            Log.e("requestBodyParams_PrintLog", ":" + requestBodyParams);
+            Log.e("requestBodyUrl_PrintLog", ":" + ApiUtils.PRINT_POST_URL);
 
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
@@ -1692,14 +1706,29 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
+        Log.e("response_PrintLog", ":" + response);
+        Log.e("error_PrintLog", ":" + error);
+        Log.e("status_PrintLog", ":" + status);
+
         if (status.equals("response")) {
+
             try {
-                readFileName(response);
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getString("status").equals("200")) {
+                    readFileName(response);
 
-                btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
-                btnHome.setEnabled(true);
+                    btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
+                    btnHome.setEnabled(true);
 
-                Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
+
+                    String patient_id = sharedPreferencesToken.getString(Constant.Fields.ID, "");
+                    String parameter_id = dataBaseHelper.getLastInsertParameterID();
+
+                    dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patient_id);
+
+                    dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameter_id);
+                }
             } catch (Exception e) {
                 // TODO: Handle exception
             }
@@ -1716,7 +1745,8 @@ public class PrintPreviewActivity extends Activity {
         try {
             JSONObject jsonObject = new JSONObject(response);
             JSONObject dataObject = jsonObject.getJSONObject("data");
-            fileName = dataObject.getString("file");
+            JSONObject parameterObject = dataObject.getJSONObject("parameter");
+            fileName = parameterObject.getString("id");
         } catch (JSONException e) {
             // TODO: Handle exception here
         }
@@ -1735,7 +1765,6 @@ public class PrintPreviewActivity extends Activity {
         sharedPreferenceVisionResult = getSharedPreferences(ApiUtils.PREFERENCE_VISION_RESULT, Context.MODE_PRIVATE);
     }
 
-
     private String getCurrentTime() {
         return new SimpleDateFormat("HH:mm aa").format(Calendar.getInstance().getTime());
     }
@@ -1743,10 +1772,13 @@ public class PrintPreviewActivity extends Activity {
     private void downloadFile(String fileName) {
         downloadUrl = ApiUtils.DOWNLOAD_PDF_URL + fileName;
 
-        if (fileName != null)
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)));
-        else
+        if (fileName != null) {
+            Intent intent = new Intent();
+            intent.setDataAndType(Uri.parse(downloadUrl), "application/pdf");
+            startActivity(intent);
+        } else {
             Toast.makeText(PrintPreviewActivity.this, "No Pdf file available ", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void startDownload() {
@@ -1818,7 +1850,6 @@ public class PrintPreviewActivity extends Activity {
 
                 btnReconnect.setBackground(getResources().getDrawable(R.drawable.greenback));
                 btnReconnect.setEnabled(true);
-
             }
 
             super.onPostExecute(result);
@@ -2142,8 +2173,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void showReconnectPopup() {
         init(RECONNECT_MSG);
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                context);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setTitle("Communication Lost!");
         alertDialogBuilder.setMessage("Device is not active, try again").setCancelable(false)
                 .setPositiveButton("Reconnect", new DialogInterface.OnClickListener() {

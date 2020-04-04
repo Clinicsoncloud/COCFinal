@@ -43,7 +43,7 @@ public class ConnectivityReciever extends BroadcastReceiver {
             }
             if (networkInfo != null && networkInfo.isConnectedOrConnecting()) {
                 Log.e("receiver_Log_Receiver", ":True:" + networkInfo.isConnectedOrConnecting());
-                getOfflineRecords();
+//                getOfflineRecords();
 
             } else if (intent.getBooleanExtra(ConnectivityManager.EXTRA_NO_CONNECTIVITY, Boolean.FALSE)) {
                 Log.e("receiver_Log_Receiver", ":FAlse:");

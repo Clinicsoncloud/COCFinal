@@ -74,7 +74,7 @@ public class SQLiteQueries {
             + Constant.Fields.SKELETAL_MUSCLE_RESULT + " VARCHAR,"
             + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT + " VARCHAR,"
             + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT + " VARCHAR,"
-            + Constant.Fields.FATFREERSNGE + " VARCHAR,"
+//            + Constant.Fields.FATFREERSNGE + " VARCHAR,"
 
             + Constant.Fields.EYE_LEFT_VISION + " VARCHAR,"
             + Constant.Fields.EYE_RIGHT_VISION + " VARCHAR,"
@@ -111,6 +111,14 @@ public class SQLiteQueries {
 
 
     public static final String QUERY_GET_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
+            + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
+            + "parameters.* from `"
+            + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"
+            + Constant.TableNames.PARAMETERS + "` as parameters "
+            + "ON patients.patient_id = parameters.patient_id "
+            + "Where parameters.is_completed = 'true' limit 10";
+
+public static final String QUERY_GET_ALL_OFFLINE_DATA = "SELECT patients.patient_id ,patients.name ,patients.kiosk_id ,"
             + "patients.email ,patients.gender ,patients.dob ,patients.mobile,"
             + "parameters.* from `"
             + Constant.TableNames.PATIENTS + "` AS patients LEFT JOIN `"

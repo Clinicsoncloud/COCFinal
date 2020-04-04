@@ -113,7 +113,7 @@ public class ActivateScreen extends AppCompatActivity {
 
             HttpService.accessWebServices(
                     context,
-                    ApiUtils.KIOSK,
+                    ApiUtils.FIND_BY_TOKEN,
                     requestBodyParams,
                     headerParams,
                     (response, error, status) -> handleAPIResponse(response, error, status));
@@ -123,23 +123,16 @@ public class ActivateScreen extends AppCompatActivity {
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
-        Log.e("kiosk_response_Log", ":" + response);
         if (status.equals("response")) {
             try {
 
                 JSONObject resultObj = new JSONObject(response);
 
-                if (resultObj.has("clinic") && resultObj.optJSONObject("clinic") != null) {
-
-                    JSONObject clinicObject = resultObj.getJSONObject("clinic");
-                    showConfirmationPopUp(clinicObject);
-
+                if (resultObj != null) {
+                    showConfirmationPopUp(resultObj);
                 } else {
-
                     showFailuerPopUp();
-
-                    Toast.makeText(context, "Please enter registred KIOSK ID...", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(context, "Please enter registered KIOSK ID...", Toast.LENGTH_SHORT).show();
                     Log.e("wrongKiosk_Log", ":" + resultObj.getString("clinic"));
                 }
 
@@ -153,7 +146,6 @@ public class ActivateScreen extends AppCompatActivity {
         }
     }
 
-
     @SuppressLint("SetTextI18n")
     private void showConfirmationPopUp(JSONObject clinicObject) {
         confirmKioskDialog.setContentView(R.layout.show_kiosk_activation_dilog);
@@ -163,13 +155,11 @@ public class ActivateScreen extends AppCompatActivity {
         confirmKioskDialog.getWindow().setLayout(layoutParams.width, layoutParams.height);
         confirmKioskDialog.setCanceledOnTouchOutside(false);
 
-
         final TextView tv_msg = confirmKioskDialog.findViewById(R.id.tv_msg);
         final Button btn_Proceed = confirmKioskDialog.findViewById(R.id.btn_Proceed);
         final ImageView ic_CloseDilog = confirmKioskDialog.findViewById(R.id.ic_CloseDilog);
 
         tv_msg.setTextColor(context.getResources().getColor(R.color.white));
-
 
         try {
             tv_msg.setText("You are now connected to  \"" + clinicObject.getString("name") + "\"");
@@ -181,10 +171,22 @@ public class ActivateScreen extends AppCompatActivity {
                 public void onClick(View view) {
                     try {
                         sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+
                         // Writing data to SharedPreferences
                         SharedPreferences.Editor editor = sp.edit();
                         editor.putString("pinLock", clinicObject.getString("token"));
                         editor.putString("clinic_name", clinicObject.getString("name"));
+                        editor.putString("address", clinicObject.getString("address"));
+                        editor.putString("app_version", clinicObject.getString("app_version"));
+                        editor.putString("location_id", clinicObject.getString("location_id"));
+                        editor.putString("total_tests", clinicObject.getString("total_tests"));
+                        editor.putString("installed_by", clinicObject.getString("installed_by"));
+                        editor.putString("assigned_user_id", clinicObject.getString("assigned_user_id"));
+                        editor.putString("installation_date", clinicObject.getString("installation_date"));
+                        editor.putString("machine_operator_name", clinicObject.getString("machine_operator_name"));
+                        editor.putString("machine_operator_mobile_number", clinicObject.getString("machine_operator_mobile_number"));
+                        editor.putString("client_name", clinicObject.getString("client_name"));
+                        editor.putString("is_trial_mode", clinicObject.getString("is_trial_mode"));
                         editor.commit();
 
                         confirmKioskDialog.dismiss();

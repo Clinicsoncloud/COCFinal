@@ -171,7 +171,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
             } else if (rdGenderGroup.getCheckedRadioButtonId() == -1) {
                 Toast.makeText(context, "Please select the gender", Toast.LENGTH_SHORT).show();
             } else {
-//                updatePatientInfo();
+                updatePatientInfo();
 
                 if (Utils.isOnline(context)) {
                     if (strConnectivity.equals("online"))
@@ -219,7 +219,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     private void setupTextToSpeech() {
-        if(Utils.isOnline(context)){
+        if (Utils.isOnline(context)) {
             textToSpeechService = new TextToSpeechService(getApplicationContext(), FILL_REGISTRATION_MESSAGE);
         }
     }
@@ -334,7 +334,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             writeToPersonalSharedPreference(resObject);
 
-
         } catch (Exception e) {
         }
     }
@@ -356,6 +355,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
     private void writeToPersonalSharedPreference(JSONObject jsonObject) throws JSONException {
         SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
+
+        Log.e("jsonObject_Verify", ":" + jsonObject);
 
 //        if (jsonObject.getJSONObject("data").getJSONObject("patient").has(Constant.Fields.ID))
 //            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getJSONObject("data").getJSONObject("patient").getString(Constant.Fields.ID));

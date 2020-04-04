@@ -173,6 +173,13 @@ public class Act_Main extends Activity {
         btnComm = (Button) findViewById(R.id.actMain_btn_conn);
 
 
+        /*
+         * This intent added for temp period only for testing to avoid connection printer
+         */
+        Intent tempintent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+        tempintent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
+        startActivity(tempintent);
+
         llSelectedDevicesLayout.setVisibility(View.GONE);
 
         textToSpeechService = new TextToSpeechService(getApplicationContext(), SCAN_DEVICE_MSG);
