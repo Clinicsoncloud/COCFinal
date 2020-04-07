@@ -114,6 +114,7 @@ public class ActivateScreen extends AppCompatActivity {
             HttpService.accessWebServices(
                     context,
                     ApiUtils.FIND_BY_TOKEN,
+                    Request.Method.POST,
                     requestBodyParams,
                     headerParams,
                     (response, error, status) -> handleAPIResponse(response, error, status));
@@ -171,29 +172,34 @@ public class ActivateScreen extends AppCompatActivity {
                 public void onClick(View view) {
                     try {
                         sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+                        try {
+                            // Writing data to SharedPreferences
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("pinLock", clinicObject.getString("token"));
+                            editor.putString("clinic_name", clinicObject.getString("name"));
+                            editor.putString("address", clinicObject.getString("address"));
+                            editor.putString("app_version", clinicObject.getString("app_version"));
+                            editor.putString("location_id", clinicObject.getString("location_id"));
+                            editor.putString("total_tests_done", clinicObject.getString("total_tests_done"));
+                            editor.putString("allowed_trial_tests", clinicObject.getString("allowed_trial_tests"));
+                            editor.putString("installed_by", clinicObject.getString("installed_by"));
+                            editor.putString("assigned_user_id", clinicObject.getString("assigned_user_id"));
+                            editor.putString("installation_date", clinicObject.getString("installation_date"));
+                            editor.putString("machine_operator_name", clinicObject.getString("machine_operator_name"));
+                            editor.putString("machine_operator_mobile_number", clinicObject.getString("machine_operator_mobile_number"));
+                            editor.putString("client_name", clinicObject.getString("client_name"));
+                            editor.putString("is_trial_mode", clinicObject.getString("is_trial_mode"));
+                            editor.putString("id", clinicObject.getString("id"));
+                            editor.commit();
 
-                        // Writing data to SharedPreferences
-                        SharedPreferences.Editor editor = sp.edit();
-                        editor.putString("pinLock", clinicObject.getString("token"));
-                        editor.putString("clinic_name", clinicObject.getString("name"));
-                        editor.putString("address", clinicObject.getString("address"));
-                        editor.putString("app_version", clinicObject.getString("app_version"));
-                        editor.putString("location_id", clinicObject.getString("location_id"));
-                        editor.putString("total_tests", clinicObject.getString("total_tests"));
-                        editor.putString("installed_by", clinicObject.getString("installed_by"));
-                        editor.putString("assigned_user_id", clinicObject.getString("assigned_user_id"));
-                        editor.putString("installation_date", clinicObject.getString("installation_date"));
-                        editor.putString("machine_operator_name", clinicObject.getString("machine_operator_name"));
-                        editor.putString("machine_operator_mobile_number", clinicObject.getString("machine_operator_mobile_number"));
-                        editor.putString("client_name", clinicObject.getString("client_name"));
-                        editor.putString("is_trial_mode", clinicObject.getString("is_trial_mode"));
-                        editor.commit();
+                            confirmKioskDialog.dismiss();
 
-                        confirmKioskDialog.dismiss();
-
-                        Intent objIntent = new Intent(getApplicationContext(), SplashActivity.class);
-                        startActivity(objIntent);
-                        finish();
+                            Intent objIntent = new Intent(getApplicationContext(), SplashActivity.class);
+                            startActivity(objIntent);
+                            finish();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } catch (Exception e) {
                     }
                 }

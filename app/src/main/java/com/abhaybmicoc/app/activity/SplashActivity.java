@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +30,7 @@ public class SplashActivity extends Activity {
 
     private SharedPreferences sharedPreferencesLanguage;
 
+    public static String currentVersion = "0";
     // endregion
 
     // region Events
@@ -64,6 +67,17 @@ public class SplashActivity extends Activity {
         setLocale(sharedPreferencesLanguage.getString("language", ""));
 
         startServices();
+
+
+        try {
+            PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getPackageName(), 0);
+            currentVersion = pInfo.versionName;
+
+            Log.e("currentVersion_Log", ":" + currentVersion);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
 
         splashHandler = new Handler();
         splashHandler.postDelayed(() -> {

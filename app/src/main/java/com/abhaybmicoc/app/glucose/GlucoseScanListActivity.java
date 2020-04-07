@@ -115,7 +115,8 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         super.onPause();
 
         clearScan();
-        textToSpeechService.stopTextToSpeech();
+        if (textToSpeechService != null)
+            textToSpeechService.stopTextToSpeech();
     }
 
     @Override
@@ -266,8 +267,8 @@ public class GlucoseScanListActivity extends AppCompatActivity {
      *
      */
     private void setupTextToSpeech() {
-        if(Utils.isOnline(getApplicationContext()))
-        textToSpeechService = new TextToSpeechService(getApplicationContext(),SCAN_MSG);
+        if (Utils.isOnline(getApplicationContext()))
+            textToSpeechService = new TextToSpeechService(getApplicationContext(), SCAN_MSG);
     }
 
     private void connectOrShowScanDevice() {

@@ -146,4 +146,8 @@ public class ChangeLanguageActivity extends AppCompatActivity {
         goToBack();
     }
 
+    @Override
+    public void onBackPressed() {
+        goToBack();
+    }
 }

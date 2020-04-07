@@ -38,7 +38,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
 
     private Context context = PostVerifiedOtpScreen.this;
 
-    private String OTP_MESSAGE = "" ;
+    private String OTP_MESSAGE = "";
 
     private String kioskId;
     private String mobileNumber;
@@ -96,7 +96,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
         btnVerify = findViewById(R.id.btn_verify);
         kioskId = getIntent().getStringExtra(Constant.Fields.KIOSK_ID);
         mobileNumber = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
-        OTP_MESSAGE =  getResources().getString(R.string.otp_msg);
+        OTP_MESSAGE = getResources().getString(R.string.otp_msg);
     }
 
     /**
@@ -167,6 +167,7 @@ public class PostVerifiedOtpScreen extends AppCompatActivity {
         HttpService.accessWebServices(
                 context,
                 ApiUtils.VERIFY_OTP_URL,
+                Request.Method.POST,
                 params, headerParams,
                 (response, error, status) -> handleAPIResponse(response, error, status));
     }

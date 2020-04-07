@@ -46,7 +46,7 @@ public class ConnectedDevicesListAdapter extends RecyclerView.Adapter<ConnectedD
         }
     }
 
-    public void setRvClickListener(SettingsActivity rvClickListener) {
+    public void setRvClickListener(RvClickListener rvClickListener) {
         this.rvClickListener = rvClickListener;
     }
 

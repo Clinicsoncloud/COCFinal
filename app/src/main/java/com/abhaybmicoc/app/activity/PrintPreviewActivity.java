@@ -1393,7 +1393,6 @@ public class PrintPreviewActivity extends Activity {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
             }
 
-            Log.e("paramsContentValues_Logs", ":" + paramsContentValues);
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
             btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
@@ -1439,10 +1438,6 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("sync_offline_print_res", ":" + response);
-        Log.e("sync_offline_print_err", ":" + error);
-        Log.e("sync_offline_print_status", ":" + status);
 
         try {
             if (status.equals("response")) {
@@ -1501,7 +1496,6 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
-
     @SuppressLint("LongLogTag")
     private void postData() {
 
@@ -1521,7 +1515,7 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.GENDER, sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
             requestBodyParams.put(Constant.Fields.BONE_MASS, sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""));
             requestBodyParams.put(Constant.Fields.BODY_WATER, sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""));
-            requestBodyParams.put(Constant.Fields.PULSE_RATE, sharedPreferencesOximeter.getString(Constant.Fields.PULSE_RATE, ""));
+            requestBodyParams.put(Constant.Fields.PULSE_RATE, sharedPreferencesHemoglobin.getString(Constant.Fields.PULSE_RATE, ""));
             requestBodyParams.put(Constant.Fields.MUSCLE_MASS, sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""));
             requestBodyParams.put(Constant.Fields.HEMOGLOBIN, sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""));
             requestBodyParams.put(Constant.Fields.HEALTH_SCORE, sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""));
@@ -1679,7 +1673,7 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
-            requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
+//            requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
             requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
 
@@ -1687,9 +1681,6 @@ public class PrintPreviewActivity extends Activity {
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
-
-            Log.e("requestBodyParams_PrintLog", ":" + requestBodyParams);
-            Log.e("requestBodyUrl_PrintLog", ":" + ApiUtils.PRINT_POST_URL);
 
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
@@ -1705,10 +1696,6 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("response_PrintLog", ":" + response);
-        Log.e("error_PrintLog", ":" + error);
-        Log.e("status_PrintLog", ":" + status);
 
         if (status.equals("response")) {
 

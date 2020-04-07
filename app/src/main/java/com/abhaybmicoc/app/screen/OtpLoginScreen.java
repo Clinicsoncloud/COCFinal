@@ -1,6 +1,8 @@
 package com.abhaybmicoc.app.screen;
 
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -36,6 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +48,9 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.ChangeLanguageActivity;
 import com.abhaybmicoc.app.activity.SettingsActivity;
+import com.abhaybmicoc.app.activity.SplashActivity;
+import com.abhaybmicoc.app.activity.TechecnicianInstallationNewActivity;
+import com.abhaybmicoc.app.activity.TechnicianInstallationActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
@@ -50,6 +58,7 @@ import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.Utils;
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 
 import org.json.JSONArray;
@@ -62,7 +71,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class OtpLoginScreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
 
     //implements TextToSpeech.OnInitListener
 
@@ -115,7 +123,92 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private TextView tvClinicName;
     private TextView tvKioskID;
 
-    // endregion
+
+    Dialog installationKioskDialog;
+
+// region Events
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setupUI();
+        setupNavigationDrawer();
+        setupEvents();
+        initializeData();
+
+        if (Utils.isOnline(context)) {
+            checkKioskStatus();
+        } else {
+
+            if (sharedPreferencesActivator.getString("is_trial_mode", "").equals("true"))
+                showInstallationOrTrialPopUp();
+        }
+    }
+
+    private void checkKioskStatus() {
+        try {
+            Map<String, String> headerParams = new HashMap<>();
+            Map<String, String> requestBodyParams = new HashMap<>();
+
+            requestBodyParams.put("token", kiosk_id);
+
+            HttpService.accessWebServices(
+                    context,
+                    ApiUtils.FIND_BY_TOKEN,
+                    Request.Method.POST,
+                    requestBodyParams,
+                    headerParams,
+                    (response, error, status) -> handleCheckKioskAPIResponse(response, error, status));
+        } catch (Exception e) {
+        }
+    }
+
+    private void handleCheckKioskAPIResponse(String response, VolleyError error, String status) {
+        try {
+            if (status.equals("response")) {
+                JSONObject resultObj = new JSONObject(response);
+                if (resultObj != null) {
+                    updateKioskInfo(resultObj);
+
+                    if (resultObj.getString("is_trial_mode").equals("true")) {
+                        showInstallationOrTrialPopUp();
+                    }
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    private void updateKioskInfo(JSONObject resultObj) {
+        try {
+
+            Log.e("resultObj_SP_Log", "" + resultObj);
+            // Writing data to SharedPreferences
+            SharedPreferences.Editor editor = sharedPreferencesActivator.edit();
+            editor.putString("clinic_name", resultObj.getString("name"));
+            editor.putString("address", resultObj.getString("address"));
+            editor.putString("app_version", resultObj.getString("app_version"));
+            editor.putString("location_id", resultObj.getString("location_id"));
+
+            editor.putString("total_tests_done", resultObj.getString("total_tests_done"));
+            editor.putString("allowed_trial_tests", resultObj.getString("allowed_trial_tests"));
+
+            editor.putString("installed_by", resultObj.getString("installed_by"));
+            editor.putString("assigned_user_id", resultObj.getString("assigned_user_id"));
+            editor.putString("installation_date", resultObj.getString("installation_date"));
+            editor.putString("machine_operator_name", resultObj.getString("machine_operator_name"));
+            editor.putString("machine_operator_mobile_number", resultObj.getString("machine_operator_mobile_number"));
+            editor.putString("client_name", resultObj.getString("client_name"));
+            editor.putString("is_trial_mode", resultObj.getString("is_trial_mode"));
+            editor.putString("id", resultObj.getString("id"));
+            editor.commit();
+
+
+        } catch (Exception e) {
+        }
+    }
+
 
     // region Initialization methods
 
@@ -139,6 +232,31 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         changeLanguageDilog = new android.app.Dialog(context);
         changeLanguageDilog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     }
+
+    /**
+     *
+     */
+    private void setupNavigationDrawer() {
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View hView = navigationView.getHeaderView(0);
+
+
+        tvClinicName = hView.findViewById(R.id.tv_ClinicName);
+        tvKioskID = hView.findViewById(R.id.tv_KioskID);
+    }
+
 
     /**
      *
@@ -193,7 +311,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             tvNoOfUploadedRecords.setText(sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
         else
             tvNoOfUploadedRecords.setText("0");
-
     }
 
     private void getOfflineRecords() {
@@ -216,7 +333,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 dataObject.put("data", dataArray);
 
                 HttpService.accessWebServicesJSON(
-                        context, ApiUtils.SYNC_OFFLINE_DATA_URL, dataObject,
+                        context,
+                        ApiUtils.SYNC_OFFLINE_DATA_URL,
+                        dataObject,
                         (response, error, status) -> handleOfflineAPIResponse(response, error, status));
             } else {
                 Toast.makeText(context, "No internet connection, Try again...", Toast.LENGTH_SHORT).show();
@@ -226,8 +345,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
+
         try {
             if (status.equals("response")) {
+
+                SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+
+                editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+
+                editor.commit();
+
                 updateLocalStatus(response);
             } else {
                 Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
@@ -274,6 +401,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
             Toast.makeText(context, "Data Sync successfully", Toast.LENGTH_SHORT).show();
 
+            getOfflineRecords();
             setOfflineDataStatus();
 
         } catch (Exception e) {
@@ -284,6 +412,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     private void initializeData() {
         dataBaseHelper = new DataBaseHelper(context);
+
+        installationKioskDialog = new android.app.Dialog(context);
+        installationKioskDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         slideUpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.out_to_right);
 
@@ -324,6 +455,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         clearDatabase();
     }
 
+
     private void setupTextToSpeech() {
         if (Utils.isOnline(context)) {
             textToSpeechService = new TextToSpeechService(getApplicationContext(), WELCOME_LOGIN_MESSAGE);
@@ -332,96 +464,85 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     // endregion
 
-    // region Events
+    @SuppressLint("SetTextI18n")
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private void showInstallationOrTrialPopUp() {
+        installationKioskDialog.setContentView(R.layout.installation_or_trial_dilog);
+        layoutParams.copyFrom(installationKioskDialog.getWindow().getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        installationKioskDialog.getWindow().setLayout(layoutParams.width, layoutParams.height);
+        installationKioskDialog.setCanceledOnTouchOutside(false);
 
-        setupUI();
-        setupNavigationDrawer();
-        setupEvents();
-        initializeData();
-        if (Utils.isOnline(context)) {
-            checkKioskStatus();
+        final TextView tv_msg = installationKioskDialog.findViewById(R.id.tv_msg);
+        final Button btnProceed = installationKioskDialog.findViewById(R.id.btn_Proceed);
+        final ImageView ic_CloseDilog = installationKioskDialog.findViewById(R.id.ic_CloseDilog);
+
+        final RadioGroup rgSelectMode = installationKioskDialog.findViewById(R.id.rg_SelectMode);
+        final RadioButton rbTrialMode = installationKioskDialog.findViewById(R.id.rb_TrialMode);
+        final RadioButton rbInstallationMode = installationKioskDialog.findViewById(R.id.rb_InstallationMode);
+
+        tv_msg.setTextColor(context.getResources().getColor(R.color.white));
+
+        int total_tests_done = Integer.parseInt(sharedPreferencesActivator.getString("total_tests_done", ""));
+        int allowed_trial_tests = Integer.parseInt(sharedPreferencesActivator.getString("allowed_trial_tests", ""));
+
+
+        if (total_tests_done <= allowed_trial_tests) {
+            int remaining_test = allowed_trial_tests - total_tests_done;
+            tv_msg.setText("In Trial mode you have remaining only " + remaining_test + " attempts!");
+        } else {
+            rbTrialMode.setChecked(false);
+            rbTrialMode.setVisibility(View.GONE);
         }
-    }
 
-    private void checkKioskStatus() {
+
         try {
-            Map<String, String> headerParams = new HashMap<>();
-            Map<String, String> requestBodyParams = new HashMap<>();
 
-            requestBodyParams.put("token", kiosk_id);
+            rgSelectMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
 
-            HttpService.accessWebServices(
-                    context,
-                    ApiUtils.FIND_BY_TOKEN,
-                    requestBodyParams,
-                    headerParams,
-                    (response, error, status) -> handleCheckKioskAPIResponse(response, error, status));
-        } catch (Exception e) {
-        }
-
-    }
-
-    private void handleCheckKioskAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("response_CheckKiosk", "" + response);
-        try {
-            if (status.equals("response")) {
-                JSONObject resultObj = new JSONObject(response);
-                if (resultObj != null) {
-                    updateKioskInfo(resultObj);
+                    if (checkedId == rbTrialMode.getId()) {
+                        tv_msg.setVisibility(View.VISIBLE);
+                    } else if (checkedId == rbInstallationMode.getId()) {
+                        tv_msg.setVisibility(View.GONE);
+                    }
                 }
-            }
-        } catch (Exception e) {
+            });
+
+            ic_CloseDilog.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    installationKioskDialog.dismiss();
+                }
+            });
+
+            btnProceed.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (!rbTrialMode.isChecked()) {
+                        startActivity(new Intent(context, TechecnicianInstallationNewActivity.class));
+                        finish();
+                        installationKioskDialog.dismiss();
+                    } else {
+                        Toast.makeText(context, "You can not use trial mode in offline, Please Try again", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } catch (
+                Exception e) {
         }
+
+        installationKioskDialog.show();
+        installationKioskDialog.getWindow().setAttributes(layoutParams);
     }
 
-    private void updateKioskInfo(JSONObject resultObj) {
-        try {
 
-            // Writing data to SharedPreferences
-            SharedPreferences.Editor editor = sharedPreferencesActivator.edit();
-            editor.putString("clinic_name", resultObj.getString("name"));
-            editor.putString("address", resultObj.getString("address"));
-            editor.putString("app_version", resultObj.getString("app_version"));
-            editor.putString("location_id", resultObj.getString("location_id"));
-            editor.putString("total_tests", resultObj.getString("total_tests"));
-            editor.putString("installed_by", resultObj.getString("installed_by"));
-            editor.putString("assigned_user_id", resultObj.getString("assigned_user_id"));
-            editor.putString("installation_date", resultObj.getString("installation_date"));
-            editor.putString("machine_operator_name", resultObj.getString("machine_operator_name"));
-            editor.putString("machine_operator_mobile_number", resultObj.getString("machine_operator_mobile_number"));
-            editor.putString("client_name", resultObj.getString("client_name"));
-            editor.putString("is_trial_mode", resultObj.getString("is_trial_mode"));
-            editor.commit();
+    // endregion
 
-        } catch (Exception e) {
-        }
-    }
-
-    private void setupNavigationDrawer() {
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        View hView = navigationView.getHeaderView(0);
-
-
-        tvClinicName = hView.findViewById(R.id.tv_ClinicName);
-        tvKioskID = hView.findViewById(R.id.tv_KioskID);
-    }
 
     @Override
     protected void onDestroy() {
@@ -466,7 +587,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                     GenerateOTP();
                 } else {
                     Toast.makeText(context, "No Internet connection, Please Try again", Toast.LENGTH_SHORT).show();
-
                 }
             }
         }
@@ -487,12 +607,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             if (saveResponse != -1) {
                 patient_id = dataBaseHelper.getLastInsertPatientID();
 
-                if (!Utils.isOnline(context)) {
+                if (!Utils.isOnline(context) && sharedPreferencesActivator.getString("is_trial_mode", "").equals("false")) {
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
                     objIntent.putExtra("connectivity", "offline");
-
                     startActivity(objIntent);
                 }
             } else {
@@ -570,12 +689,15 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         HttpService.accessWebServices(
                 context,
                 ApiUtils.LOGIN_URL,
+                Request.Method.POST,
                 requestBodyParams,
                 headerParams,
                 (response, error, status) -> handleAPIResponse(response, error, status));
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("response_Login", ":" + response);
         if (status.equals("response")) {
             try {
                 JSONObject jsonResponse = new JSONObject(response);

@@ -10,13 +10,12 @@
     tools:showIn="@layout/activity_settings">
 
 
-
     <ImageView
         android:id="@+id/iv_Back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/margin20"
-        android:src="@drawable/back_but12"/>
+        android:src="@drawable/back_but12" />
 
 
     <LinearLayout
@@ -170,9 +169,9 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:background="@drawable/buttonshapeconnect1"
+                        android:gravity="center"
                         android:padding="@dimen/pad15"
                         android:text="Remove"
-                        android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="@dimen/space25"
                         android:textStyle="bold" />

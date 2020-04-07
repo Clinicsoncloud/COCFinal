@@ -6,7 +6,7 @@
     android:background="@drawable/bgapp"
     android:paddingStart="300dp"
     android:paddingEnd="300dp"
-    tools:context=".OtpLoginScreen">
+    tools:context=".screen.OtpVerifyScreen">
 
     <LinearLayout
         android:layout_width="match_parent"

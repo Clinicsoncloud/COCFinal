@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapp">
+
+    <ImageView
+        android:id="@+id/iv_Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin20"
+        android:src="@drawable/back_but12" />
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin20"
+        android:layout_weight="5"
+        android:alpha="0.6"
+        android:src="@mipmap/applogo" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_Back"
+        android:layout_marginLeft="120dp"
+
+        android:layout_marginRight="120dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/pad10"
+            android:layout_marginRight="@dimen/pad10"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Clinic Name" />
+
+            <EditText
+                android:id="@+id/edt_ClinicName"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint=""
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Installed By" />
+
+            <EditText
+                android:id="@+id/edt_InstalledByName"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/rectangle"
+                android:hint=""
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            <!--            </android.support.design.widget.TextInputLayout>-->
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Machine Operator Name" />
+
+            <!--<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">-->
+
+            <EditText
+                android:id="@+id/edt_MachineOperatorName"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle"
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            <!--            </android.support.design.widget.TextInputLayout>-->
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Machine Operator Mobile Number" />
+
+            <!--<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">-->
+
+            <EditText
+                android:id="@+id/edt_MachineOperatorMobile"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle"
+                android:inputType="number"
+                android:maxLength="10"
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            <!--            </android.support.design.widget.TextInputLayout>-->
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Installation Date" />
+
+            <!--<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">-->
+
+            <!--        </android.support.design.widget.TextInputLayout>-->
+
+            <EditText
+                android:id="@+id/edt_InstallationDate"
+                style="@style/Widget.AppCompat.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle"
+                android:clickable="false"
+                android:drawableRight="@drawable/ic_calender_one"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/hint_text_textview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:text="Client Name" />
+
+                <Spinner
+                    android:id="@+id/spn_ClientName"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin20"
+                    android:padding="@dimen/pad10"
+                    android:visibility="gone" />
+
+                <EditText
+                    android:id="@+id/edt_ClientName"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle"
+                    android:clickable="false"
+                    android:drawableRight="@drawable/ic_calender_one"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:padding="@dimen/pad10"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="25sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/hint_text_textview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:text="Location" />
+
+                <Spinner
+                    android:id="@+id/spn_Location"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin20"
+                    android:padding="@dimen/pad10" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/hint_text_textview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:text="Address" />
+
+                <EditText
+                    android:id="@+id/edt_address"
+                    style="@style/Widget.AppCompat.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rectangle"
+                    android:padding="@dimen/pad10"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/white"
+                    android:textSize="25sp" />
+
+                <Button
+                    android:id="@+id/btn_Save"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin20"
+                    android:layout_marginBottom="50dp"
+                    android:background="@drawable/greenbg"
+                    android:gravity="center"
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

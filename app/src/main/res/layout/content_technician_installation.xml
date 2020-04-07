@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgapp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".activity.TechecnicianInstallationNewActivity">
+
+    <ImageView
+        android:id="@+id/iv_Back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin20"
+        android:src="@drawable/back_but12" />
+
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin20"
+        android:layout_weight="5"
+        android:src="@mipmap/applogo" />
+
+    <!--<ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="120dp"
+            android:orientation="vertical">
+
+            &lt;!&ndash;<android.support.design.widget.TextInputLayout
+                android:id="@+id/til_Farm_Name"
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">&ndash;&gt;
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Installed By" />
+
+            <EditText
+                android:id="@+id/edt_Farm_Name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint=""
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            &lt;!&ndash;            </android.support.design.widget.TextInputLayout>&ndash;&gt;
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Machine Operator Name" />
+
+            &lt;!&ndash;<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">&ndash;&gt;
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            &lt;!&ndash;            </android.support.design.widget.TextInputLayout>&ndash;&gt;
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Machine Operator Mobile Number" />
+
+            &lt;!&ndash;<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">&ndash;&gt;
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            &lt;!&ndash;            </android.support.design.widget.TextInputLayout>&ndash;&gt;
+
+            <TextView
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/pad10"
+                android:layout_marginBottom="@dimen/pad10"
+                android:text="Installation Date" />
+
+            &lt;!&ndash;<android.support.design.widget.TextInputLayout
+                style="@style/hint_text_textview_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin20"
+                app:errorEnabled="true"
+                app:hintTextAppearance="@style/hint_text_textview_style">&ndash;&gt;
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:padding="@dimen/pad10"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:textSize="25sp" />
+            &lt;!&ndash;        </android.support.design.widget.TextInputLayout>&ndash;&gt;
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/hint_text_textview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:text="Location" />
+
+                <Spinner
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/hint_text_textview_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/pad10"
+                    android:layout_marginBottom="@dimen/pad10"
+                    android:text="Address" />
+
+                <Spinner
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:id="@+id/btn_Save"
+                    android:layout_width="180dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/margin20"
+                    android:background="@drawable/greenbg"
+                    android:gravity="center"
+                    android:text="Save"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>-->
+
+</RelativeLayout>

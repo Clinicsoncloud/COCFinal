@@ -25,6 +25,7 @@ import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.DTU;
 import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
@@ -227,14 +228,16 @@ public class OtpVerifyScreen extends AppCompatActivity {
     // endregion
 
     private void showDateOfBirthPicker() {
-        etDateOfBirth.setEnabled(false);
+//        etDateOfBirth.setEnabled(false);
 
-        final Calendar c = Calendar.getInstance();
+        DTU.showDatePickerDialog(context, DTU.FLAG_OLD_AND_NEW, etDateOfBirth);
+
+        /*final Calendar c = Calendar.getInstance();
         year = c.get(Calendar.YEAR);
         month = c.get(Calendar.MONTH);
         day = c.get(Calendar.DAY_OF_MONTH);
 
-        showDatePickerDialog();
+        showDatePickerDialog();*/
     }
 
     /**
@@ -279,12 +282,14 @@ public class OtpVerifyScreen extends AppCompatActivity {
         HttpService.accessWebServices(
                 context,
                 ApiUtils.PROFILE_URL,
+                Request.Method.POST,
                 requestBodyParams,
                 headersParams,
                 (response, error, status) -> handleAPIResponse(response, error, status));
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+
         if (status.equals("response")) {
             try {
                 JSONObject jsonObject = new JSONObject(response);

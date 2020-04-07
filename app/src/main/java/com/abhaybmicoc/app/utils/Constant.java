@@ -132,6 +132,18 @@ public class Constant {
 
         public static final String IS_UPLOADED = "is_uploaded";
         public static final String IS_COMPLETED = "is_completed";
+
+
+        public static final String APP_VERSION = "app_version";
+        public static final String IS_TRIAL_MODE = "is_trial_mode";
+        public static final String CLIENT_NAME = "client_name";
+        public static final String MACHINE_OPERATOR_NAME = "machine_operator_name";
+        public static final String INSTALLED_BY = "installed_by";
+        public static final String MACHINE_OPERATOR_MOBILE_NUMBER = "machine_operator_mobile_number";
+        public static final String INSTALLATION_DATE = "installation_date";
+        public static final String ADDRESS = "address";
+
+
     }
 
     public static class TableNames {
