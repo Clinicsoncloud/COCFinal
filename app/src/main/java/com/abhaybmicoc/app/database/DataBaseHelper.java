@@ -56,6 +56,21 @@ public class DataBaseHelper {
         }
     }
 
+    public void updateParametersInfo(String table, ContentValues contentValues, String parameter_id) {
+        try {
+            long count1 = sqLiteDatabase.update(table, contentValues, "parameter_id ='" + parameter_id + "' ", null);
+
+            if (count1 != -1) {
+                Log.v("DataHelpUpdate", "Update " + table + " Details Successfully");
+            } else {
+                Log.v("DataHelpUpdate", "Update " + table + " Details Fail");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public String getLastInsertPatientID() {
 
         Cursor cursor = null;
@@ -77,7 +92,7 @@ public class DataBaseHelper {
 
         Cursor cursor = null;
 
-        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_LAST_INSERTED_PATIENT_ID, null);
+        cursor = sqLiteDatabase.rawQuery(SQLiteQueries.QUERY_GET_LAST_INSERTED_PARAMETER_ID, null);
 
         String id = "0";
 

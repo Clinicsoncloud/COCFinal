@@ -12,9 +12,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.app.Dialog;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.os.AsyncTask;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 import android.app.Activity;
 import android.widget.Button;
@@ -63,6 +66,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 
+import com.hsalf.smilerating.SmileRating;
 import com.prowesspride.api.Printer_GEN;
 import com.prowesspride.api.Setup;
 
@@ -138,6 +142,10 @@ public class PrintPreviewActivity extends Activity {
     @BindView(R.id.headerLL)
     LinearLayout headerLL;
 
+    private Button saveRating;
+    private SmileRating smileRating;
+    private int feedbackRating = 0;
+
     private SharedPreferences sharedPreferencesToken;
     private SharedPreferences sharedPreferencesSugar;
     private SharedPreferences sharedPreferencesActofit;
@@ -206,7 +214,9 @@ public class PrintPreviewActivity extends Activity {
     private String standardSkeltonMuscle;
     private String fatfreeweightResult = "";
     private String standardEyeRange = "";
-
+    private String updatedParameterID = "";
+    private String lastInsertedpatient_id = "";
+    private String lastInsertedparameter_id = "";
     public static Printer_GEN ptrGen;
     private AndMedical_App_Global mGP = null;
     public static BluetoothDevice mBDevice = null;
@@ -324,7 +334,9 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void setupEvents() {
-        btnHome.setOnClickListener(view -> goToHome());
+
+//        btnHome.setOnClickListener(view -> goToHome());
+        btnHome.setOnClickListener(view -> showFeedbackPopup());
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
@@ -1398,6 +1410,9 @@ public class PrintPreviewActivity extends Activity {
             btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
             btnHome.setEnabled(true);
 
+            lastInsertedpatient_id = sharedPreferencesToken.getString(Constant.Fields.ID, "");
+            lastInsertedparameter_id = dataBaseHelper.getLastInsertParameterID();
+
             postData();
 
 //            getOfflineRecords();
@@ -1709,12 +1724,9 @@ public class PrintPreviewActivity extends Activity {
 
                     Toast.makeText(getApplicationContext(), "Data Uploaded on Server", Toast.LENGTH_SHORT).show();
 
-                    String patient_id = sharedPreferencesToken.getString(Constant.Fields.ID, "");
-                    String parameter_id = dataBaseHelper.getLastInsertParameterID();
+                    dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, lastInsertedpatient_id);
 
-                    dataBaseHelper.deleteTable_data(Constant.TableNames.PATIENTS, Constant.Fields.PATIENT_ID, patient_id);
-
-                    dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, parameter_id);
+                    dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, lastInsertedparameter_id);
                 }
             } catch (Exception e) {
                 // TODO: Handle exception
@@ -1734,6 +1746,7 @@ public class PrintPreviewActivity extends Activity {
             JSONObject dataObject = jsonObject.getJSONObject("data");
             JSONObject parameterObject = dataObject.getJSONObject("parameter");
             fileName = parameterObject.getString("id");
+            updatedParameterID = parameterObject.getString("id");
         } catch (JSONException e) {
             // TODO: Handle exception here
         }
@@ -1922,6 +1935,132 @@ public class PrintPreviewActivity extends Activity {
         } else
             return 0;
     }
+
+    private void showFeedbackPopup() {
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.layout_feedback_popup, null);
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.setElevation(20);
+        }
+
+        popupWindow.setTouchable(true);
+        popupWindow.setFocusable(false);
+        popupWindow.setOutsideTouchable(false);
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+
+        saveRating = popupView.findViewById(R.id.btn_save_rating);
+        smileRating = popupView.findViewById(R.id.smile_rating);
+
+        smileRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
+            @Override
+            public void onSmileySelected(int smiley, boolean reselected) {
+                smileSelectedEvent(smiley);
+            }
+        });
+
+        saveRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (feedbackRating != 0) {
+                    popupWindow.dismiss();
+                    saveFeedBack();
+                }
+            }
+        });
+
+        smileRating.setOnRatingSelectedListener(new SmileRating.OnRatingSelectedListener() {
+            @Override
+            public void onRatingSelected(int level, boolean reselected) {
+
+            }
+        });
+    }
+
+    private void smileSelectedEvent(int smiley) {
+        // reselected is false when user selects different smiley that previously selected one
+        // true when the same smiley is selected.
+        // Except if it first time, then the value will be false.
+        int level;
+        switch (smiley) {
+            case SmileRating.BAD:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Bad : " + feedbackRating);
+                break;
+            case SmileRating.GOOD:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Good : " + feedbackRating);
+                break;
+            case SmileRating.GREAT:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Great : " + feedbackRating);
+                break;
+            case SmileRating.OKAY:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Okay : " + feedbackRating);
+                break;
+            case SmileRating.TERRIBLE:
+                feedbackRating = smileRating.getRating();
+                Log.i(TAG, "Terrible : " + feedbackRating);
+                break;
+        }
+    }
+
+    private void saveFeedBack() {
+
+        if (Utils.isOnline(context)) {
+
+            HashMap mapHeadersParams = new HashMap();
+
+            Map<String, String> requestBodyParams = new HashMap<>();
+            requestBodyParams.put(Constant.Fields.FEEDBACK, String.valueOf(feedbackRating));
+
+            String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
+
+            Log.e("updateUrl_Url",":"+updateUrl);
+            Log.e("updateUrl_Params",":"+requestBodyParams);
+            HttpService.accessWebServicesNoDialog(
+                    context, updateUrl,
+                    requestBodyParams,
+                    mapHeadersParams,
+                    (response, error, status) -> handleUpdateAPIResponse(response, error, status));
+
+        } else {
+            ContentValues paramsContentValues = new ContentValues();
+            paramsContentValues.put(Constant.Fields.FEEDBACK, String.valueOf(feedbackRating));
+
+            dataBaseHelper.updateParametersInfo(Constant.TableNames.PARAMETERS, paramsContentValues, lastInsertedparameter_id);
+
+            Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
+
+            goToHome();
+        }
+    }
+
+    private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("response_Params",":"+response);
+
+        if (status.equals("response")) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getString("status").equals("200")) {
+                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
+
+                    goToHome();
+                }
+            } catch (Exception e) {
+            }
+        }
+
+    }
+
 
     private void goToHome() {
         clearDatabase();

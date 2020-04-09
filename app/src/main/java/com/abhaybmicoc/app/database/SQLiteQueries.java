@@ -75,6 +75,7 @@ public class SQLiteQueries {
             + Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT + " VARCHAR,"
             + Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT + " VARCHAR,"
 //            + Constant.Fields.FATFREERSNGE + " VARCHAR,"
+            + Constant.Fields.FEEDBACK + " VARCHAR,"
 
             + Constant.Fields.EYE_LEFT_VISION + " VARCHAR,"
             + Constant.Fields.EYE_RIGHT_VISION + " VARCHAR,"
@@ -127,6 +128,11 @@ public class SQLiteQueries {
     public static String QUERY_GET_LAST_INSERTED_PATIENT_ID = "SELECT " + Constant.Fields.PATIENT_ID
             + " from " + Constant.TableNames.PATIENTS
             + " order by " + Constant.Fields.PATIENT_ID
+            + " desc limit 1";
+
+    public static String QUERY_GET_LAST_INSERTED_PARAMETER_ID = "SELECT " + Constant.Fields.PARAMETER_ID
+            + " from " + Constant.TableNames.PARAMETERS
+            + " order by " + Constant.Fields.PARAMETER_ID
             + " desc limit 1";
 
 }

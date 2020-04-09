@@ -9,7 +9,7 @@ public class Constant {
 
     public static class DatabaseDetails {
         public static final String DATABASE_NAME = "clinics_on_cloud";
-        public static final int DATABASE_VERSION = 1;
+        public static final int DATABASE_VERSION = 2;
     }
 
     public static class Fields {
@@ -23,7 +23,6 @@ public class Constant {
         public final static String OTP = "otp";
         public final static String TOKEN = "token";
         public final static String KIOSK_ID = "kiosk_id";
-
 
         public static final String PARAMETER_ID = "parameter_id";
         public static final String PATIENT_ID = "patient_id";
@@ -63,6 +62,7 @@ public class Constant {
 
         public final static String EYE_LEFT_VISION = "eye_left_vision";
         public final static String EYE_RIGHT_VISION = "eye_right_vision";
+        public final static String FEEDBACK = "feedback";
 
 
         /**
