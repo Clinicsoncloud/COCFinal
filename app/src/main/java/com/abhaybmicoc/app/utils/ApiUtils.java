@@ -10,6 +10,7 @@ public class ApiUtils {
 
     public static String KIOSK = PROTOCOL + SERVER_URL + "/api/v1/kiosk";
     public static String FIND_BY_TOKEN = PROTOCOL + SERVER_URL + "/api/v1/clinic/find-by-token";
+    public static String CONFIG_URL = PROTOCOL + SERVER_URL + "/api/v1/config";
     public static String LOGIN_URL = PROTOCOL + SERVER_URL + "/api/v1/login";
     public static String PROFILE_URL = PROTOCOL + SERVER_URL + "/api/v1/patient/profile";
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";

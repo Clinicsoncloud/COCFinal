@@ -1697,6 +1697,9 @@ public class PrintPreviewActivity extends Activity {
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
 
+            Log.e("requestBodyParams_Parameter", ":" + requestBodyParams);
+            Log.e("mapHeadersParams_Parameter", ":" + mapHeadersParams);
+
             HttpService.accessWebServicesNoDialog(
                     context, ApiUtils.PRINT_POST_URL,
                     requestBodyParams,
@@ -1711,6 +1714,9 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
+
+
+        Log.e("response_Parameter", ":" + response);
 
         if (status.equals("response")) {
 
@@ -2023,8 +2029,8 @@ public class PrintPreviewActivity extends Activity {
 
             String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
 
-            Log.e("updateUrl_Url",":"+updateUrl);
-            Log.e("updateUrl_Params",":"+requestBodyParams);
+            Log.e("updateUrl_Url", ":" + updateUrl);
+            Log.e("updateUrl_Params", ":" + requestBodyParams);
             HttpService.accessWebServicesNoDialog(
                     context, updateUrl,
                     requestBodyParams,
@@ -2045,7 +2051,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
 
-        Log.e("response_Params",":"+response);
+        Log.e("response_Params", ":" + response);
 
         if (status.equals("response")) {
             try {
