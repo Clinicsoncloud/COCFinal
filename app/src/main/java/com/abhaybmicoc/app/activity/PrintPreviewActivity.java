@@ -2023,13 +2023,22 @@ public class PrintPreviewActivity extends Activity {
 
             String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
 
-            Log.e("updateUrl_Url",":"+updateUrl);
-            Log.e("updateUrl_Params",":"+requestBodyParams);
-            HttpService.accessWebServicesNoDialog(
-                    context, updateUrl,
+            Log.e("updateUrl_Url", ":" + updateUrl);
+            Log.e("updateUrl_Params", ":" + requestBodyParams);
+
+            HttpService.accessWebServices(
+                    context,
+                    updateUrl,
+                    Request.Method.PUT,
                     requestBodyParams,
                     mapHeadersParams,
                     (response, error, status) -> handleUpdateAPIResponse(response, error, status));
+
+            /*HttpService.accessWebServicesNoDialog(
+                    context, updateUrl,
+                    requestBodyParams,
+                    mapHeadersParams,
+                    (response, error, status) -> handleUpdateAPIResponse(response, error, status));*/
 
         } else {
             ContentValues paramsContentValues = new ContentValues();
@@ -2045,7 +2054,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
 
-        Log.e("response_Params",":"+response);
+        Log.e("response_Params", ":" + response);
 
         if (status.equals("response")) {
             try {
