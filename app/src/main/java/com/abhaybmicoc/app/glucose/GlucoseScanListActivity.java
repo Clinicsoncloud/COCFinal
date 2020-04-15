@@ -91,6 +91,12 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         setupUI();
         setupEvents();
         initializeData();
+
+        final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
+        intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, "");
+        intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, "");
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -290,17 +296,6 @@ public class GlucoseScanListActivity extends AppCompatActivity {
 
     private void moveToGlucoseActivity(String deviceName, String deviceAddress) {
 
-        final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
-        intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, deviceName);
-        intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, deviceAddress);
-
-        if (mScanning) {
-            mBluetoothAdapter.stopLeScan(mLeScanCallback);
-            mScanning = false;
-        }
-
-        startActivity(intent);
-        finish();
 
     }
 

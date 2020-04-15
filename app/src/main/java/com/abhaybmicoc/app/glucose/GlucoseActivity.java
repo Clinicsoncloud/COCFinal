@@ -239,7 +239,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         //check the conditio of the go text if there is go then send voice command to user to click on the start test button
         if (text.equals("go")) {
-            textToSpeechService = new TextToSpeechService(getApplicationContext(), "Click on start Test");
+            if (Utils.isOnline(context))
+                textToSpeechService = new TextToSpeechService(getApplicationContext(), "Click on start Test");
         }
 
         //already existed the return statement of the boolean method
@@ -686,8 +687,8 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
             llReadingsLayout.setVisibility(View.VISIBLE);
 
             btnStartTest.setBackground(getResources().getDrawable(R.drawable.greenback));
-
-            textToSpeechService.speakOut(GLUCOSE_MSG);
+            if (Utils.isOnline(context))
+                textToSpeechService.speakOut(GLUCOSE_MSG);
 
         }, STATR_TEST_ACTIVATION_TIME);
     }
