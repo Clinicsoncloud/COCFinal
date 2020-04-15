@@ -110,6 +110,7 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
             setConnectedDevicesAdapter();
 
             showHeightSensorDetails();
+            selectedDevice = "Height Sensor";
 
         } catch (Exception e) {
         }
@@ -126,7 +127,6 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
         startActivity(new Intent(context, OtpLoginScreen.class));
         finish();
     }
-
 
     private void setConnectedDevicesAdapter() {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, 1, GridLayoutManager.VERTICAL, false);
@@ -177,6 +177,8 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
     private void showHeightSensorDetails() {
         tvSelectedDevice.setText("Height Sensor");
         spDeviceAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+
+        Log.e("Height_Bluetooth", ":" + spDeviceAddress.getString("hcbluetooth", ""));
 
         if (!spDeviceAddress.getString("hcbluetooth", "").equals("")) {
 
@@ -257,7 +259,10 @@ public class SettingsActivity extends AppCompatActivity implements RvClickListen
     private void removeDevice() {
         spDeviceAddress.edit().clear().apply();
 
+        Log.e("selectedDevice_Log", ":" + selectedDevice);
         if (selectedDevice.equals("Height Sensor")) {
+            startActivity(new Intent(context, SettingsActivity.class));
+            finish();
             showHeightSensorDetails();
         } else if (selectedDevice.equals("Thermometer")) {
             showThermometerDetails();

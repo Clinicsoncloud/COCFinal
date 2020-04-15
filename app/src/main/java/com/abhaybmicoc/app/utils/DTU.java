@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -17,6 +19,8 @@ import java.text.DateFormat;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -1157,6 +1161,19 @@ public class DTU {
         Log.e("days_Log", "" + diff);
         System.out.printf("%d days, %d hours, %d minutes, %d seconds%n", elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds);
         return diff;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String get_DateOnlyFromTimeZoneDate(String timeZoneDate) {
+
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("dd-MM-yyy", Locale.ENGLISH);
+//        LocalDate date = LocalDate.parse("2018-04-10T04:00:00.000Z", inputFormatter);
+        LocalDate date = LocalDate.parse(timeZoneDate, inputFormatter);
+        String formattedDate = outputFormatter.format(date);
+//        System.out.println(formattedDate);
+
+        return formattedDate;
     }
 
 

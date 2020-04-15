@@ -10,8 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +25,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -57,6 +60,7 @@ import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.DTU;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -114,7 +118,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private NavigationView navigationView;
     private String patient_id = "";
 
-
     final WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
     android.app.Dialog changeLanguageDilog;
 
@@ -122,7 +125,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     private TextView tvClinicName;
     private TextView tvKioskID;
-
 
     Dialog installationKioskDialog;
 
@@ -137,10 +139,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         setupEvents();
         initializeData();
 
+        /*SharedPreferences sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
+        if (sharedPreferenceBluetoothAddress.getString("hcbluetooth", "").equalsIgnoreCase("")) {
+            editor.putString("hcbluetooth", "FC:A8:9B:00:58:D4");
+            editor.commit();
+        }*/
+
         if (Utils.isOnline(context)) {
             checkKioskStatus();
         } else {
-
             if (sharedPreferencesActivator.getString("is_trial_mode", "").equals("true"))
                 showInstallationOrTrialPopUp();
         }
@@ -645,19 +653,35 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
      * @param jsonResponse
      * @throws JSONException
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
+        try {
+            SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
+            editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
 
-        editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
-        editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
-        editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
-        editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
-        editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
-        editor.putString(Constant.Fields.DATE_OF_BIRTH, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH));
-        editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
+            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.NAME))
+                editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
+            else
+                editor.putString(Constant.Fields.NAME, "");
 
-        editor.commit();
+            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.EMAIL))
+                editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
+            else
+                editor.putString(Constant.Fields.EMAIL, "");
+
+            editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
+            editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
+
+            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.DATE_OF_BIRTH))
+                editor.putString(Constant.Fields.DATE_OF_BIRTH, DTU.get_DateOnlyFromTimeZoneDate(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH)));
+
+            editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
+
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -681,10 +705,16 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void GenerateOTP() {
 
         Map<String, String> headerParams = new HashMap<>();
-        Map<String, String> requestBodyParams = new HashMap<>();
+        headerParams.put("app_version", SplashActivity.currentVersion);
 
+        Map<String, String> requestBodyParams = new HashMap<>();
         requestBodyParams.put("kiosk_id", kiosk_id);
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
+        requestBodyParams.put("mobile", etMobileNumber.getText().toString());
+        requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+
+        Log.e("requestBodyParams_Login", ":" + requestBodyParams);
+        Log.e("headerParams_Login", ":" + headerParams);
 
         HttpService.accessWebServices(
                 context,
@@ -695,6 +725,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 (response, error, status) -> handleAPIResponse(response, error, status));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
         Log.e("response_Login", ":" + response);
@@ -731,6 +762,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 }
             } catch (Exception e) {
                 // TODO: Handle exception
+                e.printStackTrace();
             }
         } else if (status.equals("error")) {
             Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();

@@ -1389,6 +1389,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
+            paramsContentValues.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
 //            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
             if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
@@ -1413,6 +1414,7 @@ public class PrintPreviewActivity extends Activity {
             lastInsertedpatient_id = sharedPreferencesToken.getString(Constant.Fields.ID, "");
             lastInsertedparameter_id = dataBaseHelper.getLastInsertParameterID();
 
+            Log.e("lastInsertedparameter_id_Insrted", ":" + lastInsertedparameter_id);
             postData();
 
 //            getOfflineRecords();
@@ -1690,15 +1692,22 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
 //            requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
             requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
-
+            requestBodyParams.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
 
             HashMap mapHeadersParams = new HashMap();
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
             mapHeadersParams.put("Authorization", bearer);
+//            mapHeadersParams.put("app_version", SplashActivity.currentVersion);
+
+            Log.e("requestBodyParams_Post", ":" + requestBodyParams);
+            Log.e("mapHeadersParams_Post", ":" + mapHeadersParams);
+            Log.e("PostParams_Url", ":" + ApiUtils.PRINT_POST_URL);
 
             HttpService.accessWebServicesNoDialog(
-                    context, ApiUtils.PRINT_POST_URL,
+                    context,
+                    Request.Method.POST,
+                    ApiUtils.PRINT_POST_URL,
                     requestBodyParams,
                     mapHeadersParams,
                     (response, error, status) -> handleAPIResponse(response, error, status));
@@ -2023,9 +2032,6 @@ public class PrintPreviewActivity extends Activity {
 
             String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
 
-            Log.e("updateUrl_Url", ":" + updateUrl);
-            Log.e("updateUrl_Params", ":" + requestBodyParams);
-
             HttpService.accessWebServices(
                     context,
                     updateUrl,
@@ -2034,13 +2040,10 @@ public class PrintPreviewActivity extends Activity {
                     mapHeadersParams,
                     (response, error, status) -> handleUpdateAPIResponse(response, error, status));
 
-            /*HttpService.accessWebServicesNoDialog(
-                    context, updateUrl,
-                    requestBodyParams,
-                    mapHeadersParams,
-                    (response, error, status) -> handleUpdateAPIResponse(response, error, status));*/
-
         } else {
+
+            Log.e("lastInsertedparameter_id_FdUPdate", ":" + lastInsertedparameter_id);
+
             ContentValues paramsContentValues = new ContentValues();
             paramsContentValues.put(Constant.Fields.FEEDBACK, String.valueOf(feedbackRating));
 
@@ -2053,19 +2056,19 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("response_Params", ":" + response);
-
         if (status.equals("response")) {
             try {
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getString("status").equals("200")) {
+                JSONObject responseObj = new JSONObject(response);
+                if (responseObj != null) {
                     Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
 
                     goToHome();
                 }
             } catch (Exception e) {
             }
+        } else {
+            Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
+            goToHome();
         }
 
     }

@@ -23,7 +23,7 @@ import org.json.JSONObject;
 
 public class HttpService {
 
-    public static void accessWebServices(final Context context, String url,int method ,final Map param, final Map headerParam, final VolleyResponse responseListner) {
+    public static void accessWebServices(final Context context, String url, int method, final Map param, final Map headerParam, final VolleyResponse responseListner) {
         final ProgressDialog loading = ProgressDialog.show(context, "Loading.....", "Please wait...", true);
 
         StringRequest stringRequest = new StringRequest(method, url,
@@ -89,9 +89,9 @@ public class HttpService {
         requestQueue.add(stringRequest);
     }
 
-    public static void accessWebServicesNoDialog(final Context context, String url, final Map param, final Map headerParam, final VolleyResponse responseListner) {
+    public static void accessWebServicesNoDialog(final Context context, final int method, String url, final Map param, final Map headerParam, final VolleyResponse responseListner) {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+        StringRequest stringRequest = new StringRequest(method, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

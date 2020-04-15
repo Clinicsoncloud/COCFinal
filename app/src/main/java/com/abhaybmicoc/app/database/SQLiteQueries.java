@@ -91,6 +91,7 @@ public class SQLiteQueries {
             + Constant.Fields.DELETED_AT + " VARCHAR,"
             + Constant.Fields.STATUS + " VARCHAR,"
             + Constant.Fields.IS_COMPLETED + " VARCHAR,"
+            + Constant.Fields.APP_VERSION + " VARCHAR,"
             + Constant.Fields.IS_UPLOADED + " VARCHAR" + ");";
 
     public static final String QUERY_TBL_PATIENTS = "create table IF NOT EXISTS "
