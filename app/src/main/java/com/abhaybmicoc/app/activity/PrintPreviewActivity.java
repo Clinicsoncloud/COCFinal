@@ -146,6 +146,7 @@ public class PrintPreviewActivity extends Activity {
     private SmileRating smileRating;
     private int feedbackRating = 0;
 
+    private SharedPreferences sharedPreferencesActivator;
     private SharedPreferences sharedPreferencesToken;
     private SharedPreferences sharedPreferencesSugar;
     private SharedPreferences sharedPreferencesActofit;
@@ -1390,6 +1391,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
             paramsContentValues.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
+            paramsContentValues.put(Constant.Fields.CLINIC_ID, sharedPreferencesActivator.getString("id", ""));
 //            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
             if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
@@ -1693,7 +1695,7 @@ public class PrintPreviewActivity extends Activity {
 //            requestBodyParams.put(Constant.Fields.FATFREERSNGE, "");
             requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             requestBodyParams.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
-
+            requestBodyParams.put(Constant.Fields.CLINIC_ID, sharedPreferencesActivator.getString("id", ""));
             HashMap mapHeadersParams = new HashMap();
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));
@@ -1721,6 +1723,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
+        Log.e("response_Log", ":" + response);
         if (status.equals("response")) {
 
             try {
@@ -1762,6 +1765,8 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void gettingDataObjects() {
+
+        sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
         sharedPreferencesOximeter = getSharedPreferences(ApiUtils.PREFERENCE_PULSE, MODE_PRIVATE);
         sharedPreferencesSugar = getSharedPreferences(ApiUtils.PREFERENCE_BIOSENSE, MODE_PRIVATE);
         sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);

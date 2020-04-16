@@ -135,6 +135,7 @@ public class Constant {
 
 
         public static final String APP_VERSION = "app_version";
+        public static final String CLINIC_ID = "clinic_id";
         public static final String IS_TRIAL_MODE = "is_trial_mode";
         public static final String CLIENT_NAME = "client_name";
         public static final String MACHINE_OPERATOR_NAME = "machine_operator_name";
