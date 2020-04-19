@@ -297,7 +297,7 @@ public class ActofitMainActivity extends AppCompatActivity {
     }
 
     private void setupTextToSpeech() {
-        if(Utils.isOnline(context)){
+        if (Utils.isOnline(context)) {
             textToSpeechService = new TextToSpeechService(getApplicationContext(), SMARTSCALE_MSG);
         }
     }
@@ -374,7 +374,7 @@ public class ActofitMainActivity extends AppCompatActivity {
 
             intent.putExtra(Constant.Fields.HEIGHT, Integer.parseInt(sharedPreferencesActofit.getString(Constant.Fields.HEIGHT, "")));
             intent.putExtra(Constant.Fields.IS_ATHLETE, isAthlete);
-            intent.putExtra(Constant.Fields.DATE_OF_BIRTH, parsedDate);
+            intent.putExtra(Constant.Fields.DATE_OF_BIRTH, sharedPreferencesPersonal.getString(Constant.Fields.DATE_OF_BIRTH, ""));
             intent.putExtra(Constant.Fields.ID, sharedPreferencesPersonal.getString(Constant.Fields.ID, ""));
             intent.putExtra(Constant.Fields.NAME, sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             intent.putExtra(Constant.Fields.GENDER, sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));

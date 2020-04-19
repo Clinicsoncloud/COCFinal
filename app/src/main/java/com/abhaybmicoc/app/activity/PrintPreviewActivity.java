@@ -60,6 +60,7 @@ import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
 import com.abhaybmicoc.app.printer.esys.pridedemoapp.Act_GlobalPool;
 
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.DTU;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
 import com.android.volley.DefaultRetryPolicy;
@@ -1945,7 +1946,8 @@ public class PrintPreviewActivity extends Activity {
     private int getAge() {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)) {
             String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-            return DateService.getAgeFromStringDate(dateOfBirth);
+
+            return DateService.getAgeFromStringDate(DTU.getYYYYMD(dateOfBirth));
         } else
             return 0;
     }

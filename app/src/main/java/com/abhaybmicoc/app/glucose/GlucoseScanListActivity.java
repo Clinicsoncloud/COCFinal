@@ -92,11 +92,6 @@ public class GlucoseScanListActivity extends AppCompatActivity {
         setupEvents();
         initializeData();
 
-        final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
-        intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, "");
-        intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, "");
-        startActivity(intent);
-        finish();
     }
 
     @Override

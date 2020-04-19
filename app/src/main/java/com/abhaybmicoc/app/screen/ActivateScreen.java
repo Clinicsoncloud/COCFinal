@@ -124,13 +124,26 @@ public class ActivateScreen extends AppCompatActivity {
 
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
+        Log.e("response_KIOSKVerify", ":" + response);
+        Log.e("status_KIOSKVerify", ":" + status);
         if (status.equals("response")) {
             try {
 
                 JSONObject resultObj = new JSONObject(response);
 
                 if (resultObj != null) {
-                    showConfirmationPopUp(resultObj);
+
+                    if (resultObj.has("found")) {
+
+                        if (!resultObj.getBoolean("found")) {
+                            showFailuerPopUp();
+                            Toast.makeText(context, "Please enter registered KIOSK ID...", Toast.LENGTH_SHORT).show();
+                            Log.e("wrongKiosk_Log", ":" + resultObj.getString("clinic"));
+                        }
+
+                    } else {
+                        showConfirmationPopUp(resultObj);
+                    }
                 } else {
                     showFailuerPopUp();
                     Toast.makeText(context, "Please enter registered KIOSK ID...", Toast.LENGTH_SHORT).show();

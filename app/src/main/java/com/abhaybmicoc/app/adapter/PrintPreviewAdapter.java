@@ -15,6 +15,7 @@ import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.model.PrintData;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
+import com.abhaybmicoc.app.utils.DTU;
 
 import java.text.DecimalFormat;
 
@@ -1345,7 +1346,7 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
     private int getAge() {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH)) {
             String dateOfBirth = SharedPreferenceService.getString(context, ApiUtils.PREFERENCE_PERSONALDATA, Constant.Fields.DATE_OF_BIRTH);
-            return DateService.getAgeFromStringDate(dateOfBirth);
+            return DateService.getAgeFromStringDate(DTU.getYYYYMD(dateOfBirth));
         } else
             return 0;
     }

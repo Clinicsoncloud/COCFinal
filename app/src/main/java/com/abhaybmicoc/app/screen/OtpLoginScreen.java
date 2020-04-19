@@ -318,7 +318,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         if (uploaded_Count != null && !uploaded_Count.equals(""))
             tvNoOfUploadedRecords.setText(sharedPreferencesOffline.getString(Constant.Fields.UPLOADED_RECORDS_COUNT, ""));
         else
-            tvNoOfUploadedRecords.setText("0");
+            tvNoOfUploadedRecords.setText("NA");
+
     }
 
     private void getOfflineRecords() {
