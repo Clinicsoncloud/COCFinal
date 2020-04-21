@@ -1176,5 +1176,22 @@ public class DTU {
         return formattedDate;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String get_yyyy_mm_dd_HMS(String timeZoneDate) {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat targetFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = null;
+        try {
+            date = originalFormat.parse(timeZoneDate);
+            System.out.println("Old Format :   " + originalFormat.format(date));
+            System.out.println("New Format :   " + targetFormat.format(date));
+
+        } catch (ParseException ex) {
+            // Handle Exception.
+        }
+
+        return targetFormat.format(date);
+    }
+
 
 }

@@ -40,7 +40,6 @@ public class SplashActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         initialize();
-
     }
 
     @Override
@@ -64,10 +63,17 @@ public class SplashActivity extends Activity {
         setContentView(R.layout.and_splash);
 
         sharedPreferencesLanguage = getSharedPreferences(ApiUtils.PREFERENCE_LANGUAGE, MODE_PRIVATE);
+
+        if (sharedPreferencesLanguage.getString("language", "") == null
+                || sharedPreferencesLanguage.getString("language", "").equals("")) {
+
+            SharedPreferences.Editor editor = sharedPreferencesLanguage.edit();
+            editor.putString("language", "en");
+            editor.apply();
+        }
+
         setLocale(sharedPreferencesLanguage.getString("language", ""));
-
         startServices();
-
 
         try {
             PackageInfo pInfo = getApplicationContext().getPackageManager().getPackageInfo(getPackageName(), 0);

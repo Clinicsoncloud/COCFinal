@@ -141,6 +141,8 @@ public class GlucoseScanListActivity extends AppCompatActivity {
      * @param device
      */
     private void handleScanCallback(BluetoothDevice device) {
+
+        Log.e("device_SCan_Log", ":" + device.getName());
         if (device != null) {
             if ("SyncPlus".equals(device.getName()) || util.readString(HelperC.key_devname, "SyncPlus").equals(device.getName())) {
                 adapter.addDevice(device);
@@ -169,7 +171,11 @@ public class GlucoseScanListActivity extends AppCompatActivity {
                         }
                     }
                 }
+            } else {
+                Toast.makeText(this, device.getName(), Toast.LENGTH_SHORT).show();
             }
+        } else {
+            Toast.makeText(this, "Device Not found", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -291,6 +297,17 @@ public class GlucoseScanListActivity extends AppCompatActivity {
 
     private void moveToGlucoseActivity(String deviceName, String deviceAddress) {
 
+        final Intent intent = new Intent(getApplicationContext(), GlucoseActivity.class);
+        intent.putExtra(HelperC.EXTRAS_DEVICE_NAME, deviceName);
+        intent.putExtra(HelperC.EXTRAS_DEVICE_ADDRESS, deviceAddress);
+
+        if (mScanning) {
+            mBluetoothAdapter.stopLeScan(mLeScanCallback);
+            mScanning = false;
+        }
+
+        startActivity(intent);
+        finish();
 
     }
 

@@ -173,6 +173,11 @@ public class PrintPreviewActivity extends Activity {
 
     private double weight;
     private double standardWeighRangeTo;
+    private double standarWeightHighFrom;
+    private double standarWeightHighTo;
+    private double standarWeightLowFrom;
+    private double standarWeightLowTo;
+
     private double standardWeighRangeFrom;
     private double standardMetabolism;
 
@@ -614,32 +619,32 @@ public class PrintPreviewActivity extends Activity {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS)) {
             double muscleMass = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.MUSCLE_MASS);
 
-            if (height > 170) {
+            if (height > 160) {
                 standardMuscleMass = "49.4-59.5kg";
 
-                if (muscleMass > 59.5)
-                    musclemassResult = "High";
-                else if (muscleMass >= 49.4 && muscleMass <= 59.5)
+                if (muscleMass > 42.5)
+                    musclemassResult = "Adequate";
+                else if (muscleMass >= 36.5 && muscleMass <= 42.5)
                     musclemassResult = "Standard";
-                else if (muscleMass < 49.4)
+                else if (muscleMass < 36.5)
                     musclemassResult = "Low";
-            } else if (height <= 170 && height >= 160) {
+            } else if (height <= 160 && height >= 150) {
                 standardMuscleMass = "44-52.4kg";
 
-                if (muscleMass > 52.4)
-                    musclemassResult = "High";
-                else if (muscleMass >= 44 && muscleMass <= 52.4)
+                if (muscleMass > 37.5)
+                    musclemassResult = "Adequate";
+                else if (muscleMass >= 32.9 && muscleMass <= 37.5)
                     musclemassResult = "Standard";
-                else if (muscleMass < 44)
+                else if (muscleMass < 32.9)
                     musclemassResult = "Low";
-            } else if (height < 160) {
+            } else if (height < 150) {
                 musclemassResult = "38.5-46.5kg";
 
-                if (muscleMass > 46.5)
-                    musclemassResult = "High";
-                else if (muscleMass >= 38.5 && muscleMass <= 46.5)
+                if (muscleMass > 34.7)
+                    musclemassResult = "Adequate";
+                else if (muscleMass >= 29.1 && muscleMass <= 34.7)
                     musclemassResult = "Standard";
-                else if (muscleMass < 38.5)
+                else if (muscleMass < 29.1)
                     musclemassResult = "Low";
             }
         } else
@@ -665,7 +670,7 @@ public class PrintPreviewActivity extends Activity {
             double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
 
             if (bodyWater > 60)
-                bodywaterResult = "High";
+                bodywaterResult = "Adequate";
             else if (bodyWater >= 45 && bodyWater <= 60)
                 bodywaterResult = "Standard";
             else if (bodyWater < 45)
@@ -680,7 +685,7 @@ public class PrintPreviewActivity extends Activity {
 
             if (bodyFat > 36)
                 bodyfatResult = "Seriously High";
-            else if (bodyFat > 30 && weight <= 36)
+            else if (bodyFat > 31 && weight <= 36)
                 bodyfatResult = "High";
             else if (bodyFat > 21 && weight <= 30)
                 bodyfatResult = "Standard";
@@ -695,9 +700,9 @@ public class PrintPreviewActivity extends Activity {
             double bmi = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMI);
 
             if (bmi > 25)
-                bmiResult = "Seriously High";
-            else if (bmi > 18.5 && weight <= 25)
                 bmiResult = "High";
+            else if (bmi > 18.5 && weight <= 25)
+                bmiResult = "Standard";
             else
                 bmiResult = "Low";
         } else
@@ -708,12 +713,24 @@ public class PrintPreviewActivity extends Activity {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
             double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
 
-            if (weight > standardWeighRangeTo)
+            if (weight > standarWeightHighTo) {
+                weightResult = "Seriously High";
+            } else if (weight <= standarWeightHighTo && weight >= standarWeightHighFrom) {
+                weightResult = "High";
+            } else if (weight <= standardWeighRangeTo && weight >= standardWeighRangeFrom) {
+                weightResult = "Standard";
+            } else if (weight <= standarWeightLowTo && weight >= standarWeightLowFrom) {
+                weightResult = "Low";
+            } else if (weight < standarWeightLowFrom) {
+                weightResult = "Seriously Low";
+            }
+
+            /*if (weight > standardWeighRangeTo)
                 weightResult = "High";
             else if (weight > standardWeighRangeTo && weight <= standardWeighRangeTo)
                 weightResult = "Standard";
             else
-                weightResult = "Low";
+                weightResult = "Low";*/
         } else
             weightResult = "NA";
     }
@@ -783,9 +800,9 @@ public class PrintPreviewActivity extends Activity {
             double bmr = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BMR);
 
             if (bmr >= standardMetabolism)
-                bmrResult = "High";
+                bmrResult = "Standard";
             else
-                bmrResult = "Not up to mark";
+                bmrResult = "Not up to standard";
         } else
             bmrResult = "NA";
     }
@@ -795,7 +812,7 @@ public class PrintPreviewActivity extends Activity {
             double protein = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.PROTEIN);
 
             if (protein > 18)
-                proteinResult = "High";
+                proteinResult = "Adequate";
             else if (protein >= 16 && protein <= 18)
                 proteinResult = "Standard";
             else if (protein < 16)
@@ -844,9 +861,9 @@ public class PrintPreviewActivity extends Activity {
             if (height > 170) {
                 standardMuscleMass = "49.4-59.5kg";
 
-                if (muscleMass > 59.5)
-                    musclemassResult = "High";
-                else if (muscleMass >= 49.4 && muscleMass <= 59.5)
+                if (muscleMass > 59.4)
+                    musclemassResult = "Adequate";
+                else if (muscleMass >= 49.4 && muscleMass <= 59.4)
                     musclemassResult = "Standard";
                 else
                     musclemassResult = "Low";
@@ -854,7 +871,7 @@ public class PrintPreviewActivity extends Activity {
                 standardMuscleMass = "44-52.4kg";
 
                 if (muscleMass > 52.4)
-                    musclemassResult = "High";
+                    musclemassResult = "Adequate";
                 else if (muscleMass >= 44 && muscleMass <= 52.4)
                     musclemassResult = "Standard";
                 else
@@ -863,7 +880,7 @@ public class PrintPreviewActivity extends Activity {
                 musclemassResult = "38.5-46.5kg";
 
                 if (muscleMass > 46.5)
-                    musclemassResult = "High";
+                    musclemassResult = "Adequate";
                 else if (muscleMass >= 38.5 && muscleMass <= 46.5)
                     musclemassResult = "Standard";
                 else
@@ -892,7 +909,7 @@ public class PrintPreviewActivity extends Activity {
             double bodyWater = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.BODY_WATER);
 
             if (bodyWater > 65)
-                bodywaterResult = "High";
+                bodywaterResult = "Adequate";
             else if (bodyWater >= 55 && bodyWater <= 65)
                 bodywaterResult = "Standard";
             else if (bodyWater < 55)
@@ -922,7 +939,7 @@ public class PrintPreviewActivity extends Activity {
             // TODO: Check these values
             if (subcutaneousFat > 16.7)
                 subcutaneousResult = "High";
-            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 16.7)
+            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 6.7)
                 subcutaneousResult = "Standard";
             else
                 subcutaneousResult = "Low";
@@ -964,12 +981,32 @@ public class PrintPreviewActivity extends Activity {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
             double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
 
-            if (weight > standardWeighRangeTo)
+            if (weight > standardWeighRangeTo) {
+                weightResult = "Seriously High";
+            } else if (weight <= standardWeighRangeTo && weight >= standardWeighRangeFrom) {
+
+                weightResult = "High";
+
+            } else if (weight <= standardWeighRangeTo && weight >= standardWeighRangeFrom) {
+
+                weightResult = "Standard";
+
+            } else if (weight <= standarWeightLowTo && weight >= standarWeightLowFrom) {
+
+                weightResult = "Low";
+
+            } else if (weight < standarWeightLowFrom) {
+
+                weightResult = "Seriously Low";
+            }
+
+
+            /*if (weight > standardWeighRangeTo)
                 weightResult = "High";
             else if (weight > standardWeighRangeFrom && weight <= standardWeighRangeTo)
                 weightResult = "Standard";
             else
-                weightResult = "Low";
+                weightResult = "Low";*/
         } else
             weightResult = "NA";
     }
@@ -1042,6 +1079,7 @@ public class PrintPreviewActivity extends Activity {
             maleRange(standardWeightMen);
         else
             femaleRange(standardWeightFemale);
+
     }
 
     private void glucoseRange() {
@@ -1112,13 +1150,33 @@ public class PrintPreviewActivity extends Activity {
         standardSkeltonMuscle = "49-59(%)";
         standardHemoglobin = "13-17gm/dl";
 
+        /*standardWeighRangeFrom = (0.90 * standardWeightMen);
+        standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
+
+        standardWeighRangeTo = (1.09 * standardWeightMen);
+        standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));*/
+
+
         standardWeighRangeFrom = (0.90 * standardWeightMen);
         standardWeighRangeFrom = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeFrom));
 
         standardWeighRangeTo = (1.09 * standardWeightMen);
         standardWeighRangeTo = Double.parseDouble(new DecimalFormat("#.##").format(standardWeighRangeTo));
 
+        standarWeightHighFrom = (1.10 * standardWeightMen);
+        standarWeightHighFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighFrom));
+
+        standarWeightHighTo = (1.20 * standardWeightMen);
+        standarWeightHighTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightHighTo));
+
+        standarWeightLowFrom = (0.80 * standardWeightMen);
+        standarWeightLowFrom = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowFrom));
+
+        standarWeightLowTo = (0.89 * standardWeightMen);
+        standarWeightLowTo = Double.parseDouble(new DecimalFormat("#.##").format(standarWeightLowTo));
+
         standardWeightRange = standardWeighRangeFrom + "-" + standardWeighRangeTo;
+
 
         if (height > 170)
             standardMuscleMass = "49.4-59.5kg";
@@ -1217,7 +1275,7 @@ public class PrintPreviewActivity extends Activity {
             printDataListNew.add(new PrintData("Systolic", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC, "")))));
             printDataListNew.add(new PrintData("Diastolic", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC, "")))));
             printDataListNew.add(new PrintData("Pulse Oximeter", String.valueOf(TextUtils.isEmpty(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")) ? 0 : Double.parseDouble(sharedPreferencesOximeter.getString(Constant.Fields.BLOOD_OXYGEN, "")))));
-            printDataListNew.add(new PrintData("Pulse ", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")))));
+            printDataListNew.add(new PrintData("Pulse", String.valueOf(TextUtils.isEmpty(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")) ? 0 : Double.parseDouble(sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, "")))));
             printDataListNew.add(new PrintData("Blood Glucose", String.valueOf(TextUtils.isEmpty(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")) ? 0 : Double.parseDouble(sharedPreferencesSugar.getString(Constant.Fields.SUGAR, "")))));
             printDataListNew.add(new PrintData("Hemoglobin", String.valueOf(TextUtils.isEmpty(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")) ? 0 : Double.parseDouble(sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, "")))));
             printDataListNew.add(new PrintData("Left Eye Vision", String.valueOf(TextUtils.isEmpty(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "")) ? "" : String.valueOf(sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "")))));
@@ -1229,9 +1287,12 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
+    @SuppressLint("LongLogTag")
     private void saveDataToLocal() {
 
         try {
+
+            Log.e("PulseRate_Log", ":" + sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             ContentValues paramsContentValues = new ContentValues();
 
             paramsContentValues.put(Constant.Fields.BMI, sharedPreferencesActofit.getString(Constant.Fields.BMI, ""));
@@ -1246,6 +1307,7 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.GENDER, sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
             paramsContentValues.put(Constant.Fields.BONE_MASS, sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""));
             paramsContentValues.put(Constant.Fields.BODY_WATER, sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""));
+
             paramsContentValues.put(Constant.Fields.PULSE_RATE, sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, ""));
             paramsContentValues.put(Constant.Fields.MUSCLE_MASS, sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""));
             paramsContentValues.put(Constant.Fields.HEMOGLOBIN, sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""));
@@ -1409,6 +1471,8 @@ public class PrintPreviewActivity extends Activity {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
             }
 
+
+            Log.e("paramsContentValues_Offline", "" + paramsContentValues);
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
 
             btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
@@ -1520,6 +1584,7 @@ public class PrintPreviewActivity extends Activity {
     private void postData() {
 
         if (Utils.isOnline(context)) {
+            Log.e("PulseRate_Log_Online", ":" + sharedPreferencesToken.getString(Constant.Fields.ID, ""));
 
             Map<String, String> requestBodyParams = new HashMap<>();
 
@@ -1535,7 +1600,7 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.GENDER, sharedPreferencesPersonalData.getString(Constant.Fields.GENDER, ""));
             requestBodyParams.put(Constant.Fields.BONE_MASS, sharedPreferencesActofit.getString(Constant.Fields.BONE_MASS, ""));
             requestBodyParams.put(Constant.Fields.BODY_WATER, sharedPreferencesActofit.getString(Constant.Fields.BODY_WATER, ""));
-            requestBodyParams.put(Constant.Fields.PULSE_RATE, sharedPreferencesHemoglobin.getString(Constant.Fields.PULSE_RATE, ""));
+            requestBodyParams.put(Constant.Fields.PULSE_RATE, sharedPreferencesBloodPressure.getString(Constant.Fields.PULSE_RATE, ""));
             requestBodyParams.put(Constant.Fields.MUSCLE_MASS, sharedPreferencesActofit.getString(Constant.Fields.MUSCLE_MASS, ""));
             requestBodyParams.put(Constant.Fields.HEMOGLOBIN, sharedPreferencesHemoglobin.getString(Constant.Fields.HEMOGLOBIN, ""));
             requestBodyParams.put(Constant.Fields.HEALTH_SCORE, sharedPreferencesActofit.getString(Constant.Fields.HEALTH_SCORE, ""));
@@ -1697,6 +1762,8 @@ public class PrintPreviewActivity extends Activity {
             requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             requestBodyParams.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
             requestBodyParams.put(Constant.Fields.CLINIC_ID, sharedPreferencesActivator.getString("id", ""));
+            requestBodyParams.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.PATIENT_ID, ""));
+
             HashMap mapHeadersParams = new HashMap();
 
             String bearer = "Bearer ".concat(sharedPreferencesToken.getString(Constant.Fields.TOKEN, ""));

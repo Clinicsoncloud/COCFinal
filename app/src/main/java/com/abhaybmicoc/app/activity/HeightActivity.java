@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
@@ -225,6 +227,12 @@ public class HeightActivity extends Activity {
     }
 
     private void initializeData() {
+        /*Date date = new Date();
+
+        date = originalFormat.parse(timeZoneDate);
+        SimpleDateFormat dateFormatWithZone = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
+        String currentDate = dateFormatWithZone.format(date);*/
+
         btnClean.setText("Clean");
 
         setupTextToSpeech();
@@ -234,6 +242,7 @@ public class HeightActivity extends Activity {
         etBluetoothLogs.setTextColor(getResources().getColor(R.color.white));
         etBluetoothLogs.setBackgroundColor(getResources().getColor(R.color.black));
 
+        Log.e("Patient_ID_Log", ":" + sharedPreferencePersonalData.getString(Constant.Fields.PATIENT_ID, ""));
         tvName.setText("Name : " + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
         tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));

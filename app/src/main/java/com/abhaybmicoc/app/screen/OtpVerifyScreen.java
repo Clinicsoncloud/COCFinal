@@ -2,6 +2,7 @@ package com.abhaybmicoc.app.screen;
 
 import android.content.ContentValues;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.os.Bundle;
 import android.widget.Button;
@@ -274,12 +275,13 @@ public class OtpVerifyScreen extends AppCompatActivity {
         dpDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void postData() {
 
         Map<String, String> requestBodyParams = new HashMap<>();
         requestBodyParams.put(Constant.Fields.NAME, etName.getText().toString());
         requestBodyParams.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-        requestBodyParams.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+        requestBodyParams.put(Constant.Fields.DATE_OF_BIRTH, DTU.get_yyyy_mm_dd_HMS(etDateOfBirth.getText().toString()));
         requestBodyParams.put(Constant.Fields.GENDER, getSelectedGender());
         requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
@@ -340,7 +342,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
             dataBaseHelper.updatePatientInfo(Constant.TableNames.PATIENTS, patientContentValues, patient_id);
 
 //            String patient_id = dataBaseHelper.lastInsertID(Constant.Fields.PATIENT_ID, Constant.TableNames.PATIENTS);
-
 //            JSONObject resObject = new JSONObject();
 //            JSONObject dataObject = new JSONObject();
             JSONObject patientObject = new JSONObject();
@@ -387,10 +388,12 @@ public class OtpVerifyScreen extends AppCompatActivity {
         if (jsonObject.has(Constant.Fields.PATIENT_ID))
             writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getString(Constant.Fields.PATIENT_ID));
 
+        writeToPersonalSharedPreferenceKey(Constant.Fields.PATIENT_ID, jsonObject.getString(Constant.Fields.ID));
+
         writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, jsonObject.getString(Constant.Fields.NAME));
         writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, jsonObject.getString(Constant.Fields.EMAIL));
         writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, jsonObject.getString(Constant.Fields.TOKEN));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, jsonObject.getString(Constant.Fields.DATE_OF_BIRTH));
+        writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, DTU.getd_m_Y(jsonObject.getString(Constant.Fields.DATE_OF_BIRTH)));
         writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, jsonObject.getString(Constant.Fields.MOBILE_NUMBER));
 
         editor.commit();

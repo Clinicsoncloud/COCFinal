@@ -260,7 +260,6 @@ public class PrintPreviewAdapter extends ArrayAdapter<PrintData> {
 
                 viewHolder.rangeTV.setText("" + standardWeighRangeFrom + " - " + standardWeighRangeTo + "kg");
 
-
                 objectShared.putString("standardRangeMaleFrom", "" + (0.90 * standardWeightMen));
                 objectShared.putString("standardRangeMaleTo", "" + (1.09 * standardWeightMen));
                 objectShared.commit();

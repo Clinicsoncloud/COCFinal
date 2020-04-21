@@ -14,6 +14,7 @@ public class DateService {
 
     public static final String DATE_FORMAT = "dd-MMM-yyyy hh:mm:ss";
     public static final String YYYY_MM_DD_HMS = "yyyy-MM-dd hh:mm:ss";
+    public static final String YYYY_MM_DD_T_HMS_Z = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     /**
      * @param dateOfBirth

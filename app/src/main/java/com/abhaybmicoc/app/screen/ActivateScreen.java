@@ -200,7 +200,7 @@ public class ActivateScreen extends AppCompatActivity {
                             editor.putString("installation_date", clinicObject.getString("installation_date"));
                             editor.putString("machine_operator_name", clinicObject.getString("machine_operator_name"));
                             editor.putString("machine_operator_mobile_number", clinicObject.getString("machine_operator_mobile_number"));
-                            editor.putString("client_name", clinicObject.getString("client_name"));
+//                            editor.putString("client_name", clinicObject.getString("client_name"));
                             editor.putString("is_trial_mode", clinicObject.getString("is_trial_mode"));
                             editor.putString("id", clinicObject.getString("id"));
                             editor.commit();

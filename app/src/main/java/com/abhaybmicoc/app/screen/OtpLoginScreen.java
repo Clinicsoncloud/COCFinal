@@ -420,6 +420,9 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     private void initializeData() {
+
+        Log.e("getTimeXone_Date", ":" + DateService.getCurrentDateTime(DateService.YYYY_MM_DD_T_HMS_Z));
+
         dataBaseHelper = new DataBaseHelper(context);
 
         installationKioskDialog = new android.app.Dialog(context);
@@ -658,6 +661,8 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
         try {
             SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
+
+            editor.putString(Constant.Fields.PATIENT_ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
 
             editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
 

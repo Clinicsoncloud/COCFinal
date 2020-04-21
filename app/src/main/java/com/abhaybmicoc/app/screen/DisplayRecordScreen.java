@@ -202,6 +202,13 @@ public class DisplayRecordScreen extends AppCompatActivity implements View.OnCli
             textToSpeechService.stopTextToSpeech();
     }
 
+    /**
+     *
+     */
+    @Override
+    public void onBackPressed() {
+    }
+
     // region Logical methods
 
     /**
