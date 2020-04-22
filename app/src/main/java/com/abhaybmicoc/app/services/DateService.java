@@ -1,6 +1,8 @@
 package com.abhaybmicoc.app.services;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import java.text.DateFormat;
@@ -69,6 +71,7 @@ public class DateService {
 
         DateFormat dateFormatter = new SimpleDateFormat(format);
         dateFormatter.setLenient(false);
+        dateFormatter.setTimeZone(Calendar.getInstance().getTimeZone());
         Date today = new Date();
         String s = dateFormatter.format(today);
         Log.e("today_Date", "" + s);

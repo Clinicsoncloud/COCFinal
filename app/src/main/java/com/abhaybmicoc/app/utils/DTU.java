@@ -24,6 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class DTU {
     // TODO Time...........
@@ -1193,5 +1194,32 @@ public class DTU {
         return targetFormat.format(date);
     }
 
+
+    /**
+     * Get Timestamp from date and time
+     *
+     * @param mDateTime   datetime String
+     * @param mDateFormat Date Format
+     * @throws ParseException
+     */
+    public static long getTimeStampFromDateTime(String mDateTime, String mDateFormat)
+            throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        Date date = dateFormat.parse(mDateTime);
+        return date.getTime();
+    }
+
+
+    /**
+     * @param time        in milliseconds (Timestamp)
+     * @param mDateFormat SimpleDateFormat
+     */
+    public static String getDateTimeFromTimeStamp(Long time, String mDateFormat) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(mDateFormat);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Kolkata"));
+        Date dateTime = new Date(time);
+        return dateFormat.format(dateTime);
+    }
 
 }

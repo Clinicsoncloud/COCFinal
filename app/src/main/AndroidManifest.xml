@@ -67,12 +67,12 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.VisionActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".activity.ChangeLanguageActivity"
             android:label="@string/title_activity_change_language"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.SettingsActivity"
@@ -81,7 +81,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".activity.TechnicianInstallationActivity"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".screen.PostVerifiedOtpScreen"

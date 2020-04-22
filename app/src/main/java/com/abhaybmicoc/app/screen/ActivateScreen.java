@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.SplashActivity;
+import com.abhaybmicoc.app.model.Clinic_Data;
+import com.abhaybmicoc.app.model.Clinic_Data_Info;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
@@ -80,16 +82,6 @@ public class ActivateScreen extends AppCompatActivity {
 
         btnSubmit.setOnClickListener(view -> validateKiosk());
 
-        /*btnSubmit.setOnClickListener(view -> {
-            sp = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
-            // Writing data to SharedPreferences
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("pinLock", etPin.getText().toString());
-            editor.commit();
-            Intent objIntent = new Intent(getApplicationContext(), SplashActivity.class);
-            startActivity(objIntent);
-            finish();
-        });*/
     }
 
     private void validateKiosk() {
@@ -126,30 +118,19 @@ public class ActivateScreen extends AppCompatActivity {
 
         Log.e("response_KIOSKVerify", ":" + response);
         Log.e("status_KIOSKVerify", ":" + status);
+
         if (status.equals("response")) {
             try {
+                Clinic_Data clinic_data = (Clinic_Data) Utils.parseResponse(response, Clinic_Data.class);
 
-                JSONObject resultObj = new JSONObject(response);
+                Log.e("Found_Status_Log", ":" + clinic_data.getFound());
 
-                if (resultObj != null) {
-
-                    if (resultObj.has("found")) {
-
-                        if (!resultObj.getBoolean("found")) {
-                            showFailuerPopUp();
-                            Toast.makeText(context, "Please enter registered KIOSK ID...", Toast.LENGTH_SHORT).show();
-                            Log.e("wrongKiosk_Log", ":" + resultObj.getString("clinic"));
-                        }
-
-                    } else {
-                        showConfirmationPopUp(resultObj);
-                    }
+                if (clinic_data.getFound()) {
+                    showConfirmationPopUp(clinic_data.getData());
                 } else {
                     showFailuerPopUp();
                     Toast.makeText(context, "Please enter registered KIOSK ID...", Toast.LENGTH_SHORT).show();
-                    Log.e("wrongKiosk_Log", ":" + resultObj.getString("clinic"));
                 }
-
 
             } catch (Exception e) {
                 // TODO: Handle exception
@@ -161,7 +142,7 @@ public class ActivateScreen extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void showConfirmationPopUp(JSONObject clinicObject) {
+    private void showConfirmationPopUp(Clinic_Data_Info clinic_data_info) {
         confirmKioskDialog.setContentView(R.layout.show_kiosk_activation_dilog);
         layoutParams.copyFrom(confirmKioskDialog.getWindow().getAttributes());
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -171,12 +152,12 @@ public class ActivateScreen extends AppCompatActivity {
 
         final TextView tv_msg = confirmKioskDialog.findViewById(R.id.tv_msg);
         final Button btn_Proceed = confirmKioskDialog.findViewById(R.id.btn_Proceed);
-        final ImageView ic_CloseDilog = confirmKioskDialog.findViewById(R.id.ic_CloseDilog);
+        final ImageView ic_CloseDialog = confirmKioskDialog.findViewById(R.id.ic_CloseDilog);
 
         tv_msg.setTextColor(context.getResources().getColor(R.color.white));
 
         try {
-            tv_msg.setText("You are now connected to  \"" + clinicObject.getString("name") + "\"");
+            tv_msg.setText("You are now connected to  \"" + clinic_data_info.getName() + "\"");
 
             btn_Proceed.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.buttonshapeconnect2));
 
@@ -188,21 +169,21 @@ public class ActivateScreen extends AppCompatActivity {
                         try {
                             // Writing data to SharedPreferences
                             SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("pinLock", clinicObject.getString("token"));
-                            editor.putString("clinic_name", clinicObject.getString("name"));
-                            editor.putString("address", clinicObject.getString("address"));
-                            editor.putString("app_version", clinicObject.getString("app_version"));
-                            editor.putString("location_id", clinicObject.getString("location_id"));
-                            editor.putString("total_tests_done", clinicObject.getString("total_tests_done"));
-                            editor.putString("allowed_trial_tests", clinicObject.getString("allowed_trial_tests"));
-                            editor.putString("installed_by", clinicObject.getString("installed_by"));
-                            editor.putString("assigned_user_id", clinicObject.getString("assigned_user_id"));
-                            editor.putString("installation_date", clinicObject.getString("installation_date"));
-                            editor.putString("machine_operator_name", clinicObject.getString("machine_operator_name"));
-                            editor.putString("machine_operator_mobile_number", clinicObject.getString("machine_operator_mobile_number"));
+                            editor.putString("pinLock", clinic_data_info.getToken());
+                            editor.putString("clinic_name", clinic_data_info.getName());
+                            editor.putString("address", clinic_data_info.getAddress());
+                            editor.putString("app_version", clinic_data_info.getAppVersion());
+                            editor.putString("location_id", clinic_data_info.getLocationId());
+                            editor.putString("total_tests_done", String.valueOf(clinic_data_info.getTotalTestsDone()));
+                            editor.putString("allowed_trial_tests", String.valueOf(clinic_data_info.getAllowedTrialTests()));
+                            editor.putString("installed_by", clinic_data_info.getInstalledBy());
+                            editor.putString("assigned_user_id", String.valueOf(clinic_data_info.getAssignedUserId()));
+                            editor.putString("installation_date", clinic_data_info.getInstallationDate());
+                            editor.putString("machine_operator_name", clinic_data_info.getMachineOperatorName());
+                            editor.putString("machine_operator_mobile_number", clinic_data_info.getMachineOperatorMobileNumber());
 //                            editor.putString("client_name", clinicObject.getString("client_name"));
-                            editor.putString("is_trial_mode", clinicObject.getString("is_trial_mode"));
-                            editor.putString("id", clinicObject.getString("id"));
+                            editor.putString("is_trial_mode", String.valueOf(clinic_data_info.getIsTrialMode()));
+                            editor.putString("id", clinic_data_info.getId());
                             editor.commit();
 
                             confirmKioskDialog.dismiss();
@@ -218,7 +199,7 @@ public class ActivateScreen extends AppCompatActivity {
                 }
             });
 
-            ic_CloseDilog.setOnClickListener(new View.OnClickListener() {
+            ic_CloseDialog.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     confirmKioskDialog.dismiss();

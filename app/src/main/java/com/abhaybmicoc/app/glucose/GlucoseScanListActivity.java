@@ -172,7 +172,7 @@ public class GlucoseScanListActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                Toast.makeText(this, device.getName(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, device.getName(), Toast.LENGTH_SHORT).show();
             }
         } else {
             Toast.makeText(this, "Device Not found", Toast.LENGTH_SHORT).show();

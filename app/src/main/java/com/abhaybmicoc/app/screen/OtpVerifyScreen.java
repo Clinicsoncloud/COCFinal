@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.content.Intent;
 import android.content.Context;
 import android.widget.EditText;
-import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.app.ProgressDialog;
@@ -24,28 +23,24 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.SplashActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
-import com.abhaybmicoc.app.hemoglobin.util.AppUtils;
+import com.abhaybmicoc.app.model.Common_Update_Response;
+import com.abhaybmicoc.app.model.Patient_Data;
+import com.abhaybmicoc.app.model.Patient_Response;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.DTU;
-import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.activity.HeightActivity;
-import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.Map;
-import java.util.Date;
 import java.util.Locale;
 import java.util.HashMap;
 import java.util.Calendar;
@@ -101,6 +96,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
         clearPersonalInformation();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,6 +153,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupEvents() {
         etDateOfBirth.setOnClickListener(v -> showDateOfBirthPicker());
 
@@ -208,7 +205,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
 
             token = sharedPreferencesPersonal.getString(Constant.Fields.TOKEN, "");
-            patientID = sharedPreferencesPersonal.getString(Constant.Fields.ID, "");
             etName.setText(sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             etMobileNumber.setText(getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER));
 
@@ -291,9 +287,9 @@ public class OtpVerifyScreen extends AppCompatActivity {
         headersParams.put("Authorization", bearer);
         headersParams.put("app_version", SplashActivity.currentVersion);
 
-        String updatePatientURL = ApiUtils.PROFILE_URL + "/" + patientID;
+        String updatePatientURL = ApiUtils.PATIENT_URL + "/" + sharedPreferencesPersonal.getString(Constant.Fields.PATIENT_ID, "");
 
-        Log.e("requestBodyParams_Verify", ":" + requestBodyParams);
+        Log.e("reqBodyParams_Verify", ":" + requestBodyParams);
         Log.e("headersParams_Verify", ":" + headersParams);
         Log.e("updatePatientURL_Verify", ":" + updatePatientURL);
 
@@ -306,15 +302,20 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 (response, error, status) -> handleAPIResponse(response, error, status));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleAPIResponse(String response, VolleyError error, String status) {
 
         Log.e("response_Verify", ":" + response);
 
         if (status.equals("response")) {
             try {
-                JSONObject jsonObject = new JSONObject(response);
 
-                writeToPersonalSharedPreference(jsonObject);
+                Common_Update_Response common_update_response = (Common_Update_Response) Utils.parseResponse(response, Common_Update_Response.class);
+
+                if (common_update_response.getSuccess()) {
+                    getPatientData();
+                }
+
 
                 Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                 startActivity(objIntent);
@@ -329,6 +330,46 @@ public class OtpVerifyScreen extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void getPatientData() {
+
+        Map<String, String> requestBodyParams = new HashMap<>();
+
+        HashMap headersParams = new HashMap();
+
+        String getPatientURL = ApiUtils.PATIENT_URL + "/" + sharedPreferencesPersonal.getString(Constant.Fields.PATIENT_ID, "");
+
+        Log.e("getPatientURL_Log", ":" + getPatientURL);
+
+        HttpService.accessWebServices(
+                context,
+                getPatientURL,
+                Request.Method.GET,
+                requestBodyParams,
+                headersParams,
+                (response, error, status) -> handleGetPatientAPIResponse(response, error, status));
+
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void handleGetPatientAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("getPatientRes_Log", ":" + response);
+
+        if (status.equals("response")) {
+            try {
+                Patient_Response patient_response = (Patient_Response) Utils.parseResponse(response, Patient_Response.class);
+
+                if (patient_response.getFound()) {
+                    writeToPersonalSharedPreference(patient_response.getData(), "online");
+                }
+
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updatePatientInfo() {
 
         try {
@@ -344,24 +385,26 @@ public class OtpVerifyScreen extends AppCompatActivity {
 //            String patient_id = dataBaseHelper.lastInsertID(Constant.Fields.PATIENT_ID, Constant.TableNames.PATIENTS);
 //            JSONObject resObject = new JSONObject();
 //            JSONObject dataObject = new JSONObject();
-            JSONObject patientObject = new JSONObject();
+//            JSONObject patientObject = new JSONObject();
 
-            patientObject.put(Constant.Fields.PATIENT_ID, patient_id);
-            patientObject.put(Constant.Fields.NAME, etName.getText().toString());
-            patientObject.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-            patientObject.put(Constant.Fields.TOKEN, "");
-            patientObject.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
-            patientObject.put(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
+            Patient_Data patient_data = new Patient_Data();
+
+            patient_data.setId(patient_id);
+            patient_data.setName(etName.getText().toString());
+            patient_data.setEmail(etEmail.getText().toString());
+            patient_data.setToken("");
+            patient_data.setDob(etDateOfBirth.getText().toString());
+            patient_data.setMobile(etMobileNumber.getText().toString());
+            patient_data.setGender(getSelectedGender());
 
 //            dataObject.put("patient", patientObject);
 //            resObject.put("data", dataObject);
 
-            writeToPersonalSharedPreference(patientObject);
+            writeToPersonalSharedPreference(patient_data, "offline");
 
         } catch (Exception e) {
         }
     }
-
 
     // region Logical methods
 
@@ -373,36 +416,42 @@ public class OtpVerifyScreen extends AppCompatActivity {
     }
 
     /**
-     * @param jsonObject
+     * @param
+     * @param
+     * @param
      * @throws JSONException
      */
-    private void writeToPersonalSharedPreference(JSONObject jsonObject) throws JSONException {
-        SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void writeToPersonalSharedPreference(Patient_Data patient_data, String networkStatus) {
+        try {
+            SharedPreferences sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-        Log.e("jsonObject_Verify", ":" + jsonObject);
+//        if (jsonObject.has(Constant.Fields.PATIENT_ID))
+            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, patient_id);
+//            writeToPersonalSharedPreferenceKey(Constant.Fields.PATIENT_ID, patient_data.getId());
 
-//        if (jsonObject.has(Constant.Fields.ID))
-//            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getString(Constant.Fields.ID));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, patient_data.getName());
+            writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, patient_data.getEmail());
+            writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, patient_data.getToken());
 
-        if (jsonObject.has(Constant.Fields.PATIENT_ID))
-            writeToPersonalSharedPreferenceKey(Constant.Fields.ID, jsonObject.getString(Constant.Fields.PATIENT_ID));
+            if (networkStatus.equals("online"))
+                writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, DTU.get_DateOnlyFromTimeZoneDate(patient_data.getDob()));
+            else
+                writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, patient_data.getDob());
 
-        writeToPersonalSharedPreferenceKey(Constant.Fields.PATIENT_ID, jsonObject.getString(Constant.Fields.ID));
+            writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, patient_data.getMobile());
 
-        writeToPersonalSharedPreferenceKey(Constant.Fields.NAME, jsonObject.getString(Constant.Fields.NAME));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.EMAIL, jsonObject.getString(Constant.Fields.EMAIL));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.TOKEN, jsonObject.getString(Constant.Fields.TOKEN));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.DATE_OF_BIRTH, DTU.getd_m_Y(jsonObject.getString(Constant.Fields.DATE_OF_BIRTH)));
-        writeToPersonalSharedPreferenceKey(Constant.Fields.MOBILE_NUMBER, jsonObject.getString(Constant.Fields.MOBILE_NUMBER));
+            editor.commit();
 
-        editor.commit();
-
-        if (!Utils.isOnline(context)) {
-            Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
-            startActivity(objIntent);
-            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-            finish();
+            if (!Utils.isOnline(context)) {
+                Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                startActivity(objIntent);
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+                finish();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

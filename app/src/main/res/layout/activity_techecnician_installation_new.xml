@@ -207,7 +207,6 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/rectangle"
                     android:clickable="false"
-                    android:drawableRight="@drawable/ic_calender_one"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:padding="@dimen/pad10"

@@ -39,6 +39,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.BuildConfig;
 import com.abhaybmicoc.app.R;
+import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -675,6 +676,12 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Object parseResponse(String result, Class class_object) {
+        Gson gson = new Gson();
+        Object object = gson.fromJson(result, class_object);
+        return object;
     }
 
 }

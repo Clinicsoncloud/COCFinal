@@ -23,9 +23,11 @@ import android.widget.Toast;
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
+import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
+import com.abhaybmicoc.app.utils.DTU;
 import com.abhaybmicoc.app.utils.ErrorUtils;
 import com.abhaybmicoc.app.utils.Utils;
 
@@ -34,9 +36,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.UUID;
 
 public class HeightActivity extends Activity {
@@ -227,11 +231,17 @@ public class HeightActivity extends Activity {
     }
 
     private void initializeData() {
-        /*Date date = new Date();
+        try {
 
-        date = originalFormat.parse(timeZoneDate);
-        SimpleDateFormat dateFormatWithZone = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
-        String currentDate = dateFormatWithZone.format(date);*/
+            long DateTime = DTU.getTimeStampFromDateTime(DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS), DateService.YYYY_MM_DD_HMS);
+
+            Log.e("TimeZone", ":" + Calendar.getInstance().getTimeZone());
+            Log.e("LongTimeStampFrmDate", ":" + DateTime);
+            Log.e("TimeStampFrmDate", ":" + DTU.getDateTimeFromTimeStamp(DateTime, DateService.YYYY_MM_DD_T_HMS_Z));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         btnClean.setText("Clean");
 
@@ -242,7 +252,9 @@ public class HeightActivity extends Activity {
         etBluetoothLogs.setTextColor(getResources().getColor(R.color.white));
         etBluetoothLogs.setBackgroundColor(getResources().getColor(R.color.black));
 
-        Log.e("Patient_ID_Log", ":" + sharedPreferencePersonalData.getString(Constant.Fields.PATIENT_ID, ""));
+        Log.e("Patient_ID_LogOnline", ":" + sharedPreferencePersonalData.getString(Constant.Fields.PATIENT_ID, ""));
+        Log.e("Patient_ID_Log", ":" + sharedPreferencePersonalData.getString(Constant.Fields.ID, ""));
+
         tvName.setText("Name : " + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
         tvGender.setText("Gender : " + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
         tvAge.setText("DOB : " + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));

@@ -1,6 +1,5 @@
 package com.abhaybmicoc.app.activity;
 
-import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -35,7 +34,6 @@ import android.app.ProgressDialog;
 import android.widget.ProgressBar;
 import android.widget.LinearLayout;
 import android.app.DownloadManager;
-import android.speech.tts.TextToSpeech;
 import android.content.DialogInterface;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothDevice;
@@ -46,6 +44,9 @@ import android.graphics.drawable.ColorDrawable;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.model.Common_Update_Response;
+import com.abhaybmicoc.app.model.Patient_Response;
+import com.abhaybmicoc.app.model.Visit_Upload_Response;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.SharedPreferenceService;
@@ -63,20 +64,15 @@ import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.DTU;
 import com.abhaybmicoc.app.utils.Utils;
 import com.android.volley.Request;
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 
 import com.hsalf.smilerating.SmileRating;
 import com.prowesspride.api.Printer_GEN;
-import com.prowesspride.api.Setup;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -86,7 +82,6 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.HashMap;
 import java.util.Calendar;
 import java.util.ArrayList;
@@ -725,12 +720,6 @@ public class PrintPreviewActivity extends Activity {
                 weightResult = "Seriously Low";
             }
 
-            /*if (weight > standardWeighRangeTo)
-                weightResult = "High";
-            else if (weight > standardWeighRangeTo && weight <= standardWeighRangeTo)
-                weightResult = "Standard";
-            else
-                weightResult = "Low";*/
         } else
             weightResult = "NA";
     }
@@ -939,7 +928,7 @@ public class PrintPreviewActivity extends Activity {
             // TODO: Check these values
             if (subcutaneousFat > 16.7)
                 subcutaneousResult = "High";
-            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 6.7)
+            else if (subcutaneousFat > 8.6 && subcutaneousFat <= 16.7)
                 subcutaneousResult = "Standard";
             else
                 subcutaneousResult = "Low";
@@ -983,30 +972,16 @@ public class PrintPreviewActivity extends Activity {
 
             if (weight > standardWeighRangeTo) {
                 weightResult = "Seriously High";
-            } else if (weight <= standardWeighRangeTo && weight >= standardWeighRangeFrom) {
-
+            } else if (weight <= standarWeightHighTo && weight >= standarWeightHighFrom) {
                 weightResult = "High";
-
             } else if (weight <= standardWeighRangeTo && weight >= standardWeighRangeFrom) {
-
                 weightResult = "Standard";
-
             } else if (weight <= standarWeightLowTo && weight >= standarWeightLowFrom) {
-
                 weightResult = "Low";
-
             } else if (weight < standarWeightLowFrom) {
-
                 weightResult = "Seriously Low";
             }
 
-
-            /*if (weight > standardWeighRangeTo)
-                weightResult = "High";
-            else if (weight > standardWeighRangeFrom && weight <= standardWeighRangeTo)
-                weightResult = "Standard";
-            else
-                weightResult = "Low";*/
         } else
             weightResult = "NA";
     }
@@ -1450,9 +1425,9 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.SKELETAL_MUSCLE_RESULT, skeletonmuscleResult);
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC_RESULT, diastolicResult);
             paramsContentValues.put(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC_RESULT, bloodpressureResult);
-            paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
             paramsContentValues.put(Constant.Fields.IS_COMPLETED, "true");
+            paramsContentValues.put(Constant.Fields.PATIENT_ID, sharedPreferencesToken.getString(Constant.Fields.ID, ""));
             paramsContentValues.put(Constant.Fields.APP_VERSION, SplashActivity.currentVersion);
             paramsContentValues.put(Constant.Fields.CLINIC_ID, sharedPreferencesActivator.getString("id", ""));
 //            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
@@ -1481,6 +1456,7 @@ public class PrintPreviewActivity extends Activity {
             lastInsertedpatient_id = sharedPreferencesToken.getString(Constant.Fields.ID, "");
             lastInsertedparameter_id = dataBaseHelper.getLastInsertParameterID();
 
+            Log.e("lastInsertedpatient_id_Insrted", ":" + lastInsertedpatient_id);
             Log.e("lastInsertedparameter_id_Insrted", ":" + lastInsertedparameter_id);
             postData();
 
@@ -1793,11 +1769,12 @@ public class PrintPreviewActivity extends Activity {
 
         Log.e("response_Log", ":" + response);
         if (status.equals("response")) {
-
             try {
-                JSONObject jsonObject = new JSONObject(response);
-                if (jsonObject.getString("status").equals("200")) {
-                    readFileName(response);
+                Visit_Upload_Response visit_upload_response = (Visit_Upload_Response) Utils.parseResponse(response, Visit_Upload_Response.class);
+
+                if (visit_upload_response.getSuccess()) {
+
+                    readFileName(visit_upload_response.getData());
 
                     btnHome.setBackground(getResources().getDrawable(R.drawable.greenback));
                     btnHome.setEnabled(true);
@@ -1808,6 +1785,7 @@ public class PrintPreviewActivity extends Activity {
 
                     dataBaseHelper.deleteTable_data(Constant.TableNames.PARAMETERS, Constant.Fields.PARAMETER_ID, lastInsertedparameter_id);
                 }
+
             } catch (Exception e) {
                 // TODO: Handle exception
             }
@@ -1818,16 +1796,14 @@ public class PrintPreviewActivity extends Activity {
     }
 
     /**
-     * @param response
+     * @param
+     * @param
      */
-    private void readFileName(String response) {
+    private void readFileName(Visit_Upload_Response.Visit_Upload_Response_Data visitUploadResponseData) {
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            JSONObject dataObject = jsonObject.getJSONObject("data");
-            JSONObject parameterObject = dataObject.getJSONObject("parameter");
-            fileName = parameterObject.getString("id");
-            updatedParameterID = parameterObject.getString("id");
-        } catch (JSONException e) {
+            fileName = visitUploadResponseData.getParameter().getId();
+            updatedParameterID = visitUploadResponseData.getParameter().getId();
+        } catch (Exception e) {
             // TODO: Handle exception here
         }
     }
@@ -2095,6 +2071,7 @@ public class PrintPreviewActivity extends Activity {
         }
     }
 
+    @SuppressLint("LongLogTag")
     private void saveFeedBack() {
 
         if (Utils.isOnline(context)) {
@@ -2106,6 +2083,9 @@ public class PrintPreviewActivity extends Activity {
 
             String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
 
+            Log.e("updateUrl_Log_Feedback", ":" + updateUrl);
+            Log.e("params_Log_Feedback", ":" + requestBodyParams);
+
             HttpService.accessWebServices(
                     context,
                     updateUrl,
@@ -2115,7 +2095,6 @@ public class PrintPreviewActivity extends Activity {
                     (response, error, status) -> handleUpdateAPIResponse(response, error, status));
 
         } else {
-
             Log.e("lastInsertedparameter_id_FdUPdate", ":" + lastInsertedparameter_id);
 
             ContentValues paramsContentValues = new ContentValues();
@@ -2130,13 +2109,19 @@ public class PrintPreviewActivity extends Activity {
     }
 
     private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
+
+        Log.e("res_Log_Feedback", ":" + response);
+
         if (status.equals("response")) {
             try {
-                JSONObject responseObj = new JSONObject(response);
-                if (responseObj != null) {
-                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
 
+                Common_Update_Response commonUpdateResponse = (Common_Update_Response) Utils.parseResponse(response, Common_Update_Response.class);
+
+                if (commonUpdateResponse.getSuccess()) {
+                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
                     goToHome();
+                } else {
+                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
             }
@@ -2144,7 +2129,6 @@ public class PrintPreviewActivity extends Activity {
             Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
             goToHome();
         }
-
     }
 
 

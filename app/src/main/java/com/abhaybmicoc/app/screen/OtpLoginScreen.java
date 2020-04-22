@@ -9,14 +9,12 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,7 +23,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -37,14 +34,11 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +47,12 @@ import com.abhaybmicoc.app.activity.ChangeLanguageActivity;
 import com.abhaybmicoc.app.activity.SettingsActivity;
 import com.abhaybmicoc.app.activity.SplashActivity;
 import com.abhaybmicoc.app.activity.TechecnicianInstallationNewActivity;
-import com.abhaybmicoc.app.activity.TechnicianInstallationActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
+import com.abhaybmicoc.app.model.Clinic_Data;
+import com.abhaybmicoc.app.model.Clinic_Data_Info;
+import com.abhaybmicoc.app.model.Offline_Sync_Response;
+import com.abhaybmicoc.app.model.Patient_Data;
+import com.abhaybmicoc.app.model.Patient_Response;
 import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.services.TextToSpeechService;
@@ -70,8 +68,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class OtpLoginScreen extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -130,6 +128,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
 // region Events
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,6 +137,21 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         setupNavigationDrawer();
         setupEvents();
         initializeData();
+
+
+        try {
+
+            long DateTime = DTU.getTimeStampFromDateTime(DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS), DateService.YYYY_MM_DD_HMS);
+
+            Log.e("ReceivedTimeZone", ":" + DateService.getCurrentDateTime(DateService.YYYY_MM_DD_T_HMS_Z));
+            Log.e("TimeZone", ":" + Calendar.getInstance().getTimeZone());
+            Log.e("LongTimeStampFrmDate", ":" + DateTime);
+            Log.e("TimeStampFrmDate", ":" + DTU.getDateTimeFromTimeStamp(DateTime, DateService.YYYY_MM_DD_T_HMS_Z));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         /*SharedPreferences sharedPreferenceBluetoothAddress = getSharedPreferences(ApiUtils.AUTO_CONNECT, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferenceBluetoothAddress.edit();
@@ -149,7 +163,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         if (Utils.isOnline(context)) {
             checkKioskStatus();
         } else {
-            if (sharedPreferencesActivator.getString("is_trial_mode", "").equals("true"))
+            if (sharedPreferencesActivator.getString("is_trial_mode", "").equals("1"))
                 showInstallationOrTrialPopUp();
         }
     }
@@ -175,11 +189,18 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     private void handleCheckKioskAPIResponse(String response, VolleyError error, String status) {
         try {
             if (status.equals("response")) {
-                JSONObject resultObj = new JSONObject(response);
-                if (resultObj != null) {
-                    updateKioskInfo(resultObj);
 
-                    if (resultObj.getString("is_trial_mode").equals("true")) {
+                Clinic_Data user_data = (Clinic_Data) Utils.parseResponse(response, Clinic_Data.class);
+                Log.e("Found_Status_Log", ":" + user_data.getFound());
+
+                if (user_data.getFound()) {
+                    updateKioskInfo(user_data.getData());
+
+                    Log.e("isTrialMode_OTPLog", ":" + user_data.getData().getIsTrialMode());
+
+
+                    if (user_data.getData().getIsTrialMode() == 1) {
+                        Log.e("fvdjhfvddvddvjvj", "     :aadsdsd");
                         showInstallationOrTrialPopUp();
                     }
                 }
@@ -188,30 +209,29 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
     }
 
-    private void updateKioskInfo(JSONObject resultObj) {
+    private void updateKioskInfo(Clinic_Data_Info clinic_data_info) {
         try {
-
-            Log.e("resultObj_SP_Log", "" + resultObj);
             // Writing data to SharedPreferences
             SharedPreferences.Editor editor = sharedPreferencesActivator.edit();
-            editor.putString("clinic_name", resultObj.getString("name"));
-            editor.putString("address", resultObj.getString("address"));
-            editor.putString("app_version", resultObj.getString("app_version"));
-            editor.putString("location_id", resultObj.getString("location_id"));
 
-            editor.putString("total_tests_done", resultObj.getString("total_tests_done"));
-            editor.putString("allowed_trial_tests", resultObj.getString("allowed_trial_tests"));
+            // Writing data to SharedPreferences
 
-            editor.putString("installed_by", resultObj.getString("installed_by"));
-            editor.putString("assigned_user_id", resultObj.getString("assigned_user_id"));
-            editor.putString("installation_date", resultObj.getString("installation_date"));
-            editor.putString("machine_operator_name", resultObj.getString("machine_operator_name"));
-            editor.putString("machine_operator_mobile_number", resultObj.getString("machine_operator_mobile_number"));
-            editor.putString("client_name", resultObj.getString("client_name"));
-            editor.putString("is_trial_mode", resultObj.getString("is_trial_mode"));
-            editor.putString("id", resultObj.getString("id"));
+            editor.putString("pinLock", clinic_data_info.getToken());
+            editor.putString("clinic_name", clinic_data_info.getName());
+            editor.putString("address", clinic_data_info.getAddress());
+            editor.putString("app_version", clinic_data_info.getAppVersion());
+            editor.putString("location_id", clinic_data_info.getLocationId());
+            editor.putString("total_tests_done", String.valueOf(clinic_data_info.getTotalTestsDone()));
+            editor.putString("allowed_trial_tests", String.valueOf(clinic_data_info.getAllowedTrialTests()));
+            editor.putString("installed_by", clinic_data_info.getInstalledBy());
+            editor.putString("assigned_user_id", String.valueOf(clinic_data_info.getAssignedUserId()));
+            editor.putString("installation_date", clinic_data_info.getInstallationDate());
+            editor.putString("machine_operator_name", clinic_data_info.getMachineOperatorName());
+            editor.putString("machine_operator_mobile_number", clinic_data_info.getMachineOperatorMobileNumber());
+//                            editor.putString("client_name", clinicObject.getString("client_name"));
+            editor.putString("is_trial_mode", String.valueOf(clinic_data_info.getIsTrialMode()));
+            editor.putString("id", clinic_data_info.getId());
             editor.commit();
-
 
         } catch (Exception e) {
         }
@@ -269,6 +289,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     /**
      *
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupEvents() {
         etMobileNumber.addTextChangedListener(new TextWatcher() {
             @Override
@@ -355,16 +376,27 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
     private void handleOfflineAPIResponse(String response, VolleyError error, String status) {
 
+        Log.e("response_Log", ":" + response);
+
         try {
             if (status.equals("response")) {
 
-                SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
+                Offline_Sync_Response offlineSyncResponse = (Offline_Sync_Response) Utils.parseResponse(response, Offline_Sync_Response.class);
 
-                editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
+                if (offlineSyncResponse.getSuccess()) {
+                    SharedPreferences.Editor editor = sharedPreferencesOffline.edit();
 
-                editor.commit();
+                    editor.putString(Constant.Fields.UPLOADED_RECORDS_COUNT, DateService.getCurrentDateTime(DateService.DATE_FORMAT));
 
-                updateLocalStatus(response);
+                    editor.commit();
+
+                    updateLocalStatus(offlineSyncResponse.getData());
+                } else {
+                    Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
+
+                }
+
+
             } else {
                 Toast.makeText(context, "Data uploading failed, try again", Toast.LENGTH_SHORT).show();
             }
@@ -374,30 +406,29 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         }
     }
 
-    private void updateLocalStatus(String response) {
+    private void updateLocalStatus(Offline_Sync_Response.Offline_Sync_Response_Data offlineSyncResponseData) {
         try {
-            JSONObject jsonObject = new JSONObject(response);
 
 //            JSONArray resultArray = jsonObject.getJSONArray("result");
-            JSONArray patient_id_Array = jsonObject.getJSONArray("patient_ids");
-            JSONArray parameter_id_Array = jsonObject.getJSONArray("parameter_ids");
+//            JSONArray patient_id_Array = jsonObject.getJSONArray("patient_ids");
+//            JSONArray parameter_id_Array = jsonObject.getJSONArray("parameter_ids");
 
             String patientId = "";
             String parameterId = "";
 
-            for (int i = 0; i < patient_id_Array.length(); i++) {
+            for (int i = 0; i < offlineSyncResponseData.getPatientIds().size(); i++) {
                 if (patientId.equals("")) {
-                    patientId = String.valueOf(patient_id_Array.get(i));
+                    patientId = offlineSyncResponseData.getPatientIds().get(i);
                 } else {
-                    patientId = patientId + "," + String.valueOf(patient_id_Array.get(i));
+                    patientId = patientId + "," + offlineSyncResponseData.getPatientIds().get(i);
                 }
             }
 
-            for (int j = 0; j < parameter_id_Array.length(); j++) {
+            for (int j = 0; j < offlineSyncResponseData.getParameterIds().size(); j++) {
                 if (parameterId.equals("")) {
-                    parameterId = String.valueOf(parameter_id_Array.get(j));
+                    parameterId = offlineSyncResponseData.getParameterIds().get(j);
                 } else {
-                    parameterId = parameterId + "," + String.valueOf(parameter_id_Array.get(j));
+                    parameterId = parameterId + "," + offlineSyncResponseData.getParameterIds().get(j);
                 }
             }
 
@@ -486,68 +517,88 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         installationKioskDialog.getWindow().setLayout(layoutParams.width, layoutParams.height);
         installationKioskDialog.setCanceledOnTouchOutside(false);
 
-        final TextView tv_msg = installationKioskDialog.findViewById(R.id.tv_msg);
-        final Button btnProceed = installationKioskDialog.findViewById(R.id.btn_Proceed);
-        final ImageView ic_CloseDilog = installationKioskDialog.findViewById(R.id.ic_CloseDilog);
-
-        final RadioGroup rgSelectMode = installationKioskDialog.findViewById(R.id.rg_SelectMode);
-        final RadioButton rbTrialMode = installationKioskDialog.findViewById(R.id.rb_TrialMode);
-        final RadioButton rbInstallationMode = installationKioskDialog.findViewById(R.id.rb_InstallationMode);
-
-        tv_msg.setTextColor(context.getResources().getColor(R.color.white));
-
-        int total_tests_done = Integer.parseInt(sharedPreferencesActivator.getString("total_tests_done", ""));
-        int allowed_trial_tests = Integer.parseInt(sharedPreferencesActivator.getString("allowed_trial_tests", ""));
-
-
-        if (total_tests_done <= allowed_trial_tests) {
-            int remaining_test = allowed_trial_tests - total_tests_done;
-            tv_msg.setText("In Trial mode you have remaining only " + remaining_test + " attempts!");
-        } else {
-            rbTrialMode.setChecked(false);
-            rbTrialMode.setVisibility(View.GONE);
-        }
-
-
         try {
+            final TextView tv_msg = installationKioskDialog.findViewById(R.id.tv_msg);
+            final Button btnProceed = installationKioskDialog.findViewById(R.id.btn_Proceed);
+            final ImageView ic_CloseDilog = installationKioskDialog.findViewById(R.id.ic_CloseDilog);
 
-            rgSelectMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+            final RadioGroup rgSelectMode = installationKioskDialog.findViewById(R.id.rg_SelectMode);
+            final RadioButton rbTrialMode = installationKioskDialog.findViewById(R.id.rb_TrialMode);
+            final RadioButton rbInstallationMode = installationKioskDialog.findViewById(R.id.rb_InstallationMode);
 
-                    if (checkedId == rbTrialMode.getId()) {
-                        tv_msg.setVisibility(View.VISIBLE);
-                    } else if (checkedId == rbInstallationMode.getId()) {
-                        tv_msg.setVisibility(View.GONE);
+            tv_msg.setTextColor(context.getResources().getColor(R.color.white));
+            int total_tests_done = 0;
+            int allowed_trial_tests = 10;
+
+            Log.e("testFodasghd_Log", ":" + sharedPreferencesActivator.getString("total_tests_done", ""));
+
+            if (!sharedPreferencesActivator.getString("total_tests_done", "").equals("null")) {
+                total_tests_done = Integer.parseInt(sharedPreferencesActivator.getString("total_tests_done", ""));
+            }
+
+            if (!sharedPreferencesActivator.getString("allowed_trial_tests", "").equals("null")) {
+                allowed_trial_tests = Integer.parseInt(sharedPreferencesActivator.getString("allowed_trial_tests", ""));
+            } else {
+                allowed_trial_tests = 10;
+            }
+
+            Log.e("total_tests_done_Log", ":" + total_tests_done);
+
+            if (total_tests_done <= allowed_trial_tests) {
+                int remaining_test = allowed_trial_tests - total_tests_done;
+                tv_msg.setText("In Trial mode you have remaining only " + remaining_test + " attempts!");
+            } else {
+                rbTrialMode.setChecked(false);
+                rbTrialMode.setVisibility(View.GONE);
+            }
+
+
+            try {
+
+                rgSelectMode.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
+
+                        if (checkedId == rbTrialMode.getId()) {
+                            tv_msg.setVisibility(View.VISIBLE);
+                        } else if (checkedId == rbInstallationMode.getId()) {
+                            tv_msg.setVisibility(View.GONE);
+                        }
                     }
-                }
-            });
+                });
 
-            ic_CloseDilog.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    installationKioskDialog.dismiss();
-                }
-            });
-
-            btnProceed.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                    if (!rbTrialMode.isChecked()) {
-                        startActivity(new Intent(context, TechecnicianInstallationNewActivity.class));
-                        finish();
+                ic_CloseDilog.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         installationKioskDialog.dismiss();
-                    } else {
-                        Toast.makeText(context, "You can not use trial mode in offline, Please Try again", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
+                });
 
-        } catch (
-                Exception e) {
+                btnProceed.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        if (!rbTrialMode.isChecked()) {
+                            startActivity(new Intent(context, TechecnicianInstallationNewActivity.class));
+                            finish();
+                            installationKioskDialog.dismiss();
+                        } else {
+                            if (Utils.isOnline(context)) {
+                                installationKioskDialog.dismiss();
+                            } else {
+                                Toast.makeText(context, "You can not use trial mode in offline, Please Try again", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+
+            } catch (
+                    Exception e) {
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
         installationKioskDialog.show();
         installationKioskDialog.getWindow().setAttributes(layoutParams);
     }
@@ -586,6 +637,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
      * 4.b.if network available generate otp
      * 4.c.if network not available save patient locally
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void doLogin() {
         if (Utils.getInstance().giveLocationPermission(this)) {
             if (etMobileNumber.getText().toString().equals("")) {
@@ -619,7 +671,10 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
             if (saveResponse != -1) {
                 patient_id = dataBaseHelper.getLastInsertPatientID();
 
-                if (!Utils.isOnline(context) && sharedPreferencesActivator.getString("is_trial_mode", "").equals("false")) {
+                Log.e("patient_id_OTP", ":" + patient_id);
+
+                Log.e("akgaygygahfa", ":" + sharedPreferencesActivator.getString("is_trial_mode", ""));
+                if (!Utils.isOnline(context) && sharedPreferencesActivator.getString("is_trial_mode", "").equals("0")) {
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
@@ -654,35 +709,38 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     }
 
     /**
-     * @param jsonResponse
+     * @param
+     * @param
      * @throws JSONException
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void writePersonalSharedPreferences(JSONObject jsonResponse) throws JSONException {
+    private void writePersonalSharedPreferences(Patient_Data patient_data_info) throws
+            JSONException {
         try {
             SharedPreferences.Editor editor = sharedPreferencesPersonal.edit();
 
-            editor.putString(Constant.Fields.PATIENT_ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
+            Log.e("patient_ID_Log", ":" + patient_data_info.getId());
+            editor.putString(Constant.Fields.PATIENT_ID, patient_data_info.getId());
 
-            editor.putString(Constant.Fields.ID, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.ID));
+            editor.putString(Constant.Fields.ID, patient_id);
 
-            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.NAME))
-                editor.putString(Constant.Fields.NAME, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.NAME));
+            if (patient_data_info.getName() != null)
+                editor.putString(Constant.Fields.NAME, patient_data_info.getName());
             else
                 editor.putString(Constant.Fields.NAME, "");
 
-            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.EMAIL))
-                editor.putString(Constant.Fields.EMAIL, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.EMAIL));
+            if (patient_data_info.getEmail() != null)
+                editor.putString(Constant.Fields.EMAIL, patient_data_info.getEmail());
             else
                 editor.putString(Constant.Fields.EMAIL, "");
 
-            editor.putString(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.TOKEN));
-            editor.putString(Constant.Fields.GENDER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.GENDER));
+            editor.putString(Constant.Fields.TOKEN, patient_data_info.getToken());
+            editor.putString(Constant.Fields.GENDER, patient_data_info.getGender());
 
-            if (!jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).isNull(Constant.Fields.DATE_OF_BIRTH))
-                editor.putString(Constant.Fields.DATE_OF_BIRTH, DTU.get_DateOnlyFromTimeZoneDate(jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.DATE_OF_BIRTH)));
+            if (patient_data_info.getDob() != null)
+                editor.putString(Constant.Fields.DATE_OF_BIRTH, DTU.get_DateOnlyFromTimeZoneDate(patient_data_info.getDob()));
 
-            editor.putString(Constant.Fields.MOBILE_NUMBER, jsonResponse.getJSONObject("data").getJSONArray("patient").getJSONObject(0).getString(Constant.Fields.MOBILE_NUMBER));
+            editor.putString(Constant.Fields.MOBILE_NUMBER, patient_data_info.getMobile());
 
             editor.commit();
         } catch (Exception e) {
@@ -708,6 +766,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
     /**
      *
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void GenerateOTP() {
 
         Map<String, String> headerParams = new HashMap<>();
@@ -715,7 +774,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
         Map<String, String> requestBodyParams = new HashMap<>();
         requestBodyParams.put("kiosk_id", kiosk_id);
-        requestBodyParams.put("mobile", etMobileNumber.getText().toString());
         requestBodyParams.put("mobile", etMobileNumber.getText().toString());
         requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
@@ -737,23 +795,11 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         Log.e("response_Login", ":" + response);
         if (status.equals("response")) {
             try {
-                JSONObject jsonResponse = new JSONObject(response);
 
-                if (jsonResponse.getJSONObject("data").getJSONArray("patient").length() == 0) {
-                    writeToPersonalSharedPreference(Constant.Fields.TOKEN, jsonResponse.getJSONObject("data").getString(Constant.Fields.TOKEN));
+                Patient_Response patient_response = (Patient_Response) Utils.parseResponse(response, Patient_Response.class);
+                if (patient_response.getFound()) {
 
-                    Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
-                    objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
-                    objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
-                    objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
-                    objIntent.putExtra("connectivity", "online");
-                    startActivity(objIntent);
-
-                    overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-
-                    finish();
-                } else {
-                    writePersonalSharedPreferences(jsonResponse);
+                    writePersonalSharedPreferences(patient_response.getData());
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
@@ -761,7 +807,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
                     objIntent.putExtra("connectivity", "online");
                     startActivity(objIntent);
-
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 
                     finish();
