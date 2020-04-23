@@ -233,11 +233,10 @@ public class HeightActivity extends Activity {
     private void initializeData() {
         try {
 
-            long DateTime = DTU.getTimeStampFromDateTime(DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS), DateService.YYYY_MM_DD_HMS);
-
-            Log.e("TimeZone", ":" + Calendar.getInstance().getTimeZone());
-            Log.e("LongTimeStampFrmDate", ":" + DateTime);
-            Log.e("TimeStampFrmDate", ":" + DTU.getDateTimeFromTimeStamp(DateTime, DateService.YYYY_MM_DD_T_HMS_Z));
+            /*SharedPreferences sharedPreferencesActofit = getSharedPreferences(ApiUtils.PREFERENCE_ACTOFIT, MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferencesActofit.edit();
+            editor.putString(Constant.Fields.WEIGHT, String.valueOf("68.3"));
+            editor.commit();*/
 
         } catch (Exception e) {
             e.printStackTrace();

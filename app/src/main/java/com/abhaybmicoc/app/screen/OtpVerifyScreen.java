@@ -377,7 +377,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
             patientContentValues.put(Constant.Fields.NAME, etName.getText().toString());
             patientContentValues.put(Constant.Fields.EMAIL, etEmail.getText().toString());
-            patientContentValues.put(Constant.Fields.DATE_OF_BIRTH, etDateOfBirth.getText().toString());
+            patientContentValues.put(Constant.Fields.DATE_OF_BIRTH, DTU.get_yyyy_mm_dd_HMS(etDateOfBirth.getText().toString()));
             patientContentValues.put(Constant.Fields.GENDER, getSelectedGender());
 
             dataBaseHelper.updatePatientInfo(Constant.TableNames.PATIENTS, patientContentValues, patient_id);

@@ -143,6 +143,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
 
             long DateTime = DTU.getTimeStampFromDateTime(DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS), DateService.YYYY_MM_DD_HMS);
 
+            Log.e("ReceivedTodayDate", ":" + DTU.getd_m_Y(DTU.getCurrentDate()));
             Log.e("ReceivedTimeZone", ":" + DateService.getCurrentDateTime(DateService.YYYY_MM_DD_T_HMS_Z));
             Log.e("TimeZone", ":" + Calendar.getInstance().getTimeZone());
             Log.e("LongTimeStampFrmDate", ":" + DateTime);
@@ -586,7 +587,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                             if (Utils.isOnline(context)) {
                                 installationKioskDialog.dismiss();
                             } else {
-                                Toast.makeText(context, "You can not use trial mode in offline, Please Try again", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "Trial mode doesn't support offline testing", Toast.LENGTH_SHORT).show();
                             }
                         }
                     }

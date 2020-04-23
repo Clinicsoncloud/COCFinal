@@ -970,7 +970,7 @@ public class PrintPreviewActivity extends Activity {
         if (SharedPreferenceService.isAvailable(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT)) {
             double weight = SharedPreferenceService.getDouble(context, ApiUtils.PREFERENCE_ACTOFIT, Constant.Fields.WEIGHT);
 
-            if (weight > standardWeighRangeTo) {
+            if (weight > standarWeightHighTo) {
                 weightResult = "Seriously High";
             } else if (weight <= standarWeightHighTo && weight >= standarWeightHighFrom) {
                 weightResult = "High";
@@ -1227,6 +1227,7 @@ public class PrintPreviewActivity extends Activity {
 
     private void getPrintData() {
         printerText = getPrintText();
+
     }
 
     private void setNewList() {
@@ -1432,20 +1433,25 @@ public class PrintPreviewActivity extends Activity {
             paramsContentValues.put(Constant.Fields.CLINIC_ID, sharedPreferencesActivator.getString("id", ""));
 //            paramsContentValues.put(Constant.Fields.FATFREERSNGE, "");
 
-            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+
+            if (sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equals("")) {
+                paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "NA");
+            } else if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
                     sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("6/6")) {
                 paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Standard");
             } else {
                 paramsContentValues.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
             }
 
-            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
+
+            if (sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equals("")) {
+                paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "NA");
+            } else if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
                     sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("6/6")) {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
             } else {
                 paramsContentValues.put(Constant.Fields.RIGHT_EYERESULT, "Not upto Standard");
             }
-
 
             Log.e("paramsContentValues_Offline", "" + paramsContentValues);
             dataBaseHelper.saveToLocalTable(Constant.TableNames.PARAMETERS, paramsContentValues, "");
@@ -1699,14 +1705,19 @@ public class PrintPreviewActivity extends Activity {
                 requestBodyParams.put(Constant.Fields.EYERANGE, "NA");
 
 
-            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
+            if (sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equals("")) {
+                requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "NA");
+            } else if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("") &&
                     sharedPreferenceVisionResult.getString(Constant.Fields.EYE_LEFT_VISION, "").equalsIgnoreCase("6/6")) {
                 requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Standard");
             } else {
                 requestBodyParams.put(Constant.Fields.LEFT_EYERESULT, "Not upto Standard");
             }
 
-            if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
+
+            if (sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equals("")) {
+                requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "NA");
+            } else if (!sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("") &&
                     sharedPreferenceVisionResult.getString(Constant.Fields.EYE_RIGHT_VISION, "").equalsIgnoreCase("6/6")) {
                 requestBodyParams.put(Constant.Fields.RIGHT_EYERESULT, "Standard");
             } else {
@@ -2230,6 +2241,11 @@ public class PrintPreviewActivity extends Activity {
                 "Temperature : {temperature} F\n" +
                 "[Normal Range]: 97-99 F\n" +
                 "-----------------------\n" +
+                "Left Eye Vision : {left_eye_vision}" + "\n" +
+                "[Normal Range]: >{standardEyeRange}\n\n" +
+                "Right Eye Vision: {right_eye_vision}\n" +
+                "[Normal Range]:" + "{standardEyeRange}\n" +
+                "-----------------------\n" +
                 "       Thank You\n" +
                 "   Above results are\n" +
                 "       indicative\n" +
@@ -2277,6 +2293,10 @@ public class PrintPreviewActivity extends Activity {
         str = str.replace("{pulseRate}", geBloodPressurePreferenceData(Constant.Fields.PULSE_RATE));
         str = str.replace("{temperature}", getThermometerPreferenceData(Constant.Fields.TEMPERATURE));
 
+        str = str.replace("{left_eye_vision}", getLeftVisionResult(Constant.Fields.EYE_LEFT_VISION));
+        str = str.replace("{right_eye_vision}", getRightVisionResult(Constant.Fields.EYE_RIGHT_VISION));
+        str = str.replace("{standardEyeRange}", "6/6");
+
         return str;
     }
 
@@ -2306,6 +2326,14 @@ public class PrintPreviewActivity extends Activity {
 
     private String geBloodPressurePreferenceData(String key) {
         return sharedPreferencesBloodPressure.getString(key, "");
+    }
+
+    private String getLeftVisionResult(String key) {
+        return sharedPreferenceVisionResult.getString(key, "");
+    }
+
+    private String getRightVisionResult(String key) {
+        return sharedPreferenceVisionResult.getString(key, "");
     }
 
     private class ConnSocketTask extends AsyncTask<String, String, Integer> {

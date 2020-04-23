@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -95,8 +97,12 @@ public class TechecnicianInstallationNewActivity extends Activity {
         spinnerLocation = findViewById(R.id.spn_Location);
         edtAddress = findViewById(R.id.edt_address);
         btnSave = findViewById(R.id.btn_Save);
+
+        edtInstallationDate.setText(DTU.getd_m_Y(DTU.getCurrentDate()));
+
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setupEvents() {
         edtInstallationDate.setOnClickListener(view -> showDatePicler());
         ivBack.setOnClickListener(view -> goToBackScreen());
@@ -169,6 +175,7 @@ public class TechecnicianInstallationNewActivity extends Activity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void saveInstallationData() {
 
         if (Validate()) {
@@ -184,7 +191,7 @@ public class TechecnicianInstallationNewActivity extends Activity {
                 requestBodyParams.put(Constant.Fields.MACHINE_OPERATOR_NAME, edtMachineOperatorName.getText().toString());
                 requestBodyParams.put(Constant.Fields.INSTALLED_BY, edtInstalledByName.getText().toString());
                 requestBodyParams.put(Constant.Fields.MACHINE_OPERATOR_MOBILE_NUMBER, edtMachineOperatorMobile.getText().toString());
-                requestBodyParams.put(Constant.Fields.INSTALLATION_DATE, edtInstallationDate.getText().toString());
+                requestBodyParams.put(Constant.Fields.INSTALLATION_DATE, DTU.get_yyyy_mm_dd_HMS(edtInstallationDate.getText().toString()));
                 requestBodyParams.put(Constant.Fields.ADDRESS, edtAddress.getText().toString());
 
                 HashMap headersParams = new HashMap();
