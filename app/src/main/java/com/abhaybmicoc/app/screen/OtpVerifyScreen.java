@@ -21,6 +21,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
+import com.abhaybmicoc.app.activity.SelectTestOptionsActivity;
 import com.abhaybmicoc.app.activity.SplashActivity;
 import com.abhaybmicoc.app.database.DataBaseHelper;
 import com.abhaybmicoc.app.model.Common_Update_Response;
@@ -317,10 +318,12 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 }
 
 
-                Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+
+
+                /*Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                 startActivity(objIntent);
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-                finish();
+                finish();*/
 
             } catch (Exception e) {
                 // TODO: Handle exception
@@ -362,6 +365,18 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
                 if (patient_response.getFound()) {
                     writeToPersonalSharedPreference(patient_response.getData(), "online");
+
+
+                    if (!sharedPreferencesPersonal.getString(Constant.Fields.NAME, "").equals("")) {
+
+                        startActivity(new Intent(context, SelectTestOptionsActivity.class));
+//                    showReportOptionsPopUp();
+                    } else {
+                        Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
+                        startActivity(objIntent);
+                        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+                        finish();
+                    }
                 }
 
             } catch (Exception e) {

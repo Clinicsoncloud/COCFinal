@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.TechnicianInstallationActivity">
+    tools:context=".activity.SelectTestOptionsActivity">
 
     <include layout="@layout/content_technician_installation" />
 

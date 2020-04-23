@@ -13,6 +13,9 @@ public class ApiUtils {
     public static String LOGIN_URL = PROTOCOL + SERVER_URL + "/api/v1/login/kiosk";
     //login/kiosk
     public static String PATIENT_URL = PROTOCOL + SERVER_URL + "/api/v1/patient";
+
+    public static String PARAMETER_PATIENT_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter/patient";
+
     public static String PRINT_POST_URL = PROTOCOL + SERVER_URL + "/api/v1/parameter";
     public static String VERIFY_OTP_URL = PROTOCOL + SERVER_URL + "/api/v1/login/verify";
     //    public static String SYNC_OFFLINE_DATA_URL = PROTOCOL + SERVER_URL + "/api/v1/offline/sync";

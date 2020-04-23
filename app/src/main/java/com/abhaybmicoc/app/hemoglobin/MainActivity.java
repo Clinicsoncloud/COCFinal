@@ -557,6 +557,7 @@ public class MainActivity extends AppCompatActivity implements GattClientActionL
 
         Intent intent = new Intent(MainActivity.this, Act_Main.class);
         intent.putExtra("is_PrinterConnected", is_PrinterConnected);
+        intent.putExtra("report_type", "");
         startActivity(intent);
 
 //        startActivity(new Intent(MainActivity.this, Act_Main.class));

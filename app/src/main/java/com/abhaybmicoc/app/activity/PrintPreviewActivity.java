@@ -354,7 +354,7 @@ public class PrintPreviewActivity extends Activity {
         btnReconnect.setOnClickListener(view -> autoConnectPrinter());
     }
 
-    private void initializeData() {
+    private void  initializeData() {
 
         dataBaseHelper = new DataBaseHelper(context);
 

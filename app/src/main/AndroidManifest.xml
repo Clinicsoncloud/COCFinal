@@ -80,7 +80,7 @@
             android:screenOrientation="fullSensor"
             android:theme="@style/NoActionBar" />
         <activity
-            android:name=".activity.TechnicianInstallationActivity"
+            android:name=".activity.SelectTestOptionsActivity"
             android:screenOrientation="fullSensor"
             android:theme="@style/NoActionBar" />
         <activity
@@ -200,11 +200,15 @@
         <activity
             android:name=".activity.DialogActivity"
             android:finishOnTaskLaunch="true"
-            android:screenOrientation="landscape"
+            android:screenOrientation="fullSensor"
             android:theme="@style/Theme.TransBackground" />
         <activity
             android:name=".activity.PrintPreviewActivity"
-            android:screenOrientation="landscape" /> <!-- for android 9 -->
+            android:screenOrientation="fullSensor" /> <!-- for android 9 -->
+        <activity
+            android:name=".activity.ReportsPrintPreviewActivity"
+            android:screenOrientation="fullSensor" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
