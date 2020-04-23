@@ -341,7 +341,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
 
         getVisitsData();
         setStaticData();
-        setNewList(patientVisitResponse.getData().get(position));
+
 
     }
 
@@ -397,7 +397,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
         Log.e("Selected_VisitDate_key", ":" + key);
 
         if (key.equals("selected_date")) {
-
             setNewList(patientVisitResponse.getData().get(position));
         }
 

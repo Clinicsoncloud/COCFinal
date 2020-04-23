@@ -73,14 +73,14 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
         } else
             viewHolder = (ViewHolder) convertView.getTag();
 
-        calculatePrintData(convertView, viewHolder, position);
+//        calculatePrintData(convertView, viewHolder, position);
 
         return convertView;
     }
 
     // endregion
 
-    private void calculatePrintData(View convertView, ViewHolder viewHolder, int position) {
+    /*private void calculatePrintData(View convertView, ViewHolder viewHolder, int position) {
         switch (position) {
             case 0:
                 showWeight(viewHolder);
@@ -178,7 +178,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
                 showEyeRightVision(viewHolder);
                 break;
         }
-    }
+    }*/
 
     // endregion
 
@@ -216,7 +216,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
     // endregion
 
     // region Data display methods
-
+/*
     private void showWeight(ViewHolder viewHolder) {
         double height = getHeight();
 
@@ -477,7 +477,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
                 }
 
             } else {
-                /* Female body water */
+                *//* Female body water *//*
                 viewHolder.rangeTV.setText("45 - 60 %");
 
                 if (Double.parseDouble(printData.getCurr_value()) > 60) {
@@ -886,7 +886,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
                     editor.commit();
                 }
             } else {
-                /* Female bone mass */
+                *//* Female bone mass *//*
 
                 if (weight > 60) {
                     viewHolder.rangeTV.setText("2.3 - 2.7 kg");
@@ -1019,7 +1019,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
                     }
                 }
             } else {
-                /* Female muscle mass */
+                *//* Female muscle mass *//*
 
                 if (height > 160) {
                     viewHolder.rangeTV.setText("36.5 - 42.5 kg");
@@ -1248,7 +1248,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
             viewHolder.parameterTV.setText("" + printData.getParameter());
 
             if (SharedPreferenceService.isMalePatient(context)) {
-                /* Male skeleton muscle */
+                *//* Male skeleton muscle *//*
 
                 if (Double.parseDouble(printData.getCurr_value()) > 59) {
                     viewHolder.resultTV.setText("High");
@@ -1263,7 +1263,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
 
                 viewHolder.rangeTV.setText("49 - 59 %");
             } else {
-                /* Female skeleton muscle */
+                *//* Female skeleton muscle *//*
 
                 viewHolder.rangeTV.setText("40 - 50 %");
 
@@ -1307,7 +1307,7 @@ public class RreportsPrintPreviewAdapter extends ArrayAdapter<ReportsPrintData> 
             return DateService.getAgeFromStringDate(DTU.getYYYYMD(dateOfBirth));
         } else
             return 0;
-    }
+    }*/
 
     // endregion
 }
