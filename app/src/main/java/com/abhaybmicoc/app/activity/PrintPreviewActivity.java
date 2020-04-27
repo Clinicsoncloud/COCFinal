@@ -2242,7 +2242,7 @@ public class PrintPreviewActivity extends Activity {
                 "[Normal Range]: 97-99 F\n" +
                 "-----------------------\n" +
                 "Left Eye Vision : {left_eye_vision}" + "\n" +
-                "[Normal Range]: >{standardEyeRange}\n\n" +
+                "[Normal Range]: {standardEyeRange}\n\n" +
                 "Right Eye Vision: {right_eye_vision}\n" +
                 "[Normal Range]:" + "{standardEyeRange}\n" +
                 "-----------------------\n" +

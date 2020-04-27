@@ -1,53 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:background="@android:color/transparent"
+    android:orientation="horizontal"
     android:padding="@dimen/pad10"
     android:weightSum="4">
+
     <TextView
         android:id="@+id/parameterTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
-        />
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
+
     <TextView
         android:id="@+id/resultTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
-        />
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
+
     <TextView
         android:id="@+id/valueTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
-        />
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
+
     <TextView
         android:id="@+id/rangeTV"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="@color/white"
-        android:textSize="25sp"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
-        />
-
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="25sp" />
 
 
 </LinearLayout>

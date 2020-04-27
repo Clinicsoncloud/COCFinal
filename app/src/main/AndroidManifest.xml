@@ -63,55 +63,65 @@
         tools:replace="android:icon,android:theme">
         <activity
             android:name=".activity.TechecnicianInstallationNewActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/NoActionBar" />
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.VisionActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.ChangeLanguageActivity"
             android:label="@string/title_activity_change_language"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/NoActionBar" />
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/NoActionBar" />
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.SelectTestOptionsActivity"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/NoActionBar" />
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.PostVerifiedOtpScreen"
             android:label="Verify OTP"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".actofit.ActofitMainActivity"
             android:label="@string/title_activity_weight_screen"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/AppThemeAction" />
+            android:screenOrientation="landscape"
+            android:theme="@style/AppThemeAction"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".thermometer.ThermometerScreen"
             android:label="@string/title_activity_thermometer_screen"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+            android:windowSoftInputMode="stateAlwaysHidden"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.HeightActivity"
             android:label="@string/title_activity_height_screen"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeAction"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.ActivateScreen"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustPan">
+            android:windowSoftInputMode="stateHidden|adjustPan"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -130,69 +140,84 @@
             android:label="@string/title_activity_otp_verify_screen"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.OtpLoginScreen"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.SplashActivity"
             android:label="@string/app_name"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".screen.DisplayRecordScreen"
             android:label="Weight Details"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeAction" />
+            android:theme="@style/AppThemeAction"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".oximeter.MainActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeAction" />
+            android:theme="@style/AppThemeAction"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".base.ADInstructionActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.TransBackground" />
+            android:theme="@style/Theme.TransBackground"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".glucose.GlucoseScanListActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeGlucose" />
+            android:theme="@style/AppThemeGlucose"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".glucose.GlucoseActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeGlucose" />
+            android:theme="@style/AppThemeGlucose"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".printer.esys.pridedemoapp.Act_Main"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- Printer -->
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            tools:ignore="LockedOrientationActivity" /> <!-- Printer -->
         <activity
             android:name=".printer.esys.pridedemoapp.Act_BTDiscovery"
             android:launchMode="standard"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" /> <!-- hemoglobin -->
+            android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen"
+            tools:ignore="LockedOrientationActivity" /> <!-- hemoglobin -->
         <activity
             android:name=".hemoglobin.MainActivity"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeHemoGlobin" />
+            android:theme="@style/AppThemeHemoGlobin"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".oxygen.OxygenActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
-            android:theme="@style/AppThemeGlucose" />
+            android:theme="@style/AppThemeGlucose"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.BloodPressureActivity"
             android:finishOnTaskLaunch="true"
             android:screenOrientation="landscape"
-            android:theme="@android:style/Theme.NoTitleBar" />
+            android:theme="@android:style/Theme.NoTitleBar"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.InstructionActivity"
             android:finishOnTaskLaunch="true"
             android:screenOrientation="landscape"
-            android:theme="@style/Theme.TransBackground" />
+            android:theme="@style/Theme.TransBackground"
+            tools:ignore="LockedOrientationActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" />
@@ -200,21 +225,28 @@
         <activity
             android:name=".activity.DialogActivity"
             android:finishOnTaskLaunch="true"
-            android:screenOrientation="fullSensor"
-            android:theme="@style/Theme.TransBackground" />
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.TransBackground"
+            tools:ignore="LockedOrientationActivity" />
+
         <activity
             android:name=".activity.PrintPreviewActivity"
-            android:screenOrientation="fullSensor" /> <!-- for android 9 -->
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" /> <!-- for android 9 -->
+
         <activity
             android:name=".activity.ReportsPrintPreviewActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="landscape"
+            tools:ignore="LockedOrientationActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
         <uses-library
             android:name="com.samsung.android.sdk.bt"
             android:required="false" />
+
         <uses-library
             android:name="com.htc.android.bluetooth.le"
             android:required="false" />
@@ -232,12 +264,15 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9009a3f13f6942069b56f1780e4e6ca704514f8e" />
+
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="be3553252fe706b37ebb6102a8414776371c942d" /> <!-- glucose monitor data display -->
+
         <service
             android:name=".services.ConnectivityService"
             android:exported="true"

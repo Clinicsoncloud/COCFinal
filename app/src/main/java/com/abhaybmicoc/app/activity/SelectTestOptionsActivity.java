@@ -61,11 +61,12 @@ public class SelectTestOptionsActivity extends AppCompatActivity {
 
     private void goToPatientsReports() {
 
-        Intent intent = new Intent(context, ReportsPrintPreviewActivity.class);
+        Intent intent = new Intent(context, Act_Main.class);
         intent.putExtra("is_PrinterConnected", "");
         intent.putExtra("report_type", "view_only_report");
         startActivity(intent);
     }
+
 
     private void goToBack() {
 

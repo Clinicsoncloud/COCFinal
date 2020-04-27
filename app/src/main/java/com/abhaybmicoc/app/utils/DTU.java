@@ -1222,4 +1222,18 @@ public class DTU {
         return dateFormat.format(dateTime);
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public static String get_DateMonthOnlyFromTimeZoneDate(String timeZoneDate) {
+
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern(" \tdd \n MMM", Locale.ENGLISH);
+//        LocalDate date = LocalDate.parse("2018-04-10T04:00:00.000Z", inputFormatter);
+        LocalDate date = LocalDate.parse(timeZoneDate, inputFormatter);
+        String formattedDate = outputFormatter.format(date);
+//        System.out.println(formattedDate);
+
+        return formattedDate;
+    }
+
 }

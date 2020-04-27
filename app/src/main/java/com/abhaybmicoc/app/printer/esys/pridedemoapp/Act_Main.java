@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.abhaybmicoc.app.R;
 import com.abhaybmicoc.app.activity.PrintPreviewActivity;
+import com.abhaybmicoc.app.activity.ReportsPrintPreviewActivity;
 import com.abhaybmicoc.app.entities.AndMedical_App_Global;
 import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.printer.evolute.bluetooth.BluetoothComm;
@@ -175,10 +176,16 @@ public class Act_Main extends Activity {
          * This intent added for temp period only for testing to avoid connection printer
          */
 
-        Intent tempintent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+        /*Intent tempintent;
+
+        if (getIntent().getStringExtra("report_type").equals("view_only_report"))
+            tempintent = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
+        else
+            tempintent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+
         tempintent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
         tempintent.putExtra("report_type", getIntent().getStringExtra("report_type"));
-        startActivity(tempintent);
+        startActivity(tempintent);*/
 
         llSelectedDevicesLayout.setVisibility(View.GONE);
 
@@ -312,7 +319,12 @@ public class Act_Main extends Activity {
                     btnPair.setVisibility(View.GONE);
                     btnComm.setVisibility(View.VISIBLE);
 
-                    Intent intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+                    Intent intent;
+                    if (getIntent().getStringExtra("report_type").equals("view_only_report"))
+                        intent = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
+                    else
+                        intent = new Intent(Act_Main.this, PrintPreviewActivity.class);
+
                     intent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
                     intent.putExtra("report_type", getIntent().getStringExtra("report_type"));
                     startActivity(intent);
@@ -661,7 +673,14 @@ public class Act_Main extends Activity {
                     sDevicetype = data.getString("SerialNo", "");
 
                     Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-                    Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+
+                    Intent printIntent;
+
+                    if (getIntent().getStringExtra("report_type").equals("view_only_report"))
+                        printIntent = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
+                    else
+                        printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+
                     printIntent.putExtra("is_PrinterConnected", "true");
                     printIntent.putExtra("report_type", getIntent().getStringExtra("report_type"));
 
@@ -686,7 +705,13 @@ public class Act_Main extends Activity {
                         if (data.getString("SerialNo", "").length() > 0) {
                             sDevicetype = data.getString("SerialNo", "");
                             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-                            Intent printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+                            Intent printIntent;
+
+                            if (getIntent().getStringExtra("report_type").equals("view_only_report"))
+                                printIntent = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
+                            else
+                                printIntent = new Intent(getApplicationContext(), PrintPreviewActivity.class);
+
                             printIntent.putExtra("is_PrinterConnected", "true");
                             printIntent.putExtra("report_type", getIntent().getStringExtra("report_type"));
 
@@ -956,7 +981,13 @@ public class Act_Main extends Activity {
             // TODO Auto-generated method stub
 
             Toast.makeText(Act_Main.this, "Serial No. is " + sDevicetype, Toast.LENGTH_LONG).show();
-            Intent protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
+            Intent protocol8a;
+
+            if (getIntent().getStringExtra("report_type").equals("view_only_report"))
+                protocol8a = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
+            else
+                protocol8a = new Intent(Act_Main.this, PrintPreviewActivity.class);
+
             protocol8a.putExtra("is_PrinterConnected", "true");
             protocol8a.putExtra("report_type", getIntent().getStringExtra("report_type"));
 

@@ -263,13 +263,13 @@ public class Patient_Visit_Response {
         private String appVersion;
         @SerializedName("is_sms_sent")
         @Expose
-        private Boolean isSmsSent;
+        private String isSmsSent;
         @SerializedName("is_email_sent")
         @Expose
-        private Boolean isEmailSent;
+        private String isEmailSent;
         @SerializedName("is_pdf_created")
         @Expose
-        private Boolean isPdfCreated;
+        private String isPdfCreated;
         @SerializedName("created_by")
         @Expose
         private String createdBy;
@@ -291,6 +291,11 @@ public class Patient_Visit_Response {
         @SerializedName("id")
         @Expose
         private String id;
+
+        @SerializedName("isSelectedDate")
+        @Expose
+        private Boolean isSelectedDate;
+
         @SerializedName("clinic")
         @Expose
         private Clinic_Data_Info clinic;
@@ -903,27 +908,27 @@ public class Patient_Visit_Response {
             this.appVersion = appVersion;
         }
 
-        public Boolean getSmsSent() {
+        public String getSmsSent() {
             return isSmsSent;
         }
 
-        public void setSmsSent(Boolean smsSent) {
+        public void setSmsSent(String smsSent) {
             isSmsSent = smsSent;
         }
 
-        public Boolean getEmailSent() {
+        public String getEmailSent() {
             return isEmailSent;
         }
 
-        public void setEmailSent(Boolean emailSent) {
+        public void setEmailSent(String emailSent) {
             isEmailSent = emailSent;
         }
 
-        public Boolean getPdfCreated() {
+        public String getPdfCreated() {
             return isPdfCreated;
         }
 
-        public void setPdfCreated(Boolean pdfCreated) {
+        public void setPdfCreated(String pdfCreated) {
             isPdfCreated = pdfCreated;
         }
 
@@ -982,6 +987,15 @@ public class Patient_Visit_Response {
         public void setId(String id) {
             this.id = id;
         }
+
+        public Boolean getIsSelectedDate() {
+            return isSelectedDate;
+        }
+
+        public void setIsSelectedDate(Boolean isSelectedDate) {
+            this.isSelectedDate = isSelectedDate;
+        }
+
 
         public Clinic_Data_Info getClinic() {
             return clinic;

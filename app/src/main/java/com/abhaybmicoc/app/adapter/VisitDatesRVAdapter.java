@@ -99,7 +99,14 @@ public class VisitDatesRVAdapter extends RecyclerView.Adapter<VisitDatesRVAdapte
 
         pos = position;
 
-        holder.tv_VisitDate.setText(DTU.get_DateOnlyFromTimeZoneDate(dataList.get(position).getCreatedAt()));
+        holder.tv_VisitDate.setText(DTU.get_DateMonthOnlyFromTimeZoneDate(dataList.get(position).getCreatedAt()));
+
+        if (dataList.get(position).getIsSelectedDate() != null && dataList.get(position).getIsSelectedDate()) {
+            holder.tv_VisitDate.setTextColor(context.getColor(R.color.green));
+        } else {
+            holder.tv_VisitDate.setTextColor(context.getColor(R.color.white_1000));
+
+        }
 
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

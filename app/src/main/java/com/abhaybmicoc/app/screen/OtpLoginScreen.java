@@ -680,6 +680,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
                     objIntent.putExtra("connectivity", "offline");
+                    objIntent.putExtra("isNewPatient", "false");
                     startActivity(objIntent);
                 }
             } else {
@@ -801,12 +802,26 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 if (patient_response.getFound()) {
 
                     writePersonalSharedPreferences(patient_response.getData());
+                    Log.e("Nameadd_Log", ":" + patient_response.getData().getName());
+
+//                    if (patient_response.getData().getName().equals("null"))
+//                        Log.e("Nameadd_Log_Strng", "  :Null: " + patient_response.getData().getName());
+
 
                     Intent objIntent = new Intent(getApplicationContext(), OtpVerifyScreen.class);
                     objIntent.putExtra(Constant.Fields.MOBILE_NUMBER, etMobileNumber.getText().toString());
                     objIntent.putExtra(Constant.Fields.PATIENT_ID, patient_id);
                     objIntent.putExtra(Constant.Fields.KIOSK_ID, kiosk_id);
                     objIntent.putExtra("connectivity", "online");
+                    if (patient_response.getData().getName() == null) {
+                        objIntent.putExtra("isNewPatient", "true");
+                        Log.e("Nameadd_Log_null", "   :Null:  " + patient_response.getData().getName());
+                    } else {
+                        objIntent.putExtra("isNewPatient", "false");
+                        Log.e("Nameadd_Log_false", "   :Null:  " + patient_response.getData().getName());
+                    }
+
+
                     startActivity(objIntent);
                     overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
 

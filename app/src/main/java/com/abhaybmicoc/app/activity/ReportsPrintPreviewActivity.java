@@ -109,6 +109,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
 
     @BindView(R.id.lV)
     ListView lV;
+
     @BindView(R.id.topLL)
     LinearLayout topLL;
 
@@ -130,7 +131,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
     private Button saveRating;
     private SmileRating smileRating;
     private int feedbackRating = 0;
-
 
     private ImageView ivDownload;
     private RecyclerView rvVisitDates;
@@ -204,7 +204,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
     public static BluetoothAdapter mBT = BluetoothAdapter.getDefaultAdapter();
 
     List<PrintDataOld> printDataList = new ArrayList<>();
-    List<ReportsPrintData> printDataListNew = new ArrayList<>();
+    List<ReportsPrintData> printDataListNew;
     private Hashtable<String, String> mhtDeviceInfo = new Hashtable<String, String>();
     private String TAG = "PrinPriviewActivity";
 
@@ -259,7 +259,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
     protected void onPause() {
         super.onPause();
     }
-
 
     // endregion
 
@@ -317,8 +316,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
 
     private void setupEvents() {
 
-//        btnHome.setOnClickListener(view -> goToHome());
-        btnHome.setOnClickListener(view -> showFeedbackPopup());
+        btnHome.setOnClickListener(view -> goToHome());
 
         btnPrint.setOnClickListener(view -> {
             Toast.makeText(this, "Getting Printout", Toast.LENGTH_SHORT).show();
@@ -341,13 +339,11 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
 
         getVisitsData();
         setStaticData();
-
-
+        age = getAge();
     }
 
     private void setStaticData() {
         nameTV.setText("Name :" + sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
-        heightTV.setText("Height :" + sharedPreferencePersonalData.getString(Constant.Fields.HEIGHT, ""));
         genderTV.setText("Gender :" + sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
         dobTV.setText("DOB :" + sharedPreferencePersonalData.getString(Constant.Fields.DATE_OF_BIRTH, ""));
     }
@@ -377,6 +373,8 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
             patientVisitResponse = (Patient_Visit_Response) Utils.parseResponse(response, Patient_Visit_Response.class);
 
             if (patientVisitResponse.getFound()) {
+                patientVisitResponse.getData().get(0).setIsSelectedDate(true);
+                setNewList(patientVisitResponse.getData().get(0));
                 setVisitDateAdapter(patientVisitResponse.getData());
             }
         }
@@ -397,9 +395,24 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
         Log.e("Selected_VisitDate_key", ":" + key);
 
         if (key.equals("selected_date")) {
+            updateIsSelected(position);
             setNewList(patientVisitResponse.getData().get(position));
         }
+    }
 
+    private void updateIsSelected(int position) {
+
+        for (int i = 0; i < patientVisitResponse.getData().size(); i++) {
+            Log.e("sdaghdcaghvasgh", ":position:" + position + "  :i:  " + i);
+
+            if (i == position) {
+                patientVisitResponse.getData().get(i).setIsSelectedDate(true);
+            } else {
+                patientVisitResponse.getData().get(i).setIsSelectedDate(false);
+            }
+        }
+
+        setVisitDateAdapter(patientVisitResponse.getData());
     }
 
     private void setupTextToSpeech() {
@@ -479,6 +492,18 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
 
     private void setNewList(Patient_Visit_Response.Patient_Visit_Data patientVisitData) {
         try {
+
+            try {
+                fileName = patientVisitData.getId();
+                updatedParameterID = patientVisitData.getId();
+            } catch (Exception e) {
+                // TODO: Handle exception here
+            }
+
+            getPrintData(patientVisitData);
+            heightTV.setText("Height :" + patientVisitData.getHeight() + " cm");
+            printDataListNew = new ArrayList<>();
+
             printDataListNew.add(new ReportsPrintData("Weight", patientVisitData.getWeightresult(), patientVisitData.getWeight(), patientVisitData.getWeightrange()));
             printDataListNew.add(new ReportsPrintData("BMI", patientVisitData.getBmiresult(), patientVisitData.getBmi(), patientVisitData.getBmirange()));
             printDataListNew.add(new ReportsPrintData("Body fat", patientVisitData.getBodyfatresult(), patientVisitData.getBodyFat(), patientVisitData.getBodyfatrange()));
@@ -494,7 +519,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
             printDataListNew.add(new ReportsPrintData("Physique", "", patientVisitData.getPhysique(), patientVisitData.getPhysiquerange()));
             printDataListNew.add(new ReportsPrintData("Muscle Mass", patientVisitData.getMusclemassresult(), patientVisitData.getMuscleMass(), patientVisitData.getMusclemassrange()));
             printDataListNew.add(new ReportsPrintData("Bone Mass", patientVisitData.getBonemassresult(), patientVisitData.getBoneMass(), patientVisitData.getBonemassrange()));
-            printDataListNew.add(new ReportsPrintData("Body Temp", patientVisitData.getTemperatureresult(), patientVisitData.getBodytemprange(), patientVisitData.getTemperatureresult()));
+            printDataListNew.add(new ReportsPrintData("Body Temp", patientVisitData.getTemperatureresult(), patientVisitData.getTemperature(), patientVisitData.getBodytemprange()));
             printDataListNew.add(new ReportsPrintData("Systolic", patientVisitData.getSystolicresult(), patientVisitData.getBloodPressure(), patientVisitData.getSystolicrange()));
             printDataListNew.add(new ReportsPrintData("Diastolic", patientVisitData.getBloodpressureresult(), patientVisitData.getDialostic(), patientVisitData.getDialosticrange()));
             printDataListNew.add(new ReportsPrintData("Pulse Oximeter", patientVisitData.getOxygenresult(), patientVisitData.getOxygen(), patientVisitData.getPulseoximeterrange()));
@@ -505,9 +530,17 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
             printDataListNew.add(new ReportsPrintData("Right Eye Vision", patientVisitData.getEyerightresult(), patientVisitData.getEyeRightVision(), patientVisitData.getEyerange()));
 
             lV.setAdapter(new RreportsPrintPreviewAdapter(this, R.layout.printlist_item, printDataListNew));
+
+            Log.e("printDataListNew_Log", ":" + printDataListNew);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getPrintData(Patient_Visit_Response.Patient_Visit_Data patientVisitData) {
+        printerText = getPrintText(patientVisitData);
+
+        Log.e("printerText_Log", ":" + printerText);
     }
 
     /**
@@ -564,7 +597,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
             }
         }
     }
-
 
     public class EnterTextAsyc extends AsyncTask<Integer, Integer, Integer> {
         /* displays the progress dialog untill background task is completed */
@@ -641,7 +673,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
         ;
     };
 
-
     /* To show response messages */
     public void dlgShow(String str) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -693,143 +724,6 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
             return 0;
     }
 
-    private void showFeedbackPopup() {
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.layout_feedback_popup, null);
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            popupWindow.setElevation(20);
-        }
-
-        popupWindow.setTouchable(true);
-        popupWindow.setFocusable(false);
-        popupWindow.setOutsideTouchable(false);
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-
-        saveRating = popupView.findViewById(R.id.btn_save_rating);
-        smileRating = popupView.findViewById(R.id.smile_rating);
-
-        smileRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
-            @Override
-            public void onSmileySelected(int smiley, boolean reselected) {
-                smileSelectedEvent(smiley);
-            }
-        });
-
-        saveRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (feedbackRating != 0) {
-                    popupWindow.dismiss();
-                    saveFeedBack();
-                }
-            }
-        });
-
-        smileRating.setOnRatingSelectedListener(new SmileRating.OnRatingSelectedListener() {
-            @Override
-            public void onRatingSelected(int level, boolean reselected) {
-
-            }
-        });
-    }
-
-    private void smileSelectedEvent(int smiley) {
-        // reselected is false when user selects different smiley that previously selected one
-        // true when the same smiley is selected.
-        // Except if it first time, then the value will be false.
-        int level;
-        switch (smiley) {
-            case SmileRating.BAD:
-                feedbackRating = smileRating.getRating();
-                Log.i(TAG, "Bad : " + feedbackRating);
-                break;
-            case SmileRating.GOOD:
-                feedbackRating = smileRating.getRating();
-                Log.i(TAG, "Good : " + feedbackRating);
-                break;
-            case SmileRating.GREAT:
-                feedbackRating = smileRating.getRating();
-                Log.i(TAG, "Great : " + feedbackRating);
-                break;
-            case SmileRating.OKAY:
-                feedbackRating = smileRating.getRating();
-                Log.i(TAG, "Okay : " + feedbackRating);
-                break;
-            case SmileRating.TERRIBLE:
-                feedbackRating = smileRating.getRating();
-                Log.i(TAG, "Terrible : " + feedbackRating);
-                break;
-        }
-    }
-
-    @SuppressLint("LongLogTag")
-    private void saveFeedBack() {
-
-        if (Utils.isOnline(context)) {
-
-            HashMap mapHeadersParams = new HashMap();
-
-            Map<String, String> requestBodyParams = new HashMap<>();
-            requestBodyParams.put(Constant.Fields.FEEDBACK, String.valueOf(feedbackRating));
-
-            String updateUrl = ApiUtils.PRINT_POST_URL + "/" + updatedParameterID;
-
-            Log.e("updateUrl_Log_Feedback", ":" + updateUrl);
-            Log.e("params_Log_Feedback", ":" + requestBodyParams);
-
-            HttpService.accessWebServices(
-                    context,
-                    updateUrl,
-                    Request.Method.PUT,
-                    requestBodyParams,
-                    mapHeadersParams,
-                    (response, error, status) -> handleUpdateAPIResponse(response, error, status));
-
-        } else {
-            Log.e("lastInsertedparameter_id_FdUPdate", ":" + lastInsertedparameter_id);
-
-            ContentValues paramsContentValues = new ContentValues();
-            paramsContentValues.put(Constant.Fields.FEEDBACK, String.valueOf(feedbackRating));
-
-            dataBaseHelper.updateParametersInfo(Constant.TableNames.PARAMETERS, paramsContentValues, lastInsertedparameter_id);
-
-            Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
-
-            goToHome();
-        }
-    }
-
-    private void handleUpdateAPIResponse(String response, VolleyError error, String status) {
-
-        Log.e("res_Log_Feedback", ":" + response);
-
-        if (status.equals("response")) {
-            try {
-
-                Common_Update_Response commonUpdateResponse = (Common_Update_Response) Utils.parseResponse(response, Common_Update_Response.class);
-
-                if (commonUpdateResponse.getSuccess()) {
-                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
-                    goToHome();
-                } else {
-                    Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
-                }
-            } catch (Exception e) {
-            }
-        } else {
-            Toast.makeText(context, "Thanks for your feedback!", Toast.LENGTH_SHORT).show();
-            goToHome();
-        }
-    }
-
-
     private void goToHome() {
 
         Intent newIntent = new Intent(getApplicationContext(), OtpLoginScreen.class);
@@ -841,7 +735,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
         finish();
     }
 
-    /*private String getPrintText() {
+    private String getPrintText(Patient_Visit_Response.Patient_Visit_Data patientVisitData) {
         String str = "" + "    " + "Clinics On Cloud" + "" + "\n\n" +
                 "Name: {name}\n" +
                 "Age : {age}  Gender: {gender}\n" +
@@ -849,7 +743,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
                 "-----------------------\n" +
                 "Height: {height} cm\n" +
                 "Weight: {weight} kg\n" +
-                "[Normal Range]:\n" + "{standardWeightRangeFrom} - {standardWeightRangeTo} kg\n" +
+                "[Normal Range]:\n" + "{standardWeightRange} kg\n" +
                 "BMI: {bmi} \n" +
                 "[Normal Range]:" + "18.5-25\n" +
                 "-----------------------\n" +
@@ -898,7 +792,7 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
                 "[Normal Range]: 97-99 F\n" +
                 "-----------------------\n" +
                 "Left Eye Vision : {left_eye_vision}" + "\n" +
-                "[Normal Range]: >{standardEyeRange}\n\n" +
+                "[Normal Range]: {standardEyeRange}\n\n" +
                 "Right Eye Vision: {right_eye_vision}\n" +
                 "[Normal Range]:" + "{standardEyeRange}\n" +
                 "-----------------------\n" +
@@ -909,52 +803,55 @@ public class ReportsPrintPreviewActivity extends Activity implements RvClickList
                 "   without consulting a\n" +
                 "        doctor\n\n\n\n\n\n\n";
 
-        str = str.replace("{name}", getPersonalPreferenceData(Constant.Fields.NAME));
-        str = str.replace("{age}", String.valueOf(age));
-        str = str.replace("{gender}", getPersonalPreferenceData(Constant.Fields.GENDER));
-        str = str.replace("{currentDate}", currentDate);
-        str = str.replace("{currentTime}", currentTime);
-        str = str.replace("{height}", getActofitPreferenceData(Constant.Fields.HEIGHT));
-        str = str.replace("{weight}", getActofitPreferenceData(Constant.Fields.WEIGHT));
-        str = str.replace("{standardWeightRangeFrom}", String.valueOf(standardWeighRangeFrom));
-        str = str.replace("{standardWeightRangeTo}", String.valueOf(standardWeighRangeTo));
-        str = str.replace("{bmi}", getActofitPreferenceData(Constant.Fields.BMI));
-        str = str.replace("{bodyFat}", getActofitPreferenceData(Constant.Fields.BODY_FAT));
-        str = str.replace("{standardBodyFat}", standardBodyFat);
-        str = str.replace("{fatFreeWeight}", getActofitPreferenceData(Constant.Fields.FAT_FREE_WEIGHT));
-        str = str.replace("{subcutaneousFat}", getActofitPreferenceData(Constant.Fields.SUBCUTANEOUS_FAT));
-        str = str.replace("{subcutaneousFatRange}", subcutaneousFat);
-        str = str.replace("{visceralFat}", getActofitPreferenceData(Constant.Fields.VISCERAL_FAT));
-        str = str.replace("{bodyWater}", getActofitPreferenceData(Constant.Fields.BODY_WATER));
-        str = str.replace("{standardBodyWater}", standardBodyWater);
-        str = str.replace("{skeletalMuscle}", getActofitPreferenceData(Constant.Fields.SKELETAL_MUSCLE));
-        str = str.replace("{standardSkeletalMuscle}", standardSkeltonMuscle);
-        str = str.replace("{muscleMass}", getActofitPreferenceData(Constant.Fields.MUSCLE_MASS));
-        str = str.replace("{standardMuscleMass}", standardMuscleMass);
-        str = str.replace("{boneMass}", getActofitPreferenceData(Constant.Fields.BONE_MASS));
-        str = str.replace("{standardBoneMass}", standardBoneMass);
-        str = str.replace("{protein}", getActofitPreferenceData(Constant.Fields.PROTEIN));
-        str = str.replace("{bmr}", getActofitPreferenceData(Constant.Fields.BMR));
-        str = str.replace("{standardMetabolism}", String.valueOf(standardMetabolism));
-        str = str.replace("{physique}", getActofitPreferenceData(Constant.Fields.PHYSIQUE));
-        str = str.replace("{metaAge}", getActofitPreferenceData(Constant.Fields.META_AGE));
-        str = str.replace("{healthScore}", getActofitPreferenceData(Constant.Fields.HEALTH_SCORE));
-        str = str.replace("{sugar}", getSugarPreferenceData(Constant.Fields.SUGAR));
-        str = str.replace("{standardSugar}", standardGlucose);
-        str = str.replace("{hemoglobin}", getHemoglobinPreferenceData(Constant.Fields.HEMOGLOBIN));
-        str = str.replace("{standardHemoglobin}", standardHemoglobin);
-        str = str.replace("{bloodPressureSystolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_SYSTOLIC));
-        str = str.replace("{bloodPressureDiastolic}", geBloodPressurePreferenceData(Constant.Fields.BLOOD_PRESSURE_DIASTOLIC));
-        str = str.replace("{bloodOxygen}", getOximeterPreferenceData(Constant.Fields.BLOOD_OXYGEN));
-        str = str.replace("{pulseRate}", geBloodPressurePreferenceData(Constant.Fields.PULSE_RATE));
-        str = str.replace("{temperature}", getThermometerPreferenceData(Constant.Fields.TEMPERATURE));
+        try {
+            str = str.replace("{name}", sharedPreferencePersonalData.getString(Constant.Fields.NAME, ""));
+            str = str.replace("{age}", String.valueOf(age));
+            str = str.replace("{gender}", sharedPreferencePersonalData.getString(Constant.Fields.GENDER, ""));
+            str = str.replace("{currentDate}", DTU.getCurrentDate());
+            str = str.replace("{currentTime}", DTU.getTime());
+            str = str.replace("{height}", patientVisitData.getHeight());
+            str = str.replace("{weight}", String.valueOf(TextUtils.isEmpty(patientVisitData.getHeight()) ? 0 : Double.parseDouble(patientVisitData.getHeight())));
+            str = str.replace("{standardWeightRange}", String.valueOf(TextUtils.isEmpty(patientVisitData.getWeightrange()) ? "NA" : Double.parseDouble(patientVisitData.getWeightrange())));
+            str = str.replace("{bmi}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBmi()) ? 0 : Double.parseDouble(patientVisitData.getBmi())));
+            str = str.replace("{bodyFat}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBodyFat()) ? 0 : Double.parseDouble(patientVisitData.getBodyFat())));
+            str = str.replace("{standardBodyFat}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBodyfatrange()) ? "NA" : Double.parseDouble(patientVisitData.getBodyfatrange())));
+            str = str.replace("{fatFreeWeight}", String.valueOf(TextUtils.isEmpty(patientVisitData.getFatFreeWeight()) ? 0 : Double.parseDouble(patientVisitData.getFatFreeWeight())));
+            str = str.replace("{subcutaneousFat}", String.valueOf(TextUtils.isEmpty(patientVisitData.getSubcutaneous()) ? 0 : Double.parseDouble(patientVisitData.getSubcutaneous())));
+            str = str.replace("{subcutaneousFatRange}", String.valueOf(TextUtils.isEmpty(patientVisitData.getSubfatrange()) ? "NA" : Double.parseDouble(patientVisitData.getSubfatrange())));
+            str = str.replace("{visceralFat}", String.valueOf(TextUtils.isEmpty(patientVisitData.getVisceralFat()) ? 0 : Double.parseDouble(patientVisitData.getVisceralFat())));
+            str = str.replace("{bodyWater}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBodyWater()) ? 0 : Double.parseDouble(patientVisitData.getBodyWater())));
+            str = str.replace("{standardBodyWater}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBodywaterrange()) ? "NA" : Double.parseDouble(patientVisitData.getBodyWater())));
+            str = str.replace("{skeletalMuscle}", String.valueOf(TextUtils.isEmpty(patientVisitData.getSkeletonMuscle()) ? 0 : Double.parseDouble(patientVisitData.getSkeletonMuscle())));
+            str = str.replace("{standardSkeletalMuscle}", String.valueOf(TextUtils.isEmpty(patientVisitData.getSkeletanmusclerange()) ? "NA" : Double.parseDouble(patientVisitData.getSkeletanmusclerange())));
+            str = str.replace("{muscleMass}", String.valueOf(TextUtils.isEmpty(patientVisitData.getMuscleMass()) ? 0 : Double.parseDouble(patientVisitData.getMuscleMass())));
+            str = str.replace("{standardMuscleMass}", String.valueOf(TextUtils.isEmpty(patientVisitData.getMusclemassrange()) ? "NA" : Double.parseDouble(patientVisitData.getMusclemassrange())));
+            str = str.replace("{boneMass}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBoneMass()) ? 0 : Double.parseDouble(patientVisitData.getBoneMass())));
+            str = str.replace("{standardBoneMass}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBonemassrange()) ? "NA" : Double.parseDouble(patientVisitData.getBonemassrange())));
+            str = str.replace("{protein}", String.valueOf(TextUtils.isEmpty(patientVisitData.getProtein()) ? 0 : Double.parseDouble(patientVisitData.getProtein())));
+            str = str.replace("{bmr}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBmr()) ? 0 : Double.parseDouble(patientVisitData.getBmr())));
+            str = str.replace("{standardMetabolism}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBmrrange()) ? "NA" : Double.parseDouble(patientVisitData.getBmrrange())));
+            str = str.replace("{physique}", String.valueOf(TextUtils.isEmpty(patientVisitData.getPhysique()) ? 0 : Double.parseDouble(patientVisitData.getPhysique())));
+            str = str.replace("{metaAge}", String.valueOf(TextUtils.isEmpty(patientVisitData.getMetaAge()) ? 0 : Double.parseDouble(patientVisitData.getMetaAge())));
+            str = str.replace("{healthScore}", String.valueOf(TextUtils.isEmpty(patientVisitData.getHealthScore()) ? 0 : Double.parseDouble(patientVisitData.getHealthScore())));
+            str = str.replace("{sugar}", String.valueOf(TextUtils.isEmpty(patientVisitData.getSugar()) ? 0 : Double.parseDouble(patientVisitData.getSugar())));
+            str = str.replace("{standardSugar}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBloodsugarrange()) ? "NA" : Double.parseDouble(patientVisitData.getBloodsugarrange())));
+            str = str.replace("{hemoglobin}", String.valueOf(TextUtils.isEmpty(patientVisitData.getHemoglobin()) ? 0 : Double.parseDouble(patientVisitData.getHemoglobin())));
+            str = str.replace("{standardHemoglobin}", String.valueOf(TextUtils.isEmpty(patientVisitData.getHemoglobinrange()) ? "NA" : Double.parseDouble(patientVisitData.getHemoglobinrange())));
+            str = str.replace("{bloodPressureSystolic}", String.valueOf(TextUtils.isEmpty(patientVisitData.getBloodPressure()) ? 0 : Double.parseDouble(patientVisitData.getBloodPressure())));
+            str = str.replace("{bloodPressureDiastolic}", String.valueOf(TextUtils.isEmpty(patientVisitData.getDialostic()) ? 0 : Double.parseDouble(patientVisitData.getDialostic())));
+            str = str.replace("{bloodOxygen}", String.valueOf(TextUtils.isEmpty(patientVisitData.getOxygen()) ? 0 : Double.parseDouble(patientVisitData.getOxygen())));
+            str = str.replace("{pulseRate}", String.valueOf(TextUtils.isEmpty(patientVisitData.getPulse()) ? 0 : Double.parseDouble(patientVisitData.getPulse())));
+            str = str.replace("{temperature}", String.valueOf(TextUtils.isEmpty(patientVisitData.getTemperature()) ? 0 : Double.parseDouble(patientVisitData.getTemperature())));
 
-        str = str.replace("{left_eye_vision}", getLeftVisionResult(Constant.Fields.EYE_LEFT_VISION));
-        str = str.replace("{right_eye_vision}", getRightVisionResult(Constant.Fields.EYE_RIGHT_VISION));
-        str = str.replace("{standardEyeRange}", "6/6");
+            str = str.replace("{left_eye_vision}", String.valueOf(TextUtils.isEmpty(patientVisitData.getEyeLeftVision()) ? 0 : Double.parseDouble(patientVisitData.getEyeLeftVision())));
+            str = str.replace("{right_eye_vision}", String.valueOf(TextUtils.isEmpty(patientVisitData.getEyeRightVision()) ? 0 : Double.parseDouble(patientVisitData.getEyeRightVision())));
+            str = str.replace("{standardEyeRange}", String.valueOf(TextUtils.isEmpty(patientVisitData.getEyerange()) ? "NA" : Double.parseDouble(patientVisitData.getEyerange())));
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return str;
-    }*/
+    }
 
     private class ConnSocketTask extends AsyncTask<String, String, Integer> {
         /**

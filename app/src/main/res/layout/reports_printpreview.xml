@@ -9,7 +9,7 @@
         android:id="@+id/headerLL"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="5dp"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -91,11 +91,10 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_VisitDates"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/view1"
-        android:layout_marginTop="@dimen/pad10"
-        android:layout_marginBottom="@dimen/pad10" />
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
         android:id="@+id/topLL"
@@ -176,8 +175,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
         android:orientation="vertical"
         android:weightSum="2">
 
@@ -194,7 +193,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin20"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <Button

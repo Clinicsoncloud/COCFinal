@@ -85,7 +85,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
 
     private BluetoothAdapter bluetoothAdapter;
     private String patient_id = "";
-
+    private String isNewPatient = "";
     // endregion
 
     // region Event methods
@@ -151,6 +151,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
         strConnectivity = getIntent().getStringExtra("connectivity");
         strMobileNo = getIntent().getStringExtra(Constant.Fields.MOBILE_NUMBER);
         patient_id = getIntent().getStringExtra(Constant.Fields.PATIENT_ID);
+        isNewPatient = getIntent().getStringExtra("isNewPatient");
+        Log.e("isNewPatient_Log", ":" + getIntent().getStringExtra("isNewPatient"));
     }
 
 
@@ -280,7 +282,7 @@ public class OtpVerifyScreen extends AppCompatActivity {
         requestBodyParams.put(Constant.Fields.EMAIL, etEmail.getText().toString());
         requestBodyParams.put(Constant.Fields.DATE_OF_BIRTH, DTU.get_yyyy_mm_dd_HMS(etDateOfBirth.getText().toString()));
         requestBodyParams.put(Constant.Fields.GENDER, getSelectedGender());
-        requestBodyParams.put(Constant.Fields.CREATED_AT, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
+        requestBodyParams.put(Constant.Fields.UPDATED_BY, DateService.getCurrentDateTime(DateService.YYYY_MM_DD_HMS));
 
         HashMap headersParams = new HashMap();
 
@@ -318,8 +320,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 }
 
 
-
-
                 /*Intent objIntent = new Intent(getApplicationContext(), HeightActivity.class);
                 startActivity(objIntent);
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -351,7 +351,6 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 requestBodyParams,
                 headersParams,
                 (response, error, status) -> handleGetPatientAPIResponse(response, error, status));
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -366,9 +365,8 @@ public class OtpVerifyScreen extends AppCompatActivity {
                 if (patient_response.getFound()) {
                     writeToPersonalSharedPreference(patient_response.getData(), "online");
 
-
-                    if (!sharedPreferencesPersonal.getString(Constant.Fields.NAME, "").equals("")) {
-
+                    Log.e("isNewPatient_Log_asdasd", ":" + isNewPatient);
+                    if (isNewPatient.equals("false")) {
                         startActivity(new Intent(context, SelectTestOptionsActivity.class));
 //                    showReportOptionsPopUp();
                     } else {
