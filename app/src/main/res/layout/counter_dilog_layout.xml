@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="1050dp"
+    android:layout_height="wrap_content"
+    android:background="#374752"
+    android:padding="@dimen/pad10">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/tv_dilogTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_margin="@dimen/margin20"
+            android:gravity="center"
+            android:text="Battery Alert!!!"
+            android:textSize="35dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_dilogMsg"
+            android:layout_width="1000dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_dilogTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="top|center_horizontal"
+            android:layout_marginTop="@dimen/margin20"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="   Battery level of device is getting down, Kindly change the batteries.
+             \n If you have changed batteries then check bellow box."
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/cb_BatteriesChanged"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_dilogMsg"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="@dimen/margin20"
+            android:text="  Batteries Changed successfully..."
+            android:textSize="30dp" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_CloseDilog"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:src="@drawable/close" />
+</FrameLayout>

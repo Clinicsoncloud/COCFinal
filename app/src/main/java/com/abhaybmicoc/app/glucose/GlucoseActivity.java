@@ -49,6 +49,7 @@ import com.abhaybmicoc.app.hemoglobin.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.activity.BloodPressureActivity;
 import com.abhaybmicoc.app.actofit.ActofitMainActivity;
+import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 import com.google.zxing.integration.android.IntentResult;
 import com.abhaybmicoc.app.thermometer.ThermometerScreen;
@@ -137,6 +138,7 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private Communicator communicator = this;
     private SharedPreferences sharedPreferencesPersonal;
     private SharedPreferences sharedPreferenceGlucoseDEvice;
+    private SharedPreferences sharedPreferencesActivator;
 
     private Handler deviceConnectionTimeoutHandler;
     private ProgressDialog dialogConnectionProgress;
@@ -160,6 +162,9 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
     private String ADD_BLOOD_MSG = "";
 
     TextToSpeechService textToSpeechService;
+
+    private int sugar_Counter = 0;
+
 
     // endregion
 
@@ -608,6 +613,17 @@ public class GlucoseActivity extends AppCompatActivity implements Communicator, 
 
         mConnected = false;
         sharedPreferenceGlucoseDEvice = getSharedPreferences("glucose_device_data", MODE_PRIVATE);
+        sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+
+        if (!sharedPreferencesActivator.getString(Constant.Fields.SUGAR_COUNTER, "").equals(""))
+            sugar_Counter = Integer.parseInt(sharedPreferencesActivator.getString(Constant.Fields.SUGAR_COUNTER, ""));
+        else
+            sugar_Counter = 0;
+
+        Log.e("sugar_Counter_Log", ":" + sugar_Counter);
+        if (sugar_Counter >= Constant.Fields.DEFAULT_SUGAR_COUNTER)
+            Tools.showCounterDilog(context, sharedPreferencesActivator);
+
 
         final Intent intent = getIntent();
 

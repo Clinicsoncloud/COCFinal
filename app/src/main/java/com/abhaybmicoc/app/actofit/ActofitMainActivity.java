@@ -34,6 +34,7 @@ import com.abhaybmicoc.app.oximeter.MainActivity;
 import com.abhaybmicoc.app.activity.HeightActivity;
 import com.abhaybmicoc.app.screen.DisplayRecordScreen;
 import com.abhaybmicoc.app.services.TextToSpeechService;
+import com.abhaybmicoc.app.utils.Tools;
 import com.abhaybmicoc.app.utils.Utils;
 
 import java.util.Date;
@@ -74,6 +75,7 @@ public class ActofitMainActivity extends AppCompatActivity {
 
     private SharedPreferences sharedPreferencesActofit;
     private SharedPreferences sharedPreferencesPersonal;
+    private SharedPreferences sharedPreferencesActivator;
 
     private Button btnSkip;
     private Button btnSmartScale;
@@ -86,6 +88,7 @@ public class ActofitMainActivity extends AppCompatActivity {
     private TextView etUserDateOfBirth;
 
     public static final int REQUSET_CODE = 1001;
+    private int actofit_Counter = 0;
 
     //    private String SMARTSCALE_MSG = "Please Click on GoTo SmartScale, and stand on weight Scale";
     private String SMARTSCALE_MSG = "";
@@ -282,6 +285,19 @@ public class ActofitMainActivity extends AppCompatActivity {
 
         try {
             sharedPreferencesPersonal = getSharedPreferences(ApiUtils.PREFERENCE_PERSONALDATA, MODE_PRIVATE);
+            sharedPreferencesActivator = getSharedPreferences(ApiUtils.PREFERENCE_ACTIVATOR, MODE_PRIVATE);
+
+
+            if (!sharedPreferencesActivator.getString(Constant.Fields.ACTOFIT_COUNTER, "").equals(""))
+                actofit_Counter = Integer.parseInt(sharedPreferencesActivator.getString(Constant.Fields.ACTOFIT_COUNTER, ""));
+            else
+                actofit_Counter = 0;
+
+            Log.e("actofit_Counter_Log", ":" + actofit_Counter);
+
+            if (actofit_Counter >= Constant.Fields.DEFAULT_ACTOFIT_COUNTER)
+                Tools.showCounterDilog(context, sharedPreferencesActivator);
+
 
             tvName.setText("Name : " + sharedPreferencesPersonal.getString(Constant.Fields.NAME, ""));
             tvGender.setText("Gender : " + sharedPreferencesPersonal.getString(Constant.Fields.GENDER, ""));
