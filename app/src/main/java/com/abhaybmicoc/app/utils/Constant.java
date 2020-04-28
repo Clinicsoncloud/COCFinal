@@ -144,6 +144,9 @@ public class Constant {
         public static final String INSTALLED_BY = "installed_by";
         public static final String MACHINE_OPERATOR_MOBILE_NUMBER = "machine_operator_mobile_number";
         public static final String INSTALLATION_DATE = "installation_date";
+        public static final String LICENSE_EXPIRY_DATE = "license_expiry_date";
+        public static final String LATITUDE = "latitude";
+        public static final String LONGITUDE = "longitude";
         public static final String ADDRESS = "address";
 
 

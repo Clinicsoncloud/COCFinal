@@ -176,7 +176,7 @@ public class Act_Main extends Activity {
          * This intent added for temp period only for testing to avoid connection printer
          */
 
-        /*Intent tempintent;
+        Intent tempintent;
 
         if (getIntent().getStringExtra("report_type").equals("view_only_report"))
             tempintent = new Intent(getApplicationContext(), ReportsPrintPreviewActivity.class);
@@ -185,7 +185,7 @@ public class Act_Main extends Activity {
 
         tempintent.putExtra("is_PrinterConnected", getIntent().getStringExtra("is_PrinterConnected"));
         tempintent.putExtra("report_type", getIntent().getStringExtra("report_type"));
-        startActivity(tempintent);*/
+        startActivity(tempintent);
 
         llSelectedDevicesLayout.setVisibility(View.GONE);
 

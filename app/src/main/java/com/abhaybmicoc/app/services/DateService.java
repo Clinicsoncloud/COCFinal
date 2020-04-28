@@ -78,4 +78,28 @@ public class DateService {
         return s;
     }
 
+    public static String getExpiryDate(String selectedDate) {
+        Date date;
+        String expiryDate = "";
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            date = sdf.parse(selectedDate);
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+            cal.add(Calendar.YEAR, 1);
+
+            Log.e("dfdghsfdjgadfagh", ":" + cal.getTime());
+            expiryDate = sdf.format(cal.getTime());
+            System.out.println(expiryDate);
+
+            Log.e("dfdghsfdjgadfagh1111", ":" + expiryDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return expiryDate;
+    }
+
+
 }

@@ -1,11 +1,16 @@
 package com.abhaybmicoc.app.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,10 +27,12 @@ import com.abhaybmicoc.app.model.Common_Update_Response;
 import com.abhaybmicoc.app.model.Location_Response;
 import com.abhaybmicoc.app.screen.OtpLoginScreen;
 import com.abhaybmicoc.app.screen.OtpVerifyScreen;
+import com.abhaybmicoc.app.services.DateService;
 import com.abhaybmicoc.app.services.HttpService;
 import com.abhaybmicoc.app.utils.ApiUtils;
 import com.abhaybmicoc.app.utils.Constant;
 import com.abhaybmicoc.app.utils.DTU;
+import com.abhaybmicoc.app.utils.GPSTracker;
 import com.abhaybmicoc.app.utils.Utils;
 import com.abhaybmicoc.app.utils.VU;
 import com.android.volley.Request;
@@ -61,12 +68,15 @@ public class TechecnicianInstallationNewActivity extends Activity {
     private Spinner spinnerLocation;
     private EditText edtAddress;
     private Button btnSave;
+    private GPSTracker gpsTracker;
 
     private ArrayList<String> locationList;
     private ArrayList<String> locationIDList;
 
     private SharedPreferences sharedPreferencesActivator;
 
+    @SuppressLint("NewApi")
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +84,8 @@ public class TechecnicianInstallationNewActivity extends Activity {
         setupUI();
         setupEvents();
         initializeData();
+
+        requestGPSPermission();
 
         if (Utils.isOnline(context)) {
             getLocationData();
@@ -118,9 +130,50 @@ public class TechecnicianInstallationNewActivity extends Activity {
             edtClinicName.setText(sharedPreferencesActivator.getString("clinic_name", ""));
             edtClientName.setText(sharedPreferencesActivator.getString("client_name", ""));
 
+            gpsTracker = new GPSTracker(context);
+
+            Log.e("Latitude_Log", ":" + gpsTracker.getLatitude());
+            Log.e("Longitude_Log", ":" + gpsTracker.getLongitude());
+
         } catch (Exception e) {
         }
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+
+            if (!statusOfGPS) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
+    }
+
 
     private void getLocationData() {
 
@@ -140,7 +193,6 @@ public class TechecnicianInstallationNewActivity extends Activity {
     private void handleLocationAPIResponse(String response, VolleyError error, String status) {
 
         Log.e("Location_response", ":" + response);
-
 
         try {
             if (status.equals("response")) {
@@ -192,6 +244,9 @@ public class TechecnicianInstallationNewActivity extends Activity {
                 requestBodyParams.put(Constant.Fields.INSTALLED_BY, edtInstalledByName.getText().toString());
                 requestBodyParams.put(Constant.Fields.MACHINE_OPERATOR_MOBILE_NUMBER, edtMachineOperatorMobile.getText().toString());
                 requestBodyParams.put(Constant.Fields.INSTALLATION_DATE, DTU.get_yyyy_mm_dd_HMS(edtInstallationDate.getText().toString()));
+                requestBodyParams.put(Constant.Fields.LICENSE_EXPIRY_DATE, DTU.get_yyyy_mm_dd_HMS(DateService.getExpiryDate(edtInstallationDate.getText().toString())));
+                requestBodyParams.put(Constant.Fields.LATITUDE, String.valueOf(gpsTracker.getLatitude()));
+                requestBodyParams.put(Constant.Fields.LONGITUDE, String.valueOf(gpsTracker.getLongitude()));
                 requestBodyParams.put(Constant.Fields.ADDRESS, edtAddress.getText().toString());
 
                 HashMap headersParams = new HashMap();

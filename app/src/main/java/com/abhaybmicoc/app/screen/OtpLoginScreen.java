@@ -2,15 +2,20 @@ package com.abhaybmicoc.app.screen;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
@@ -137,7 +142,7 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         setupNavigationDrawer();
         setupEvents();
         initializeData();
-
+        requestGPSPermission();
 
         try {
 
@@ -448,7 +453,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     private void initializeData() {
@@ -499,6 +503,40 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
         clearDatabase();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    void requestGPSPermission() {
+        try {
+            final LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+            boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+            String provider = Settings.Secure.getString(getContentResolver(), LocationManager.GPS_PROVIDER);
+
+            if (!statusOfGPS) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                alertDialogBuilder.setTitle("GPS Disabled");
+                alertDialogBuilder.setMessage("Kindly make sure device location is on.")
+                        .setCancelable(false)
+                        .setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                                startActivityForResult(intent, 111);
+                            }
+                        });
+
+                /* create alert dialog */
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                /* show alert dialog */
+                if (!((Activity) context).isFinishing())
+                    alertDialog.show();
+                alertDialogBuilder.setCancelable(false);
+                // Notify users and show settings if they want to enable GPS
+            }
+        } catch (RuntimeException ex) {
+            // TODO: Show message that we did not get permission to access bluetooth
+        }
+    }
 
     private void setupTextToSpeech() {
         if (Utils.isOnline(context)) {
@@ -550,7 +588,6 @@ public class OtpLoginScreen extends AppCompatActivity implements NavigationView.
                 tv_msg.setText("In Trial mode you have remaining only " + remaining_test + " attempts!");
             } else {
                 rbTrialMode.setChecked(false);
-                rbTrialMode.setVisibility(View.GONE);
             }
 
 
